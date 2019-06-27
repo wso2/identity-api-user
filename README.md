@@ -246,4 +246,4 @@ component `org.wso2.carbon.identity.api.user.<resource>.common` for your resourc
    
 You may add this common component in both the api version specific components as dependency and reuse.
 
-Refer the sample implementation of [user challenge API here](https://github.com/ayshsandu/identity-user-api/tree/master/components/org.wso2.carbon.identity.api.user.challenge)
+Refer the sample implementation of [user challenge API here](https://github.com/wso2/identity-api-user/tree/master/components/org.wso2.carbon.identity.api.user.challenge)
