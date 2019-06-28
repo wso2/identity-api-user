@@ -42,8 +42,9 @@ public class Constants {
     public enum ErrorMessages {
 
         ERROR_CODE_INVALID_USERNAME("10001", "Invalid UserID provided", "The provided userId is invalid."),
-        ERROR_CODE_ERROR_RETRIVING_CHALLENGES_FOR_USER("10002", "Unable to get user challenges.", "Server Encountered an " +
-                "error while retrieving challenges for user."),
+        ERROR_CODE_ERROR_RETRIVING_CHALLENGES_FOR_USER("10002",
+                "Unable to get user challenges.",
+                "Server Encountered an error while retrieving challenges for user."),
         ERROR_CODE_ERROR_RETRIVING_CHALLENGE_ANSWERS_OF_USER(CHALLENGE_QUESTION_PREFIX.getPrefix() + "10003",
                 "Unable to get user challenge answers.",
                 "Server Encountered an error while retrieving challenge answers of user."),
@@ -69,24 +70,20 @@ public class Constants {
                 "Unable to remove user challenge answer.",
                 "Server Encountered an error while removing answer of the user challenge."),
         ERROR_CHALLENGE_ANSWER_MISSING(CHALLENGE_QUESTION_PREFIX.getPrefix() + "10011",
-                "Invalid Request.", "Challenge question is missing in the user " +
-                "challenge answer request."),
-        //      ERROR_CODE_UNABLE_TO_GET_USER_CHALLLENGES("10012","Unable to get user challenges." , "Server Encountered an " +
-//                "error while retrieving challenges for user."),
-        ERROR_CODE_USER_ALREADY_ANSWERED_CHALLENGES(CHALLENGE_QUESTION_PREFIX.getPrefix() + "10013",
+                "Invalid Request.",
+                "Challenge question is missing in the user challenge answer request."),
+        ERROR_CODE_USER_ALREADY_ANSWERED_CHALLENGES(CHALLENGE_QUESTION_PREFIX.getPrefix() + "10012",
                 "Challenge Answers Already set.",
                 "User has already answered some challenges. Hence, Unable to add new Answers."),
-        ERROR_CODE_USER_HAS_NOT_ANSWERED_CHALLENGES(CHALLENGE_QUESTION_PREFIX.getPrefix() + "10014",
+        ERROR_CODE_USER_HAS_NOT_ANSWERED_CHALLENGES(CHALLENGE_QUESTION_PREFIX.getPrefix() + "10013",
                 "Challenge Answers Not set.", "User has not" +
                 " answered any challenges. Hence, Unable to process."),
-        ERROR_CODE_USER_ALREADY_ANSWERED_CHALLENGE(CHALLENGE_QUESTION_PREFIX.getPrefix() + "10015",
+        ERROR_CODE_USER_ALREADY_ANSWERED_CHALLENGE(CHALLENGE_QUESTION_PREFIX.getPrefix() + "10014",
                 "Challenge Answer Already set.", "User has already " +
                 "answered this challenge. Hence, Unable to as a new challenge answer."),
-        ERROR_CODE_USER_HAS_NOT_ANSWERED_CHALLENGE(CHALLENGE_QUESTION_PREFIX.getPrefix() + "10016",
+        ERROR_CODE_USER_HAS_NOT_ANSWERED_CHALLENGE(CHALLENGE_QUESTION_PREFIX.getPrefix() + "10015",
                 "Challenge Answer Not set.", "User has not " +
-                "answered this challenge. Hence, Unable to process."),
-        ERROR_CODE_CHALLENGE_QUESTION_NOT_FOUND(CHALLENGE_QUESTION_PREFIX.getPrefix() + "18017",
-                "No challenge question found.", "");
+                "answered this challenge. Hence, Unable to process.");
 
         private final String code;
         private final String message;
