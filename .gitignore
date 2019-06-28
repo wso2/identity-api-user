@@ -1,6 +1,15 @@
 # Compiled class file
 *.class
 
+.classpath
+.settings
+.project
+*.iml
+*.iws
+*.ipr
+.idea
+.DS_Store
+
 # Log file
 *.log
 
@@ -21,3 +30,8 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# Ignore everything in this directory
+target
+
+
