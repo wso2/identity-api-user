@@ -18,6 +18,7 @@ package org.wso2.carbon.identity.rest.api.user.challenge.v1.core;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.Constants;
 import org.wso2.carbon.identity.api.user.common.ContextLoader;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
@@ -61,7 +62,13 @@ import static org.wso2.carbon.identity.api.user.common.Constants.ErrorPrefix.CHA
 public class UserChallengeService {
 
     private static final Log log = LogFactory.getLog(UserChallengeService.class);
-    private static ChallengeQuestionManager questionManager = ChallengeQuestionManager.getInstance();
+    private static ChallengeQuestionManager questionManager;
+
+    static {
+        questionManager = (ChallengeQuestionManager) PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                .getOSGiService(ChallengeQuestionManager.class, null);
+    }
+
     public static final String WSO2_CLAIM_DIALECT = "http://wso2.org/claims/";
 
     public List<ChallengeSetDTO> getChallengesForUser(User user, Integer offset, Integer limit) {
