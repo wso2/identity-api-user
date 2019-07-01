@@ -19,7 +19,6 @@ package org.wso2.carbon.identity.api.user.common.error;
 
 import org.apache.commons.logging.Log;
 import org.apache.log4j.MDC;
-import org.wso2.carbon.identity.api.user.common.Constants;
 
 import java.util.UUID;
 
@@ -51,13 +50,6 @@ public class ErrorResponse extends ErrorDTO {
 
         public Builder withDescription(String description) {
             this.description = description;
-            return this;
-        }
-
-        public Builder withError(Constants.ErrorMessages error) {
-            this.code = error.getCode();
-            this.message = error.getMessage();
-            this.description = error.getDescription();
             return this;
         }
 

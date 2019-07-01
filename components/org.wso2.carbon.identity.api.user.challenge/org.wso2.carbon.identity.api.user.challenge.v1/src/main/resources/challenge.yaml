@@ -283,7 +283,6 @@ paths:
       description: |
         Adds a new challenge question answer to the system
       parameters:
-        - $ref: '#/parameters/usernamePathParams'
         - in: body
           name: challenge-answer
           description: challenge-question with answer
@@ -309,9 +308,6 @@ paths:
       operationId: getAnsweredChallengesOfLoggedInUser
       description: |
         Get answered challenges in the system for a specific user.
-      parameters:
-        - $ref: '#/parameters/usernamePathParams'
-
       responses:
         200:
           description: search results matching criteria
@@ -323,6 +319,32 @@ paths:
           $ref: '#/responses/Unauthorized'
         500:
           $ref: '#/responses/ServerError'
+    put:
+      tags:
+        - developement
+      summary: "answers new challenge question combination"
+      operationId: updateChallengeAnswersOfLoggedInUser
+      description: |
+        Addsnew challenge question answers to the system for logged In user.
+      parameters:
+        - in: body
+          name: challengeAnswers
+          description: set of challenge question with answer
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ChallengeAnswer'
+      responses:
+        200:
+          $ref: '#/responses/OK'
+        400:
+          $ref: '#/responses/InvalidInput'
+        401:
+          $ref: '#/responses/Unauthorized'
+        404:
+          $ref: '#/responses/NotFound'
+        500:
+          $ref: '#/responses/ServerError'
     delete:
       tags:
         - developement
@@ -330,8 +352,6 @@ paths:
       operationId: deleteChallengeAnswersOfLoggedInUser
       description: |
         Removes an existing challenge question answers of the authenticated user
-      parameters:
-        - $ref: '#/parameters/usernamePathParams'
       responses:
         200:
           $ref: '#/responses/Deleted'
@@ -351,7 +371,6 @@ paths:
         Adds a new challenge question answer to the system for loggedin user.
       parameters:
         - $ref: '#/parameters/questionSetIdPathParam'
-        - $ref: '#/parameters/usernamePathParams'
         - in: body
           name: challengeAnswer
           description: challenge-question with answer
@@ -379,7 +398,6 @@ paths:
         Update challenge answer in a specific challenge for authenticated user.
       parameters:
         - $ref: '#/parameters/questionSetIdPathParam'
-        - $ref: '#/parameters/usernamePathParams'
         - in: body
           name: challenge-answer
           description: challenge-question with answer
@@ -405,7 +423,6 @@ paths:
         Removes existing challenge question answers of authenticated user
       parameters:
         - $ref: '#/parameters/questionSetIdPathParam'
-        - $ref: '#/parameters/usernamePathParams'
       responses:
         200:
           $ref: '#/responses/Deleted'

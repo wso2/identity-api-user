@@ -19,18 +19,19 @@ package org.wso2.carbon.identity.api.user.common.function;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.identity.api.user.common.Constants;
-import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
+import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.application.common.model.User;
-import org.wso2.carbon.user.core.UserStoreConfigConstants;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.util.Base64;
 import java.util.function.Function;
 
-public class UserIdToUser implements Function<String[],User> {
+import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_INVALID_USERNAME;
+import static org.wso2.carbon.identity.api.user.common.ContextLoader.getUser;
+
+public class UserIdToUser implements Function<String[], User> {
 
     private static final Log log = LogFactory.getLog(UserIdToUser.class);
 
@@ -47,31 +48,14 @@ public class UserIdToUser implements Function<String[],User> {
             if (StringUtils.isBlank(userId)) {
                 throw new WebApplicationException("UserID is empty.");
             }
-            String[] strComponent = decodedUsername.split("/");
 
-            String username;
-            String realm = UserStoreConfigConstants.PRIMARY;
-
-            if (strComponent.length == 1) {
-                username = strComponent[0];
-            } else if (strComponent.length == 2) {
-                realm = strComponent[0];
-                username = strComponent[1];
-            } else {
-                throw new WebApplicationException("Provided UserID is " +
-                        "not in the correct format.");
-            }
-
-            User user = new User();
-            user.setUserName(username);
-            user.setUserStoreDomain(realm);
-            user.setTenantDomain(tenantDomain);
-
-            return user;
-        } catch (Exception e){
-            throw new APIError(Response.Status.BAD_REQUEST, new ErrorResponse.Builder().withError
-                    (Constants.ErrorMessages.ERROR_CODE_INVALID_USERNAME).build(log, e, "Invalid userId: " +
-                    userId));
+            return getUser(tenantDomain, decodedUsername);
+        } catch (Exception e) {
+            throw new APIError(Response.Status.BAD_REQUEST, new ErrorResponse.Builder()
+                    .withCode(ERROR_CODE_INVALID_USERNAME.getCode())
+                    .withMessage(ERROR_CODE_INVALID_USERNAME.getMessage())
+                    .withDescription(ERROR_CODE_INVALID_USERNAME.getDescription())
+                    .build(log, e, "Invalid userId: " + userId));
         }
     }
 }

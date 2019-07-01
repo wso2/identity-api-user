@@ -1,27 +1,21 @@
 package org.wso2.carbon.identity.rest.api.user.challenge.v1;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.*;
-import org.wso2.carbon.identity.rest.api.user.challenge.v1.UserIdApiService;
-import org.wso2.carbon.identity.rest.api.user.challenge.v1.factories.UserIdApiServiceFactory;
-
 import io.swagger.annotations.ApiParam;
-
-import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ErrorDTO;
-import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.UserChallengeAnswerDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ChallengeAnswerDTO;
-import java.util.List;
-import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.UserChallengeAnswerResponseDTO;
 import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ChallengeSetDTO;
+import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.UserChallengeAnswerDTO;
+import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.UserChallengeAnswerResponseDTO;
 
-import java.util.List;
-
-import java.io.InputStream;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.*;
+import java.util.List;
 
 @Path("/{user-id}")
 

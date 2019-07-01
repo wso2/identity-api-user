@@ -1,26 +1,21 @@
 package org.wso2.carbon.identity.rest.api.user.challenge.v1;
 
-import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.*;
-import org.wso2.carbon.identity.rest.api.user.challenge.v1.MeApiService;
+import io.swagger.annotations.ApiParam;
+import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ChallengeAnswerDTO;
+import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ChallengeSetDTO;
+import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.UserChallengeAnswerDTO;
+import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.UserChallengeAnswerResponseDTO;
 import org.wso2.carbon.identity.rest.api.user.challenge.v1.factories.MeApiServiceFactory;
 
-import io.swagger.annotations.ApiParam;
-
-import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ErrorDTO;
-import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.UserChallengeAnswerDTO;
-import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ChallengeAnswerDTO;
-import java.util.List;
-import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.UserChallengeAnswerResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ChallengeSetDTO;
-
-import java.util.List;
-
-import java.io.InputStream;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.*;
+import java.util.List;
 
 @Path("/me")
 
@@ -49,10 +44,9 @@ public class MeApi  {
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
     public Response addChallengeAnswerOfLoggedInUser(@ApiParam(value = "Challenge Question set Id",required=true ) @PathParam("challenge-set-id")  String challengeSetId,
-    @ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId,
     @ApiParam(value = "challenge-question with answer"  ) UserChallengeAnswerDTO challengeAnswer)
     {
-    return delegate.addChallengeAnswerOfLoggedInUser(challengeSetId,userId,challengeAnswer);
+    return delegate.addChallengeAnswerOfLoggedInUser(challengeSetId,challengeAnswer);
     }
     @POST
     @Path("/challenge-answers")
@@ -70,10 +64,9 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response addChallengeAnswersForLoggedInUser(@ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId,
-    @ApiParam(value = "challenge-question with answer"  ) List<ChallengeAnswerDTO> challengeAnswer)
+    public Response addChallengeAnswersForLoggedInUser(@ApiParam(value = "challenge-question with answer"  ) List<ChallengeAnswerDTO> challengeAnswer)
     {
-    return delegate.addChallengeAnswersForLoggedInUser(userId,challengeAnswer);
+    return delegate.addChallengeAnswersForLoggedInUser(challengeAnswer);
     }
     @DELETE
     @Path("/challenge-answers/{challenge-set-id}")
@@ -89,10 +82,9 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response deleteChallengeAnswerOfLoggedInUser(@ApiParam(value = "Challenge Question set Id",required=true ) @PathParam("challenge-set-id")  String challengeSetId,
-    @ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId)
+    public Response deleteChallengeAnswerOfLoggedInUser(@ApiParam(value = "Challenge Question set Id",required=true ) @PathParam("challenge-set-id")  String challengeSetId)
     {
-    return delegate.deleteChallengeAnswerOfLoggedInUser(challengeSetId,userId);
+    return delegate.deleteChallengeAnswerOfLoggedInUser(challengeSetId);
     }
     @DELETE
     @Path("/challenge-answers")
@@ -108,9 +100,9 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response deleteChallengeAnswersOfLoggedInUser(@ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId)
+    public Response deleteChallengeAnswersOfLoggedInUser()
     {
-    return delegate.deleteChallengeAnswersOfLoggedInUser(userId);
+    return delegate.deleteChallengeAnswersOfLoggedInUser();
     }
     @GET
     @Path("/challenge-answers")
@@ -124,9 +116,9 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response getAnsweredChallengesOfLoggedInUser(@ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId)
+    public Response getAnsweredChallengesOfLoggedInUser()
     {
-    return delegate.getAnsweredChallengesOfLoggedInUser(userId);
+    return delegate.getAnsweredChallengesOfLoggedInUser();
     }
     @GET
     @Path("/challenges")
@@ -164,10 +156,29 @@ public class MeApi  {
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
     public Response updateChallengeAnswerOfLoggedInUser(@ApiParam(value = "Challenge Question set Id",required=true ) @PathParam("challenge-set-id")  String challengeSetId,
-    @ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId,
     @ApiParam(value = "challenge-question with answer"  ) UserChallengeAnswerDTO challengeAnswer)
     {
-    return delegate.updateChallengeAnswerOfLoggedInUser(challengeSetId,userId,challengeAnswer);
+    return delegate.updateChallengeAnswerOfLoggedInUser(challengeSetId,challengeAnswer);
+    }
+    @PUT
+    @Path("/challenge-answers")
+    
+    
+    @io.swagger.annotations.ApiOperation(value = "answers new challenge question combination", notes = "Addsnew challenge question answers to the system for logged In user.\n", response = void.class)
+    @io.swagger.annotations.ApiResponses(value = { 
+        @io.swagger.annotations.ApiResponse(code = 200, message = "OK"),
+        
+        @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid input request"),
+        
+        @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
+        
+        @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource is not found"),
+        
+        @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
+
+    public Response updateChallengeAnswersOfLoggedInUser(@ApiParam(value = "set of challenge question with answer"  ) List<ChallengeAnswerDTO> challengeAnswers)
+    {
+    return delegate.updateChallengeAnswersOfLoggedInUser(challengeAnswers);
     }
 }
 

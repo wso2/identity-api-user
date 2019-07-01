@@ -26,7 +26,7 @@
 
     <groupId>org.wso2.carbon.identity.user.api</groupId>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>identity-user-api</artifactId>
+    <artifactId>identity-api-user</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
     <name>WSO2 Identity Server - User API Module</name>
@@ -36,10 +36,9 @@
     <url>http://wso2.org</url>
 
     <scm>
-        <url>https://github.com/wso2-extensions/identity-user-account-association.git</url>
-        <developerConnection>scm:git:https://github.com/wso2-extensions/identity-user-account-association.git
-        </developerConnection>
-        <connection>scm:git:https://github.com/wso2-extensions/identity-user-account-association.git</connection>
+        <url>https://github.com/wso2/identity-api-user.git</url>
+        <developerConnection>scm:git:https://github.com/wso2/identity-api-user.git</developerConnection>
+        <connection>scm:git:https://github.com/wso2/identity-api-user.git</connection>
         <tag>HEAD</tag>
     </scm>
 
@@ -192,18 +191,6 @@
                 <version>${identity.governance.version}</version>
                 <scope>provided</scope>
             </dependency>
-            <!--<dependency>-->
-            <!--<groupId>org.wso2.carbon.identity.framework</groupId>-->
-            <!--<artifactId>org.wso2.carbon.identity.application.dispatcher</artifactId>-->
-            <!--<version>${carbon.identity.framework.version}</version>-->
-            <!--<scope>provided</scope>-->
-            <!--</dependency>-->
-            <!--<dependency>-->
-            <!--<groupId>org.wso2.carbon.identity.framework</groupId>-->
-            <!--<artifactId>org.wso2.carbon.identity.base</artifactId>-->
-            <!--<version>${carbon.identity.framework.version}</version>-->
-            <!--<scope>provided</scope>-->
-            <!--</dependency>-->
         </dependencies>
     </dependencyManagement>
 
