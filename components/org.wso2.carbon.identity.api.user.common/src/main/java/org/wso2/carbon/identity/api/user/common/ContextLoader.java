@@ -18,12 +18,23 @@ package org.wso2.carbon.identity.api.user.common;
 
 import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
+import org.wso2.carbon.identity.api.user.common.error.APIError;
+import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
+import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
+import org.wso2.carbon.user.core.UserStoreConfigConstants;
 
+import javax.ws.rs.core.Response;
+
+import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_INVALID_USERNAME;
 import static org.wso2.carbon.identity.api.user.common.Constants.TENANT_NAME_FROM_CONTEXT;
 
 public class ContextLoader {
 
+    /**
+     * Retrieves loaded tenant domain from carbon context.
+     * @return tenant domain of the request is being served.
+     */
     public static String getTenantDomainFromContext() {
 
         String tenantDomain = MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
@@ -40,5 +51,39 @@ public class ContextLoader {
     public static String getUsernameFromContext() {
 
         return PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
+    }
+
+    /**
+     * Retrieves authenticated username from carbon context.
+     * @return username of the authenticated user.
+     */
+    public static User getUserFromContext() {
+
+        return getUser(getTenantDomainFromContext(), getUsernameFromContext());
+    }
+
+
+    public static User getUser(String tenantDomain, String decodedUsername) {
+        String realm = UserStoreConfigConstants.PRIMARY;
+        String username;
+        String[] strComponent = decodedUsername.split("/");
+
+        if (strComponent.length == 1) {
+            username = strComponent[0];
+        } else if (strComponent.length == 2) {
+            realm = strComponent[0];
+            username = strComponent[1];
+        } else {
+            throw new APIError(Response.Status.BAD_REQUEST, new ErrorResponse.Builder().withDescription("Provided " +
+                    "Username is not in the correct format.")
+                    .withCode(ERROR_CODE_INVALID_USERNAME.getCode())
+                    .withMessage(ERROR_CODE_INVALID_USERNAME.getMessage()).build());
+        }
+
+        User user = new User();
+        user.setUserName(username);
+        user.setUserStoreDomain(realm);
+        user.setTenantDomain(tenantDomain);
+        return user;
     }
 }

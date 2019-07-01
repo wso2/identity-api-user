@@ -1,18 +1,15 @@
 package org.wso2.carbon.identity.rest.api.user.challenge.v1.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.wso2.carbon.identity.api.user.common.ContextLoader;
-import org.wso2.carbon.identity.api.user.common.function.UserIdToUser;
-import org.wso2.carbon.identity.rest.api.user.challenge.v1.*;
-
-
+import org.wso2.carbon.identity.rest.api.user.challenge.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.challenge.v1.core.UserChallengeService;
 import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ChallengeAnswerDTO;
 import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.UserChallengeAnswerDTO;
 
+import javax.ws.rs.core.Response;
 import java.util.List;
 
-import javax.ws.rs.core.Response;
+import static org.wso2.carbon.identity.api.user.common.ContextLoader.getUserFromContext;
 
 public class MeApiServiceImpl extends MeApiService {
 
@@ -20,40 +17,58 @@ public class MeApiServiceImpl extends MeApiService {
     private UserChallengeService challengeService;
 
     @Override
-    public Response addChallengeAnswerOfLoggedInUser(String challengeSetId, String userId, UserChallengeAnswerDTO
+    public Response addChallengeAnswerOfLoggedInUser(String challengeSetId, UserChallengeAnswerDTO
             challengeAnswer) {
-        return null;
+
+        challengeService.addChallengeAnswerOfUser(getUserFromContext(), challengeSetId, challengeAnswer);
+        return Response.ok().build();
     }
 
     @Override
-    public Response addChallengeAnswersForLoggedInUser(String userId,List<ChallengeAnswerDTO> challengeAnswer){
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+    public Response addChallengeAnswersForLoggedInUser(List<ChallengeAnswerDTO> challengeAnswer) {
+
+        challengeService.setChallengeAnswersOfUser(getUserFromContext(), challengeAnswer);
+        return Response.ok().build();
     }
+
     @Override
-    public Response deleteChallengeAnswerOfLoggedInUser(String challengeSetId,String userId){
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+    public Response deleteChallengeAnswerOfLoggedInUser(String challengeSetId) {
+
+        challengeService.removeChallengeAnswerOfUser(getUserFromContext(), challengeSetId);
+        return Response.ok().build();
     }
+
     @Override
-    public Response deleteChallengeAnswersOfLoggedInUser(String userId){
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+    public Response deleteChallengeAnswersOfLoggedInUser() {
+
+        challengeService.removeChallengeAnswersOfUser(getUserFromContext());
+        return Response.ok().build();
     }
+
     @Override
-    public Response getAnsweredChallengesOfLoggedInUser(String userId){
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+    public Response getAnsweredChallengesOfLoggedInUser() {
+
+        return Response.ok().entity(challengeService.getChallengeAnswersOfUser(getUserFromContext())).build();
     }
+
     @Override
-    public Response getChallengesForLoggedInUser(Integer offset,Integer limit){
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+    public Response getChallengesForLoggedInUser(Integer offset, Integer limit) {
+
+        return Response.ok().entity(challengeService.getChallengesForUser(getUserFromContext(), offset, limit)).build();
     }
+
     @Override
-    public Response updateChallengeAnswerOfLoggedInUser(String challengeSetId,String userId,UserChallengeAnswerDTO
-            challengeAnswer){
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+    public Response updateChallengeAnswerOfLoggedInUser(String challengeSetId, UserChallengeAnswerDTO
+            challengeAnswer) {
+
+        challengeService.updateChallengeAnswerOfUser(getUserFromContext(), challengeSetId, challengeAnswer);
+        return Response.ok().build();
+    }
+
+    @Override
+    public Response updateChallengeAnswersOfLoggedInUser(List<ChallengeAnswerDTO> challengeAnswers) {
+
+        challengeService.updateChallengeAnswersOfUser(getUserFromContext(), challengeAnswers);
+        return Response.ok().build();
     }
 }
