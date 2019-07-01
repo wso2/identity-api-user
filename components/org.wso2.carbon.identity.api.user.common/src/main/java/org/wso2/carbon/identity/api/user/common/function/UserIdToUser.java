@@ -30,7 +30,9 @@ import javax.ws.rs.core.Response;
 import java.util.Base64;
 import java.util.function.Function;
 
-public class UserIdToUser implements Function<String[],User> {
+import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_INVALID_USERNAME;
+
+public class UserIdToUser implements Function<String[], User> {
 
     private static final Log log = LogFactory.getLog(UserIdToUser.class);
 
@@ -68,10 +70,12 @@ public class UserIdToUser implements Function<String[],User> {
             user.setTenantDomain(tenantDomain);
 
             return user;
-        } catch (Exception e){
-            throw new APIError(Response.Status.BAD_REQUEST, new ErrorResponse.Builder().withError
-                    (Constants.ErrorMessages.ERROR_CODE_INVALID_USERNAME).build(log, e, "Invalid userId: " +
-                    userId));
+        } catch (Exception e) {
+            throw new APIError(Response.Status.BAD_REQUEST, new ErrorResponse.Builder()
+                    .withCode(ERROR_CODE_INVALID_USERNAME.getCode())
+                    .withMessage(ERROR_CODE_INVALID_USERNAME.getMessage())
+                    .withDescription(ERROR_CODE_INVALID_USERNAME.getDescription())
+                    .build(log, e, "Invalid userId: " + userId));
         }
     }
 }

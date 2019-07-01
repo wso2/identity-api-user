@@ -1,8 +1,12 @@
 package org.wso2.carbon.identity.rest.api.user.challenge.v1.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.wso2.carbon.identity.api.user.common.ContextLoader;
+import org.wso2.carbon.identity.api.user.common.function.UserIdToUser;
 import org.wso2.carbon.identity.rest.api.user.challenge.v1.*;
 
 
+import org.wso2.carbon.identity.rest.api.user.challenge.v1.core.UserChallengeService;
 import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ChallengeAnswerDTO;
 import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.UserChallengeAnswerDTO;
 
@@ -11,6 +15,10 @@ import java.util.List;
 import javax.ws.rs.core.Response;
 
 public class MeApiServiceImpl extends MeApiService {
+
+    @Autowired
+    private UserChallengeService challengeService;
+
     @Override
     public Response addChallengeAnswerOfLoggedInUser(String challengeSetId, String userId, UserChallengeAnswerDTO
             challengeAnswer) {
