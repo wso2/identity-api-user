@@ -1,5 +1,9 @@
 # identity-api-user
 
+|  Branch | Build Status |
+| :------------ |:------------- |
+| master      | [![Build Status](https://wso2.org/jenkins/job/platform-builds/job/identity-api-user/badge/icon)](https://wso2.org/jenkins/job/platform-builds/job/identity-api-user/) |
+
 This repository contains modules related to the identity user related rest apis 
 
 ### Plugin to Generate the API Stubs
