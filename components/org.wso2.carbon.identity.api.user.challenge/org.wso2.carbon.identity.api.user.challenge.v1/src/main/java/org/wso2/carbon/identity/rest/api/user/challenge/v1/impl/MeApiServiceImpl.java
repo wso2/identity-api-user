@@ -38,14 +38,14 @@ public class MeApiServiceImpl extends MeApiService {
     public Response deleteChallengeAnswerOfLoggedInUser(String challengeSetId) {
 
         challengeService.removeChallengeAnswerOfUser(getUserFromContext(), challengeSetId);
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 
     @Override
     public Response deleteChallengeAnswersOfLoggedInUser() {
 
         challengeService.removeChallengeAnswersOfUser(getUserFromContext());
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 
     @Override

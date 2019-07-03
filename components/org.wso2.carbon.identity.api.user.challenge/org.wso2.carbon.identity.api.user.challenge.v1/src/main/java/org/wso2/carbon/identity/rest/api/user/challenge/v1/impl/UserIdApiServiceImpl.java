@@ -58,14 +58,14 @@ public class UserIdApiServiceImpl extends UserIdApiService {
 
         challengeService.removeChallengeAnswerOfUser(new UserIdToUser().apply(userId,
                 ContextLoader.getTenantDomainFromContext()), challengeSetId);
-        return Response.ok().build();
+        return Response.noContent().build();
     }
     @Override
     public Response deleteChallengeAnswersOfAUser(String userId){
 
         challengeService.removeChallengeAnswersOfUser(new UserIdToUser().apply(userId,
                 ContextLoader.getTenantDomainFromContext()));
-        return Response.ok().build();
+        return Response.noContent().build();
     }
     @Override
     public Response getAnsweredChallengesOfAUser(String userId){
