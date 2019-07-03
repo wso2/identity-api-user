@@ -11,6 +11,9 @@ import java.util.List;
 
 import static org.wso2.carbon.identity.api.user.common.ContextLoader.getUserFromContext;
 
+/**
+ * API service implementation for authenticated user's challenge operations
+ */
 public class MeApiServiceImpl extends MeApiService {
 
     @Autowired

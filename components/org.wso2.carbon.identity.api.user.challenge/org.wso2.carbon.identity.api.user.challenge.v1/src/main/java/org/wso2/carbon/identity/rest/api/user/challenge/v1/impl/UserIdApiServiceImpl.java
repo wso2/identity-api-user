@@ -29,6 +29,9 @@ import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.UserChallengeAnsw
 import javax.ws.rs.core.Response;
 import java.util.List;
 
+/**
+ * API service implementation of a specific user's challenge operations
+ */
 public class UserIdApiServiceImpl extends UserIdApiService {
 
     @Autowired

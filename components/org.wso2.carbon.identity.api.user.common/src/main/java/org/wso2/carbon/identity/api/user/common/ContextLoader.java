@@ -29,6 +29,9 @@ import javax.ws.rs.core.Response;
 import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_INVALID_USERNAME;
 import static org.wso2.carbon.identity.api.user.common.Constants.TENANT_NAME_FROM_CONTEXT;
 
+/**
+ * Load information from context
+ */
 public class ContextLoader {
 
     /**
@@ -63,6 +66,12 @@ public class ContextLoader {
     }
 
 
+    /**
+     * Build user object from tenant domain and username
+     * @param tenantDomain
+     * @param decodedUsername
+     * @return
+     */
     public static User getUser(String tenantDomain, String decodedUsername) {
         String realm = UserStoreConfigConstants.PRIMARY;
         String username;
