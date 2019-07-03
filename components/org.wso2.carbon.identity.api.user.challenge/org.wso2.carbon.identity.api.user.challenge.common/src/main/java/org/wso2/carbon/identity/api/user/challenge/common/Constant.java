@@ -35,7 +35,7 @@ public class Constant {
                 "Unable to set user challenge answers.",
                 "Server Encountered an error while setting answers to the user challenges."),
         ERROR_CODE_ERROR_UPDATING_CHALLENGE_ANSWERS_OF_USER("10006",
-                "Unable to update user challenge answer.",
+                "Unable to update user challenge answers.",
                 "Server Encountered an error while updating the answers to the user challenges."),
         ERROR_CODE_ERROR_DELETING_CHALLENGE_ANSWERS_OF_USER("10007",
                 "Unable to remove user challenge answers.",

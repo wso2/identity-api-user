@@ -23,6 +23,8 @@ import org.apache.log4j.MDC;
 import java.util.UUID;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.CORRELATION_ID_MDC;
+import static org.wso2.carbon.identity.api.user.common.Util.getCorrelation;
+import static org.wso2.carbon.identity.api.user.common.Util.isCorrelationIDPresent;
 
 public class ErrorResponse extends ErrorDTO {
 
@@ -73,19 +75,6 @@ public class ErrorResponse extends ErrorDTO {
             return error;
         }
 
-        private String getCorrelation() {
 
-            if (isCorrelationIDPresent()) {
-                this.ref = MDC.get(CORRELATION_ID_MDC).toString();
-            } else {
-                this.ref = UUID.randomUUID().toString();
-
-            }
-            return this.ref;
-        }
-
-        private boolean isCorrelationIDPresent() {
-            return MDC.get(CORRELATION_ID_MDC) != null;
-        }
     }
 }
