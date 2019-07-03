@@ -18,12 +18,18 @@ package org.wso2.carbon.identity.api.user.common;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.ErrorPrefix.USER_MANAGEMENT_PREFIX;
 
+/**
+ * Common constants for user APIs
+ */
 public class Constants {
     public static final String OPERATION_ADD = "ADD";
     public static final String TENANT_NAME_FROM_CONTEXT = "TenantNameFromContext";
     public static final String ERROR_CODE_DELIMITER = "-";
     public static final String CORRELATION_ID_MDC = "Correlation-ID";
 
+    /**
+     * Enum for user error prefixes
+     */
     public enum ErrorPrefix {
 
         USER_MANAGEMENT_PREFIX("UMG-");
@@ -39,6 +45,9 @@ public class Constants {
         }
     }
 
+    /**
+     * Enum for user error messages
+     */
     public enum ErrorMessage {
 
         ERROR_CODE_INVALID_USERNAME(USER_MANAGEMENT_PREFIX.getPrefix() + "10001", "Invalid UserID provided", "The " +

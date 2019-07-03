@@ -24,6 +24,9 @@ import java.util.function.Function;
 
 import static org.wso2.carbon.identity.rest.api.user.challenge.v1.core.UserChallengeService.WSO2_CLAIM_DIALECT;
 
+/**
+ * Transform internal UserChallengeAnswer to external UserChallengeAnswerResponseDTO
+ */
 public class UserChallengeAnswerToExternal implements Function<UserChallengeAnswer, UserChallengeAnswerResponseDTO> {
 
     @Override

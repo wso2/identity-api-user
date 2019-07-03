@@ -26,13 +26,15 @@ import static org.wso2.carbon.identity.api.user.common.Constants.CORRELATION_ID_
 import static org.wso2.carbon.identity.api.user.common.Util.getCorrelation;
 import static org.wso2.carbon.identity.api.user.common.Util.isCorrelationIDPresent;
 
+/**
+ * Common ErrorResponse Object for all the user API related errors
+ */
 public class ErrorResponse extends ErrorDTO {
 
     public static class Builder {
         private String code;
         private String message;
         private String description;
-        private String ref;
 
         public Builder() {
 
