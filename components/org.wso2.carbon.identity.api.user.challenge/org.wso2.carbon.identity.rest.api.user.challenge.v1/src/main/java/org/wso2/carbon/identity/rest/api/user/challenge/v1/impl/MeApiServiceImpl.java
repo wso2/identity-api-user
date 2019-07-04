@@ -10,8 +10,10 @@ import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.util.List;
 
-import static org.wso2.carbon.identity.api.user.challenge.common.Constant.API_USER_CONTEXT_V1_CHALLENGE_ANSWERS;
+import static org.wso2.carbon.identity.api.user.challenge.common.Constant.V1_API_PATH_COMPONENT;
 import static org.wso2.carbon.identity.api.user.challenge.common.Constant.ME_CONTEXT;
+import static org.wso2.carbon.identity.api.user.challenge.common.Constant.USER_CHALLENGE_ANSWERS_PATH_COMPONENT;
+import static org.wso2.carbon.identity.api.user.common.ContextLoader.buildURI;
 import static org.wso2.carbon.identity.api.user.common.ContextLoader.getUserFromContext;
 
 /**
@@ -27,16 +29,14 @@ public class MeApiServiceImpl extends MeApiService {
             challengeAnswer) {
 
         challengeService.addChallengeAnswerOfUser(getUserFromContext(), challengeSetId, challengeAnswer);
-        String responsePath = String.format(API_USER_CONTEXT_V1_CHALLENGE_ANSWERS, ME_CONTEXT);
-        return Response.created(URI.create(responsePath)).build();
+        return Response.created(getMeChallengeAnswersLocation()).build();
     }
 
     @Override
     public Response addChallengeAnswersForLoggedInUser(List<ChallengeAnswerDTO> challengeAnswer) {
 
         challengeService.setChallengeAnswersOfUser(getUserFromContext(), challengeAnswer);
-        String responsePath = String.format(API_USER_CONTEXT_V1_CHALLENGE_ANSWERS, ME_CONTEXT);
-        return Response.created(URI.create(responsePath)).build();
+        return Response.created(getMeChallengeAnswersLocation()).build();
     }
 
     @Override
@@ -78,5 +78,11 @@ public class MeApiServiceImpl extends MeApiService {
 
         challengeService.updateChallengeAnswersOfUser(getUserFromContext(), challengeAnswers);
         return Response.ok().build();
+    }
+
+
+    private URI getMeChallengeAnswersLocation() {
+        return buildURI(String.format(V1_API_PATH_COMPONENT + USER_CHALLENGE_ANSWERS_PATH_COMPONENT,
+                ME_CONTEXT));
     }
 }

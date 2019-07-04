@@ -30,7 +30,9 @@ import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.util.List;
 
-import static org.wso2.carbon.identity.api.user.challenge.common.Constant.API_USER_CONTEXT_V1_CHALLENGE_ANSWERS;
+import static org.wso2.carbon.identity.api.user.challenge.common.Constant.V1_API_PATH_COMPONENT;
+import static org.wso2.carbon.identity.api.user.challenge.common.Constant.USER_CHALLENGE_ANSWERS_PATH_COMPONENT;
+import static org.wso2.carbon.identity.api.user.common.ContextLoader.buildURI;
 
 /**
  * API service implementation of a specific user's challenge operations
@@ -46,8 +48,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
 
         challengeService.addChallengeAnswerOfUser(new UserIdToUser().apply(userId,
                 ContextLoader.getTenantDomainFromContext()), challengeSetId, challengeAnswer);
-        String responsePath = String.format(API_USER_CONTEXT_V1_CHALLENGE_ANSWERS, userId);
-        return Response.created(URI.create(responsePath)).build();
+        return Response.created(getUserChallengeAnswersLocation(userId)).build();
     }
 
     @Override
@@ -55,8 +56,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
 
         challengeService.setChallengeAnswersOfUser(new UserIdToUser().apply(userId,
                 ContextLoader.getTenantDomainFromContext()), challengeAnswer);
-        String responsePath = String.format(API_USER_CONTEXT_V1_CHALLENGE_ANSWERS, userId);
-        return Response.created(URI.create(responsePath)).build();
+        return Response.created(getUserChallengeAnswersLocation(userId)).build();
     }
     @Override
     public Response deleteChallengeAnswerOfAUser(String challengeSetId,String userId){
@@ -100,5 +100,12 @@ public class UserIdApiServiceImpl extends UserIdApiService {
                 ContextLoader.getTenantDomainFromContext()), challengeAnswers);
         return Response.ok().build();
     }
+
+
+    private URI getUserChallengeAnswersLocation(String userId) {
+        return buildURI(String.format(V1_API_PATH_COMPONENT + USER_CHALLENGE_ANSWERS_PATH_COMPONENT,
+                userId));
+    }
+
 
 }
