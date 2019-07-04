@@ -7,8 +7,11 @@ import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ChallengeAnswerDT
 import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.UserChallengeAnswerDTO;
 
 import javax.ws.rs.core.Response;
+import java.net.URI;
 import java.util.List;
 
+import static org.wso2.carbon.identity.api.user.challenge.common.Constant.API_USER_CONTEXT_V1_CHALLENGE_ANSWERS;
+import static org.wso2.carbon.identity.api.user.challenge.common.Constant.ME_CONTEXT;
 import static org.wso2.carbon.identity.api.user.common.ContextLoader.getUserFromContext;
 
 /**
@@ -24,14 +27,16 @@ public class MeApiServiceImpl extends MeApiService {
             challengeAnswer) {
 
         challengeService.addChallengeAnswerOfUser(getUserFromContext(), challengeSetId, challengeAnswer);
-        return Response.ok().build();
+        String responsePath = String.format(API_USER_CONTEXT_V1_CHALLENGE_ANSWERS, ME_CONTEXT);
+        return Response.created(URI.create(responsePath)).build();
     }
 
     @Override
     public Response addChallengeAnswersForLoggedInUser(List<ChallengeAnswerDTO> challengeAnswer) {
 
         challengeService.setChallengeAnswersOfUser(getUserFromContext(), challengeAnswer);
-        return Response.ok().build();
+        String responsePath = String.format(API_USER_CONTEXT_V1_CHALLENGE_ANSWERS, ME_CONTEXT);
+        return Response.created(URI.create(responsePath)).build();
     }
 
     @Override
