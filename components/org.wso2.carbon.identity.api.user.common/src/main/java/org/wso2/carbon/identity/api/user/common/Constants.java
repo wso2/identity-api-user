@@ -26,6 +26,7 @@ public class Constants {
     public static final String TENANT_NAME_FROM_CONTEXT = "TenantNameFromContext";
     public static final String ERROR_CODE_DELIMITER = "-";
     public static final String CORRELATION_ID_MDC = "Correlation-ID";
+    public static final String USER_API_CONTEXT_V1 = "/api/users/v1";
 
     /**
      * Enum for user error prefixes

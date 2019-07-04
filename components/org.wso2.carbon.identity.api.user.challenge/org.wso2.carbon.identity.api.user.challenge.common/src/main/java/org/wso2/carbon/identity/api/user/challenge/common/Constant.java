@@ -22,6 +22,8 @@ package org.wso2.carbon.identity.api.user.challenge.common;
 public class Constant {
 
     public static final String CHALLENGE_QUESTION_PREFIX = "CQM-";
+    public static final String API_USER_CONTEXT_V1_CHALLENGE_ANSWERS = "/%s/challenge-answers";
+    public static final String ME_CONTEXT = "me";
 
     /**
      * Enum for user challenge management related errors in the format of

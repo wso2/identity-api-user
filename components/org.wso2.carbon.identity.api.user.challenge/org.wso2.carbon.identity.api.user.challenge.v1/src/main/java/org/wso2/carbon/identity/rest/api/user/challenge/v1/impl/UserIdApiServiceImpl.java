@@ -27,7 +27,10 @@ import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ChallengeAnswerDT
 import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.UserChallengeAnswerDTO;
 
 import javax.ws.rs.core.Response;
+import java.net.URI;
 import java.util.List;
+
+import static org.wso2.carbon.identity.api.user.challenge.common.Constant.API_USER_CONTEXT_V1_CHALLENGE_ANSWERS;
 
 /**
  * API service implementation of a specific user's challenge operations
@@ -43,7 +46,8 @@ public class UserIdApiServiceImpl extends UserIdApiService {
 
         challengeService.addChallengeAnswerOfUser(new UserIdToUser().apply(userId,
                 ContextLoader.getTenantDomainFromContext()), challengeSetId, challengeAnswer);
-        return Response.ok().build();
+        String responsePath = String.format(API_USER_CONTEXT_V1_CHALLENGE_ANSWERS, userId);
+        return Response.created(URI.create(responsePath)).build();
     }
 
     @Override
@@ -51,7 +55,8 @@ public class UserIdApiServiceImpl extends UserIdApiService {
 
         challengeService.setChallengeAnswersOfUser(new UserIdToUser().apply(userId,
                 ContextLoader.getTenantDomainFromContext()), challengeAnswer);
-        return Response.ok().build();
+        String responsePath = String.format(API_USER_CONTEXT_V1_CHALLENGE_ANSWERS, userId);
+        return Response.created(URI.create(responsePath)).build();
     }
     @Override
     public Response deleteChallengeAnswerOfAUser(String challengeSetId,String userId){
