@@ -1,0 +1,107 @@
+/*
+ * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.wso2.carbon.identity.rest.api.user.authorized.apps.v1;
+
+import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.dto.AuthorizedAppDTO;
+
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
+
+@Path("/me")
+
+
+@io.swagger.annotations.Api(value = "/me", description = "the me API")
+public class MeApi  {
+
+   @Autowired
+   private MeApiService delegate;
+
+    @DELETE
+    @Path("/authorized-apps/{application-id}")
+
+
+    @io.swagger.annotations.ApiOperation(value = "removes autherized app by app ID for the authenticated user", notes = "Removes autherized OAuth app by an app ID for for the authenticated user\n", response = void.class)
+    @io.swagger.annotations.ApiResponses(value = {
+        @io.swagger.annotations.ApiResponse(code = 200, message = "Item Deleted"),
+
+        @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
+
+        @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource was not found"),
+
+        @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
+
+    public Response deleteLoggedInUserAuthorizedAppByAppId(@ApiParam(value = "Application ID",required=true ) @PathParam("application-id")  String applicationId)
+    {
+    return delegate.deleteLoggedInUserAuthorizedAppByAppId(applicationId);
+    }
+    @DELETE
+    @Path("/authorized-apps")
+
+
+    @io.swagger.annotations.ApiOperation(value = "removes authorized applications for the authenticated user", notes = "Removes approved OAuth applications of the authenticated user\n", response = void.class)
+    @io.swagger.annotations.ApiResponses(value = {
+        @io.swagger.annotations.ApiResponse(code = 200, message = "Item Deleted"),
+
+        @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
+
+        @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
+
+    public Response deleteLoggedInUserAuthorizedApps()
+    {
+    return delegate.deleteLoggedInUserAuthorizedApps();
+    }
+    @GET
+    @Path("/authorized-apps/{application-id}")
+
+
+    @io.swagger.annotations.ApiOperation(value = "retrieve autherized app by app ID for the authenticated user", notes = "Retrived autherized OAuth app by an app ID for for the authenticated user\n", response = AuthorizedAppDTO.class)
+    @io.swagger.annotations.ApiResponses(value = {
+        @io.swagger.annotations.ApiResponse(code = 200, message = "search results matching criteria"),
+
+        @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
+
+        @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource was not found"),
+
+        @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
+
+    public Response getLoggedInUserAuthorizedAppByAppId(@ApiParam(value = "Application ID",required=true ) @PathParam("application-id")  String applicationId)
+    {
+    return delegate.getLoggedInUserAuthorizedAppByAppId(applicationId);
+    }
+    @GET
+    @Path("/authorized-apps")
+
+
+    @io.swagger.annotations.ApiOperation(value = "list authorized applications for the authenticated user", notes = "List approved OAuth applications of the authenticated user\n", response = AuthorizedAppDTO.class, responseContainer = "List")
+    @io.swagger.annotations.ApiResponses(value = {
+        @io.swagger.annotations.ApiResponse(code = 200, message = "search results matching criteria"),
+
+        @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
+
+        @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
+
+    public Response listLoggedInUserAuthorizedApps()
+    {
+    return delegate.listLoggedInUserAuthorizedApps();
+    }
+}
+
