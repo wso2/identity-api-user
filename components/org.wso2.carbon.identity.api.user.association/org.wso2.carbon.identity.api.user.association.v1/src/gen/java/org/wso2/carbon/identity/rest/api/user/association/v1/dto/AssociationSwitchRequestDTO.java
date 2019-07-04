@@ -2,9 +2,15 @@ package org.wso2.carbon.identity.rest.api.user.association.v1.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.PropertyDTO;
 
 import io.swagger.annotations.*;
 import com.fasterxml.jackson.annotation.*;
+
+import javax.validation.constraints.NotNull;
+
+
+
 
 
 @ApiModel(description = "")

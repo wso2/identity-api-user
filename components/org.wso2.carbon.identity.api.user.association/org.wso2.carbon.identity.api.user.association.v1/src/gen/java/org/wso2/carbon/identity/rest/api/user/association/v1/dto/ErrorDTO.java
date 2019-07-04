@@ -4,6 +4,11 @@ package org.wso2.carbon.identity.rest.api.user.association.v1.dto;
 import io.swagger.annotations.*;
 import com.fasterxml.jackson.annotation.*;
 
+import javax.validation.constraints.NotNull;
+
+
+
+
 
 @ApiModel(description = "")
 public class ErrorDTO  {
@@ -17,6 +22,9 @@ public class ErrorDTO  {
   
   
   private String description = null;
+  
+  
+  private String ref = null;
 
   
   /**
@@ -55,6 +63,18 @@ public class ErrorDTO  {
   }
 
   
+  /**
+   **/
+  @ApiModelProperty(value = "")
+  @JsonProperty("ref")
+  public String getRef() {
+    return ref;
+  }
+  public void setRef(String ref) {
+    this.ref = ref;
+  }
+
+  
 
   @Override
   public String toString()  {
@@ -64,6 +84,7 @@ public class ErrorDTO  {
     sb.append("  code: ").append(code).append("\n");
     sb.append("  message: ").append(message).append("\n");
     sb.append("  description: ").append(description).append("\n");
+    sb.append("  ref: ").append(ref).append("\n");
     sb.append("}\n");
     return sb.toString();
   }
