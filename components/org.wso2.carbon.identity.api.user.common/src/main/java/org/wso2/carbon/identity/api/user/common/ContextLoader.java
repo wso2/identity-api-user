@@ -26,8 +26,12 @@ import org.wso2.carbon.user.core.UserStoreConfigConstants;
 
 import javax.ws.rs.core.Response;
 
+import java.net.URI;
+
+import static org.wso2.carbon.identity.api.user.common.Constants.TENANT_CONTEXT_PATH_COMPONENT;
 import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_INVALID_USERNAME;
 import static org.wso2.carbon.identity.api.user.common.Constants.TENANT_NAME_FROM_CONTEXT;
+import static org.wso2.carbon.identity.api.user.common.Constants.USER_API_PATH_COMPONENT;
 
 /**
  * Load information from context
@@ -94,5 +98,18 @@ public class ContextLoader {
         user.setUserStoreDomain(realm);
         user.setTenantDomain(tenantDomain);
         return user;
+    }
+
+    /**
+     * Build URI prepending the user API context with to the endpoint
+     * https://<hostname>:<port>/t/<tenant-domain>/api/users/<endpoint>
+     * @param endpoint relative endpoint path
+     * @return
+     */
+    public static URI buildURI(String endpoint){
+
+        String tenantQualifiedRelativePath = String.format(TENANT_CONTEXT_PATH_COMPONENT, getTenantDomainFromContext()) + USER_API_PATH_COMPONENT;
+        String url = IdentityUtil.getServerURL(tenantQualifiedRelativePath + endpoint, true, true);
+        return URI.create(url);
     }
 }
