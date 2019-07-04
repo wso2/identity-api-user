@@ -19,6 +19,9 @@ package org.wso2.carbon.identity.api.user.common.error;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
+/**
+ * Common Exception for all the user API related errors
+ */
 public class APIError extends WebApplicationException {
 
     private String message;

@@ -16,26 +16,35 @@
 
 package org.wso2.carbon.identity.api.user.challenge.common;
 
+/**
+ * Contains all the user challenge management related constants
+ */
 public class Constant {
 
     public static final String CHALLENGE_QUESTION_PREFIX = "CQM-";
 
+    /**
+     * Enum for user challenge management related errors in the format of
+     * Error Code - code to identify the error
+     * Error Message - What went wrong
+     * Error Description) - Why it went wrong
+     */
     public enum ErrorMessage {
 
-        ERROR_CODE_ERROR_RETRIVING_CHALLENGES_FOR_USER("10002",
+        ERROR_CODE_ERROR_RETRIEVING_CHALLENGES_FOR_USER("10002",
                 "Unable to get user challenges.",
                 "Server Encountered an error while retrieving challenges for user."),
-        ERROR_CODE_ERROR_RETRIVING_CHALLENGE_ANSWERS_OF_USER("10003",
+        ERROR_CODE_ERROR_RETRIEVING_CHALLENGE_ANSWERS_OF_USER("10003",
                 "Unable to get user challenge answers.",
                 "Server Encountered an error while retrieving challenge answers of user."),
-        ERROR_CODE_ERROR_RETRIVING_CHALLENGE_ANSWER_OF_USER("10004",
+        ERROR_CODE_ERROR_RETRIEVING_CHALLENGE_ANSWER_OF_USER("10004",
                 "Unable to get user challenge answer.",
                 "Server Encountered an error while retrieving challenge answer of user."),
         ERROR_CODE_ERROR_SETTING_CHALLENGE_ANSWERS_OF_USER("10005",
                 "Unable to set user challenge answers.",
                 "Server Encountered an error while setting answers to the user challenges."),
         ERROR_CODE_ERROR_UPDATING_CHALLENGE_ANSWERS_OF_USER("10006",
-                "Unable to update user challenge answer.",
+                "Unable to update user challenge answers.",
                 "Server Encountered an error while updating the answers to the user challenges."),
         ERROR_CODE_ERROR_DELETING_CHALLENGE_ANSWERS_OF_USER("10007",
                 "Unable to remove user challenge answers.",

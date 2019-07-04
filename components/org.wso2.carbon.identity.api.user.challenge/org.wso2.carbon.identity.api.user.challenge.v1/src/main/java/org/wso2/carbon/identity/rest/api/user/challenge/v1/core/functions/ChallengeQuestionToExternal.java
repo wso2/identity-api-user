@@ -22,6 +22,9 @@ import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ChallengeSetDTO;
 
 import java.util.function.Function;
 
+/**
+ * Transform internal ChallengeQuestion to external ChallengeQuestionDTO
+ */
 public class ChallengeQuestionToExternal implements Function<ChallengeQuestion, ChallengeQuestionDTO> {
 
     @Override

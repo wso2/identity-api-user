@@ -16,13 +16,48 @@
 
 package org.wso2.carbon.identity.api.user.common;
 
+import org.apache.log4j.MDC;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.recovery.ChallengeQuestionManager;
 
+import java.util.UUID;
+
+import static org.wso2.carbon.identity.api.user.common.Constants.CORRELATION_ID_MDC;
+
+/**
+ * Common util class
+ */
 public class Util {
 
-    public static ChallengeQuestionManager getChallengeQuestionManager(){
+    /**
+     * Get ChallengeQuestionManager osgi service
+     * @return ChallengeQuestionManager
+     */
+    public static ChallengeQuestionManager getChallengeQuestionManager() {
         return (ChallengeQuestionManager) PrivilegedCarbonContext.getThreadLocalCarbonContext()
                 .getOSGiService(ChallengeQuestionManager.class, null);
+    }
+
+    /**
+     * Get correlation id of current thread
+     * @return correlation-id
+     */
+    public static String getCorrelation() {
+        String ref;
+        if (isCorrelationIDPresent()) {
+            ref = MDC.get(CORRELATION_ID_MDC).toString();
+        } else {
+            ref = UUID.randomUUID().toString();
+
+        }
+        return ref;
+    }
+
+    /**
+     * Check whether correlation id present in the log MDC
+     * @return
+     */
+    public static boolean isCorrelationIDPresent() {
+        return MDC.get(CORRELATION_ID_MDC) != null;
     }
 }

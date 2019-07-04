@@ -11,6 +11,9 @@ import java.util.List;
 
 import static org.wso2.carbon.identity.api.user.common.ContextLoader.getUserFromContext;
 
+/**
+ * API service implementation for authenticated user's challenge operations
+ */
 public class MeApiServiceImpl extends MeApiService {
 
     @Autowired
@@ -35,14 +38,14 @@ public class MeApiServiceImpl extends MeApiService {
     public Response deleteChallengeAnswerOfLoggedInUser(String challengeSetId) {
 
         challengeService.removeChallengeAnswerOfUser(getUserFromContext(), challengeSetId);
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 
     @Override
     public Response deleteChallengeAnswersOfLoggedInUser() {
 
         challengeService.removeChallengeAnswersOfUser(getUserFromContext());
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 
     @Override
