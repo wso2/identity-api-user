@@ -11,7 +11,9 @@ import java.net.URISyntaxException;
 import java.util.List;
 import javax.ws.rs.core.Response;
 
-import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ASSOCIATIONS_PATH;
+import static org.wso2.carbon.identity.api.user.common.ContextLoader.buildURI;
+import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.USER_ASSOCIATIONS_PATH_COMPONENT;
+import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.V1_API_PATH_COMPONENT;
 
 public class UserIdApiServiceImpl extends UserIdApiService {
 
@@ -39,15 +41,12 @@ public class UserIdApiServiceImpl extends UserIdApiService {
     public Response userIdAssociationsPost(AssociationRequestDTO association, String userId) {
 
         userAssociationService.createUserAccountAssociation(association, userId);
-        try {
-            return Response.created(getAssociationsLocationURI(userId)).build();
-        } catch (URISyntaxException e) {
-            return Response.status(Response.Status.CREATED).build();
-        }
+        return Response.created(getAssociationsLocationURI(userId)).build();
     }
 
-    private URI getAssociationsLocationURI(String userId) throws URISyntaxException {
+    private URI getAssociationsLocationURI(String userId) {
 
-        return new URI("/" + userId + "/" + ASSOCIATIONS_PATH);
+        return buildURI(String.format(V1_API_PATH_COMPONENT + USER_ASSOCIATIONS_PATH_COMPONENT,
+                userId));
     }
 }

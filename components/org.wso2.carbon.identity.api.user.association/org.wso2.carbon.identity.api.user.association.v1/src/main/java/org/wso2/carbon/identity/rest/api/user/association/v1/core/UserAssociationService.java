@@ -45,7 +45,7 @@ public class UserAssociationService {
                     .getAccountAssociationsOfUser(userId);
             return getUserAssociationsDTO(accountAssociationsOfUser);
         } catch (UserAccountAssociationException e) {
-            throw handleUserAccountAssociationException(e);
+            throw handleUserAccountAssociationException(e, "Error while getting associations of user: " + userId);
         }
     }
 
@@ -56,7 +56,8 @@ public class UserAssociationService {
             Utils.getUserAccountConnector().createUserAccountAssociation(associationUserRequestDTO.getUserId(),
                     associationUserRequestDTO.getPassword().toCharArray());
         } catch (UserAccountAssociationException e) {
-            throw handleUserAccountAssociationException(e);
+            throw handleUserAccountAssociationException(e, "Error while adding associations of user: " +
+                    associationUserRequestDTO.getUserId());
         }
     }
 
@@ -65,7 +66,7 @@ public class UserAssociationService {
         try {
             Utils.getUserAccountConnector().createUserAccountAssociation(userId, association.getAssociateUserId());
         } catch (UserAccountAssociationException e) {
-            throw handleUserAccountAssociationException(e);
+            throw handleUserAccountAssociationException(e, "Error while associating user: " + userId);
         }
     }
 
@@ -75,7 +76,7 @@ public class UserAssociationService {
         try {
             return Utils.getUserAccountConnector().switchLoggedInUser(userName);
         } catch (UserAccountAssociationException e) {
-            throw handleUserAccountAssociationException(e);
+            throw handleUserAccountAssociationException(e, "Error while switching user: " + userName);
         }
     }
 
@@ -84,7 +85,7 @@ public class UserAssociationService {
         try {
             Utils.getUserAccountConnector().deleteUserAccountAssociation(userId);
         } catch (UserAccountAssociationException e) {
-            throw handleUserAccountAssociationException(e);
+            throw handleUserAccountAssociationException(e, "Error while deleting user association: " + userId);
         }
     }
 
@@ -107,11 +108,11 @@ public class UserAssociationService {
         return userDTO;
     }
 
-    private APIError handleUserAccountAssociationException(UserAccountAssociationException e) {
+    private APIError handleUserAccountAssociationException(UserAccountAssociationException e, String message) {
 
         ErrorResponse errorResponse = new ErrorResponse.Builder()
                 .withCode(e.getErrorCode())
-                .withMessage(e.getMessage())
+                .withMessage(message)
                 .build(log, e, e.getMessage());
 
         Response.Status status;

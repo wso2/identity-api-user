@@ -16,12 +16,9 @@
 package org.wso2.carbon.identity.rest.api.user.association.v1;
 
 public class AssociationEndpointConstants {
-    public static final String HEADER_CONTENT_TYPE = "Content-Type";
-    public static final String APPLICATION_JSON = "application/json";
-    public static final String DEFAULT_RESPONSE_CONTENT_TYPE = APPLICATION_JSON;
-    public static final String STATUS_BAD_REQUEST_MESSAGE_DEFAULT = "Bad Request";
-    public static final String STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT = "Internal server error";
-    public static final String ASSOCIATIONS_PATH = "associations";
-    public static final String ASSOCIATION_ERROR_PREFIX = "UAA";
 
+    public static final String ASSOCIATION_ERROR_PREFIX = "UAA";
+    public static final String V1_API_PATH_COMPONENT = "/v1";
+    public static final String USER_ASSOCIATIONS_PATH_COMPONENT = "/%s/associations";
+    public static final String ME_CONTEXT = "me";
 }
