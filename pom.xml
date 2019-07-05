@@ -191,6 +191,30 @@
                 <version>${identity.governance.version}</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.association.account</groupId>
+                <artifactId>org.wso2.carbon.identity.user.account.association</artifactId>
+                <version>${carbon.identity.account.association.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.user.api</groupId>
+                <artifactId>org.wso2.carbon.identity.api.user.common</artifactId>
+                <scope>provided</scope>
+                <version>${project.version}</version>
+            </dependency>
+            <!--<dependency>-->
+            <!--<groupId>org.wso2.carbon.identity.framework</groupId>-->
+            <!--<artifactId>org.wso2.carbon.identity.application.dispatcher</artifactId>-->
+            <!--<version>${carbon.identity.framework.version}</version>-->
+            <!--<scope>provided</scope>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+            <!--<groupId>org.wso2.carbon.identity.framework</groupId>-->
+            <!--<artifactId>org.wso2.carbon.identity.base</artifactId>-->
+            <!--<version>${carbon.identity.framework.version}</version>-->
+            <!--<scope>provided</scope>-->
+            <!--</dependency>-->
         </dependencies>
     </dependencyManagement>
 
@@ -288,6 +312,7 @@
         <org.apache.felix.annotations.version>1.2.4</org.apache.felix.annotations.version>
         <identity.governance.version>1.2.6</identity.governance.version>
         <carbon.identity.framework.version>5.13.8</carbon.identity.framework.version>
+        <carbon.identity.account.association.version>5.2.2</carbon.identity.account.association.version>
     </properties>
 
     <modules>

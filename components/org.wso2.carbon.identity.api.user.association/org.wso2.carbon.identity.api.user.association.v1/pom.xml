@@ -116,6 +116,16 @@
             <artifactId>jackson-jaxrs-json-provider</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity.association.account</groupId>
+            <artifactId>org.wso2.carbon.identity.user.account.association</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity.user.api</groupId>
+            <artifactId>org.wso2.carbon.identity.api.user.common</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>
