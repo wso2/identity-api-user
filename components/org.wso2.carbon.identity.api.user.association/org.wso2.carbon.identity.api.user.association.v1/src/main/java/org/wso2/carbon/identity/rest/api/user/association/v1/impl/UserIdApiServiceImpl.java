@@ -19,12 +19,6 @@ public class UserIdApiServiceImpl extends UserIdApiService {
     private UserAssociationService userAssociationService;
 
     @Override
-    public Response userIdAssociationsAssociateUserIdDelete(String userId,String associateUserId){
-        userAssociationService.validateAndDeleteUserAccountAssociation(associateUserId);
-        return Response.ok().build();
-    }
-
-    @Override
     public Response userIdAssociationsDelete(String userId) {
 
         userAssociationService.deleteUserAccountAssociation(userId);

@@ -1,5 +1,6 @@
 package org.wso2.carbon.identity.rest.api.user.association.v1;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.*;
 import org.wso2.carbon.identity.rest.api.user.association.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.association.v1.factories.MeApiServiceFactory;
@@ -26,24 +27,8 @@ import javax.ws.rs.*;
 @io.swagger.annotations.Api(value = "/me", description = "the me API")
 public class MeApi  {
 
-   private final MeApiService delegate = MeApiServiceFactory.getMeApi();
-
-    @DELETE
-    @Path("/associations/{associate-user-id}")
-    @Consumes({ "application/json" })
-    @Produces({ "application/json" })
-    @io.swagger.annotations.ApiOperation(value = "Delete a selected user association", notes = "This API is used to delete the selected association of the auhtentiated user.", response = void.class)
-    @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "OK"),
-        
-        @io.swagger.annotations.ApiResponse(code = 404, message = "Not Found"),
-        
-        @io.swagger.annotations.ApiResponse(code = 500, message = "Server Error") })
-
-    public Response meAssociationsAssociateUserIdDelete(@ApiParam(value = "",required=true ) @PathParam("associate-user-id")  String associateUserId)
-    {
-    return delegate.meAssociationsAssociateUserIdDelete(associateUserId);
-    }
+   @Autowired
+   private MeApiService delegate;
     @DELETE
     @Path("/associations")
     @Consumes({ "application/json" })

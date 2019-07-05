@@ -1,45 +1,75 @@
 package org.wso2.carbon.identity.rest.api.user.association.v1.impl;
 
-import org.wso2.carbon.identity.rest.api.user.association.v1.*;
-import org.wso2.carbon.identity.rest.api.user.association.v1.dto.*;
-
-
-import org.wso2.carbon.identity.rest.api.user.association.v1.dto.ErrorDTO;
-import org.wso2.carbon.identity.rest.api.user.association.v1.dto.UserDTO;
-import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationUserRequestDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
+import org.wso2.carbon.identity.rest.api.user.association.v1.MeApiService;
+import org.wso2.carbon.identity.rest.api.user.association.v1.core.UserAssociationService;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationSwitchRequestDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationUserRequestDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.UserDTO;
+import org.wso2.carbon.user.core.util.UserCoreUtil;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
-
-import java.io.InputStream;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-
 import javax.ws.rs.core.Response;
 
+import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ASSOCIATIONS_PATH;
+
 public class MeApiServiceImpl extends MeApiService {
+
+    @Autowired
+    private UserAssociationService userAssociationService;
+
     @Override
-    public Response meAssociationsAssociateUserIdDelete(String associateUserId){
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+    public Response meAssociationsDelete() {
+
+        userAssociationService.deleteUserAccountAssociation(getUserId());
+        return Response.ok().build();
     }
+
     @Override
-    public Response meAssociationsDelete(){
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+    public Response meAssociationsGet() {
+
+        List<UserDTO> userDTOList = userAssociationService.getAssociationsOfUser(getUserId());
+        if (userDTOList.size() == 0) {
+            return Response.noContent().build();
+        }
+        return Response.ok().entity(userDTOList).build();
     }
+
     @Override
-    public Response meAssociationsGet(){
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+    public Response meAssociationsPost(AssociationUserRequestDTO association) {
+
+        userAssociationService.createUserAccountAssociation(association);
+        try {
+            return Response.created(getAssociationsLocationURI(getUserId())).build();
+        } catch (URISyntaxException e) {
+            return Response.status(Response.Status.CREATED).build();
+        }
     }
+
     @Override
-    public Response meAssociationsPost(AssociationUserRequestDTO association){
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+    public Response meAssociationsSwitchPut(AssociationSwitchRequestDTO switchUserReqeust) {
+
+        boolean isSwitched = userAssociationService.switchLoggedInUser(getUserId());
+        if (isSwitched) {
+            return Response.ok().build();
+        } else {
+            //TODO need to check this.
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
     }
-    @Override
-    public Response meAssociationsSwitchPut(AssociationSwitchRequestDTO switchUserReqeust){
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+
+    private String getUserId() {
+
+        String username = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
+        return UserCoreUtil.addTenantDomainToEntry(username, PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                .getTenantDomain());
+    }
+
+    private URI getAssociationsLocationURI(String userId) throws URISyntaxException {
+
+        return new URI("/" + userId + "/" + ASSOCIATIONS_PATH);
     }
 }

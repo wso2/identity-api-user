@@ -15,7 +15,6 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import javax.ws.rs.core.Response;
 
 public abstract class UserIdApiService {
-    public abstract Response userIdAssociationsAssociateUserIdDelete(String userId,String associateUserId);
     public abstract Response userIdAssociationsDelete(String userId);
     public abstract Response userIdAssociationsGet(String userId);
     public abstract Response userIdAssociationsPost(AssociationRequestDTO association,String userId);

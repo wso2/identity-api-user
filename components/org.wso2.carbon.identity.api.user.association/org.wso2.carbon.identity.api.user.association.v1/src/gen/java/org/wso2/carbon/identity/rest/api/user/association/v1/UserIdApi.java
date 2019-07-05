@@ -1,18 +1,24 @@
 package org.wso2.carbon.identity.rest.api.user.association.v1;
 
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationRequestDTO;
-import org.wso2.carbon.identity.rest.api.user.association.v1.dto.UserDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.*;
+import org.wso2.carbon.identity.rest.api.user.association.v1.UserIdApiService;
+import org.wso2.carbon.identity.rest.api.user.association.v1.factories.UserIdApiServiceFactory;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import io.swagger.annotations.ApiParam;
+
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.ErrorDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.UserDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationRequestDTO;
+
+import java.util.List;
+
+import java.io.InputStream;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+
 import javax.ws.rs.core.Response;
+import javax.ws.rs.*;
 
 @Path("/{user-id}")
 @Consumes({ "application/json" })
@@ -20,28 +26,9 @@ import javax.ws.rs.core.Response;
 @io.swagger.annotations.Api(value = "/{user-id}", description = "the {user-id} API")
 public class UserIdApi  {
 
- @Autowired
- private UserIdApiService delegate;
+   @Autowired
+   private UserIdApiService delegate;
 
-    @DELETE
-    @Path("/associations/{associate-user-id}")
-    @Consumes({ "application/json" })
-    @Produces({ "application/json" })
-    @io.swagger.annotations.ApiOperation(value = "Delete user's selected user association", notes = "This API is used to delete a selected association of the  user.", response = void.class)
-    @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "OK"),
-        
-        @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized request"),
-        
-        @io.swagger.annotations.ApiResponse(code = 404, message = "Not Found"),
-        
-        @io.swagger.annotations.ApiResponse(code = 500, message = "Server Error") })
-
-    public Response userIdAssociationsAssociateUserIdDelete(@ApiParam(value = "",required=true ) @PathParam("user-id")  String userId,
-    @ApiParam(value = "",required=true ) @PathParam("associate-user-id")  String associateUserId)
-    {
-    return delegate.userIdAssociationsAssociateUserIdDelete(userId,associateUserId);
-    }
     @DELETE
     @Path("/associations")
     @Consumes({ "application/json" })

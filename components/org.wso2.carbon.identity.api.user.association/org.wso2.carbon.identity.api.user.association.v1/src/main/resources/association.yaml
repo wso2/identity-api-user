@@ -128,27 +128,27 @@ paths:
              $ref: '#/definitions/Error'
       tags:
       - Associations
-  /me/associations/{associate-user-id}:
-    delete:
-      parameters:
-        -
-          name : associate-user-id
-          in : path
-          required: true
-          type: string
-      summary: Delete a selected user association
-      description: This API is used to delete the selected association of the auhtentiated user.
-      responses:
-        200:
-          description: OK
-        404:
-          description: Not Found
-        500:
-          description: Server Error
-          schema:
-             $ref: '#/definitions/Error'
-      tags:
-      - Associations
+#  /me/associations/{associate-user-id}:
+#    delete:
+#      parameters:
+#        -
+#          name : associate-user-id
+#          in : path
+#          required: true
+#          type: string
+#      summary: Delete a selected user association
+#      description: This API is used to delete the selected association of the auhtentiated user.
+#      responses:
+#        200:
+#          description: OK
+#        404:
+#          description: Not Found
+#        500:
+#          description: Server Error
+#          schema:
+#             $ref: '#/definitions/Error'
+#      tags:
+#      - Associations
   /me/associations/switch:
     put:
       parameters:
@@ -334,7 +334,7 @@ definitions:
   User:
     type: object
     properties:
-      user-id:
+      userId:
         type: string
         example: '23e22434234234329jj9iin'
       username:
@@ -374,7 +374,7 @@ definitions:
   AssociationSwitchRequest:
     type: object
     properties:
-      user-id:
+      userId:
         type: string
         example: john
       properties:
@@ -388,7 +388,7 @@ definitions:
   AssociationUserRequest:
     type: object
     properties:
-      user-id:
+      userId:
         type: string
         example: john
       password:

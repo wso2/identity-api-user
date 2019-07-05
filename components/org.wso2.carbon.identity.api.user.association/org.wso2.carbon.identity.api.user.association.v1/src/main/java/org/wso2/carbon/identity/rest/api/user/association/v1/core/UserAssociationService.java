@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationRequestDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationUserRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.UserDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.util.Utils;
 import org.wso2.carbon.identity.user.account.association.dto.UserAccountAssociationDTO;
@@ -48,6 +49,17 @@ public class UserAssociationService {
         }
     }
 
+    public void createUserAccountAssociation(AssociationUserRequestDTO associationUserRequestDTO){
+
+        try {
+            //TODO handle password null
+            Utils.getUserAccountConnector().createUserAccountAssociation(associationUserRequestDTO.getUserId(),
+                    associationUserRequestDTO.getPassword().toCharArray());
+        } catch (UserAccountAssociationException e) {
+            throw handleUserAccountAssociationException(e);
+        }
+    }
+
     public void createUserAccountAssociation(AssociationRequestDTO association, String userId) {
 
         try {
@@ -57,10 +69,11 @@ public class UserAssociationService {
         }
     }
 
-    public void validateAndDeleteUserAccountAssociation(String userId) {
+
+    public boolean switchLoggedInUser(String userName)  {
 
         try {
-            Utils.getUserAccountConnector().validateAndDeleteUserAccountAssociation(userId);
+            return Utils.getUserAccountConnector().switchLoggedInUser(userName);
         } catch (UserAccountAssociationException e) {
             throw handleUserAccountAssociationException(e);
         }
