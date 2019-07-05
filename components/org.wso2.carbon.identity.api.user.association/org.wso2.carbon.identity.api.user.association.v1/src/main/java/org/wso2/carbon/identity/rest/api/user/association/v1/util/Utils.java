@@ -32,35 +32,4 @@ public class Utils {
         return (UserAccountAssociationService) PrivilegedCarbonContext.getThreadLocalCarbonContext()
                 .getOSGiService(UserAccountAssociationService.class, null);
     }
-//
-//    /**
-//     * This method is used to create a BadRequestException with the known errorCode and message.
-//     *
-//     * @param description Error Message Desription.
-//     * @param code        Error Code.
-//     * @return BadRequestException with the given errorCode and description.
-//     */
-//    public static BadRequestException buildBadRequestException(String description, String code,
-//                                                               Log log, Throwable e) {
-//
-//        ErrorDTO errorDTO = getErrorDTO(STATUS_BAD_REQUEST_MESSAGE_DEFAULT, description, code);
-//        logDebug(log, e);
-//        return new BadRequestException(errorDTO);
-//    }
-//
-//    private static void logDebug(Log log, Throwable throwable) {
-//
-//        if (log.isDebugEnabled()) {
-//            log.debug(STATUS_BAD_REQUEST_MESSAGE_DEFAULT, throwable);
-//        }
-//    }
-//
-//    private static ErrorDTO getErrorDTO(String message, String description, String code) {
-//
-//        ErrorDTO errorDTO = new ErrorDTO();
-//        errorDTO.setCode(code);
-//        errorDTO.setMessage(message);
-//        errorDTO.setDescription(description);
-//        return errorDTO;
-//    }
 }

@@ -28,7 +28,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>identity-api-user</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.6-SNAPSHOT</version>
+    <version>1.0.11-SNAPSHOT</version>
     <name>WSO2 Identity Server - User API Module</name>
     <description>
 
@@ -310,7 +310,7 @@
         <junit.version>4.12</junit.version>
         <maven.buildnumber.plugin.version>1.4</maven.buildnumber.plugin.version>
         <org.apache.felix.annotations.version>1.2.4</org.apache.felix.annotations.version>
-        <identity.governance.version>1.2.1-SNAPSHOT</identity.governance.version>
+        <identity.governance.version>1.2.6</identity.governance.version>
         <carbon.identity.framework.version>5.13.8</carbon.identity.framework.version>
         <carbon.identity.account.association.version>5.2.2</carbon.identity.account.association.version>
     </properties>
@@ -319,6 +319,7 @@
         <module>components/org.wso2.carbon.identity.api.user.common</module>
         <module>components/org.wso2.carbon.identity.api.user.association</module>
         <module>components/org.wso2.carbon.identity.api.user.challenge</module>
+        <module>components/org.wso2.carbon.identity.api.user.authorized.apps</module>
     </modules>
 
 </project>
