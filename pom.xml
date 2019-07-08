@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.wso2</groupId>
         <artifactId>wso2</artifactId>
-        <version>1</version>
+        <version>5</version>
     </parent>
 
     <groupId>org.wso2.carbon.identity.user.api</groupId>
@@ -224,7 +224,7 @@
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-scr-plugin</artifactId>
-                    <version>1.7.2</version>
+                    <version>1.24.0</version>
                     <executions>
                         <execution>
                             <id>generate-scr-scrdescriptor</id>
@@ -285,8 +285,8 @@
                 <inherited>true</inherited>
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -313,6 +313,8 @@
         <identity.governance.version>1.2.6</identity.governance.version>
         <carbon.identity.framework.version>5.13.8</carbon.identity.framework.version>
         <carbon.identity.account.association.version>5.2.2</carbon.identity.account.association.version>
+        <maven.findbugsplugin.version>3.0.4</maven.findbugsplugin.version>
+        <!--<maven.checkstyleplugin.excludes>**/gen/**/*</maven.checkstyleplugin.excludes>-->
     </properties>
 
     <modules>

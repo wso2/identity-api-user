@@ -52,15 +52,15 @@ public class UserAssociationService {
         }
     }
 
-    public void createUserAccountAssociation(AssociationUserRequestDTO associationUserRequestDTO){
+    public void createUserAccountAssociation(AssociationUserRequestDTO associationUserRequestDTO) {
 
         try {
             //TODO handle password null
             Utils.getUserAccountConnector().createUserAccountAssociation(associationUserRequestDTO.getUserId(),
                     associationUserRequestDTO.getPassword().toCharArray());
         } catch (UserAccountAssociationException e) {
-            throw handleUserAccountAssociationException(e, "Error while adding associations of user: " +
-                    associationUserRequestDTO.getUserId());
+            throw handleUserAccountAssociationException(e,
+                    "Error while adding associations of user: " + associationUserRequestDTO.getUserId());
         }
     }
 

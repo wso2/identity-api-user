@@ -16,11 +16,14 @@
 
 package org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.core.functions;
 
-import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.dto.AuthorizedAppDTO;
 import org.wso2.carbon.identity.oauth.dto.OAuthConsumerAppDTO;
+import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.dto.AuthorizedAppDTO;
 
 import java.util.function.Function;
 
+/**
+ * A method to build the AuthorizedAppDTO.
+ */
 public class OAuthConsumerAppToExternal implements Function<OAuthConsumerAppDTO, AuthorizedAppDTO> {
 
     @Override

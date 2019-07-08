@@ -30,7 +30,7 @@ public class Constant {
      * Enum for user challenge management related errors in the format of
      * Error Code - code to identify the error
      * Error Message - What went wrong
-     * Error Description) - Why it went wrong
+     * Error Description - Why it went wrong
      */
     public enum ErrorMessage {
 

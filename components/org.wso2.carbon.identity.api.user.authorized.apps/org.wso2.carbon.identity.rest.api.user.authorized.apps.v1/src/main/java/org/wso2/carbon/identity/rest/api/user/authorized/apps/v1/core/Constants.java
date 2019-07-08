@@ -16,11 +16,17 @@
 
 package org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.core;
 
+/**
+ * Common constants for authorized apps APIs.
+ */
 public class Constants {
 
     // OAuth Authorized Apps error code prefix.
     public static final String OAUTH_AUTHORIZED_APPS_ERROR_CODE_PREFIX = "OAA-";
 
+    /**
+     * Enum for error messages.
+     */
     public enum ErrorMessages {
 
         ERROR_CODE_INVALID_APPLICATION_ID("10001", "Invalid application ID", "An application with ID: %s cannot " +
