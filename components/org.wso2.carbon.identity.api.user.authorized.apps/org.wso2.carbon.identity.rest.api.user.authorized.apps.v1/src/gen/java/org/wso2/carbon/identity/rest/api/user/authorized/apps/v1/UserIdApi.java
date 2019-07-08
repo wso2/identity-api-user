@@ -16,15 +16,23 @@
 
 package org.wso2.carbon.identity.rest.api.user.authorized.apps.v1;
 
+import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.dto.*;
+import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.UserIdApiService;
+import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.factories.UserIdApiServiceFactory;
+
 import io.swagger.annotations.ApiParam;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.dto.ErrorDTO;
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.dto.AuthorizedAppDTO;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import java.util.List;
+
+import java.io.InputStream;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+
 import javax.ws.rs.core.Response;
+import javax.ws.rs.*;
 
 @Path("/{user-id}")
 
@@ -32,8 +40,7 @@ import javax.ws.rs.core.Response;
 @io.swagger.annotations.Api(value = "/{user-id}", description = "the {user-id} API")
 public class UserIdApi  {
 
-   @Autowired
-   private UserIdApiService delegate;
+   private final UserIdApiService delegate = UserIdApiServiceFactory.getUserIdApi();
 
     @DELETE
     @Path("/authorized-apps")
@@ -41,7 +48,7 @@ public class UserIdApi  {
     
     @io.swagger.annotations.ApiOperation(value = "remove all authorized applications of a user", notes = "Removes authorization from all OAuth apps of a given user\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "Item Deleted"),
+        @io.swagger.annotations.ApiResponse(code = 204, message = "Item Deleted"),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
         
@@ -57,7 +64,7 @@ public class UserIdApi  {
     
     @io.swagger.annotations.ApiOperation(value = "removes challenge question answers", notes = "Removes autherized OAuth apps by an app ID for a given user\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "Item Deleted"),
+        @io.swagger.annotations.ApiResponse(code = 204, message = "Item Deleted"),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
         
