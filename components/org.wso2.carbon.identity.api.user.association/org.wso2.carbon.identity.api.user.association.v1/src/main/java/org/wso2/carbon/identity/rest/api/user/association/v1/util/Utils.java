@@ -19,6 +19,9 @@ import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.user.account.association.UserAccountAssociationService;
 import org.wso2.carbon.identity.user.account.association.UserAccountConnector;
 
+/**
+ * This class contains the utilities require for Associations APIs.
+ */
 public class Utils {
 
     public static UserAccountConnector getUserAccountConnector() {

@@ -15,6 +15,9 @@
  */
 package org.wso2.carbon.identity.rest.api.user.association.v1;
 
+/**
+ * This class contains the constants related to associations APIs.
+ */
 public class AssociationEndpointConstants {
 
     public static final String ASSOCIATION_ERROR_PREFIX = "UAA";
