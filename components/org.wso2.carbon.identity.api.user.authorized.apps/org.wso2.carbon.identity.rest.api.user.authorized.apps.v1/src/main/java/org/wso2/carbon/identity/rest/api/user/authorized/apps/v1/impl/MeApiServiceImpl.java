@@ -35,14 +35,14 @@ public class MeApiServiceImpl extends MeApiService {
     public Response deleteLoggedInUserAuthorizedAppByAppId(String applicationId) {
 
         authorizedAppsService.deleteUserAuthorizedApps(getUserFromContext(), applicationId);
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 
     @Override
     public Response deleteLoggedInUserAuthorizedApps() {
 
         authorizedAppsService.deleteUserAuthorizedApps(getUserFromContext());
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 
     @Override

@@ -36,14 +36,14 @@ public class UserIdApiServiceImpl extends UserIdApiService {
     public Response deleteUserAuthorizedApps(String userId) {
 
         authorizedAppsService.deleteUserAuthorizedApps(getUser(userId));
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 
     @Override
     public Response deleteUserAuthorizedAppsByAppId(String userId, String applicationId) {
 
         authorizedAppsService.deleteUserAuthorizedApps(getUser(userId), applicationId);
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 
     @Override

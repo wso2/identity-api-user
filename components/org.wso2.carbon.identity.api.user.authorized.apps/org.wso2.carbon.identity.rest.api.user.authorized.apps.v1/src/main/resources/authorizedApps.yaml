@@ -56,7 +56,7 @@ paths:
       parameters:
         - $ref: '#/parameters/usernamePathParams'
       responses:
-        200:
+        204:
           $ref: '#/responses/Deleted'
         401:
           $ref: '#/responses/Unauthorized'
@@ -95,7 +95,7 @@ paths:
         - $ref: '#/parameters/usernamePathParams'
         - $ref: '#/parameters/applicationNamePathParam'
       responses:
-        200:
+        204:
           $ref: '#/responses/Deleted'
         401:
           $ref: '#/responses/Unauthorized'
@@ -130,7 +130,7 @@ paths:
       description: |
         Removes approved OAuth applications of the authenticated user
       responses:
-        200:
+        204:
           $ref: '#/responses/Deleted'
         401:
           $ref: '#/responses/Unauthorized'
@@ -167,7 +167,7 @@ paths:
       parameters:
         - $ref: '#/parameters/applicationNamePathParam'
       responses:
-        200:
+        204:
           $ref: '#/responses/Deleted'
         401:
           $ref: '#/responses/Unauthorized'
