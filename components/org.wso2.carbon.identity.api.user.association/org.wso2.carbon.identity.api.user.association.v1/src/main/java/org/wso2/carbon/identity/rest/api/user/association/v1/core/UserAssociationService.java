@@ -34,6 +34,9 @@ import javax.ws.rs.core.Response;
 import static org.wso2.carbon.identity.api.user.common.Constants.ERROR_CODE_DELIMITER;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ASSOCIATION_ERROR_PREFIX;
 
+/**
+ * This service is used to execute the association related APIs through the UserAccountConnector OSGI service.
+ */
 public class UserAssociationService {
 
     private static final Log log = LogFactory.getLog(UserAssociationService.class);

@@ -18,6 +18,9 @@ import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationE
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.USER_ASSOCIATIONS_PATH_COMPONENT;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.V1_API_PATH_COMPONENT;
 
+/**
+ * Association API service implementation for users/me endpoint.
+ */
 public class MeApiServiceImpl extends MeApiService {
 
     @Autowired
