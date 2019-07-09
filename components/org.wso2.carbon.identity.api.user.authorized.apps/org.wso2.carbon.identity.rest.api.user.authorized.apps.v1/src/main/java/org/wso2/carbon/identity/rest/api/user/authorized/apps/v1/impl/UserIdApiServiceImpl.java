@@ -17,16 +17,19 @@
 package org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.UserIdApiService;
-import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.core.AuthorizedAppsService;
-import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.dto.AuthorizedAppDTO;
 import org.wso2.carbon.identity.api.user.common.ContextLoader;
 import org.wso2.carbon.identity.api.user.common.function.UserIdToUser;
 import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.UserIdApiService;
+import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.core.AuthorizedAppsService;
+import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.dto.AuthorizedAppDTO;
 
 import java.util.List;
 import javax.ws.rs.core.Response;
 
+/**
+ * API service implementation of a specific user's OAuth authorized apps.
+ */
 public class UserIdApiServiceImpl extends UserIdApiService {
 
     @Autowired

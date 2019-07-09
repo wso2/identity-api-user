@@ -16,13 +16,8 @@
 
 package org.wso2.carbon.identity.api.user.common.error;
 
-
 import org.apache.commons.logging.Log;
-import org.apache.log4j.MDC;
 
-import java.util.UUID;
-
-import static org.wso2.carbon.identity.api.user.common.Constants.CORRELATION_ID_MDC;
 import static org.wso2.carbon.identity.api.user.common.Util.getCorrelation;
 import static org.wso2.carbon.identity.api.user.common.Util.isCorrelationIDPresent;
 
@@ -31,6 +26,11 @@ import static org.wso2.carbon.identity.api.user.common.Util.isCorrelationIDPrese
  */
 public class ErrorResponse extends ErrorDTO {
 
+    private static final long serialVersionUID = 8278777687725730329L;
+
+    /**
+     * ErrorResponse Builder
+     */
     public static class Builder {
         private String code;
         private String message;

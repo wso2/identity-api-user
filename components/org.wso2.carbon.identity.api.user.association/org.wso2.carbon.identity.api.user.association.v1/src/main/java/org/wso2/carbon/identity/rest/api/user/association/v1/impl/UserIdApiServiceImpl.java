@@ -7,7 +7,6 @@ import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationRequ
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.UserDTO;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import javax.ws.rs.core.Response;
 

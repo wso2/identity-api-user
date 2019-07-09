@@ -23,10 +23,11 @@ import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.application.common.model.User;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.function.Function;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_INVALID_USERNAME;
 import static org.wso2.carbon.identity.api.user.common.ContextLoader.getUser;
@@ -45,7 +46,7 @@ public class UserIdToUser implements Function<String[], User> {
         try {
             userId = args[0];
             tenantDomain = args[1];
-            String decodedUsername = new String(Base64.getDecoder().decode(userId));
+            String decodedUsername = new String(Base64.getDecoder().decode(userId), StandardCharsets.UTF_8);
 
             if (StringUtils.isBlank(userId)) {
                 throw new WebApplicationException("UserID is empty.");

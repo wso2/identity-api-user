@@ -26,6 +26,9 @@ import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.ContextLoader.getUserFromContext;
 
+/**
+ * API service implementation for authenticated user's OAuth authorized apps.
+ */
 public class MeApiServiceImpl extends MeApiService {
 
     @Autowired

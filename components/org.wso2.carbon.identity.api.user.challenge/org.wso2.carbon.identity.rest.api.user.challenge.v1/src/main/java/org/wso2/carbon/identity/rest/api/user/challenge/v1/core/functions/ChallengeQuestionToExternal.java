@@ -18,7 +18,6 @@ package org.wso2.carbon.identity.rest.api.user.challenge.v1.core.functions;
 
 import org.wso2.carbon.identity.recovery.model.ChallengeQuestion;
 import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ChallengeQuestionDTO;
-import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ChallengeSetDTO;
 
 import java.util.function.Function;
 
