@@ -21,14 +21,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.io.Serializable;
 import javax.validation.constraints.NotNull;
 
 /**
  * Common DTO for all the user API related error responses
  */
 @ApiModel(description = "")
-public class ErrorDTO {
+public class ErrorDTO implements Serializable {
 
+    private static final long serialVersionUID = -3430851353855443592L;
 
     @NotNull
     private String code = null;

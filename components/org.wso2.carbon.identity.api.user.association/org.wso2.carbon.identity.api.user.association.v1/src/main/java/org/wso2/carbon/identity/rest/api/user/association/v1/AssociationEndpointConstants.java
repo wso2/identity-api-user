@@ -26,6 +26,9 @@ public class AssociationEndpointConstants {
     public static final String ME_CONTEXT = "me";
     public static final String ERROR_MSG_DELIMITER = "-";
 
+    /**
+     * Enum for error messages.
+     */
     public enum ErrorMessages {
 
         ERROR_CODE_PW_MANDATORY("8900", "Invalid Inputs", "Password is a missing in the request");

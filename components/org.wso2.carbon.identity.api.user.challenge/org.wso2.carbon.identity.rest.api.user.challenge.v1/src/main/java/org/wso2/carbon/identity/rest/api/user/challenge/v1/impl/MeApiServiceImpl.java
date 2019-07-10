@@ -6,13 +6,13 @@ import org.wso2.carbon.identity.rest.api.user.challenge.v1.core.UserChallengeSer
 import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ChallengeAnswerDTO;
 import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.UserChallengeAnswerDTO;
 
-import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.util.List;
+import javax.ws.rs.core.Response;
 
-import static org.wso2.carbon.identity.api.user.challenge.common.Constant.V1_API_PATH_COMPONENT;
 import static org.wso2.carbon.identity.api.user.challenge.common.Constant.ME_CONTEXT;
 import static org.wso2.carbon.identity.api.user.challenge.common.Constant.USER_CHALLENGE_ANSWERS_PATH_COMPONENT;
+import static org.wso2.carbon.identity.api.user.challenge.common.Constant.V1_API_PATH_COMPONENT;
 import static org.wso2.carbon.identity.api.user.common.ContextLoader.buildURI;
 import static org.wso2.carbon.identity.api.user.common.ContextLoader.getUserFromContext;
 

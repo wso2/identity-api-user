@@ -26,6 +26,9 @@ import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.ContextLoader.getUserFromContext;
 
+/**
+ * API service implementation for authenticated user's OAuth authorized apps.
+ */
 public class MeApiServiceImpl extends MeApiService {
 
     @Autowired
@@ -35,14 +38,14 @@ public class MeApiServiceImpl extends MeApiService {
     public Response deleteLoggedInUserAuthorizedAppByAppId(String applicationId) {
 
         authorizedAppsService.deleteUserAuthorizedApps(getUserFromContext(), applicationId);
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 
     @Override
     public Response deleteLoggedInUserAuthorizedApps() {
 
         authorizedAppsService.deleteUserAuthorizedApps(getUserFromContext());
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 
     @Override
