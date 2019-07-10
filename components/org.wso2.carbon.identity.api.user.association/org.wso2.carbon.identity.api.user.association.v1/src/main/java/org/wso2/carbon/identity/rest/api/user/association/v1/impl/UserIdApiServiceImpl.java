@@ -1,14 +1,14 @@
 package org.wso2.carbon.identity.rest.api.user.association.v1.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.wso2.carbon.identity.api.user.common.ContextLoader;
+import org.wso2.carbon.identity.api.user.common.function.UserIdToUser;
+import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.rest.api.user.association.v1.UserIdApiService;
 import org.wso2.carbon.identity.rest.api.user.association.v1.core.UserAssociationService;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationRequestDTO;
-import org.wso2.carbon.identity.rest.api.user.association.v1.dto.UserDTO;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.ContextLoader.buildURI;
@@ -26,30 +26,32 @@ public class UserIdApiServiceImpl extends UserIdApiService {
     @Override
     public Response userIdAssociationsDelete(String userId) {
 
-        userAssociationService.deleteUserAccountAssociation(userId);
-        return Response.ok().build();
+        userAssociationService.deleteUserAccountAssociation(getUser(userId));
+        return Response.noContent().build();
     }
 
     @Override
     public Response userIdAssociationsGet(String userId) {
 
-        List<UserDTO> userDTOList = userAssociationService.getAssociationsOfUser(userId);
-        if (userDTOList.size() == 0) {
-            return Response.noContent().build();
-        }
-        return Response.ok().entity(userDTOList).build();
+        return Response.ok().entity(userAssociationService.getAssociationsOfUser(getUser(userId))).build();
     }
 
     @Override
     public Response userIdAssociationsPost(AssociationRequestDTO association, String userId) {
 
-        userAssociationService.createUserAccountAssociation(association, userId);
+        association.setAssociateUserId(getUser(association.getAssociateUserId()));
+        userAssociationService.createUserAccountAssociation(association, getUser(userId));
         return Response.created(getAssociationsLocationURI(userId)).build();
     }
 
     private URI getAssociationsLocationURI(String userId) {
 
-        return buildURI(String.format(V1_API_PATH_COMPONENT + USER_ASSOCIATIONS_PATH_COMPONENT,
-                userId));
+        return buildURI(String.format(V1_API_PATH_COMPONENT + USER_ASSOCIATIONS_PATH_COMPONENT, userId));
+    }
+
+    private String getUser(String userId) {
+
+        User user = new UserIdToUser().apply(userId, ContextLoader.getTenantDomainFromContext());
+        return user.toFullQualifiedUsername();
     }
 }

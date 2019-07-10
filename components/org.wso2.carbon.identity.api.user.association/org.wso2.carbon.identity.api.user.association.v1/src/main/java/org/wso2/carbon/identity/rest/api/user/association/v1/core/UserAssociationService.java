@@ -33,6 +33,8 @@ import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.ERROR_CODE_DELIMITER;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ASSOCIATION_ERROR_PREFIX;
+import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ERROR_MSG_DELIMITER;
+import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ErrorMessages.ERROR_CODE_PW_MANDATORY;
 
 /**
  * This service is used to execute the association related APIs through the UserAccountConnector OSGI service.
@@ -55,7 +57,10 @@ public class UserAssociationService {
     public void createUserAccountAssociation(AssociationUserRequestDTO associationUserRequestDTO){
 
         try {
-            //TODO handle password null
+            if (associationUserRequestDTO.getPassword() == null) {
+                throw new UserAccountAssociationClientException(ERROR_CODE_PW_MANDATORY.getCode(),
+                        ERROR_CODE_PW_MANDATORY.getDescription());
+            }
             Utils.getUserAccountConnector().createUserAccountAssociation(associationUserRequestDTO.getUserId(),
                     associationUserRequestDTO.getPassword().toCharArray());
         } catch (UserAccountAssociationException e) {
@@ -127,11 +132,25 @@ public class UserAssociationService {
                         + errorCode;
                 errorResponse.setCode(errorCode);
             }
-            errorResponse.setDescription(e.getMessage());
+            handleErrorDescription(e, errorResponse);
             status = Response.Status.BAD_REQUEST;
         } else {
             status = Response.Status.INTERNAL_SERVER_ERROR;
         }
         return new APIError(status, errorResponse);
+    }
+
+    private void handleErrorDescription(UserAccountAssociationException e, ErrorResponse errorResponse) {
+
+        if (e.getMessage() != null && e.getMessage().contains(ERROR_MSG_DELIMITER)) {
+            String[] splittedMessage = e.getMessage().split(ERROR_MSG_DELIMITER);
+            if (splittedMessage.length == 2) {
+                errorResponse.setDescription(splittedMessage[1].trim());
+            } else {
+                errorResponse.setDescription(e.getMessage());
+            }
+        } else if (!e.getMessage().contains(ERROR_MSG_DELIMITER)) {
+            errorResponse.setDescription(e.getMessage());
+        }
     }
 }
