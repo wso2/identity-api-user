@@ -25,7 +25,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class TaskParam {
 
 
-//    private Map<String ,String > params;
     private String itemName;
     private String itemValue;
 
