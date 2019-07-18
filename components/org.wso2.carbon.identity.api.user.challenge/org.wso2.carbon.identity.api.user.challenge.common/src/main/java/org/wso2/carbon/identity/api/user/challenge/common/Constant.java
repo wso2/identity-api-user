@@ -35,13 +35,13 @@ public class Constant {
     public enum ErrorMessage {
 
         ERROR_CODE_ERROR_RETRIEVING_CHALLENGES_FOR_USER("10002",
-                "Unable to get user challenges.",
+                "Unable to retrieve challenges for the user.",
                 "Server Encountered an error while retrieving challenges for user."),
         ERROR_CODE_ERROR_RETRIEVING_CHALLENGE_ANSWERS_OF_USER("10003",
-                "Unable to get user challenge answers.",
+                "Unable to retrieve the user challenge answers.",
                 "Server Encountered an error while retrieving challenge answers of user."),
         ERROR_CODE_ERROR_RETRIEVING_CHALLENGE_ANSWER_OF_USER("10004",
-                "Unable to get user challenge answer.",
+                "Unable to retrieve the user challenge answer.",
                 "Server Encountered an error while retrieving challenge answer of user."),
         ERROR_CODE_ERROR_SETTING_CHALLENGE_ANSWERS_OF_USER("10005",
                 "Unable to set user challenge answers.",
@@ -65,7 +65,7 @@ public class Constant {
                 "Invalid Request.",
                 "Challenge question is missing in the user challenge answer request."),
         ERROR_CODE_USER_ALREADY_ANSWERED_CHALLENGES("10012",
-                "Challenge Answers Already set.",
+                "Challenge questions are already answered.",
                 "User has already answered some challenges. Hence, Unable to add new Answers."),
         ERROR_CODE_USER_HAS_NOT_ANSWERED_CHALLENGES("10013",
                 "Challenge Answers Not set.", "User has not" +

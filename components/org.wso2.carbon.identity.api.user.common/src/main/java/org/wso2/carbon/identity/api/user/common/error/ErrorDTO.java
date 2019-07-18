@@ -17,6 +17,7 @@
 package org.wso2.carbon.identity.api.user.common.error;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -28,6 +29,7 @@ import javax.validation.constraints.NotNull;
  * Common DTO for all the user API related error responses
  */
 @ApiModel(description = "")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorDTO implements Serializable {
 
     private static final long serialVersionUID = -3430851353855443592L;

@@ -1,0 +1,322 @@
+swagger: '2.0'
+info:
+  description: This is the RESTful API for managing available approval tasks for an user in WSO2 Identity Server
+  version: "1.0.0"
+  title: WSO2 Identity Server - Managing User's Approvals API
+  contact:
+    name: "WSO2 Identity Server"
+    url: "https://wso2.com/identity-and-access-management/"
+    email: "architecture@wso2.org"
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+
+schemes:
+ - https
+
+# tags are used for organizing operations
+tags:
+- name: management
+  description: Secured Admin-only calls
+- name: developement
+  description: Operations available to regular developement
+
+# applicable authentication mechanisms
+security:
+  - OAuth2: []
+  - BasicAuth: []
+
+paths:
+  /me/approval-tasks:
+    get:
+      tags:
+        - developement
+      summary: searches available approvals for the authenticated user
+      operationId: listApprovalTasksForLoggedInUser
+      description: |
+        Retrieve the available approval tasks in the system for the authenticated user. This API returns, all the claimable, assigned and completed approval tasks. User may invoke the endpoint with
+      parameters:
+        - $ref: '#/parameters/limitQueryParam'
+        - $ref: '#/parameters/offsetQueryParam'
+        - $ref: '#/parameters/statusQueryParam'
+      responses:
+        200:
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TaskSummery'
+        400:
+          $ref: '#/responses/InvalidInput'
+        401:
+          $ref: '#/responses/Unauthorized'
+        500:
+          $ref: '#/responses/ServerError'
+  /me/approval-tasks/{task-id}:
+    get:
+      tags:
+        - developement
+      summary: "retrieves an approval task by id"
+      operationId: getApprovalTaskInfo
+      description: |
+        Retrieve information of a specific human task.
+      parameters:
+        - $ref: '#/parameters/taskIdPathParam'
+      responses:
+        200:
+          description: Detailed information of the approval task
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TaskData'
+        400:
+          $ref: '#/responses/InvalidInput'
+        401:
+          $ref: '#/responses/Unauthorized'
+        404:
+          $ref: '#/responses/NotFound'
+        409:
+          $ref: '#/responses/Conflict'
+        500:
+          $ref: '#/responses/ServerError'
+  /me/approval-tasks/{task-id}/state:
+    put:
+      tags:
+        - developement
+      summary: "change the state of an approval task"
+      operationId: updateStateOfTask
+      description: |
+        Update the approval task status by,
+         CLAIM - Reserve for the user
+         RELEASE - release for other users to claim
+         APPROVE - approve the task
+         REJECT - deny the task
+      parameters:
+        - $ref: '#/parameters/taskIdPathParam'
+        - in: body
+          name: next-state
+          description: to which state the task should be changed
+          schema:
+            $ref: '#/definitions/State'
+      responses:
+        200:
+          $ref: '#/responses/OK'
+        400:
+          $ref: '#/responses/InvalidInput'
+        401:
+          $ref: '#/responses/Unauthorized'
+        404:
+          $ref: '#/responses/NotFound'
+        500:
+          $ref: '#/responses/ServerError'
+parameters:
+    usernamePathParams:
+      in: path
+      name: user-id
+      required: true
+      type: string
+      description: username of the user
+    taskIdPathParam:
+      in: path
+      name: task-id
+      required: true
+      type: string
+      description: Task Id
+    offsetQueryParam:
+      in: query
+      name: offset
+      description: number of records to skip for pagination
+      type: integer
+      format: int32
+      minimum: 0
+    limitQueryParam:
+      in: query
+      name: limit
+      description: maximum number of records to return
+      type: integer
+      format: int32
+      minimum: 0
+      maximum: 50
+    statusQueryParam:
+      in: query
+      name: status
+      type: array
+      items:
+        enum: [READY, RESERVED, COMPLETED]
+      description: >
+        Approval task's status:
+         * RESERVED - Tasks assigned to the authenticated user.
+         * READY - Tasks that can be assigned to and approved by the authenticated user.
+         * COMPLETED - Tasks that are completed by the user
+         * <empty> - All the task available to view will be retrieved if this parameter is not specified.
+definitions:
+  TaskSummery:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "451"
+        description: Unique Id to represent a approval task
+      name:
+        type: string
+        example: "s367:testTask"
+        description: Unique name for Approval
+      presentationSubject:
+        type: string
+        example: "Add new Role"
+        description: Display value for Approval Operation
+      presentationName:
+        type: string
+        example: "sampleTask"
+        description: Display value for Approval task
+      taskType:
+        type: string
+        example: "TASK"
+        description: Type of Approval
+      status:
+        type: string
+        example: "READY"
+        description: State of the Approval task
+      priority:
+        type: integer
+        example: 0
+        description: Priority of the Approval task
+      createdTimeInMillis:
+        type: string
+        example: '2019-07-09T21:22:14.368+05:30'
+        description: The time that the operation for approval initiated
+
+  #-----------------------------------------------------
+  # The Task Data Oject
+  #-----------------------------------------------------
+  TaskData:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "451"
+        description: Unique Id to represent a approval task
+      subject:
+        type: string
+        example: "Add new Role"
+        description: Subject of the Approval
+      description:
+        type: string
+        example: "Addes a new role to the system"
+        description: Description on the Approval task
+      priority:
+        type: integer
+        example: 0
+        description: Priority of the Approval task
+      initiator:
+        type: string
+        example: "some-user-name"
+        description: The user who initiated the task
+      approvalStatus:
+        type: string
+        example: "APPROVED"
+        description: Available only for the completed Tasks, APPROVED or REJECTED if the task has been completed, PENDING otherwise
+        enum: [PENDING, APPROVED, REJECTED]
+      assignees:
+        type: array
+        items:
+          $ref: '#/definitions/Property'
+        description: >
+          To whome the task is assigned:
+            * user - username(s) if the task is reserved for specific user(s).
+            * group - role name(s) if the task is assignable for group(s).
+      properties:
+        type: array
+        items:
+          $ref: '#/definitions/Property'
+
+  #-----------------------------------------------------
+  # The Property  object
+  #-----------------------------------------------------
+  Property:
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+  #-----------------------------------------------------
+  # The Task State  object
+  #-----------------------------------------------------
+  State:
+    type: object
+    properties:
+      action:
+        type: string
+        example: "APPROVE"
+        description: Next state of the task
+        enum: [CLAIM, RELEASE, APPROVE, REJECT]
+
+  #-----------------------------------------------------
+  # The Error Response  object
+  #-----------------------------------------------------
+  Error:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+        example: "some_error_code"
+      message:
+        type: string
+        example: "Some Error Message"
+      description:
+        type: string
+        example: "Some Error Description"
+      ref:
+        type: string
+        example: "Some Correlation for Error Instance"
+securityDefinitions:
+  BasicAuth:
+    type: basic
+  # ClientCertificate:
+  #   type: custom
+  OAuth2:
+    type: oauth2
+    flow: accessCode
+    authorizationUrl: https://localhost:9443/oauth/authorize
+    tokenUrl: https://localhost:9443/oauth/token
+    scopes:
+      read: Grants read access
+      write: Grants write access
+      admin: Grants read and write access to administrative information
+#-----------------------------------------------------
+# Descriptions of common responses
+#-----------------------------------------------------
+responses:
+  NotFound:
+    description: The specified resource is not found
+    schema:
+      $ref: '#/definitions/Error'
+  Unauthorized:
+    description: Unauthorized
+    schema:
+      $ref: '#/definitions/Error'
+  ServerError:
+    description: Internal Server Error
+    schema:
+      $ref: '#/definitions/Error'
+  InvalidInput:
+    description: Invalid input request
+    schema:
+      $ref: '#/definitions/Error'
+  Conflict:
+    description: Element Already Exists
+    schema:
+      $ref: '#/definitions/Error'
+  Created:
+    description: Item Created
+  OK:
+    description: OK
+  Deleted:
+    description: Item Deleted
+
+host: localhost:9443
+basePath: /api/users/v1
