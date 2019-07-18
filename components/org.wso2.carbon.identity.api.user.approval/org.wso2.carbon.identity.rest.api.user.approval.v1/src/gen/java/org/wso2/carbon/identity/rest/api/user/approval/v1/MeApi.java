@@ -16,6 +16,7 @@
 
 package org.wso2.carbon.identity.rest.api.user.approval.v1;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.*;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.factories.MeApiServiceFactory;
@@ -42,7 +43,8 @@ import javax.ws.rs.*;
 @io.swagger.annotations.Api(value = "/me", description = "the me API")
 public class MeApi  {
 
-   private final MeApiService delegate = MeApiServiceFactory.getMeApi();
+   @Autowired
+   private MeApiService delegate;
 
     @GET
     @Path("/approval-tasks/{task-id}")
