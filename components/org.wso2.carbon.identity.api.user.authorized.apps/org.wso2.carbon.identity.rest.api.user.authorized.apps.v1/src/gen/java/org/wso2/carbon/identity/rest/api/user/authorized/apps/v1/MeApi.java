@@ -16,6 +16,7 @@
 
 package org.wso2.carbon.identity.rest.api.user.authorized.apps.v1;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.dto.*;
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.factories.MeApiServiceFactory;
@@ -40,7 +41,8 @@ import javax.ws.rs.*;
 @io.swagger.annotations.Api(value = "/me", description = "the me API")
 public class MeApi  {
 
-   private final MeApiService delegate = MeApiServiceFactory.getMeApi();
+    @Autowired
+    private MeApiService delegate;
 
     @DELETE
     @Path("/authorized-apps/{application-id}")
