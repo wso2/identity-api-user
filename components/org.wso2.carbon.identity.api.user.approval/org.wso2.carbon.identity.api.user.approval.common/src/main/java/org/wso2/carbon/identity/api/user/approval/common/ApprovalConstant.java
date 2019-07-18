@@ -17,7 +17,7 @@
 package org.wso2.carbon.identity.api.user.approval.common;
 
 /**
- * Contains all the user challenge management related constants
+ * Contains all the user's pending tasks related constants
  */
 public class ApprovalConstant {
 
@@ -27,7 +27,7 @@ public class ApprovalConstant {
     public static final String ME_CONTEXT = "me";
 
     /**
-     * Enum for user challenge management related errors in the format of
+     * Enum for user's pending approval related errors in the format of
      * Error Code - code to identify the error
      * Error Message - What went wrong
      * Error Description - Why it went wrong

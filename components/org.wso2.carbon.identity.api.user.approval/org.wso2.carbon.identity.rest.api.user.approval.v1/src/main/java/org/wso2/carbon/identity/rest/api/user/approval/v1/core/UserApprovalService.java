@@ -42,6 +42,7 @@ import org.wso2.carbon.identity.rest.api.user.approval.v1.core.functions.TTaskSi
 import org.wso2.carbon.identity.rest.api.user.approval.v1.core.functions.TaskModelToExternal;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.core.model.TaskModel;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO;
+import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskDataDTO;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskSummeryDTO;
 
 import java.util.Arrays;
@@ -76,7 +77,7 @@ public class UserApprovalService {
             ".identity.carbon.wso2.org/wsdl/schema\"><approvalStatus>%s</approvalStatus></sch:ApprovalCBData>";
 
     /**
-     * Get ChallengeQuestionManager osgi service
+     * Get TaskOperationService osgi service
      *
      * @return TaskOperationService
      */
@@ -85,6 +86,13 @@ public class UserApprovalService {
                 .getOSGiService(TaskOperationService.class, null);
     }
 
+    /**
+     * Search available approval tasks for the current authenticated user
+     * @param limit number of records to be returned
+     * @param offset start page
+     * @param status state of the tasks [RESERVED, READY or COMPLETED]
+     * @return
+     */
     public List<TaskSummeryDTO> listTasks(Integer limit, Integer offset, List<String> status) {
 
         try {
@@ -108,7 +116,12 @@ public class UserApprovalService {
         }
     }
 
-    public Object getTaskData(String taskId) {
+    /**
+     * Get details of a task identified by the taskId
+     * @param taskId
+     * @return
+     */
+    public TaskDataDTO getTaskData(String taskId) {
         TaskOperationsImpl taskOperations = new TaskOperationsImpl();
         URI taskIdURI = getUri(taskId);
         try {
@@ -148,7 +161,13 @@ public class UserApprovalService {
         return taskIdURI;
     }
 
-
+    /**
+     * Update the state of a task identified by the task id
+     * User can reserve the task by claiming, or release a reserved task to himself
+     * Or user can approve or reject a task
+     * @param taskId
+     * @param nextState
+     */
     public void updateStatus(String taskId, StateDTO nextState) {
         TaskOperationsImpl taskOperations = new TaskOperationsImpl();
         URI taskIdURI = getUri(taskId);
