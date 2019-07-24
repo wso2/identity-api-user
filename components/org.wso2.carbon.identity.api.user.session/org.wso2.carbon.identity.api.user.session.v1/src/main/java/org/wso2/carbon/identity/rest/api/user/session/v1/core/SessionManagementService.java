@@ -31,6 +31,7 @@ import org.wso2.carbon.identity.application.authentication.framework.model.UserS
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.rest.api.user.session.v1.core.function.UserSessionToExternal;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionDTO;
+import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionsDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,20 +46,26 @@ import static org.wso2.carbon.identity.api.user.session.common.constant.SessionM
 import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants.ErrorMessage
         .ERROR_CODE_SORTING_NOT_IMPLEMENTED;
 
+/**
+ * Call internal osgi services to perform user session related operations
+ */
 public class SessionManagementService {
 
     private static final Log log = LogFactory.getLog(SessionManagementService.class);
 
-    public List<SessionDTO> getSessionsBySessionId(User user, Integer limit, Integer offset, String filter, String
+    public SessionsDTO getSessionsBySessionId(User user, Integer limit, Integer offset, String filter, String
             sort) {
 
         handleNotImplementedCapabilities(limit, offset, filter, sort);
 
         List<UserSession> sessionsForUser;
+        SessionsDTO sessions = new SessionsDTO();
         try {
             String userId = resolveUserIdFromUser(user);
             sessionsForUser = SessionManagementUtil.getUserSessionManagementService().getSessionsByUserId(userId);
-            return buildSessionDTOs(sessionsForUser);
+            sessions.setUserId(userId);
+            sessions.setSessions(buildSessionDTOs(sessionsForUser));
+            return sessions;
 
         } catch (SessionManagementException e) {
             log.error(e.getMessage());
