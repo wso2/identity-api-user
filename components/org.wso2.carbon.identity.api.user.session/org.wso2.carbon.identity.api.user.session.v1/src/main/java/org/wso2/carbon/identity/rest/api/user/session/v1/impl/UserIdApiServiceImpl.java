@@ -15,6 +15,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
 
     @Override
     public Response getSessionsByUserId(String userId, Integer limit, Integer offset, String filter, String sort) {
+
         return Response.ok().entity(sessionManagementService.getSessionsBySessionId(
                 new UserIdToUser().apply(userId, ContextLoader.getTenantDomainFromContext()), limit, offset, filter,
                 sort)).build();
