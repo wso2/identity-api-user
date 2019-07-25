@@ -236,6 +236,19 @@
                 <version>${carbon.business-process.version}</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.inbound.auth.oauth2</groupId>
+                <artifactId>org.wso2.carbon.identity.oauth</artifactId>
+                <version>${identity.oauth.version}</version>
+            </dependency>
+
+            <!-- Test Dependencies -->
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>${testng.version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -336,6 +349,8 @@
         <carbon.identity.account.association.version>5.2.3</carbon.identity.account.association.version>
         <maven.findbugsplugin.version>3.0.4</maven.findbugsplugin.version>
         <carbon.business-process.version>4.5.2</carbon.business-process.version>
+        <identity.oauth.version>6.1.5</identity.oauth.version>
+        <testng.version>6.9.10</testng.version>
         <!--<maven.checkstyleplugin.excludes>**/gen/**/*</maven.checkstyleplugin.excludes>-->
     </properties>
 
