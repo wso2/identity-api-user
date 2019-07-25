@@ -160,9 +160,9 @@ public class SessionManagementService {
 
         SessionManagementConstants.ErrorMessage errorEnum = null;
 
-        if (limit != null && limit != 0) {
+        if (limit != null) {
             errorEnum = ERROR_CODE_PAGINATION_NOT_IMPLEMENTED;
-        } else if (offset != null && offset != 0) {
+        } else if (offset != null) {
             errorEnum = ERROR_CODE_PAGINATION_NOT_IMPLEMENTED;
         } else if (filter != null) {
             errorEnum = ERROR_CODE_FILTERING_NOT_IMPLEMENTED;
