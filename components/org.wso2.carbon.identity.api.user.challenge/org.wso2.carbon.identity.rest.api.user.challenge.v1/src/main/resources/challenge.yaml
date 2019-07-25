@@ -181,8 +181,8 @@ paths:
           schema:
             $ref: '#/definitions/UserChallengeAnswer'
       responses:
-        200:
-          $ref: '#/responses/OK'
+        201:
+          $ref: '#/responses/Created'
         400:
           $ref: '#/responses/InvalidInput'
         401:
@@ -377,8 +377,8 @@ paths:
           schema:
             $ref: '#/definitions/UserChallengeAnswer'
       responses:
-        200:
-          $ref: '#/responses/OK'
+        201:
+          $ref: '#/responses/Created'
         400:
           $ref: '#/responses/InvalidInput'
         401:

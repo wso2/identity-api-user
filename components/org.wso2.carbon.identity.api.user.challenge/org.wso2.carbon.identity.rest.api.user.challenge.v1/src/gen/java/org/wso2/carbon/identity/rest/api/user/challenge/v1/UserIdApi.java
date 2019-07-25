@@ -1,21 +1,43 @@
+/*
+ * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.wso2.carbon.identity.rest.api.user.challenge.v1;
 
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ChallengeAnswerDTO;
-import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ChallengeSetDTO;
-import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.UserChallengeAnswerDTO;
-import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.UserChallengeAnswerResponseDTO;
+import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.*;
+import org.wso2.carbon.identity.rest.api.user.challenge.v1.UserIdApiService;
+import org.wso2.carbon.identity.rest.api.user.challenge.v1.factories.UserIdApiServiceFactory;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Response;
+import io.swagger.annotations.ApiParam;
+
+import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ErrorDTO;
+import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.UserChallengeAnswerDTO;
+import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ChallengeAnswerDTO;
 import java.util.List;
+import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.UserChallengeAnswerResponseDTO;
+import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ChallengeSetDTO;
+
+import java.util.List;
+
+import java.io.InputStream;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+
+import javax.ws.rs.core.Response;
+import javax.ws.rs.*;
 
 @Path("/{user-id}")
 
@@ -32,7 +54,7 @@ public class UserIdApi  {
     
     @io.swagger.annotations.ApiOperation(value = "answers a new challenge question", notes = "Update new challenge question answer to the system for a specific user.\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "OK"),
+        @io.swagger.annotations.ApiResponse(code = 201, message = "Item Created"),
         
         @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid input request"),
         
