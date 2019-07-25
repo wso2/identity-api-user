@@ -16,23 +16,22 @@
 
 package org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.core.functions;
 
+import org.testng.Assert;
+import org.testng.annotations.Test;
 import org.wso2.carbon.identity.oauth.dto.OAuthConsumerAppDTO;
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.dto.AuthorizedAppDTO;
 
-import java.util.function.Function;
+public class OAuthConsumerAppToExternalTest {
 
-/**
- * A method to build the AuthorizedAppDTO.
- */
-public class OAuthConsumerAppToExternal implements Function<OAuthConsumerAppDTO, AuthorizedAppDTO> {
+    @Test
+    public void testApply() throws Exception {
 
-    @Override
-    public AuthorizedAppDTO apply(OAuthConsumerAppDTO oAuthConsumerAppDTO) {
+        OAuthConsumerAppDTO oAuthConsumerAppDTO = new OAuthConsumerAppDTO();
+        oAuthConsumerAppDTO.setApplicationName("TestApp");
+        oAuthConsumerAppDTO.setOauthConsumerKey("TestConsumerKey");
+        AuthorizedAppDTO authorizedAppDTO = new OAuthConsumerAppToExternal().apply(oAuthConsumerAppDTO);
 
-        AuthorizedAppDTO authorizedAppDTO = new AuthorizedAppDTO();
-
-        authorizedAppDTO.setAppId(oAuthConsumerAppDTO.getApplicationName());
-        authorizedAppDTO.setClientId(oAuthConsumerAppDTO.getOauthConsumerKey());
-        return authorizedAppDTO;
+        Assert.assertEquals(authorizedAppDTO.getAppId(), oAuthConsumerAppDTO.getApplicationName());
+        Assert.assertEquals(authorizedAppDTO.getClientId(), oAuthConsumerAppDTO.getOauthConsumerKey());
     }
 }
