@@ -70,7 +70,7 @@ public class SessionManagementConstants {
         @Override
         public String toString() {
 
-            return code + " | " + message;
+            return getCode() + " | " + message;
         }
     }
 }

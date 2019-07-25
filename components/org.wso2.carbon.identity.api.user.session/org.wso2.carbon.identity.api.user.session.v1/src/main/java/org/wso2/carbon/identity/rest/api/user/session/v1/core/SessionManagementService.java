@@ -78,9 +78,7 @@ public class SessionManagementService {
             return sessions;
 
         } catch (SessionManagementException e) {
-            log.error(e.getMessage());
-            handleSessionManagementException(e);
-            return null;
+            throw handleSessionManagementException(e);
         }
     }
 
@@ -108,7 +106,7 @@ public class SessionManagementService {
             String userId = resolveUserIdFromUser(user);
             SessionManagementUtil.getUserSessionManagementService().terminateSessionsByUserId(userId);
         } catch (SessionManagementException e) {
-            handleSessionManagementException(e);
+            throw handleSessionManagementException(e);
         }
     }
 
@@ -117,7 +115,7 @@ public class SessionManagementService {
         return userSessionList.stream().map(new UserSessionToExternal()).collect(Collectors.toList());
     }
 
-    private void handleSessionManagementException(SessionManagementException e) {
+    private APIError handleSessionManagementException(SessionManagementException e) {
 
         ErrorResponse errorResponse = getErrorBuilder(e).build(log, e, e.getDescription());
 
@@ -137,7 +135,7 @@ public class SessionManagementService {
             status = Response.Status.INTERNAL_SERVER_ERROR;
         }
 
-        throw new APIError(status, errorResponse);
+        return new APIError(status, errorResponse);
     }
 
     private ErrorResponse.Builder getErrorBuilder(SessionManagementException error) {
