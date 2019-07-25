@@ -24,48 +24,52 @@ package org.wso2.carbon.identity.api.user.session.common.constant;
 public class SessionManagementConstants {
 
     public static final String ERROR_CODE_DELIMITER = "-";
-    public static final String CORRELATION_ID_MDC = "Correlation-ID";
     public static final String USER_SESSION_MANAGEMENT_PREFIX = "USM";
 
     /**
      * Enum for user error messages.
      */
     public enum ErrorMessage {
-        ERROR_CODE_PAGINATION_NOT_IMPLEMENTED("USM-00003",
+
+        ERROR_CODE_PAGINATION_NOT_IMPLEMENTED("00003",
                 "Pagination not supported.",
                 "Pagination capabilities are not supported in this version of the API."),
-        ERROR_CODE_FILTERING_NOT_IMPLEMENTED("USM-00004",
+        ERROR_CODE_FILTERING_NOT_IMPLEMENTED("00004",
                 "Filtering not supported.",
                 "Filtering capability is not supported in this version of the API."),
-        ERROR_CODE_SORTING_NOT_IMPLEMENTED("USM-00005",
+        ERROR_CODE_SORTING_NOT_IMPLEMENTED("00005",
                 "Sorting not supported.",
-                "Sorting capability is not supported in this version of the API.")
-        ;
+                "Sorting capability is not supported in this version of the API.");
 
         private final String code;
         private final String message;
         private final String description;
 
         ErrorMessage(String code, String message, String description) {
+
             this.code = code;
             this.message = message;
             this.description = description;
         }
 
         public String getCode() {
-            return code;
+
+            return USER_SESSION_MANAGEMENT_PREFIX + ERROR_CODE_DELIMITER + code;
         }
 
         public String getMessage() {
+
             return message;
         }
 
         public String getDescription() {
+
             return description;
         }
 
         @Override
         public String toString() {
+
             return code + " | " + message;
         }
     }
