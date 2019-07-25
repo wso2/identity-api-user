@@ -16,18 +16,30 @@
 
 package org.wso2.carbon.identity.api.user.common;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.MDC;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
+import org.wso2.carbon.identity.api.user.common.error.APIError;
+import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
+import org.wso2.carbon.identity.application.authentication.framework.exception.UserSessionException;
+import org.wso2.carbon.identity.application.authentication.framework.store.UserSessionStore;
+import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.recovery.ChallengeQuestionManager;
 
 import java.util.UUID;
+import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.CORRELATION_ID_MDC;
+import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_INVALID_USERNAME;
 
 /**
  * Common util class
  */
 public class Util {
+
+    private static final Log log = LogFactory.getLog(Util.class);
 
     /**
      * Get ChallengeQuestionManager osgi service
@@ -59,5 +71,26 @@ public class Util {
      */
     public static boolean isCorrelationIDPresent() {
         return MDC.get(CORRELATION_ID_MDC) != null;
+    }
+
+    /**
+     * Resolve the user id of the given user object.
+     *
+     * @param user user object
+     * @return user-id
+     */
+    public static String resolveUserIdFromUser(User user) {
+        int tenantId = (user.getTenantDomain() == null) ? org.wso2.carbon.utils.multitenancy.MultitenantConstants
+                .INVALID_TENANT_ID : IdentityTenantUtil.getTenantId(user.getTenantDomain());
+        try {
+            return UserSessionStore.getInstance().getUserId(user.getUserName(), tenantId, user
+                    .getUserStoreDomain(), -1);
+        } catch (UserSessionException e) {
+            throw new APIError(Response.Status.BAD_REQUEST, new ErrorResponse.Builder()
+                    .withCode(ERROR_CODE_INVALID_USERNAME.getCode())
+                    .withMessage(ERROR_CODE_INVALID_USERNAME.getMessage())
+                    .withDescription(ERROR_CODE_INVALID_USERNAME.getDescription())
+                    .build(log, e, "Invalid userId: " + user.getUserName()));
+        }
     }
 }
