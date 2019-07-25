@@ -13,8 +13,8 @@ info:
 
 schemes:
  - https
-# host: is.wso2.com
-# basePath: /t/{tenant-domain}/api/identity/1.0.0/
+host: localhost:9443
+basePath: /api/users/v1
 
 # tags are used for organizing operations
 tags:
