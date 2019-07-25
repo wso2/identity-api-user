@@ -47,12 +47,22 @@ import static org.wso2.carbon.identity.api.user.session.common.constant.SessionM
         .ERROR_CODE_SORTING_NOT_IMPLEMENTED;
 
 /**
- * Call internal osgi services to perform user session related operations
+ * Call internal osgi services to perform user session related operations.
  */
 public class SessionManagementService {
 
     private static final Log log = LogFactory.getLog(SessionManagementService.class);
 
+    /**
+     * Get all the active sessions of a given user.
+     *
+     * @param user   user
+     * @param limit  limit (optional)
+     * @param offset offset (optional)
+     * @param filter filter (optional)
+     * @param sort   sort (optional)
+     * @return SessionsDTO
+     */
     public SessionsDTO getSessionsBySessionId(User user, Integer limit, Integer offset, String filter, String
             sort) {
 
@@ -72,9 +82,14 @@ public class SessionManagementService {
             handleSessionManagementException(e);
             return null;
         }
-
     }
 
+    /**
+     * Terminate the session of the given session id.
+     *
+     * @param user      user
+     * @param sessionId session id
+     */
     public void terminateSessionBySessionId(User user, String sessionId) {
 
         String userId = resolveUserIdFromUser(user);
@@ -82,7 +97,13 @@ public class SessionManagementService {
 
     }
 
+    /**
+     * Terminate all the sessions of the given user.
+     *
+     * @param user      user
+     */
     public void terminateSessionsByUserId(User user) {
+
         try {
             String userId = resolveUserIdFromUser(user);
             SessionManagementUtil.getUserSessionManagementService().terminateSessionsByUserId(userId);

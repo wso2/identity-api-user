@@ -21,4 +21,5 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
     <bean class="org.wso2.carbon.identity.rest.api.user.session.v1.core.SessionManagementService"/>
     <bean class="org.wso2.carbon.identity.rest.api.user.session.v1.impl.UserIdApiServiceImpl"/>
+    <bean class="org.wso2.carbon.identity.rest.api.user.session.v1.impl.MeApiServiceImpl"/>
 </beans>

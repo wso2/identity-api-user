@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Transform internal user session object to external SessionDTO.
+ */
 public class UserSessionToExternal implements Function<UserSession, SessionDTO> {
 
     @Override
@@ -44,5 +47,4 @@ public class UserSessionToExternal implements Function<UserSession, SessionDTO> 
 
         return session;
     }
-
 }

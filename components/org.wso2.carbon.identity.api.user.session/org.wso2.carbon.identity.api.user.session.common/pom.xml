@@ -35,6 +35,4 @@
             <artifactId>org.wso2.carbon.identity.application.authentication.framework</artifactId>
         </dependency>
     </dependencies>
-
-
 </project>

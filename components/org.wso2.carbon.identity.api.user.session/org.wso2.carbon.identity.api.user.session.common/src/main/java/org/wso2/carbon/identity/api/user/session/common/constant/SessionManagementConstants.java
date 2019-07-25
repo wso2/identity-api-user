@@ -28,7 +28,7 @@ public class SessionManagementConstants {
     public static final String USER_SESSION_MANAGEMENT_PREFIX = "USM";
 
     /**
-     * Enum for user error messages
+     * Enum for user error messages.
      */
     public enum ErrorMessage {
         ERROR_CODE_PAGINATION_NOT_IMPLEMENTED("USM-00003",
@@ -68,7 +68,5 @@ public class SessionManagementConstants {
         public String toString() {
             return code + " | " + message;
         }
-
     }
-
 }

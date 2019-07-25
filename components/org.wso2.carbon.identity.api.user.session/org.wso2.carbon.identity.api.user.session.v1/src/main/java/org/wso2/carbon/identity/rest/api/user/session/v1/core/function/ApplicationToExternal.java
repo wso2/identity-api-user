@@ -23,6 +23,9 @@ import org.wso2.carbon.identity.rest.api.user.session.v1.dto.ApplicationDTO;
 
 import java.util.function.Function;
 
+/**
+ * Transform internal Application object to external ApplicationDTO.
+ */
 public class ApplicationToExternal implements Function<Application, ApplicationDTO> {
 
     @Override
@@ -35,5 +38,4 @@ public class ApplicationToExternal implements Function<Application, ApplicationD
 
         return applicationDTO;
     }
-
 }
