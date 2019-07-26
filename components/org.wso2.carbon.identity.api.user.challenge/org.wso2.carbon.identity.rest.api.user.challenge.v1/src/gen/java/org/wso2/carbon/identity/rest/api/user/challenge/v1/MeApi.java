@@ -97,7 +97,7 @@ public class MeApi  {
     
     @io.swagger.annotations.ApiOperation(value = "removes a challenge question answer", notes = "Removes existing challenge question answers of authenticated user\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "Item Deleted"),
+        @io.swagger.annotations.ApiResponse(code = 204, message = "No Content"),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
         
@@ -115,7 +115,7 @@ public class MeApi  {
     
     @io.swagger.annotations.ApiOperation(value = "removes challenge question answers", notes = "Removes an existing challenge question answers of the authenticated user\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "Item Deleted"),
+        @io.swagger.annotations.ApiResponse(code = 204, message = "No Content"),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
         

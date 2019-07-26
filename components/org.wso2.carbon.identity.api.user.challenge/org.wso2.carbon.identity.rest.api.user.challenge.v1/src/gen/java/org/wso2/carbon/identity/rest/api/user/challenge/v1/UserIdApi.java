@@ -101,7 +101,7 @@ public class UserIdApi  {
     
     @io.swagger.annotations.ApiOperation(value = "removes a challenge question answer", notes = "Removes existing challenge question answers of a user\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "Item Deleted"),
+        @io.swagger.annotations.ApiResponse(code = 204, message = "No Content"),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
         
@@ -120,7 +120,7 @@ public class UserIdApi  {
     
     @io.swagger.annotations.ApiOperation(value = "removes challenge question answers", notes = "Removes existing challenge question answers of a user\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "Item Deleted"),
+        @io.swagger.annotations.ApiResponse(code = 204, message = "No Content"),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
         
@@ -200,7 +200,7 @@ public class UserIdApi  {
     
     @io.swagger.annotations.ApiOperation(value = "answers new challenge question combination", notes = "Addsnew challenge question answers to the system for a specific user.\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 201, message = "Item Created"),
+        @io.swagger.annotations.ApiResponse(code = 200, message = "OK"),
         
         @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid input request"),
         
