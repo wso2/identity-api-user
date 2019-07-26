@@ -136,8 +136,8 @@ paths:
             items:
               $ref: '#/definitions/ChallengeAnswer'
       responses:
-        201:
-          $ref: '#/responses/Created'
+        200:
+          $ref: '#/responses/OK'
         400:
           $ref: '#/responses/InvalidInput'
         401:
@@ -156,8 +156,8 @@ paths:
       parameters:
         - $ref: '#/parameters/usernamePathParams'
       responses:
-        200:
-          $ref: '#/responses/Deleted'
+        204:
+          $ref: '#/responses/NoContent'
         401:
           $ref: '#/responses/Unauthorized'
         404:
@@ -230,8 +230,8 @@ paths:
         - $ref: '#/parameters/questionSetIdPathParam'
         - $ref: '#/parameters/usernamePathParams'
       responses:
-        200:
-          $ref: '#/responses/Deleted'
+        204:
+          $ref: '#/responses/NoContent'
         401:
           $ref: '#/responses/Unauthorized'
         404:
@@ -353,8 +353,8 @@ paths:
       description: |
         Removes an existing challenge question answers of the authenticated user
       responses:
-        200:
-          $ref: '#/responses/Deleted'
+        204:
+          $ref: '#/responses/NoContent'
         401:
           $ref: '#/responses/Unauthorized'
         404:
@@ -424,8 +424,8 @@ paths:
       parameters:
         - $ref: '#/parameters/questionSetIdPathParam'
       responses:
-        200:
-          $ref: '#/responses/Deleted'
+        204:
+          $ref: '#/responses/NoContent'
         401:
           $ref: '#/responses/Unauthorized'
         404:
@@ -605,8 +605,8 @@ responses:
     description: Item Created
   OK:
     description: OK
-  Deleted:
-    description: Item Deleted
+  NoContent:
+    description: No Content
 
 host: localhost:9443
 basePath: /api/users/v1
