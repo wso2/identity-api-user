@@ -62,7 +62,7 @@ public class ErrorResponse extends ErrorDTO {
             error.setCode(this.code);
             error.setMessage(this.message);
             error.setDescription(this.description);
-            error.setRef(getCorrelation());
+            error.setTraceId(getCorrelation());
             return error;
         }
 
@@ -71,7 +71,7 @@ public class ErrorResponse extends ErrorDTO {
             String errorMessageFormat = "errorCode: %s | message: %s";
             String errorMsg = String.format(errorMessageFormat, error.getCode(), message);
             if (!isCorrelationIDPresent()) {
-                errorMsg = String.format("correlationID: %s | " + errorMsg, error.getRef());
+                errorMsg = String.format("correlationID: %s | " + errorMsg, error.getTraceId());
             }
             log.error(errorMsg, e);
             return error;
@@ -90,7 +90,7 @@ public class ErrorResponse extends ErrorDTO {
             String errorMessageFormat = "errorCode: %s | message: %s";
             String errorMsg = String.format(errorMessageFormat, error.getCode(), message);
             if (!isCorrelationIDPresent()) {
-                errorMsg = String.format("correlationID: %s | " + errorMsg, error.getRef());
+                errorMsg = String.format("correlationID: %s | " + errorMsg, error.getTraceId());
             }
 
             if (log.isDebugEnabled()) {
