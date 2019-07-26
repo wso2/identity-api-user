@@ -358,6 +358,7 @@
         <carbon.business-process.version>4.5.2</carbon.business-process.version>
         <identity.oauth.version>6.1.5</identity.oauth.version>
         <testng.version>6.9.10</testng.version>
+        <fido2.version>5.1.14</fido2.version>
         <!--<maven.checkstyleplugin.excludes>**/gen/**/*</maven.checkstyleplugin.excludes>-->
     </properties>
 
@@ -368,6 +369,7 @@
         <module>components/org.wso2.carbon.identity.api.user.authorized.apps</module>
         <module>components/org.wso2.carbon.identity.api.user.approval</module>
         <module>components/org.wso2.carbon.identity.api.user.session</module>
+        <module>components/org.wso2.carbon.identity.api.user.fido2</module>
     </modules>
 
 </project>
