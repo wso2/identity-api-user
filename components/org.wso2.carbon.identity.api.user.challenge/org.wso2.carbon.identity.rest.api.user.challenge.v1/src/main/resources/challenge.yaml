@@ -560,7 +560,7 @@ definitions:
       description:
         type: string
         example: "Some Error Description"
-      ref:
+      traceId:
         type: string
         example: "Some Correlation for Error Instance"
 securityDefinitions:

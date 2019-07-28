@@ -44,7 +44,7 @@ public class ErrorDTO implements Serializable {
     private String description = null;
 
 
-    private String ref = null;
+    private String traceId = null;
 
 
     /**
@@ -90,12 +90,12 @@ public class ErrorDTO implements Serializable {
      **/
     @ApiModelProperty(value = "")
     @JsonProperty("traceId")
-    public String getRef() {
-        return ref;
+    public String getTraceId() {
+        return traceId;
     }
 
-    public void setRef(String ref) {
-        this.ref = ref;
+    public void setTraceId(String ref) {
+        this.traceId = ref;
     }
 
 
@@ -107,7 +107,7 @@ public class ErrorDTO implements Serializable {
         sb.append("  code: ").append(code).append("\n");
         sb.append("  message: ").append(message).append("\n");
         sb.append("  description: ").append(description).append("\n");
-        sb.append("  traceId: ").append(ref).append("\n");
+        sb.append("  traceId: ").append(traceId).append("\n");
         sb.append("}\n");
         return sb.toString();
     }
