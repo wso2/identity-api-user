@@ -14,10 +14,10 @@ import org.wso2.carbon.identity.application.authenticator.fido2.util.FIDOUtil;
 import org.wso2.carbon.identity.core.util.IdentityCoreConstants;
 import org.wso2.carbon.identity.rest.api.user.fido2.v1.MeApiService;
 
-import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.text.MessageFormat;
+import javax.ws.rs.core.Response;
 
 /**
  * Implementation class of FIDO2 API

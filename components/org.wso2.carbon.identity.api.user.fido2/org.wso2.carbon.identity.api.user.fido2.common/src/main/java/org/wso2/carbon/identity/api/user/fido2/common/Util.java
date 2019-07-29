@@ -14,7 +14,7 @@ public class Util {
 
         String message;
         if (data != null) {
-            message = String.format(error.getMessage(), data);
+            message = String.format(error.getDescription(), data);
         } else {
             message = error.getMessage();
         }

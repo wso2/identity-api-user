@@ -31,18 +31,21 @@ public class Constants {
      */
     public enum ErrorMessages {
 
-        ERROR_CODE_START_REGISTRATION("10001", "Error starting the fido device registration flow",
+        ERROR_CODE_START_REGISTRATION("50001", "Error starting the fido device registration flow",
                 "A system error occurred while serializing start registration response for the appid : %s"),
-        ERROR_CODE_FINISH_REGISTRATION("10002", "Error finishing fido2 device registration process",
+        ERROR_CODE_FINISH_REGISTRATION("50002", "Error finishing fido2 device registration process",
                 "A system error occurred while finishing device registration"),
-        ERROR_CODE_FINISH_REGISTRATION_BY_USER("10003", "Error finishing fido2 device " +
+        ERROR_CODE_FINISH_REGISTRATION_BY_USER("50003", "Error finishing fido2 device " +
                 "registration process", "A system error occurred while finishing device registration for " +
                 "the finish registration response %s"),
-        ERROR_CODE_FETCH_CREDENTIALS("10004", "Error while retrieving user credentials",
+        ERROR_CODE_FETCH_CREDENTIALS("50004", "Error while retrieving user credentials",
                                               "A system error occurred while retrieving user credentials " +
                                                       "for the user : %s"),
-        ERROR_CODE_DELETE_CREDENTIALS("10005", "Error while deleting user credentials",
-                "A system error occurred while deleting fido credential with credentialId : %s ");
+        ERROR_CODE_DELETE_CREDENTIALS("50005", "Error while deleting user credentials",
+                "A system error occurred while deleting fido credential with credentialId : %s "),
+
+        ERROR_CODE_USER_NOT_REGISTERED("10006", "Error while retrieving user credentials",
+                                              "User doesn't have fido credentials");
 
         private final String code;
         private final String message;

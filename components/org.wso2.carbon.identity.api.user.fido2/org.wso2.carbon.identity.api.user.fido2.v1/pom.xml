@@ -22,7 +22,7 @@
         <groupId>org.wso2.carbon.identity.user.api</groupId>
         <artifactId>org.wso2.carbon.identity.api.user.fido2</artifactId>
         <relativePath>../pom.xml</relativePath>
-        <version>1.0.21-SNAPSHOT</version>
+        <version>1.0.32-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.identity.rest.api.user.fido2.v1</artifactId>
@@ -132,11 +132,6 @@
                     <artifactId>guava</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>jackson-jaxrs-json-provider</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
