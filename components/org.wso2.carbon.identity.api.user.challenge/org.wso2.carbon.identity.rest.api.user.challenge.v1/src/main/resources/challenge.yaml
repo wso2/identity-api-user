@@ -62,6 +62,8 @@ paths:
           $ref: '#/responses/InvalidInput'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         500:
@@ -90,6 +92,8 @@ paths:
           $ref: '#/responses/InvalidInput'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         409:
@@ -115,6 +119,8 @@ paths:
               $ref: '#/definitions/UserChallengeAnswerResponse'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         500:
@@ -142,6 +148,8 @@ paths:
           $ref: '#/responses/InvalidInput'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         500:
@@ -160,6 +168,8 @@ paths:
           $ref: '#/responses/NoContent'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         500:
@@ -187,6 +197,8 @@ paths:
           $ref: '#/responses/InvalidInput'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         409:
@@ -215,6 +227,8 @@ paths:
           $ref: '#/responses/InvalidInput'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         500:
@@ -234,6 +248,8 @@ paths:
           $ref: '#/responses/NoContent'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         500:
@@ -270,6 +286,8 @@ paths:
               $ref: '#/definitions/ChallengeSet'
         400:
           $ref: '#/responses/InvalidInput'
+        403:
+          $ref: '#/responses/Forbidden'
         401:
           $ref: '#/responses/Unauthorized'
         500:
@@ -297,6 +315,8 @@ paths:
           $ref: '#/responses/InvalidInput'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         409:
           $ref: '#/responses/Conflict'
         500:
@@ -317,6 +337,8 @@ paths:
               $ref: '#/definitions/UserChallengeAnswerResponse'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         500:
           $ref: '#/responses/ServerError'
     put:
@@ -341,6 +363,8 @@ paths:
           $ref: '#/responses/InvalidInput'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         500:
@@ -357,6 +381,8 @@ paths:
           $ref: '#/responses/NoContent'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         500:
@@ -383,6 +409,8 @@ paths:
           $ref: '#/responses/InvalidInput'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         409:
@@ -410,6 +438,8 @@ paths:
           $ref: '#/responses/InvalidInput'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         500:
@@ -428,6 +458,8 @@ paths:
           $ref: '#/responses/NoContent'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         500:
@@ -587,8 +619,6 @@ responses:
       $ref: '#/definitions/Error'
   Unauthorized:
     description: Unauthorized
-    schema:
-      $ref: '#/definitions/Error'
   ServerError:
     description: Internal Server Error
     schema:
@@ -607,6 +637,8 @@ responses:
     description: OK
   NoContent:
     description: No Content
+  Forbidden:
+    description: Resource Forbidden
 
 host: localhost:9443
 basePath: /api/users/v1

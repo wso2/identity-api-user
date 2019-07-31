@@ -60,6 +60,8 @@ public class UserIdApi  {
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
         
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
+        
         @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource is not found"),
         
         @io.swagger.annotations.ApiResponse(code = 409, message = "Element Already Exists"),
@@ -84,6 +86,8 @@ public class UserIdApi  {
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
         
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
+        
         @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource is not found"),
         
         @io.swagger.annotations.ApiResponse(code = 409, message = "Element Already Exists"),
@@ -105,6 +109,8 @@ public class UserIdApi  {
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
         
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
+        
         @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource is not found"),
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
@@ -124,6 +130,8 @@ public class UserIdApi  {
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
         
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
+        
         @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource is not found"),
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
@@ -141,6 +149,8 @@ public class UserIdApi  {
         @io.swagger.annotations.ApiResponse(code = 200, message = "search results matching criteria"),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
+        
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
         
         @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource is not found"),
         
@@ -161,6 +171,8 @@ public class UserIdApi  {
         @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid input request"),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
+        
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
         
         @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource is not found"),
         
@@ -184,6 +196,8 @@ public class UserIdApi  {
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
         
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
+        
         @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource is not found"),
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
@@ -205,6 +219,8 @@ public class UserIdApi  {
         @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid input request"),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
+        
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
         
         @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource is not found"),
         
