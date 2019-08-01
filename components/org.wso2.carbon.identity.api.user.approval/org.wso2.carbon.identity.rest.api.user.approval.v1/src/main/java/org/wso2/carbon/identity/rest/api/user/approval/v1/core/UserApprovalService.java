@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.axis2.databinding.types.URI;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -109,8 +110,12 @@ public class UserApprovalService {
             queryInput.setSimpleQueryCategory(TSimpleQueryCategory.CLAIMABLE);
             queryInput.setStatus(tStatuses);
             TTaskSimpleQueryResultSet taskResults = getTaskOperationService().simpleQuery(queryInput);
-            return Arrays.stream(taskResults.getRow()).map(new TTaskSimpleQueryResultRowToExternal())
-                    .collect(Collectors.toList());
+            if (taskResults != null && taskResults.getRow() != null) {
+                return Arrays.stream(taskResults.getRow()).map(new TTaskSimpleQueryResultRowToExternal())
+                        .collect(Collectors.toList());
+            }
+            return ListUtils.EMPTY_LIST;
+
         } catch (Exception e) {
             throw handleException(e, SERVER_ERROR_RETRIEVING_APPROVALS_FOR_USER);
         }
