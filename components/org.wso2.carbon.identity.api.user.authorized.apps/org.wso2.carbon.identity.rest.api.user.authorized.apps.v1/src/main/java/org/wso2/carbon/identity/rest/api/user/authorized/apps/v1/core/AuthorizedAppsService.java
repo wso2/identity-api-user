@@ -167,15 +167,16 @@ public class AuthorizedAppsService {
         PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantDomain(tenantDomain, true);
     }
 
-    private APIError handleError(Status status, Constants.ErrorMessages error, String... data) {
+    private static APIError handleError(Status status, Constants.ErrorMessages error, String... data) {
 
-        String message;
+        String description;
         if (data != null) {
-            message = String.format(error.getDescription(), data);
+            description = String.format(error.getDescription(), (Object[]) data);
         } else {
-            message = error.getMessage();
+            description = error.getMessage();
         }
-        return new APIError(status, new ErrorResponse.Builder().withCode(error.getCode()).withMessage(message)
-                .withDescription(error.getDescription()).build());
+        return new APIError(status, new ErrorResponse.Builder().withCode(error.getCode())
+                                                               .withMessage(error.getMessage())
+                                                               .withDescription(description).build());
     }
 }
