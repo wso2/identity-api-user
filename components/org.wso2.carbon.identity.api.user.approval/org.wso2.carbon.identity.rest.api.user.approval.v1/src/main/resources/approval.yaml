@@ -50,6 +50,8 @@ paths:
           $ref: '#/responses/InvalidInput'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         500:
           $ref: '#/responses/ServerError'
   /me/approval-tasks/{task-id}:
@@ -66,12 +68,12 @@ paths:
         200:
           description: Detailed information of the approval task
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/TaskData'
+            $ref: '#/definitions/TaskData'
         400:
           $ref: '#/responses/InvalidInput'
         401:
+          $ref: '#/responses/Unauthorized'
+        403:
           $ref: '#/responses/Unauthorized'
         404:
           $ref: '#/responses/NotFound'
@@ -105,6 +107,8 @@ paths:
           $ref: '#/responses/InvalidInput'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         500:
@@ -222,7 +226,7 @@ definitions:
         items:
           $ref: '#/definitions/Property'
         description: >
-          To whome the task is assigned:
+          To whom the task is assigned:
             * user - username(s) if the task is reserved for specific user(s).
             * group - role name(s) if the task is assignable for group(s).
       properties:
@@ -317,6 +321,8 @@ responses:
     description: OK
   Deleted:
     description: Item Deleted
+  Forbidden:
+      description: Resource Forbidden
 
 host: localhost:9443
 basePath: /api/users/v1

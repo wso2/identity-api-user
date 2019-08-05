@@ -21,6 +21,7 @@ import io.swagger.annotations.*;
 import com.fasterxml.jackson.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 
 
@@ -30,10 +31,10 @@ import javax.validation.constraints.NotNull;
 public class ErrorDTO  {
   
   
-  @NotNull
+  @NotNull 
   private String code = null;
   
-  @NotNull
+  @NotNull 
   private String message = null;
   
   
