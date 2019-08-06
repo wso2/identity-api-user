@@ -50,13 +50,15 @@ public class MeApi  {
     @Path("/approval-tasks/{task-id}")
     
     
-    @io.swagger.annotations.ApiOperation(value = "retrieves an approval task by id", notes = "Retrieve information of a specific human task.\n", response = TaskDataDTO.class, responseContainer = "List")
+    @io.swagger.annotations.ApiOperation(value = "retrieves an approval task by id", notes = "Retrieve information of a specific human task.\n", response = TaskDataDTO.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "Detailed information of the approval task"),
         
         @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid input request"),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
+        
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
         
         @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource is not found"),
         
@@ -80,6 +82,8 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
         
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
+        
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
     public Response listApprovalTasksForLoggedInUser(@ApiParam(value = "maximum number of records to return") @QueryParam("limit")  Integer limit,
@@ -99,6 +103,8 @@ public class MeApi  {
         @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid input request"),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
+        
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
         
         @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource is not found"),
         

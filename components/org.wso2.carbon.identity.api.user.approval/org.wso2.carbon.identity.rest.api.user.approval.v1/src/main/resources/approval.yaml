@@ -50,6 +50,8 @@ paths:
           $ref: '#/responses/InvalidInput'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         500:
           $ref: '#/responses/ServerError'
   /me/approval-tasks/{task-id}:
@@ -66,13 +68,13 @@ paths:
         200:
           description: Detailed information of the approval task
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/TaskData'
+            $ref: '#/definitions/TaskData'
         400:
           $ref: '#/responses/InvalidInput'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         409:
@@ -105,6 +107,8 @@ paths:
           $ref: '#/responses/InvalidInput'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         500:
@@ -214,15 +218,15 @@ definitions:
         description: The user who initiated the task
       approvalStatus:
         type: string
-        example: "APPROVED"
-        description: Available only for the completed Tasks, APPROVED or REJECTED if the task has been completed, PENDING otherwise
-        enum: [PENDING, APPROVED, REJECTED]
+        example: "APPROVE"
+        description: Available only for the completed Tasks, APPROVE or REJECTE if the task has been completed, PENDING otherwise
+        enum: [PENDING, APPROVE, REJECT]
       assignees:
         type: array
         items:
           $ref: '#/definitions/Property'
         description: >
-          To whome the task is assigned:
+          To whom the task is assigned:
             * user - username(s) if the task is reserved for specific user(s).
             * group - role name(s) if the task is assignable for group(s).
       properties:
@@ -270,7 +274,7 @@ definitions:
       description:
         type: string
         example: "Some Error Description"
-      ref:
+      traceId:
         type: string
         example: "Some Correlation for Error Instance"
 securityDefinitions:
@@ -317,6 +321,8 @@ responses:
     description: OK
   Deleted:
     description: Item Deleted
+  Forbidden:
+      description: Resource Forbidden
 
 host: localhost:9443
-basePath: /api/users/v1
+basePath: /t/{tenant-domain}/api/users/v1
