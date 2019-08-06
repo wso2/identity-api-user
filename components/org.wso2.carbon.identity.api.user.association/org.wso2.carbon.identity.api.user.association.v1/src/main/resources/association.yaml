@@ -52,7 +52,7 @@ consumes:
 produces:
   - application/json
 paths:
-  # Endpoint uses to assiate two user accounts.
+  # Endpoint uses to associate two user accounts.
   /me/associations:
     post:
       description: |
@@ -151,6 +151,10 @@ paths:
           description: Unauthorized
         500:
           description: Server Error
+          schema:
+             $ref: '#/definitions/Error'
+        501:
+          description: Not Implemented
           schema:
              $ref: '#/definitions/Error'
       tags:
