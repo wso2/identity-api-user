@@ -80,6 +80,8 @@ paths:
              $ref: '#/definitions/Error'
         401:
           description: Unauthorized
+        403:
+          description: Resource Forbidden
         409:
           description: Conflict
           schema:
@@ -109,6 +111,8 @@ paths:
           description: No content
         401:
           description: Unauthorized
+        403:
+          description: Resource Forbidden
         500:
           description: Server Error
           schema:
@@ -118,10 +122,12 @@ paths:
       summary: Delete all my user associations
       description: This API is used to delete all associations of the auhtentiated user.
       responses:
-        200:
-          description: OK
+        204:
+          description: No content
         401:
           description: Unauthorized
+        403:
+          description: Resource Forbidden
         500:
           description: Server Error
           schema:
@@ -149,6 +155,8 @@ paths:
              $ref: '#/definitions/Error'
         401:
           description: Unauthorized
+        403:
+          description: Resource Forbidden
         500:
           description: Server Error
           schema:
@@ -194,6 +202,8 @@ paths:
              $ref: '#/definitions/Error'
         401:
           description: Unauthorized
+        403:
+          description: Resource Forbidden
         409:
           description: Conflict
           schema:
@@ -234,6 +244,8 @@ paths:
              $ref: '#/definitions/Error'
         401:
           description: Unauthorized request
+        403:
+          description: Resource Forbidden
         500:
           description: Server Error
           schema:
@@ -248,10 +260,12 @@ paths:
       summary: Delete user's all user associations
       description: This API is used to delete all associations of the  user.
       responses:
-        200:
-          description: OK
+        204:
+          description: No content
         401:
           description: Unauthorized request
+        403:
+          description: Resource Forbidden
         404:
           description: Not Found
           schema:
@@ -265,20 +279,26 @@ paths:
 definitions:
 
 #-----------------------------------------------------
-# The Error Response  object
-#-----------------------------------------------------
+  # The Error Response  object
+  #-----------------------------------------------------
   Error:
     type: object
+    required:
+      - code
+      - message
     properties:
       code:
         type: string
+        example: "some_error_code"
       message:
         type: string
+        example: "Some Error Message"
       description:
         type: string
-      ref:
+        example: "Some Error Description"
+      traceId:
         type: string
-
+        example: "Some Correlation for Error Instance"
 #-----------------------------------------------------
 # The User Response  object
 #-----------------------------------------------------
@@ -291,7 +311,7 @@ definitions:
       username:
         type: string
         example: john
-      user-store-domain:
+      userStoreDomain:
         type: string
         example: PRIMARY
 #-----------------------------------------------------
