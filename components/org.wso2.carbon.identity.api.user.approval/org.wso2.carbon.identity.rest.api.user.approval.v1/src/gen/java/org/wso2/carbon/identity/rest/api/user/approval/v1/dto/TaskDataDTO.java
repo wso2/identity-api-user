@@ -50,7 +50,7 @@ public class TaskDataDTO  {
   private String initiator = null;
   
   public enum ApprovalStatusEnum {
-     PENDING,  APPROVED,  REJECTED, 
+     PENDING,  APPROVE,  REJECT, 
   };
   
   private ApprovalStatusEnum approvalStatus = null;
@@ -128,9 +128,9 @@ public class TaskDataDTO  {
 
   
   /**
-   * Available only for the completed Tasks, APPROVED or REJECTED if the task has been completed, PENDING otherwise
+   * Available only for the completed Tasks, APPROVE or REJECTE if the task has been completed, PENDING otherwise
    **/
-  @ApiModelProperty(value = "Available only for the completed Tasks, APPROVED or REJECTED if the task has been completed, PENDING otherwise")
+  @ApiModelProperty(value = "Available only for the completed Tasks, APPROVE or REJECTE if the task has been completed, PENDING otherwise")
   @JsonProperty("approvalStatus")
   public ApprovalStatusEnum getApprovalStatus() {
     return approvalStatus;
@@ -141,9 +141,9 @@ public class TaskDataDTO  {
 
   
   /**
-   * To whome the task is assigned:\n  * user - username(s) if the task is reserved for specific user(s).\n  * group - role name(s) if the task is assignable for group(s).\n
+   * To whom the task is assigned:\n  * user - username(s) if the task is reserved for specific user(s).\n  * group - role name(s) if the task is assignable for group(s).\n
    **/
-  @ApiModelProperty(value = "To whome the task is assigned:\n  * user - username(s) if the task is reserved for specific user(s).\n  * group - role name(s) if the task is assignable for group(s).\n")
+  @ApiModelProperty(value = "To whom the task is assigned:\n  * user - username(s) if the task is reserved for specific user(s).\n  * group - role name(s) if the task is assignable for group(s).\n")
   @JsonProperty("assignees")
   public List<PropertyDTO> getAssignees() {
     return assignees;

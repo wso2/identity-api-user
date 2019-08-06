@@ -58,7 +58,7 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
         
-        @io.swagger.annotations.ApiResponse(code = 403, message = "Unauthorized"),
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
         
         @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource is not found"),
         

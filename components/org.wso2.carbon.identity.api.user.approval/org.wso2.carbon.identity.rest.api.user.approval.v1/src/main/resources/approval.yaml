@@ -74,7 +74,7 @@ paths:
         401:
           $ref: '#/responses/Unauthorized'
         403:
-          $ref: '#/responses/Unauthorized'
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         409:
@@ -218,9 +218,9 @@ definitions:
         description: The user who initiated the task
       approvalStatus:
         type: string
-        example: "APPROVED"
-        description: Available only for the completed Tasks, APPROVED or REJECTED if the task has been completed, PENDING otherwise
-        enum: [PENDING, APPROVED, REJECTED]
+        example: "APPROVE"
+        description: Available only for the completed Tasks, APPROVE or REJECTE if the task has been completed, PENDING otherwise
+        enum: [PENDING, APPROVE, REJECT]
       assignees:
         type: array
         items:
@@ -274,7 +274,7 @@ definitions:
       description:
         type: string
         example: "Some Error Description"
-      ref:
+      traceId:
         type: string
         example: "Some Correlation for Error Instance"
 securityDefinitions:
@@ -325,4 +325,4 @@ responses:
       description: Resource Forbidden
 
 host: localhost:9443
-basePath: /api/users/v1
+basePath: /t/{tenant-domain}/api/users/v1

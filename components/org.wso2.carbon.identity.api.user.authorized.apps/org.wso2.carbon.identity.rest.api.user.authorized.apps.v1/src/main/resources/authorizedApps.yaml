@@ -274,4 +274,4 @@ responses:
     description: Item Deleted
 
 host: localhost:9443
-basePath: /api/users/v1
+basePath: /t/{tenant-domain}/api/users/v1
