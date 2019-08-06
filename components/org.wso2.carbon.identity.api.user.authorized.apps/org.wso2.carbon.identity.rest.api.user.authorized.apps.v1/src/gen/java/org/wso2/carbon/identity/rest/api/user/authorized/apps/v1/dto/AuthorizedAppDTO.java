@@ -21,6 +21,7 @@ import io.swagger.annotations.*;
 import com.fasterxml.jackson.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 
 
@@ -30,13 +31,13 @@ import javax.validation.constraints.NotNull;
 public class AuthorizedAppDTO  {
   
   
-  @NotNull
+  @NotNull 
   private String appId = null;
   
-  @NotNull
+  @NotNull 
   private String description = null;
   
-  @NotNull
+  @NotNull 
   private String clientId = null;
 
   

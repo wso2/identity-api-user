@@ -51,8 +51,9 @@ public class MeApiServiceImpl extends MeApiService {
     @Override
     public Response getLoggedInUserAuthorizedAppByAppId(String applicationId) {
 
-        authorizedAppsService.deleteUserAuthorizedApps(getUserFromContext(), applicationId);
-        return Response.ok().build();
+        AuthorizedAppDTO authorizedAppDTO = authorizedAppsService.listUserAuthorizedAppsByAppId(getUserFromContext(),
+                                                                                                applicationId);
+        return Response.ok().entity(authorizedAppDTO).build();
     }
 
     @Override

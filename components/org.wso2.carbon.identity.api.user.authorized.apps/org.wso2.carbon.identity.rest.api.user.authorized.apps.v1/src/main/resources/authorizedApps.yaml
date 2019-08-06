@@ -44,6 +44,8 @@ paths:
               $ref: '#/definitions/AuthorizedApp'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         500:
           $ref: '#/responses/ServerError'
     delete:
@@ -60,6 +62,8 @@ paths:
           $ref: '#/responses/Deleted'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         500:
           $ref: '#/responses/ServerError'
   /{user-id}/authorized-apps/{application-id}:
@@ -80,6 +84,8 @@ paths:
             $ref: '#/definitions/AuthorizedApp'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         500:
@@ -99,6 +105,8 @@ paths:
           $ref: '#/responses/Deleted'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         500:
@@ -120,6 +128,8 @@ paths:
               $ref: '#/definitions/AuthorizedApp'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         500:
           $ref: '#/responses/ServerError'
     delete:
@@ -134,13 +144,15 @@ paths:
           $ref: '#/responses/Deleted'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         500:
           $ref: '#/responses/ServerError'
   /me/authorized-apps/{application-id}:
     get:
       tags:
         - developers
-      summary: "retrieve autherized app by app ID for the authenticated user"
+      summary: "retrieve authorized app by app ID for the authenticated user"
       operationId: getLoggedInUserAuthorizedAppByAppId
       description: |
         Retrived autherized OAuth app by an app ID for for the authenticated user
@@ -153,6 +165,8 @@ paths:
             $ref: '#/definitions/AuthorizedApp'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         500:
@@ -160,7 +174,7 @@ paths:
     delete:
       tags:
         - developers
-      summary: "removes autherized app by app ID for the authenticated user"
+      summary: "removes authorized app by app ID for the authenticated user"
       operationId: deleteLoggedInUserAuthorizedAppByAppId
       description: |
         Removes autherized OAuth app by an app ID for for the authenticated user
@@ -171,6 +185,8 @@ paths:
           $ref: '#/responses/Deleted'
         401:
           $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
         404:
           $ref: '#/responses/NotFound'
         500:
@@ -228,6 +244,9 @@ definitions:
       description:
         type: string
         example: "Some Error Description"
+      traceId:
+        type: string
+        example: "Some Correlation for Error Instance"
 securityDefinitions:
   BasicAuth:
     type: basic
@@ -272,6 +291,8 @@ responses:
     description: OK
   Deleted:
     description: Item Deleted
+  Forbidden:
+    description: Resource Forbidden
 
 host: localhost:9443
 basePath: /api/users/v1
