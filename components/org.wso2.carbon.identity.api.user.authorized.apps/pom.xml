@@ -25,7 +25,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.wso2.carbon.identity.user.api</groupId>
     <artifactId>org.wso2.carbon.identity.api.user.authorized.apps</artifactId>
     <packaging>pom</packaging>
 
