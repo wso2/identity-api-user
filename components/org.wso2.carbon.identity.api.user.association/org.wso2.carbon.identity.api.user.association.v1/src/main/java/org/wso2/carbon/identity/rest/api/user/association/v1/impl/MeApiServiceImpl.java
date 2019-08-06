@@ -2,9 +2,6 @@ package org.wso2.carbon.identity.rest.api.user.association.v1.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.identity.api.user.common.ContextLoader;
-import org.wso2.carbon.identity.api.user.common.function.UserIdToUser;
-import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.rest.api.user.association.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.association.v1.core.UserAssociationService;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationSwitchRequestDTO;
@@ -43,7 +40,6 @@ public class MeApiServiceImpl extends MeApiService {
     @Override
     public Response meAssociationsPost(AssociationUserRequestDTO association) {
 
-        association.setUserId(getUser(association.getUserId()));
         userAssociationService.createUserAccountAssociation(association);
         return Response.created(getAssociationsLocationURI()).build();
     }
@@ -64,10 +60,5 @@ public class MeApiServiceImpl extends MeApiService {
     private URI getAssociationsLocationURI() {
 
         return buildURI(String.format(V1_API_PATH_COMPONENT + USER_ASSOCIATIONS_PATH_COMPONENT, ME_CONTEXT));
-    }
-
-    private String getUser(String userId) {
-        User user = new UserIdToUser().apply(userId, ContextLoader.getTenantDomainFromContext());
-        return user.toFullQualifiedUsername();
     }
 }

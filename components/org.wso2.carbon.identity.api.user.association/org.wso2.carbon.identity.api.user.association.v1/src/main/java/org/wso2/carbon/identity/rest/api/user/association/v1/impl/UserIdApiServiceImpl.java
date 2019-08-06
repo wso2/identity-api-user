@@ -39,7 +39,6 @@ public class UserIdApiServiceImpl extends UserIdApiService {
     @Override
     public Response userIdAssociationsPost(AssociationRequestDTO association, String userId) {
 
-        association.setAssociateUserId(getUser(association.getAssociateUserId()));
         userAssociationService.createUserAccountAssociation(association, getUser(userId));
         return Response.created(getAssociationsLocationURI(userId)).build();
     }
