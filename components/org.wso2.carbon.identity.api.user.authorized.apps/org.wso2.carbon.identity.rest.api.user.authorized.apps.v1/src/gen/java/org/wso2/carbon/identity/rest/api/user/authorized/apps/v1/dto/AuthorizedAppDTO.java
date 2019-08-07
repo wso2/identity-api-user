@@ -35,9 +35,6 @@ public class AuthorizedAppDTO  {
   private String appId = null;
   
   @NotNull 
-  private String description = null;
-  
-  @NotNull 
   private String clientId = null;
 
   
@@ -50,18 +47,6 @@ public class AuthorizedAppDTO  {
   }
   public void setAppId(String appId) {
     this.appId = appId;
-  }
-
-  
-  /**
-   **/
-  @ApiModelProperty(required = true, value = "")
-  @JsonProperty("description")
-  public String getDescription() {
-    return description;
-  }
-  public void setDescription(String description) {
-    this.description = description;
   }
 
   
@@ -84,7 +69,6 @@ public class AuthorizedAppDTO  {
     sb.append("class AuthorizedAppDTO {\n");
     
     sb.append("  appId: ").append(appId).append("\n");
-    sb.append("  description: ").append(description).append("\n");
     sb.append("  clientId: ").append(clientId).append("\n");
     sb.append("}\n");
     return sb.toString();

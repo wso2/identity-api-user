@@ -213,15 +213,11 @@ definitions:
     type: object
     required:
       - appId
-      - description
       - clientId
     properties:
       appId:
         type: string
         example: FooApp
-      description:
-        type: string
-        example: Foo Application
       clientId:
         type: string
         example: 7y7zPj4wDX3nRtfPKrmt8Auke44a
