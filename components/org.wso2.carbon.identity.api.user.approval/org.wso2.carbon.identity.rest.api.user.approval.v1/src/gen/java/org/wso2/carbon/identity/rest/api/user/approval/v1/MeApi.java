@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiParam;
 
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskDataDTO;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.ErrorDTO;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskSummeryDTO;
+import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskSummaryDTO;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO;
 
 import java.util.List;
@@ -50,9 +50,9 @@ public class MeApi  {
     @Path("/approval-tasks/{task-id}")
     
     
-    @io.swagger.annotations.ApiOperation(value = "retrieves an approval task by id", notes = "Retrieve information of a specific human task.\n", response = TaskDataDTO.class)
+    @io.swagger.annotations.ApiOperation(value = "Retrieves an approval task by the task-id", notes = "Retrieves information of a specific approval task identified by the task-id\n", response = TaskDataDTO.class)
     @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "Detailed information of the approval task"),
+        @io.swagger.annotations.ApiResponse(code = 200, message = "Detailed information of the approval task identified by the task-id"),
         
         @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid input request"),
         
@@ -66,7 +66,7 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response getApprovalTaskInfo(@ApiParam(value = "Task Id",required=true ) @PathParam("task-id")  String taskId)
+    public Response getApprovalTaskInfo(@ApiParam(value = "Task ID",required=true ) @PathParam("task-id")  String taskId)
     {
     return delegate.getApprovalTaskInfo(taskId);
     }
@@ -74,9 +74,9 @@ public class MeApi  {
     @Path("/approval-tasks")
     
     
-    @io.swagger.annotations.ApiOperation(value = "searches available approvals for the authenticated user", notes = "Retrieve the available approval tasks in the system for the authenticated user. This API returns, all the claimable, assigned and completed approval tasks. User may invoke the endpoint with\n", response = TaskSummeryDTO.class, responseContainer = "List")
+    @io.swagger.annotations.ApiOperation(value = "Retrieves available approvals for the authenticated user", notes = "Retrieve the available approval tasks in the system for the authenticated user. This API returns the following types of approvals:\n  * READY - Tasks that are _claimable_ by the user. User is eligible to assign the task to himself and complete it, if a particular task is in READY state.\n  * RESERVED -  Tasks that are _assigned_ to the user and to be approved by this user.\n  * COMPLETED - Tasks that are already _completed_ (approved or denied) by this user.\n\n_Minimum permission level required for a user to invoke this API:_\n  * _/permission/admin/login_\n\n A user can also invoke the endpoint with the following query parameters.\n", response = TaskSummaryDTO.class, responseContainer = "List")
     @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "search results matching criteria"),
+        @io.swagger.annotations.ApiResponse(code = 200, message = "Array of approval tasks matching the search criteria"),
         
         @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid input request"),
         
@@ -86,9 +86,9 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response listApprovalTasksForLoggedInUser(@ApiParam(value = "maximum number of records to return") @QueryParam("limit")  Integer limit,
-    @ApiParam(value = "number of records to skip for pagination") @QueryParam("offset")  Integer offset,
-    @ApiParam(value = "Approval task's status:\n * RESERVED - Tasks assigned to the authenticated user.\n * READY - Tasks that can be assigned to and approved by the authenticated user.\n * COMPLETED - Tasks that are completed by the user\n * <empty> - All the task available to view will be retrieved if this parameter is not specified.\n") @QueryParam("status")  List<String> status)
+    public Response listApprovalTasksForLoggedInUser(@ApiParam(value = "Maximum number of records to return") @QueryParam("limit")  Integer limit,
+    @ApiParam(value = "Number of records to skip for pagination") @QueryParam("offset")  Integer offset,
+    @ApiParam(value = "Approval task's status to filter tasks by their status:\n * **RESERVED** - Tasks that are **assigned to** the authenticated user.\n * **READY** - Tasks that **can be assigned to** and **can be approved by** the authenticated user.\n * **COMPLETED** - Tasks that are **completed by** the user\n * \\<empty\\> - **All** the viewable tasks will be retrieved if this parameter is not specified.\n") @QueryParam("status")  List<String> status)
     {
     return delegate.listApprovalTasksForLoggedInUser(limit,offset,status);
     }
@@ -96,7 +96,7 @@ public class MeApi  {
     @Path("/approval-tasks/{task-id}/state")
     
     
-    @io.swagger.annotations.ApiOperation(value = "change the state of an approval task", notes = "Update the approval task status by,\n CLAIM - Reserve for the user\n RELEASE - release for other users to claim\n APPROVE - approve the task\n REJECT - deny the task\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Changes the state of an approval task", notes = "Update the approval task status by defining one of the following actions:\n * CLAIM - Reserve the task for the user. Status of the task will be changed from READY to RESERVED.\n * RELEASE - Release the task for other users to claim. Status of the task will be changed from RESERVED to READY.\n * APPROVE - Approve the task. Status of the task will be changed to COMPLETED.\n * REJECT - Deny the task. Status of the task will be changed to COMPLETED.\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "OK"),
         
@@ -110,8 +110,8 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response updateStateOfTask(@ApiParam(value = "Task Id",required=true ) @PathParam("task-id")  String taskId,
-    @ApiParam(value = "to which state the task should be changed"  ) StateDTO nextState)
+    public Response updateStateOfTask(@ApiParam(value = "Task ID",required=true ) @PathParam("task-id")  String taskId,
+    @ApiParam(value = "To which state the task should be changed."  ) StateDTO nextState)
     {
     return delegate.updateStateOfTask(taskId,nextState);
     }

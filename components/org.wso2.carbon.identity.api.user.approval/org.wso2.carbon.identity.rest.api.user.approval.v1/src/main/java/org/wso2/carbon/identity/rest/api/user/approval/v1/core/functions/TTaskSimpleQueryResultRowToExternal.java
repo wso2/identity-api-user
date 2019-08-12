@@ -17,18 +17,18 @@
 package org.wso2.carbon.identity.rest.api.user.approval.v1.core.functions;
 
 import org.wso2.carbon.humantask.client.api.types.TTaskSimpleQueryResultRow;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskSummeryDTO;
+import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskSummaryDTO;
 
 import java.util.function.Function;
 
 /**
  * Transform TTaskSimpleQueryResultRow to TaskSummeryDTO
  */
-public class TTaskSimpleQueryResultRowToExternal implements Function<TTaskSimpleQueryResultRow, TaskSummeryDTO> {
+public class TTaskSimpleQueryResultRowToExternal implements Function<TTaskSimpleQueryResultRow, TaskSummaryDTO> {
 
     @Override
-    public TaskSummeryDTO apply(TTaskSimpleQueryResultRow tTaskSimpleQueryResultRow) {
-        TaskSummeryDTO summeryDTO = new TaskSummeryDTO();
+    public TaskSummaryDTO apply(TTaskSimpleQueryResultRow tTaskSimpleQueryResultRow) {
+        TaskSummaryDTO summeryDTO = new TaskSummaryDTO();
         summeryDTO.setId(tTaskSimpleQueryResultRow.getId().getPath());
         summeryDTO.setName(tTaskSimpleQueryResultRow.getName().toString());
         summeryDTO.setTaskType(tTaskSimpleQueryResultRow.getTaskType());
@@ -36,7 +36,7 @@ public class TTaskSimpleQueryResultRowToExternal implements Function<TTaskSimple
         summeryDTO.setPresentationSubject(tTaskSimpleQueryResultRow.getPresentationSubject().getTPresentationSubject());
         summeryDTO.setCreatedTimeInMillis(String.valueOf(tTaskSimpleQueryResultRow.getCreatedTime().getTimeInMillis()));
         summeryDTO.setPriority(tTaskSimpleQueryResultRow.getPriority().getTPriority().intValue());
-        summeryDTO.setStatus(tTaskSimpleQueryResultRow.getStatus().getTStatus());
+        summeryDTO.setStatus(TaskSummaryDTO.StatusEnum.valueOf(tTaskSimpleQueryResultRow.getStatus().getTStatus()));
         return summeryDTO;
     }
 }

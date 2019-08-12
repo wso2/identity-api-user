@@ -44,7 +44,7 @@ import org.wso2.carbon.identity.rest.api.user.approval.v1.core.functions.TaskMod
 import org.wso2.carbon.identity.rest.api.user.approval.v1.core.model.TaskModel;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskDataDTO;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskSummeryDTO;
+import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskSummaryDTO;
 
 import java.util.Arrays;
 import java.util.List;
@@ -94,7 +94,7 @@ public class UserApprovalService {
      * @param status state of the tasks [RESERVED, READY or COMPLETED]
      * @return
      */
-    public List<TaskSummeryDTO> listTasks(Integer limit, Integer offset, List<String> status) {
+    public List<TaskSummaryDTO> listTasks(Integer limit, Integer offset, List<String> status) {
 
         try {
             TSimpleQueryInput queryInput = new TSimpleQueryInput();

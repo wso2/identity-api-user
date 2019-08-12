@@ -21,7 +21,7 @@ import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.*;
 
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskDataDTO;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.ErrorDTO;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskSummeryDTO;
+import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskSummaryDTO;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO;
 
 import java.util.List;
