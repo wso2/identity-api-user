@@ -1,8 +1,8 @@
 swagger: '2.0'
 info:
-  description: This is the RESTful API for managing Challenge Questions in WSO2 Identity Server
-  version: "1.0.0"
-  title: WSO2 Identity Server - Challenge Question API
+  description: This is the RESTful API for managing challenge questions and answers of a user in WSO2 Identity Server
+  version: "v1"
+  title: WSO2 Identity Server - User's Challenge Questions and Answers API Definition.
   contact:
     name: "WSO2 Identity Server"
     url: "https://wso2.com/identity-and-access-management/"
@@ -14,272 +14,36 @@ info:
 schemes:
  - https
 
-# tags are used for organizing operations
+# Tags are used for organizing operations
 tags:
-- name: management
-  description: Secured Admin-only calls
-- name: developement
-  description: Operations available to regular developement
+- name: me
+  description: Operations for the authenticated user.
+- name: admin
+  description: >
+    Operations available for privileged users, to be invoked on behalf of another user.
 
-# applicable authentication mechanisms
+    **These endpoints are not released in WSO2 Identity Server - 5.9.0 version and will be released in the next product release.**
+
+# Applicable authentication mechanisms
 security:
   - OAuth2: []
   - BasicAuth: []
 
 paths:
-  /{user-id}/challenges:
-    get:
-      tags:
-        - developement
-      summary: searches challenges available for a user
-      operationId: getChallengesForAUser
-      description: |
-        Search for
-        available challenges in the system for the user.
-      parameters:
-        - $ref: '#/parameters/usernamePathParams'
-        - in: query
-          name: offset
-          description: number of records to skip for pagination
-          type: integer
-          format: int32
-          minimum: 0
-        - in: query
-          name: limit
-          description: maximum number of records to return
-          type: integer
-          format: int32
-          minimum: 0
-          maximum: 50
-      responses:
-        200:
-          description: search results matching criteria
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/ChallengeSet'
-        400:
-          $ref: '#/responses/InvalidInput'
-        401:
-          $ref: '#/responses/Unauthorized'
-        403:
-          $ref: '#/responses/Forbidden'
-        404:
-          $ref: '#/responses/NotFound'
-        500:
-          $ref: '#/responses/ServerError'
-  /{user-id}/challenge-answers:
-    post:
-      tags:
-        - developement
-      summary: "answers a new challenge question"
-      operationId: addChallengeAnswersOfAUser
-      description: |
-        Adds a new challenge question answer to the system for a specific user.
-      parameters:
-        - $ref: '#/parameters/usernamePathParams'
-        - in: body
-          name: challenge-answer
-          description: challenge question with answer
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/ChallengeAnswer'
-      responses:
-        201:
-          $ref: '#/responses/Created'
-        400:
-          $ref: '#/responses/InvalidInput'
-        401:
-          $ref: '#/responses/Unauthorized'
-        403:
-          $ref: '#/responses/Forbidden'
-        404:
-          $ref: '#/responses/NotFound'
-        409:
-          $ref: '#/responses/Conflict'
-        500:
-          $ref: '#/responses/ServerError'
-    get:
-      tags:
-        - developement
-      summary: "get user's challenge answers"
-      operationId: getAnsweredChallengesOfAUser
-      description: |
-        Get answered challenges in the system for a specific user.
-      parameters:
-        - $ref: '#/parameters/usernamePathParams'
-
-      responses:
-        200:
-          description: search results matching criteria
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/UserChallengeAnswerResponse'
-        401:
-          $ref: '#/responses/Unauthorized'
-        403:
-          $ref: '#/responses/Forbidden'
-        404:
-          $ref: '#/responses/NotFound'
-        500:
-          $ref: '#/responses/ServerError'
-    put:
-      tags:
-        - developement
-      summary: "answers new challenge question combination"
-      operationId: updateChallengeAnswersOfAUser
-      description: |
-        Addsnew challenge question answers to the system for a specific user.
-      parameters:
-        - $ref: '#/parameters/usernamePathParams'
-        - in: body
-          name: challengeAnswers
-          description: set of challenge question with answer
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/ChallengeAnswer'
-      responses:
-        200:
-          $ref: '#/responses/OK'
-        400:
-          $ref: '#/responses/InvalidInput'
-        401:
-          $ref: '#/responses/Unauthorized'
-        403:
-          $ref: '#/responses/Forbidden'
-        404:
-          $ref: '#/responses/NotFound'
-        500:
-          $ref: '#/responses/ServerError'
-    delete:
-      tags:
-        - developement
-      summary: "removes challenge question answers"
-      operationId: deleteChallengeAnswersOfAUser
-      description: |
-        Removes existing challenge question answers of a user
-      parameters:
-        - $ref: '#/parameters/usernamePathParams'
-      responses:
-        204:
-          $ref: '#/responses/NoContent'
-        401:
-          $ref: '#/responses/Unauthorized'
-        403:
-          $ref: '#/responses/Forbidden'
-        404:
-          $ref: '#/responses/NotFound'
-        500:
-          $ref: '#/responses/ServerError'
-  /{user-id}/challenge-answers/{challenge-set-id}:
-    post:
-      tags:
-        - developement
-      summary: "answers a new challenge question"
-      operationId: addChallengeAnswerOfAUser
-      description: |
-        Update new challenge question answer to the system for a specific user.
-      parameters:
-        - $ref: '#/parameters/questionSetIdPathParam'
-        - $ref: '#/parameters/usernamePathParams'
-        - in: body
-          name: challengeAnswer
-          description: challenge-question with answer
-          schema:
-            $ref: '#/definitions/UserChallengeAnswer'
-      responses:
-        201:
-          $ref: '#/responses/Created'
-        400:
-          $ref: '#/responses/InvalidInput'
-        401:
-          $ref: '#/responses/Unauthorized'
-        403:
-          $ref: '#/responses/Forbidden'
-        404:
-          $ref: '#/responses/NotFound'
-        409:
-          $ref: '#/responses/Conflict'
-        500:
-          $ref: '#/responses/ServerError'
-    put:
-      tags:
-        - developement
-      summary: "update answer of a challenge question"
-      operationId: updateChallengeAnswerOfAUser
-      description: |
-        Update challenge question answer of a specific user.
-      parameters:
-        - $ref: '#/parameters/questionSetIdPathParam'
-        - $ref: '#/parameters/usernamePathParams'
-        - in: body
-          name: challengeAnswer
-          description: challenge-question with answer
-          schema:
-            $ref: '#/definitions/UserChallengeAnswer'
-      responses:
-        200:
-          $ref: '#/responses/OK'
-        400:
-          $ref: '#/responses/InvalidInput'
-        401:
-          $ref: '#/responses/Unauthorized'
-        403:
-          $ref: '#/responses/Forbidden'
-        404:
-          $ref: '#/responses/NotFound'
-        500:
-          $ref: '#/responses/ServerError'
-    delete:
-      tags:
-        - developement
-      summary: "removes a challenge question answer"
-      operationId: deleteChallengeAnswerOfAUser
-      description: |
-        Removes existing challenge question answers of a user
-      parameters:
-        - $ref: '#/parameters/questionSetIdPathParam'
-        - $ref: '#/parameters/usernamePathParams'
-      responses:
-        204:
-          $ref: '#/responses/NoContent'
-        401:
-          $ref: '#/responses/Unauthorized'
-        403:
-          $ref: '#/responses/Forbidden'
-        404:
-          $ref: '#/responses/NotFound'
-        500:
-          $ref: '#/responses/ServerError'
   /me/challenges:
     get:
       tags:
-        - developement
-      summary: searches challenge-question for authenticated user
+        - me
+      summary: Retrieve challenges available for the authenticated user.
       operationId: getChallengesForLoggedInUser
       description: |
-        Retrieve the
-        available challenge-question in the system for the authenticated user
+        Retrieves the available challenges in the system for the authenticated user. In the response challenge questions are grouped as **challenge set**s.
       parameters:
-        - in: query
-          name: offset
-          description: number of records to skip for pagination
-          type: integer
-          format: int32
-          minimum: 0
-        - in: query
-          name: limit
-          description: maximum number of records to return
-          type: integer
-          format: int32
-          minimum: 0
-          maximum: 50
+        - $ref: '#/parameters/limitQueryParam'
+        - $ref: '#/parameters/offsetQueryParam'
       responses:
         200:
-          description: search results matching criteria
+          description: All the available challenges in the system that can be answered by the user.
           schema:
             type: array
             items:
@@ -295,15 +59,15 @@ paths:
   /me/challenge-answers:
     post:
       tags:
-        - developement
-      summary: "answers a new challenge question"
+        - me
+      summary: Answer to a collection of new challenges.
       operationId: addChallengeAnswersForLoggedInUser
       description: |
-        Adds a new challenge question answer to the system
+        Provide answer(s) to one or more candidate challenge question set(s) available in the system for the authenticated user. A user can pick at maximum one question from each set to answer. A user may answer **one or more distinct** challenge question **set(s)**.
       parameters:
         - in: body
-          name: challenge-answer
-          description: challenge-question with answer
+          name: challengeAnswer
+          description: One or more challenge(s) with the answer.
           schema:
             type: array
             items:
@@ -323,14 +87,14 @@ paths:
           $ref: '#/responses/ServerError'
     get:
       tags:
-        - developement
-      summary: "get user's challenge answers"
+        - me
+      summary: Get user's answered challenges.
       operationId: getAnsweredChallengesOfLoggedInUser
-      description: |
-        Get answered challenges in the system for a specific user.
+      description: >
+        Get previously answered challenge(s) in the system by the authenticated user.
       responses:
         200:
-          description: search results matching criteria
+          description: Array of Challenge(s) that are already answered by the authenticated user.
           schema:
             type: array
             items:
@@ -343,15 +107,15 @@ paths:
           $ref: '#/responses/ServerError'
     put:
       tags:
-        - developement
-      summary: "answers new challenge question combination"
+        - me
+      summary: Answer new challenge question combination over existing answers.
       operationId: updateChallengeAnswersOfLoggedInUser
       description: |
-        Addsnew challenge question answers to the system for logged In user.
+        Overrides the *already answered challenges* in the system with a set of *new challenge question answers* for logged In user. A user can pick at maximum one question from each set to answer. A user may answer **one or more distinct** challenge question **sets**.
       parameters:
         - in: body
           name: challengeAnswers
-          description: set of challenge question with answer
+          description: Set of challenges with answer.
           schema:
             type: array
             items:
@@ -371,11 +135,11 @@ paths:
           $ref: '#/responses/ServerError'
     delete:
       tags:
-        - developement
-      summary: "removes challenge question answers"
+        - me
+      summary: Remove challenge question answers.
       operationId: deleteChallengeAnswersOfLoggedInUser
       description: |
-        Removes an existing challenge question answers of the authenticated user
+        Removes all the existing challenge answers of the authenticated user.
       responses:
         204:
           $ref: '#/responses/NoContent'
@@ -390,16 +154,16 @@ paths:
   /me/challenge-answers/{challenge-set-id}:
     post:
       tags:
-        - developement
-      summary: "answers a new challenge question"
+        - me
+      summary: Answers a specific new challenge.
       operationId: addChallengeAnswerOfLoggedInUser
       description: |
-        Adds a new challenge question answer to the system for loggedin user.
+        Provide an **answer** to **a specific challenge** in the system for loggedin user. The user can at most select one question from a challenge set of interest.
       parameters:
         - $ref: '#/parameters/questionSetIdPathParam'
         - in: body
           name: challengeAnswer
-          description: challenge-question with answer
+          description: The answer to the challenge along with the question.
           schema:
             $ref: '#/definitions/UserChallengeAnswer'
       responses:
@@ -419,8 +183,8 @@ paths:
           $ref: '#/responses/ServerError'
     put:
       tags:
-        - developement
-      summary: "answers a new challenge question"
+        - me
+      summary: Update challenge answer of an already answered challenge.
       operationId: updateChallengeAnswerOfLoggedInUser
       description: |
         Update challenge answer in a specific challenge for authenticated user.
@@ -428,7 +192,7 @@ paths:
         - $ref: '#/parameters/questionSetIdPathParam'
         - in: body
           name: challenge-answer
-          description: challenge-question with answer
+          description: The challenge answer with the challenge-question.
           schema:
            $ref: '#/definitions/UserChallengeAnswer'
       responses:
@@ -446,13 +210,228 @@ paths:
           $ref: '#/responses/ServerError'
     delete:
       tags:
-        - developement
-      summary: "removes a challenge question answer"
+        - me
+      summary: Remove a challenge question answer.
       operationId: deleteChallengeAnswerOfLoggedInUser
       description: |
-        Removes existing challenge question answers of authenticated user
+        Removes existing answer provided by the authenticated user to a specific challenge.
       parameters:
         - $ref: '#/parameters/questionSetIdPathParam'
+      responses:
+        204:
+          $ref: '#/responses/NoContent'
+        401:
+          $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+        500:
+          $ref: '#/responses/ServerError'
+  /{user-id}/challenges:
+    get:
+      tags:
+        - admin
+      summary: Retrieve challenges available for a user identified by the user-id.
+      operationId: getChallengesForAUser
+      description: |
+        Retrieves the available challenges in the system for the specified user. In the response challenge questions are grouped as **challenge set**s.
+      parameters:
+        - $ref: '#/parameters/usernamePathParams'
+        - $ref: '#/parameters/limitQueryParam'
+        - $ref: '#/parameters/offsetQueryParam'
+      responses:
+        200:
+          description:  All the available challenges in the system that can be answered by the user.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ChallengeSet'
+        400:
+          $ref: '#/responses/InvalidInput'
+        401:
+          $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+        500:
+          $ref: '#/responses/ServerError'
+  /{user-id}/challenge-answers:
+    post:
+      tags:
+        - admin
+      summary: Answer to a collection of new challenges.
+      operationId: addChallengeAnswersOfAUser
+      description: >
+        Provide answer(s) to one or more candidate challenge question set(s) available in the system for the user identified by user-id. A user can pick at maximum one question from each set to answer. A user may answer **one or more distinct** challenge question **set(s)**.
+      parameters:
+        - $ref: '#/parameters/usernamePathParams'
+        - in: body
+          name: challenge-answer
+          description: One or more challenge(s) with the answer.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ChallengeAnswer'
+      responses:
+        201:
+          $ref: '#/responses/Created'
+        400:
+          $ref: '#/responses/InvalidInput'
+        401:
+          $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+        409:
+          $ref: '#/responses/Conflict'
+        500:
+          $ref: '#/responses/ServerError'
+    get:
+      tags:
+        - admin
+      summary: Get user's answered challenges.
+      operationId: getAnsweredChallengesOfAUser
+      description: |
+        Get previously answered challenge(s) in the system by the user idenrified by user-id.
+      parameters:
+        - $ref: '#/parameters/usernamePathParams'
+
+      responses:
+        200:
+          description: Array of Challenge(s) that are already answered by the authenticated user.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserChallengeAnswerResponse'
+        401:
+          $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+        500:
+          $ref: '#/responses/ServerError'
+    put:
+      tags:
+        - admin
+      summary: Answer new challenge question combination over existing answers.
+      operationId: updateChallengeAnswersOfAUser
+      description: |
+        Overrides the *already answered challenges* in the system with a set of *new challenge question answers* for the user identified by user-id. A user can pick at maximum one question from each set to answer. A user may answer **one or more distinct** challenge question **sets**.
+      parameters:
+        - $ref: '#/parameters/usernamePathParams'
+        - in: body
+          name: challengeAnswers
+          description: Set of challenges with answer.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ChallengeAnswer'
+      responses:
+        200:
+          $ref: '#/responses/OK'
+        400:
+          $ref: '#/responses/InvalidInput'
+        401:
+          $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+        500:
+          $ref: '#/responses/ServerError'
+    delete:
+      tags:
+        - admin
+      summary: Remove challenge question answers.
+      operationId: deleteChallengeAnswersOfAUser
+      description: |
+        Removes all the existing challenge answers of the user identified by user-id.
+      parameters:
+        - $ref: '#/parameters/usernamePathParams'
+      responses:
+        204:
+          $ref: '#/responses/NoContent'
+        401:
+          $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+        500:
+          $ref: '#/responses/ServerError'
+  /{user-id}/challenge-answers/{challenge-set-id}:
+    post:
+      tags:
+        - admin
+      summary: Answers a specific new challenge.
+      operationId: addChallengeAnswerOfAUser
+      description: |
+        Provide an **answer** to **a specific challenge** in the system for the user identified by user-id. The user can at most select one question from a challenge set of interest.
+      parameters:
+        - $ref: '#/parameters/questionSetIdPathParam'
+        - $ref: '#/parameters/usernamePathParams'
+        - in: body
+          name: challengeAnswer
+          description: The answer to the challenge along with the question.
+          schema:
+            $ref: '#/definitions/UserChallengeAnswer'
+      responses:
+        201:
+          $ref: '#/responses/Created'
+        400:
+          $ref: '#/responses/InvalidInput'
+        401:
+          $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+        409:
+          $ref: '#/responses/Conflict'
+        500:
+          $ref: '#/responses/ServerError'
+    put:
+      tags:
+        - admin
+      summary: Update challenge answer of an already answered challenge.
+      operationId: updateChallengeAnswerOfAUser
+      description: |
+        Update challenge answer in a specific challenge for authenticated user.
+      parameters:
+        - $ref: '#/parameters/questionSetIdPathParam'
+        - $ref: '#/parameters/usernamePathParams'
+        - in: body
+          name: challengeAnswer
+          description: The challenge answer with the challenge-question.
+          schema:
+            $ref: '#/definitions/UserChallengeAnswer'
+      responses:
+        200:
+          $ref: '#/responses/OK'
+        400:
+          $ref: '#/responses/InvalidInput'
+        401:
+          $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+        500:
+          $ref: '#/responses/ServerError'
+    delete:
+      tags:
+        - admin
+      summary: Remove a challenge question answer.
+      operationId: deleteChallengeAnswerOfAUser
+      description: |
+        Removes existing answer provided by the user(identified by user-id) to a specific challenge.
+      parameters:
+        - $ref: '#/parameters/questionSetIdPathParam'
+        - $ref: '#/parameters/usernamePathParams'
       responses:
         204:
           $ref: '#/responses/NoContent'
@@ -470,26 +449,40 @@ parameters:
       name: user-id
       required: true
       type: string
-      description: username of the user
+      description: Uniquely identifiable user ID
     questionSetIdPathParam:
       in: path
       name: challenge-set-id
       required: true
       type: string
-      description: Challenge Question set Id
+      description: Challenge Question Set ID
     questionIdPathParam:
       in: path
       name: question-id
       required: true
       type: string
-      description: Challenge Question Id
+      description: Challenge Question ID
     localeQueryParam:
       in: query
       name: locale
-      description: pass an optional search string for looking up challenge-question based on locale
+      description: An optional search string for looking up challenge-questions based on locale
       required: false
       type: string
-
+    offsetQueryParam:
+      in: query
+      name: offset
+      description: Number of records to skip for pagination. _*This filtering is not yet supported._
+      type: integer
+      format: int32
+      minimum: 0
+    limitQueryParam:
+      in: query
+      name: limit
+      description: Maximum number of records to return. _*This filtering is not yet supported._
+      type: integer
+      format: int32
+      minimum: 0
+      maximum: 50
 definitions:
     #-----------------------------------------------------
     # ChallengeSet Properties object
@@ -573,7 +566,7 @@ definitions:
         example: What is your favorite travel destination ?
       answer:
         type: string
-        example: Colombo
+        example: Ro83J+wm/zkUt2/6GDf+xZD8s/2pjPqTUhrkOrwGBb4=
   #-----------------------------------------------------
   # The Error Response  object
   #-----------------------------------------------------

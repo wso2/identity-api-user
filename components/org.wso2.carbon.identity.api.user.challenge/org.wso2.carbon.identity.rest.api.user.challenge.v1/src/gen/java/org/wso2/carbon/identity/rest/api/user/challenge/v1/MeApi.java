@@ -52,7 +52,7 @@ public class MeApi  {
     @Path("/challenge-answers/{challenge-set-id}")
     
     
-    @io.swagger.annotations.ApiOperation(value = "answers a new challenge question", notes = "Adds a new challenge question answer to the system for loggedin user.\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Answers a specific new challenge.", notes = "Provide an **answer** to **a specific challenge** in the system for loggedin user. The user can at most select one question from a challenge set of interest.\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 201, message = "Item Created"),
         
@@ -68,8 +68,8 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response addChallengeAnswerOfLoggedInUser(@ApiParam(value = "Challenge Question set Id",required=true ) @PathParam("challenge-set-id")  String challengeSetId,
-    @ApiParam(value = "challenge-question with answer"  ) UserChallengeAnswerDTO challengeAnswer)
+    public Response addChallengeAnswerOfLoggedInUser(@ApiParam(value = "Challenge Question Set ID",required=true ) @PathParam("challenge-set-id")  String challengeSetId,
+    @ApiParam(value = "The answer to the challenge along with the question."  ) UserChallengeAnswerDTO challengeAnswer)
     {
     return delegate.addChallengeAnswerOfLoggedInUser(challengeSetId,challengeAnswer);
     }
@@ -77,7 +77,7 @@ public class MeApi  {
     @Path("/challenge-answers")
     
     
-    @io.swagger.annotations.ApiOperation(value = "answers a new challenge question", notes = "Adds a new challenge question answer to the system\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Answer to a collection of new challenges.", notes = "Provide answer(s) to one or more candidate challenge question set(s) available in the system for the authenticated user. A user can pick at maximum one question from each set to answer. A user may answer **one or more distinct** challenge question **set(s)**.\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 201, message = "Item Created"),
         
@@ -91,7 +91,7 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response addChallengeAnswersForLoggedInUser(@ApiParam(value = "challenge-question with answer"  ) List<ChallengeAnswerDTO> challengeAnswer)
+    public Response addChallengeAnswersForLoggedInUser(@ApiParam(value = "One or more challenge(s) with the answer."  ) List<ChallengeAnswerDTO> challengeAnswer)
     {
     return delegate.addChallengeAnswersForLoggedInUser(challengeAnswer);
     }
@@ -99,7 +99,7 @@ public class MeApi  {
     @Path("/challenge-answers/{challenge-set-id}")
     
     
-    @io.swagger.annotations.ApiOperation(value = "removes a challenge question answer", notes = "Removes existing challenge question answers of authenticated user\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Remove a challenge question answer.", notes = "Removes existing answer provided by the authenticated user to a specific challenge.\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 204, message = "No Content"),
         
@@ -111,7 +111,7 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response deleteChallengeAnswerOfLoggedInUser(@ApiParam(value = "Challenge Question set Id",required=true ) @PathParam("challenge-set-id")  String challengeSetId)
+    public Response deleteChallengeAnswerOfLoggedInUser(@ApiParam(value = "Challenge Question Set ID",required=true ) @PathParam("challenge-set-id")  String challengeSetId)
     {
     return delegate.deleteChallengeAnswerOfLoggedInUser(challengeSetId);
     }
@@ -119,7 +119,7 @@ public class MeApi  {
     @Path("/challenge-answers")
     
     
-    @io.swagger.annotations.ApiOperation(value = "removes challenge question answers", notes = "Removes an existing challenge question answers of the authenticated user\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Remove challenge question answers.", notes = "Removes all the existing challenge answers of the authenticated user.\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 204, message = "No Content"),
         
@@ -139,9 +139,9 @@ public class MeApi  {
     @Path("/challenge-answers")
     
     
-    @io.swagger.annotations.ApiOperation(value = "get user's challenge answers", notes = "Get answered challenges in the system for a specific user.\n", response = UserChallengeAnswerResponseDTO.class, responseContainer = "List")
+    @io.swagger.annotations.ApiOperation(value = "Get user's answered challenges.", notes = "Get previously answered challenge(s) in the system by the authenticated user.\n", response = UserChallengeAnswerResponseDTO.class, responseContainer = "List")
     @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "search results matching criteria"),
+        @io.swagger.annotations.ApiResponse(code = 200, message = "Array of Challenge(s) that are already answered by the authenticated user."),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
         
@@ -157,9 +157,9 @@ public class MeApi  {
     @Path("/challenges")
     
     
-    @io.swagger.annotations.ApiOperation(value = "searches challenge-question for authenticated user", notes = "Retrieve the\navailable challenge-question in the system for the authenticated user\n", response = ChallengeSetDTO.class, responseContainer = "List")
+    @io.swagger.annotations.ApiOperation(value = "Retrieve challenges available for the authenticated user.", notes = "Retrieves the available challenges in the system for the authenticated user. In the response challenge questions are grouped as **challenge set**s.\n", response = ChallengeSetDTO.class, responseContainer = "List")
     @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "search results matching criteria"),
+        @io.swagger.annotations.ApiResponse(code = 200, message = "All the available challenges in the system that can be answered by the user."),
         
         @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid input request"),
         
@@ -169,16 +169,16 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response getChallengesForLoggedInUser(@ApiParam(value = "number of records to skip for pagination") @QueryParam("offset")  Integer offset,
-    @ApiParam(value = "maximum number of records to return") @QueryParam("limit")  Integer limit)
+    public Response getChallengesForLoggedInUser(@ApiParam(value = "Maximum number of records to return. _*This filtering is not yet supported._") @QueryParam("limit")  Integer limit,
+    @ApiParam(value = "Number of records to skip for pagination. _*This filtering is not yet supported._") @QueryParam("offset")  Integer offset)
     {
-    return delegate.getChallengesForLoggedInUser(offset,limit);
+    return delegate.getChallengesForLoggedInUser(limit,offset);
     }
     @PUT
     @Path("/challenge-answers/{challenge-set-id}")
     
     
-    @io.swagger.annotations.ApiOperation(value = "answers a new challenge question", notes = "Update challenge answer in a specific challenge for authenticated user.\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Update challenge answer of an already answered challenge.", notes = "Update challenge answer in a specific challenge for authenticated user.\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "OK"),
         
@@ -192,8 +192,8 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response updateChallengeAnswerOfLoggedInUser(@ApiParam(value = "Challenge Question set Id",required=true ) @PathParam("challenge-set-id")  String challengeSetId,
-    @ApiParam(value = "challenge-question with answer"  ) UserChallengeAnswerDTO challengeAnswer)
+    public Response updateChallengeAnswerOfLoggedInUser(@ApiParam(value = "Challenge Question Set ID",required=true ) @PathParam("challenge-set-id")  String challengeSetId,
+    @ApiParam(value = "The challenge answer with the challenge-question."  ) UserChallengeAnswerDTO challengeAnswer)
     {
     return delegate.updateChallengeAnswerOfLoggedInUser(challengeSetId,challengeAnswer);
     }
@@ -201,7 +201,7 @@ public class MeApi  {
     @Path("/challenge-answers")
     
     
-    @io.swagger.annotations.ApiOperation(value = "answers new challenge question combination", notes = "Addsnew challenge question answers to the system for logged In user.\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Answer new challenge question combination over existing answers.", notes = "Overrides the *already answered challenges* in the system with a set of *new challenge question answers* for logged In user. A user can pick at maximum one question from each set to answer. A user may answer **one or more distinct** challenge question **sets**.\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "OK"),
         
@@ -215,7 +215,7 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response updateChallengeAnswersOfLoggedInUser(@ApiParam(value = "set of challenge question with answer"  ) List<ChallengeAnswerDTO> challengeAnswers)
+    public Response updateChallengeAnswersOfLoggedInUser(@ApiParam(value = "Set of challenges with answer."  ) List<ChallengeAnswerDTO> challengeAnswers)
     {
     return delegate.updateChallengeAnswersOfLoggedInUser(challengeAnswers);
     }

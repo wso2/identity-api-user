@@ -39,7 +39,7 @@ public abstract class UserIdApiService {
     public abstract Response deleteChallengeAnswerOfAUser(String challengeSetId,String userId);
     public abstract Response deleteChallengeAnswersOfAUser(String userId);
     public abstract Response getAnsweredChallengesOfAUser(String userId);
-    public abstract Response getChallengesForAUser(String userId,Integer offset,Integer limit);
+    public abstract Response getChallengesForAUser(String userId,Integer limit,Integer offset);
     public abstract Response updateChallengeAnswerOfAUser(String challengeSetId,String userId,UserChallengeAnswerDTO challengeAnswer);
     public abstract Response updateChallengeAnswersOfAUser(String userId,List<ChallengeAnswerDTO> challengeAnswers);
 }
