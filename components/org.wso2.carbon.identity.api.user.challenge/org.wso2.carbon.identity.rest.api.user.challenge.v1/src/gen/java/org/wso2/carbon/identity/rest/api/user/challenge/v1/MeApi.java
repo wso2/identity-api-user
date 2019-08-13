@@ -52,7 +52,7 @@ public class MeApi  {
     @Path("/challenge-answers/{challenge-set-id}")
     
     
-    @io.swagger.annotations.ApiOperation(value = "Answers a specific new challenge.", notes = "Provide an **answer** to **a specific challenge** in the system for loggedin user. The user can at most select one question from a challenge set of interest.\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Answers a specific new challenge.", notes = "Provide an **answer** to **a specific challenge** in the system for loggedin user. The user can at most select one question from a challenge set of interest.\n\n<b>Permission required:</b>\n * /permission/admin/login\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 201, message = "Item Created"),
         
@@ -77,7 +77,7 @@ public class MeApi  {
     @Path("/challenge-answers")
     
     
-    @io.swagger.annotations.ApiOperation(value = "Answer to a collection of new challenges.", notes = "Provide answer(s) to one or more candidate challenge question set(s) available in the system for the authenticated user. A user can pick at maximum one question from each set to answer. A user may answer **one or more distinct** challenge question **set(s)**.\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Answer to a collection of new challenges.", notes = "Provide answer(s) to one or more candidate challenge question set(s) available in the system for the authenticated user. A user can pick at maximum one question from each set to answer. A user may answer **one or more distinct** challenge question **set(s)**.\n\n<b>Permission required:</b>\n * /permission/admin/login\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 201, message = "Item Created"),
         
@@ -99,7 +99,7 @@ public class MeApi  {
     @Path("/challenge-answers/{challenge-set-id}")
     
     
-    @io.swagger.annotations.ApiOperation(value = "Remove a challenge question answer.", notes = "Removes existing answer provided by the authenticated user to a specific challenge.\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Remove a challenge question answer.", notes = "Removes existing answer provided by the authenticated user to a specific challenge.\n\n<b>Permission required:</b>\n * /permission/admin/login\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 204, message = "No Content"),
         
@@ -119,7 +119,7 @@ public class MeApi  {
     @Path("/challenge-answers")
     
     
-    @io.swagger.annotations.ApiOperation(value = "Remove challenge question answers.", notes = "Removes all the existing challenge answers of the authenticated user.\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Remove challenge question answers.", notes = "Removes all the existing challenge answers of the authenticated user.\n\n<b>Permission required:</b>\n * /permission/admin/login\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 204, message = "No Content"),
         
@@ -139,7 +139,7 @@ public class MeApi  {
     @Path("/challenge-answers")
     
     
-    @io.swagger.annotations.ApiOperation(value = "Get user's answered challenges.", notes = "Get previously answered challenge(s) in the system by the authenticated user.\n", response = UserChallengeAnswerResponseDTO.class, responseContainer = "List")
+    @io.swagger.annotations.ApiOperation(value = "Get user's answered challenges.", notes = "Get previously answered challenge(s) in the system by the authenticated user. <br/>\n<b>Permission required:</b>\n * /permission/admin/login\n", response = UserChallengeAnswerResponseDTO.class, responseContainer = "List")
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "Array of Challenge(s) that are already answered by the authenticated user."),
         
@@ -157,7 +157,7 @@ public class MeApi  {
     @Path("/challenges")
     
     
-    @io.swagger.annotations.ApiOperation(value = "Retrieve challenges available for the authenticated user.", notes = "Retrieves the available challenges in the system for the authenticated user. In the response challenge questions are grouped as **challenge set**s.\n", response = ChallengeSetDTO.class, responseContainer = "List")
+    @io.swagger.annotations.ApiOperation(value = "Retrieve challenges available for the authenticated user.", notes = "Retrieves the available challenges in the system for the authenticated user. In the response challenge questions are grouped as **challenge set**s.\n\n<b>Permission required:</b>\n * /permission/admin/login\n", response = ChallengeSetDTO.class, responseContainer = "List")
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "All the available challenges in the system that can be answered by the user."),
         
@@ -178,7 +178,7 @@ public class MeApi  {
     @Path("/challenge-answers/{challenge-set-id}")
     
     
-    @io.swagger.annotations.ApiOperation(value = "Update challenge answer of an already answered challenge.", notes = "Update challenge answer in a specific challenge for authenticated user.\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Update challenge answer of an already answered challenge.", notes = "Update challenge answer in a specific challenge for authenticated user.\n\n<b>Permission required:</b>\n * /permission/admin/login\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "OK"),
         
@@ -201,7 +201,7 @@ public class MeApi  {
     @Path("/challenge-answers")
     
     
-    @io.swagger.annotations.ApiOperation(value = "Answer new challenge question combination over existing answers.", notes = "Overrides the *already answered challenges* in the system with a set of *new challenge question answers* for logged In user. A user can pick at maximum one question from each set to answer. A user may answer **one or more distinct** challenge question **sets**.\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Answer new challenge question combination over existing answers.", notes = "Overrides the *already answered challenges* in the system with a set of *new challenge question answers* for logged In user. A user can pick at maximum one question from each set to answer. A user may answer **one or more distinct** challenge question **sets**.\n\n<b>Permission required:</b>\n * /permission/admin/login\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "OK"),
         

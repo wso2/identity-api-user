@@ -17,7 +17,7 @@ schemes:
 
 # Tags are used for organizing operations.
 tags:
-- name: me
+- name: default
   description: Operations for the authenticated user.
 
 # Applicable authentication mechanisms.
@@ -28,8 +28,6 @@ security:
 paths:
   /me/approval-tasks:
     get:
-      tags:
-        - me
       summary: Retrieves available approvals for the authenticated user
       operationId: listApprovalTasksForLoggedInUser
       description: >
@@ -97,8 +95,6 @@ paths:
           $ref: '#/responses/ServerError'
   /me/approval-tasks/{task-id}:
     get:
-      tags:
-        - me
       summary: "Retrieves an approval task by the task-id"
       operationId: getApprovalTaskInfo
       description: >
@@ -162,8 +158,6 @@ paths:
           $ref: '#/responses/ServerError'
   /me/approval-tasks/{task-id}/state:
     put:
-      tags:
-        - me
       summary: "Changes the state of an approval task"
       operationId: updateStateOfTask
       description: |
@@ -356,12 +350,9 @@ securityDefinitions:
   OAuth2:
     type: oauth2
     flow: accessCode
-    authorizationUrl: https://localhost:9443/oauth/authorize
-    tokenUrl: https://localhost:9443/oauth/token
-    scopes:
-      read: Grants read access
-      write: Grants write access
-      admin: Grants read and write access to administrative information
+    authorizationUrl: https://localhost:9443/oauth2/authorize
+    tokenUrl: https://localhost:9443/oauth2/token
+
 #-----------------------------------------------------
 # Descriptions of common responses
 #-----------------------------------------------------
