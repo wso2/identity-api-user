@@ -139,7 +139,7 @@ public class MeApi  {
     @Path("/challenge-answers")
     
     
-    @io.swagger.annotations.ApiOperation(value = "Get user's answered challenges.", notes = "Get previously answered challenge(s) in the system by the authenticated user. <br/>\n<b>Permission required:</b>\n * /permission/admin/login\n", response = UserChallengeAnswerResponseDTO.class, responseContainer = "List")
+    @io.swagger.annotations.ApiOperation(value = "Get user's answered challenges.", notes = "Get previously answered challenge(s) in the system by the authenticated user.\n\n  <b>Permission required:</b>\n   * /permission/admin/login\n", response = UserChallengeAnswerResponseDTO.class, responseContainer = "List")
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "Array of Challenge(s) that are already answered by the authenticated user."),
         

@@ -531,7 +531,6 @@ parameters:
       type: integer
       format: int32
       minimum: 0
-      maximum: 50
 definitions:
     #-----------------------------------------------------
     # ChallengeSet Properties object
@@ -545,8 +544,10 @@ definitions:
       questionSetId:
         type: string
         example: challengeQuestion1
+        description: A unique ID for the challenge set.
       questions:
         type: array
+        description: Challenge questions for the set.
         items:
           $ref: '#/definitions/ChallengeQuestion'
   #-----------------------------------------------------
@@ -560,12 +561,15 @@ definitions:
       locale:
         type: string
         example: en_US
+        description: The locale of the question.
       question:
         type: string
         example: What is your favorite travel destination ?
+        description: Challenge question display value.
       questionId:
         type: string
         example: question1
+        description: A unique ID for the challenge quesion within the set.
   #-----------------------------------------------------
   # ChallengeAnswer Properties object
   #-----------------------------------------------------
@@ -578,11 +582,14 @@ definitions:
       questionSetId:
         type: string
         example: challengeQuestionSet1
+        description: A unique ID to identify the challenge set.
       challengeQuestion:
           $ref: '#/definitions/ChallengeQuestion'
+          description: A challenge question that is selected to answer from the set.
       answer:
         type: string
         example: Colombo
+        description: Answer to the challenge question.
   #-----------------------------------------------------
   # UserChallengeAnswer Properties object
   #-----------------------------------------------------
@@ -610,12 +617,15 @@ definitions:
       questionSetId:
         type: string
         example: challengeQuestionSet1
+        description: A unique ID to identify the challenge set.
       question:
         type: string
         example: What is your favorite travel destination ?
+        description: Challenge question display value.
       answer:
         type: string
         example: Ro83J+wm/zkUt2/6GDf+xZD8s/2pjPqTUhrkOrwGBb4=
+        description: A hashed value of the challenge answer.
   #-----------------------------------------------------
   # The Error Response  object
   #-----------------------------------------------------
