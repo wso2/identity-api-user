@@ -28,7 +28,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>identity-api-user</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.29</version>
+    <version>1.0.30-SNAPSHOT</version>
     <name>WSO2 Identity Server - User API Module</name>
     <description>
 
@@ -39,7 +39,7 @@
         <url>https://github.com/wso2/identity-api-user.git</url>
         <developerConnection>scm:git:https://github.com/wso2/identity-api-user.git</developerConnection>
         <connection>scm:git:https://github.com/wso2/identity-api-user.git</connection>
-        <tag>v1.0.29</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <repositories>
