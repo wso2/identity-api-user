@@ -28,7 +28,7 @@ import javax.validation.constraints.Pattern;
 
 
 @ApiModel(description = "")
-public class TaskSummeryDTO  {
+public class TaskSummaryDTO  {
   
   
   
@@ -46,8 +46,11 @@ public class TaskSummeryDTO  {
   
   private String taskType = null;
   
+  public enum StatusEnum {
+     READY,  RESERVED,  COMPLETED, 
+  };
   
-  private String status = null;
+  private StatusEnum status = null;
   
   
   private Integer priority = null;
@@ -57,9 +60,9 @@ public class TaskSummeryDTO  {
 
   
   /**
-   * Unique Id to represent a approval task
+   * Unique ID to represent an Approval Task
    **/
-  @ApiModelProperty(value = "Unique Id to represent a approval task")
+  @ApiModelProperty(value = "Unique ID to represent an Approval Task")
   @JsonProperty("id")
   public String getId() {
     return id;
@@ -70,9 +73,9 @@ public class TaskSummeryDTO  {
 
   
   /**
-   * Unique name for Approval
+   * Unique name for the Approval Task
    **/
-  @ApiModelProperty(value = "Unique name for Approval")
+  @ApiModelProperty(value = "Unique name for the Approval Task")
   @JsonProperty("name")
   public String getName() {
     return name;
@@ -96,9 +99,9 @@ public class TaskSummeryDTO  {
 
   
   /**
-   * Display value for Approval task
+   * Display value for Approval Task
    **/
-  @ApiModelProperty(value = "Display value for Approval task")
+  @ApiModelProperty(value = "Display value for Approval Task")
   @JsonProperty("presentationName")
   public String getPresentationName() {
     return presentationName;
@@ -109,9 +112,9 @@ public class TaskSummeryDTO  {
 
   
   /**
-   * Type of Approval
+   * Type of the Approval
    **/
-  @ApiModelProperty(value = "Type of Approval")
+  @ApiModelProperty(value = "Type of the Approval")
   @JsonProperty("taskType")
   public String getTaskType() {
     return taskType;
@@ -126,10 +129,10 @@ public class TaskSummeryDTO  {
    **/
   @ApiModelProperty(value = "State of the Approval task")
   @JsonProperty("status")
-  public String getStatus() {
+  public StatusEnum getStatus() {
     return status;
   }
-  public void setStatus(String status) {
+  public void setStatus(StatusEnum status) {
     this.status = status;
   }
 
@@ -164,7 +167,7 @@ public class TaskSummeryDTO  {
   @Override
   public String toString()  {
     StringBuilder sb = new StringBuilder();
-    sb.append("class TaskSummeryDTO {\n");
+    sb.append("class TaskSummaryDTO {\n");
     
     sb.append("  id: ").append(id).append("\n");
     sb.append("  name: ").append(name).append("\n");

@@ -63,9 +63,9 @@ public class TaskDataDTO  {
 
   
   /**
-   * Unique Id to represent a approval task
+   * Unique ID to represent a approval task
    **/
-  @ApiModelProperty(value = "Unique Id to represent a approval task")
+  @ApiModelProperty(value = "Unique ID to represent a approval task")
   @JsonProperty("id")
   public String getId() {
     return id;
@@ -128,9 +128,9 @@ public class TaskDataDTO  {
 
   
   /**
-   * Available only for the completed Tasks, APPROVE or REJECTE if the task has been completed, PENDING otherwise
+   * Available only for the completed Tasks, APPROVE or REJECT if the task has been completed, PENDING otherwise
    **/
-  @ApiModelProperty(value = "Available only for the completed Tasks, APPROVE or REJECTE if the task has been completed, PENDING otherwise")
+  @ApiModelProperty(value = "Available only for the completed Tasks, APPROVE or REJECT if the task has been completed, PENDING otherwise")
   @JsonProperty("approvalStatus")
   public ApprovalStatusEnum getApprovalStatus() {
     return approvalStatus;
