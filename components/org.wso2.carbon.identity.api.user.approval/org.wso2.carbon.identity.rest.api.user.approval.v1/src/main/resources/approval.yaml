@@ -37,7 +37,7 @@ paths:
           * COMPLETED - Tasks that are already _completed_ (approved or denied) by this user.
 
         <b>Permission required:</b>
-         * /permission/admin/login
+         * /permission/admin/manage/humantask/viewtasks
 
          A user can also invoke the endpoint with the following query parameters.
       parameters:
@@ -102,7 +102,7 @@ paths:
         <br/>
 
         <b>Permission required:</b>
-         * /permission/admin/login
+         * /permission/admin/manage/humantask/viewtasks
       parameters:
         - $ref: '#/parameters/taskIdPathParam'
       responses:
@@ -173,7 +173,7 @@ paths:
          <br/>
 
         <b>Permission required:</b>
-         * /permission/admin/login
+         * /permission/admin/manage/humantask/viewtasks
       parameters:
         - $ref: '#/parameters/taskIdPathParam'
         - in: body
