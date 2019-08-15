@@ -50,7 +50,7 @@ public class MeApi  {
     @Path("/approval-tasks/{task-id}")
     
     
-    @io.swagger.annotations.ApiOperation(value = "Retrieves an approval task by the task-id", notes = "Retrieves information of a specific approval task identified by the task-id\n", response = TaskDataDTO.class)
+    @io.swagger.annotations.ApiOperation(value = "Retrieves an approval task by the task-id", notes = "Retrieves information of a specific approval task identified by the task-id <br/>\n<b>Permission required:</b>\n * /permission/admin/manage/humantask/viewtasks\n", response = TaskDataDTO.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "Detailed information of the approval task identified by the task-id"),
         
@@ -74,7 +74,7 @@ public class MeApi  {
     @Path("/approval-tasks")
     
     
-    @io.swagger.annotations.ApiOperation(value = "Retrieves available approvals for the authenticated user", notes = "Retrieve the available approval tasks in the system for the authenticated user. This API returns the following types of approvals:\n  * READY - Tasks that are _claimable_ by the user. User is eligible to assign the task to himself and complete it, if a particular task is in READY state.\n  * RESERVED -  Tasks that are _assigned_ to the user and to be approved by this user.\n  * COMPLETED - Tasks that are already _completed_ (approved or denied) by this user.\n\n_Minimum permission level required for a user to invoke this API:_\n  * _/permission/admin/login_\n\n A user can also invoke the endpoint with the following query parameters.\n", response = TaskSummaryDTO.class, responseContainer = "List")
+    @io.swagger.annotations.ApiOperation(value = "Retrieves available approvals for the authenticated user", notes = "Retrieve the available approval tasks in the system for the authenticated user. This API returns the following types of approvals:\n  * READY - Tasks that are _claimable_ by the user. User is eligible to assign the task to himself and complete it, if a particular task is in READY state.\n  * RESERVED -  Tasks that are _assigned_ to the user and to be approved by this user.\n  * COMPLETED - Tasks that are already _completed_ (approved or denied) by this user.\n\n<b>Permission required:</b>\n * /permission/admin/manage/humantask/viewtasks\n\n A user can also invoke the endpoint with the following query parameters.\n", response = TaskSummaryDTO.class, responseContainer = "List")
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "Array of approval tasks matching the search criteria"),
         
@@ -96,7 +96,7 @@ public class MeApi  {
     @Path("/approval-tasks/{task-id}/state")
     
     
-    @io.swagger.annotations.ApiOperation(value = "Changes the state of an approval task", notes = "Update the approval task status by defining one of the following actions:\n * CLAIM - Reserve the task for the user. Status of the task will be changed from READY to RESERVED.\n * RELEASE - Release the task for other users to claim. Status of the task will be changed from RESERVED to READY.\n * APPROVE - Approve the task. Status of the task will be changed to COMPLETED.\n * REJECT - Deny the task. Status of the task will be changed to COMPLETED.\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Changes the state of an approval task", notes = "Update the approval task status by defining one of the following actions:\n * CLAIM - Reserve the task for the user. Status of the task will be changed from READY to RESERVED.\n * RELEASE - Release the task for other users to claim. Status of the task will be changed from RESERVED to READY.\n * APPROVE - Approve the task. Status of the task will be changed to COMPLETED.\n * REJECT - Deny the task. Status of the task will be changed to COMPLETED.\n <br/>\n\n<b>Permission required:</b>\n * /permission/admin/manage/humantask/viewtasks\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "OK"),
         

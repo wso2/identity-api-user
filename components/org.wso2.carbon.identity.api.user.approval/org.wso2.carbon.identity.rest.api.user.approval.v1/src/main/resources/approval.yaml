@@ -17,7 +17,7 @@ schemes:
 
 # Tags are used for organizing operations.
 tags:
-- name: me
+- name: default
   description: Operations for the authenticated user.
 
 # Applicable authentication mechanisms.
@@ -28,8 +28,6 @@ security:
 paths:
   /me/approval-tasks:
     get:
-      tags:
-        - me
       summary: Retrieves available approvals for the authenticated user
       operationId: listApprovalTasksForLoggedInUser
       description: >
@@ -38,8 +36,8 @@ paths:
           * RESERVED -  Tasks that are _assigned_ to the user and to be approved by this user.
           * COMPLETED - Tasks that are already _completed_ (approved or denied) by this user.
 
-        _Minimum permission level required for a user to invoke this API:_
-          * _/permission/admin/login_
+        <b>Permission required:</b>
+         * /permission/admin/manage/humantask/viewtasks
 
          A user can also invoke the endpoint with the following query parameters.
       parameters:
@@ -97,12 +95,14 @@ paths:
           $ref: '#/responses/ServerError'
   /me/approval-tasks/{task-id}:
     get:
-      tags:
-        - me
       summary: "Retrieves an approval task by the task-id"
       operationId: getApprovalTaskInfo
       description: >
         Retrieves information of a specific approval task identified by the task-id
+        <br/>
+
+        <b>Permission required:</b>
+         * /permission/admin/manage/humantask/viewtasks
       parameters:
         - $ref: '#/parameters/taskIdPathParam'
       responses:
@@ -162,8 +162,6 @@ paths:
           $ref: '#/responses/ServerError'
   /me/approval-tasks/{task-id}/state:
     put:
-      tags:
-        - me
       summary: "Changes the state of an approval task"
       operationId: updateStateOfTask
       description: |
@@ -172,6 +170,10 @@ paths:
          * RELEASE - Release the task for other users to claim. Status of the task will be changed from RESERVED to READY.
          * APPROVE - Approve the task. Status of the task will be changed to COMPLETED.
          * REJECT - Deny the task. Status of the task will be changed to COMPLETED.
+         <br/>
+
+        <b>Permission required:</b>
+         * /permission/admin/manage/humantask/viewtasks
       parameters:
         - $ref: '#/parameters/taskIdPathParam'
         - in: body
@@ -213,7 +215,6 @@ parameters:
       type: integer
       format: int32
       minimum: 0
-      maximum: 50
     statusQueryParam:
       in: query
       name: status
@@ -327,7 +328,7 @@ definitions:
       action:
         type: string
         example: "APPROVE"
-        description: Next state of the task
+        description: Action to perform on the task.
         enum: [CLAIM, RELEASE, APPROVE, REJECT]
 
   #-----------------------------------------------------
@@ -357,12 +358,9 @@ securityDefinitions:
   OAuth2:
     type: oauth2
     flow: accessCode
-    authorizationUrl: https://localhost:9443/oauth/authorize
-    tokenUrl: https://localhost:9443/oauth/token
-    scopes:
-      read: Grants read access
-      write: Grants write access
-      admin: Grants read and write access to administrative information
+    authorizationUrl: https://localhost:9443/oauth2/authorize
+    tokenUrl: https://localhost:9443/oauth2/token
+
 #-----------------------------------------------------
 # Descriptions of common responses
 #-----------------------------------------------------

@@ -73,7 +73,7 @@ public class UserApprovalService {
 
     private static final String APPROVAL_STATUS = "approvalStatus";
     private static final String PENDING = "PENDING";
-    private static Log log = LogFactory.getLog(UserApprovalService.class);
+    private static final Log log = LogFactory.getLog(UserApprovalService.class);
     private static final String APPROVAL_DATA_STRING = "<sch:ApprovalCBData xmlns:sch=\"http://ht.bpel.mgt.workflow" +
             ".identity.carbon.wso2.org/wsdl/schema\"><approvalStatus>%s</approvalStatus></sch:ApprovalCBData>";
 

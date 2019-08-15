@@ -39,7 +39,7 @@ public abstract class MeApiService {
     public abstract Response deleteChallengeAnswerOfLoggedInUser(String challengeSetId);
     public abstract Response deleteChallengeAnswersOfLoggedInUser();
     public abstract Response getAnsweredChallengesOfLoggedInUser();
-    public abstract Response getChallengesForLoggedInUser(Integer offset,Integer limit);
+    public abstract Response getChallengesForLoggedInUser(Integer limit,Integer offset);
     public abstract Response updateChallengeAnswerOfLoggedInUser(String challengeSetId,UserChallengeAnswerDTO challengeAnswer);
     public abstract Response updateChallengeAnswersOfLoggedInUser(List<ChallengeAnswerDTO> challengeAnswers);
 }
