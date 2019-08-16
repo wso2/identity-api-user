@@ -396,8 +396,8 @@ securityDefinitions:
   OAuth2:
     type: oauth2
     flow: accessCode
-    authorizationUrl: https://localhost:9443/oauth/authorize
-    tokenUrl: https://localhost:9443/oauth/token
+    authorizationUrl: https://localhost:9443/oauth2/authorize
+    tokenUrl: https://localhost:9443/oauth2/token
 # Added by API Auto Mocking Plugin
 host: localhost:9443
 basePath: /t/{tenant-domain}/api/users/v1
