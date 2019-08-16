@@ -3,18 +3,18 @@ swagger: '2.0'
 # Prolog
 ######################################################
 info:
-  version: "1.0.0"
-  title: "WSO2 Identity Server Rest API - User Associations"
   description: |
     This document specifies a **RESTful API** for WSO2 **Identity Server** .
     It is written with [swagger 2](http://swagger.io/).
+  version: "v1"
+  title: "WSO2 Identity Server - User Account Associations API Definition"
   contact:
-    name: "WSO2"
-    url: "http://wso2.com/products/identity-server/"
-    email: "architecture@wso2.com"
+    name: "WSO2 Identity Server"
+    url: "https://wso2.com/identity-and-access-management/"
+    email: "architecture@wso2.org"
   license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 
 ######################################################
 # The fixed parts of the URLs of the API
@@ -23,6 +23,10 @@ info:
 # The schemes supported by the API
 schemes:
   - https
+# Applicable authentication mechanisms.
+security:
+  - OAuth2: []
+  - BasicAuth: []
 
 # The domain of the API.
 # This is configured by the customer during deployment.
@@ -49,6 +53,8 @@ consumes:
 # of the of the response.
 # The default of the Accept header is json, i.e. there is not needed to
 # set the value, but supporting it serves extensibility.
+
+
 produces:
   - application/json
 paths:
@@ -56,18 +62,17 @@ paths:
   /me/associations:
     post:
       description: |
-         This API is used associate a user to the authenticated user.
-      x-wso2-request: |
-      x-wso2-curl: |
-      x-wso2-response: |
-        "HTTP/1.1 201 Created"
+         This API is used to associate a user to the authenticated user. For example if it is required associate  my user account to the user account of 'john', this endpoint can be used. userId and the password are required to associate the accounts.
+
+          <b>Permission required:</b>
+          * /permission/admin/login
       summary: |
-        Associate user to the authenticated user
+        Associate a user to the authenticated user
       parameters:
         -
           name: association
           in: body
-          description:  User will be associated to the authenticated user.
+          description:  User details to be associated. userId should be the fully qalified username of the user.
           required: true
           schema:
             $ref: '#/definitions/AssociationUserRequest'
@@ -93,13 +98,15 @@ paths:
       tags:
         - Associations
     get:
-      x-wso2-request: |
-      x-wso2-curl: |
-      x-wso2-response: |
       tags:
       - Associations
-      summary: Get authenticated user's associations
-      description: This API is used to retrieve the associations of the authenticated user.
+      summary: Retrive the associations of the authenticated user.
+      description: |
+        This API is used to retrieve the associations of the authenticated user.
+
+          <b>Permission required:</b>
+
+          * /permission/admin/login
       responses:
         200:
           description: Successful operation
@@ -120,7 +127,12 @@ paths:
 
     delete:
       summary: Delete all my user associations
-      description: This API is used to delete all associations of the auhtentiated user.
+      description: |
+        This API is used to delete all associations of the auhtentiated user.
+
+          <b>Permission required:</b>
+
+          * /permission/admin/login
       responses:
         204:
           description: No content
@@ -145,7 +157,10 @@ paths:
             $ref: '#/definitions/AssociationSwitchRequest'
 
       summary: Switch user account
-      description: This API is used to switch the user account.
+      description: |
+          This API is used to switch the user account in the user portal. This API is not implemented yet.
+                  <b>Permission required:</b>
+          * /permission/admin/manage/identity/user/association/update
       responses:
         200:
           description: OK
@@ -171,18 +186,17 @@ paths:
   /{user-id}/associations:
     post:
       description: |
-         This API is used associate two user accounts.
-      x-wso2-request: |
-      x-wso2-curl: |
-      x-wso2-response: |
-        "HTTP/1.1 201 Created"
+         This API is used to associate two user accounts by a privileged user. For example if it is required associate  the user account of  'michael' to the user account of 'john', this endpoint can be used.
+
+            <b>Permission required:</b>
+          * /permission/admin/manage/identity/user/association/create
       summary: |
         Associate users
       parameters:
         -
           name: association
           in: body
-          description:  User Id of the associating user.
+          description:  Fully qualified username of the associating user.
           required: true
           schema:
             $ref: '#/definitions/AssociationRequest'
@@ -215,13 +229,14 @@ paths:
       tags:
         - Associations
     get:
-      x-wso2-request: |
-      x-wso2-curl: |
-      x-wso2-response: |
       tags:
       - Associations
       summary: Get user's associations
-      description: This API is used to retrieve the associations of the user.
+      description: |
+          This API is used to retrieve the associations of the user.
+
+            <b>Permission required:</b>
+          * /permission/admin/manage/identity/user/association/view
       parameters:
        -
         name: user-id
@@ -258,7 +273,11 @@ paths:
           required: true
           type: string
       summary: Delete user's all user associations
-      description: This API is used to delete all associations of the  user.
+      description: |
+        This API is used to delete all associations of the  user.
+
+        <b>Permission required:</b>
+          * /permission/admin/manage/identity/user/association/delete
       responses:
         204:
           description: No content
@@ -322,8 +341,10 @@ definitions:
     properties:
       key:
         type: string
+        example: 'test-key'
       value:
         type: string
+        example: 'test-value'
 
 #-----------------------------------------------------
 # The AssociationRequest Association Request
@@ -369,6 +390,14 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Property'
+securityDefinitions:
+  BasicAuth:
+    type: basic
+  OAuth2:
+    type: oauth2
+    flow: accessCode
+    authorizationUrl: https://localhost:9443/oauth/authorize
+    tokenUrl: https://localhost:9443/oauth/token
 # Added by API Auto Mocking Plugin
 host: localhost:9443
-basePath: /api/users/v1
+basePath: /t/carbon.super/api/users/v1
