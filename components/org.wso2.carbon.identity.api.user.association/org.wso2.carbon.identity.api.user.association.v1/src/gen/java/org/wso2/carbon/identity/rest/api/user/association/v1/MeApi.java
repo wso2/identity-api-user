@@ -50,7 +50,7 @@ public class MeApi  {
     @Path("/associations")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @io.swagger.annotations.ApiOperation(value = "Delete all my user associations", notes = "This API is used to delete all associations of the auhtentiated user.", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Delete all my user associations", notes = "This API is used to delete all associations of the auhtentiated user.\n\n  <b>Permission required:</b>\n\n  * /permission/admin/login\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 204, message = "No content"),
         
@@ -68,7 +68,7 @@ public class MeApi  {
     @Path("/associations")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @io.swagger.annotations.ApiOperation(value = "Get authenticated user's associations", notes = "This API is used to retrieve the associations of the authenticated user.", response = UserDTO.class, responseContainer = "List")
+    @io.swagger.annotations.ApiOperation(value = "Retrive the associations of the authenticated user.", notes = "This API is used to retrieve the associations of the authenticated user.\n\n  <b>Permission required:</b>\n\n  * /permission/admin/login\n", response = UserDTO.class, responseContainer = "List")
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "Successful operation"),
         
@@ -88,7 +88,7 @@ public class MeApi  {
     @Path("/associations")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @io.swagger.annotations.ApiOperation(value = "Associate user to the authenticated user\n", notes = "This API is used associate a user to the authenticated user.\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Associate a user to the authenticated user\n", notes = "This API is used to associate a user to the authenticated user. For example if it is required associate  my user account to the user account of 'john', this endpoint can be used. userId and the password are required to associate the accounts.\n\n <b>Permission required:</b>\n * /permission/admin/login\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 201, message = "Successfully created"),
         
@@ -102,7 +102,7 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Server Error") })
 
-    public Response meAssociationsPost(@ApiParam(value = "User will be associated to the authenticated user." ,required=true ) AssociationUserRequestDTO association)
+    public Response meAssociationsPost(@ApiParam(value = "User details to be associated. userId should be the fully qalified username of the user." ,required=true ) AssociationUserRequestDTO association)
     {
     return delegate.meAssociationsPost(association);
     }
@@ -110,7 +110,7 @@ public class MeApi  {
     @Path("/associations/switch")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @io.swagger.annotations.ApiOperation(value = "Switch user account", notes = "This API is used to switch the user account.", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Switch user account", notes = "This API is used to switch the user account in the user portal. This API is not implemented yet.\n        <b>Permission required:</b>\n* /permission/admin/manage/identity/user/association/update\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "OK"),
         

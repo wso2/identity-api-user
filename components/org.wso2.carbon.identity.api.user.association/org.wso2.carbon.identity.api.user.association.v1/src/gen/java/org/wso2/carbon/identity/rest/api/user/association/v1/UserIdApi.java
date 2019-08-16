@@ -49,7 +49,7 @@ public class UserIdApi  {
     @Path("/associations")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @io.swagger.annotations.ApiOperation(value = "Delete user's all user associations", notes = "This API is used to delete all associations of the  user.", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Delete user's all user associations", notes = "This API is used to delete all associations of the  user.\n\n<b>Permission required:</b>\n  * /permission/admin/manage/identity/user/association/delete\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 204, message = "No content"),
         
@@ -69,7 +69,7 @@ public class UserIdApi  {
     @Path("/associations")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @io.swagger.annotations.ApiOperation(value = "Get user's associations", notes = "This API is used to retrieve the associations of the user.", response = UserDTO.class, responseContainer = "List")
+    @io.swagger.annotations.ApiOperation(value = "Get user's associations", notes = "This API is used to retrieve the associations of the user.\n\n  <b>Permission required:</b>\n* /permission/admin/manage/identity/user/association/view\n", response = UserDTO.class, responseContainer = "List")
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "Successful operation"),
         
@@ -91,7 +91,7 @@ public class UserIdApi  {
     @Path("/associations")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @io.swagger.annotations.ApiOperation(value = "Associate users\n", notes = "This API is used associate two user accounts.\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Associate users\n", notes = "This API is used to associate two user accounts by a privileged user. For example if it is required associate  the user account of  'michael' to the user account of 'john', this endpoint can be used.\n\n   <b>Permission required:</b>\n * /permission/admin/manage/identity/user/association/create\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 201, message = "Successfully created"),
         
@@ -105,7 +105,7 @@ public class UserIdApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Server Error") })
 
-    public Response userIdAssociationsPost(@ApiParam(value = "User Id of the associating user." ,required=true ) AssociationRequestDTO association,
+    public Response userIdAssociationsPost(@ApiParam(value = "Fully qualified username of the associating user." ,required=true ) AssociationRequestDTO association,
     @ApiParam(value = "user id",required=true ) @PathParam("user-id")  String userId)
     {
     return delegate.userIdAssociationsPost(association,userId);
