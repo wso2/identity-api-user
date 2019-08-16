@@ -24,7 +24,7 @@ import javax.ws.rs.core.Response;
  */
 public class MeApiServiceImpl extends MeApiService {
 
-    private static Log log = LogFactory.getLog(MeApiServiceImpl.class);
+    private static final Log log = LogFactory.getLog(MeApiServiceImpl.class);
 
     private WebAuthnService service = new WebAuthnService();
 

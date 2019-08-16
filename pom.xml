@@ -358,7 +358,7 @@
         <carbon.business-process.version>4.5.2</carbon.business-process.version>
         <identity.oauth.version>6.1.5</identity.oauth.version>
         <testng.version>6.9.10</testng.version>
-        <fido2.version>5.1.14</fido2.version>
+        <fido2.version>5.1.16</fido2.version>
         <!--<maven.checkstyleplugin.excludes>**/gen/**/*</maven.checkstyleplugin.excludes>-->
     </properties>
 
