@@ -21,6 +21,7 @@ import io.swagger.annotations.*;
 import com.fasterxml.jackson.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 
 
@@ -38,9 +39,9 @@ public class StateDTO  {
 
   
   /**
-   * Next state of the task
+   * Action to perform on the task.
    **/
-  @ApiModelProperty(value = "Next state of the task")
+  @ApiModelProperty(value = "Action to perform on the task.")
   @JsonProperty("action")
   public ActionEnum getAction() {
     return action;

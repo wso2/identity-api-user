@@ -42,8 +42,9 @@ public class ChallengeSetDTO  {
 
   
   /**
+   * A unique ID for the challenge set.
    **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A unique ID for the challenge set.")
   @JsonProperty("questionSetId")
   public String getQuestionSetId() {
     return questionSetId;
@@ -54,8 +55,9 @@ public class ChallengeSetDTO  {
 
   
   /**
+   * Challenge questions for the set.
    **/
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "Challenge questions for the set.")
   @JsonProperty("questions")
   public List<ChallengeQuestionDTO> getQuestions() {
     return questions;

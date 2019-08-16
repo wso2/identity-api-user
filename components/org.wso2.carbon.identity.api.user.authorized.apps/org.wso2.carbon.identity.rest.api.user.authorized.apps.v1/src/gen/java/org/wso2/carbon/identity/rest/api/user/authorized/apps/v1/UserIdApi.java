@@ -54,6 +54,8 @@ public class UserIdApi  {
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
         
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
+        
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
     public Response deleteUserAuthorizedApps(@ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId)
@@ -69,6 +71,8 @@ public class UserIdApi  {
         @io.swagger.annotations.ApiResponse(code = 204, message = "Item Deleted"),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
+        
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
         
         @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource was not found"),
         
@@ -89,6 +93,8 @@ public class UserIdApi  {
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
         
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
+        
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
     public Response listUserAuthorizedApps(@ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId)
@@ -104,6 +110,8 @@ public class UserIdApi  {
         @io.swagger.annotations.ApiResponse(code = 200, message = "search results matching criteria"),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
+        
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
         
         @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource was not found"),
         

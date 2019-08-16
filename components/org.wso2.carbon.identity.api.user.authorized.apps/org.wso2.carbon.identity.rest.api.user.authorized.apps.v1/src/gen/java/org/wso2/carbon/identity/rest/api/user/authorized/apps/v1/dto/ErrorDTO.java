@@ -21,6 +21,7 @@ import io.swagger.annotations.*;
 import com.fasterxml.jackson.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 
 
@@ -30,14 +31,17 @@ import javax.validation.constraints.NotNull;
 public class ErrorDTO  {
   
   
-  @NotNull
+  @NotNull 
   private String code = null;
   
-  @NotNull
+  @NotNull 
   private String message = null;
   
   
   private String description = null;
+  
+  
+  private String traceId = null;
 
   
   /**
@@ -76,6 +80,18 @@ public class ErrorDTO  {
   }
 
   
+  /**
+   **/
+  @ApiModelProperty(value = "")
+  @JsonProperty("traceId")
+  public String getTraceId() {
+    return traceId;
+  }
+  public void setTraceId(String traceId) {
+    this.traceId = traceId;
+  }
+
+  
 
   @Override
   public String toString()  {
@@ -85,6 +101,7 @@ public class ErrorDTO  {
     sb.append("  code: ").append(code).append("\n");
     sb.append("  message: ").append(message).append("\n");
     sb.append("  description: ").append(description).append("\n");
+    sb.append("  traceId: ").append(traceId).append("\n");
     sb.append("}\n");
     return sb.toString();
   }

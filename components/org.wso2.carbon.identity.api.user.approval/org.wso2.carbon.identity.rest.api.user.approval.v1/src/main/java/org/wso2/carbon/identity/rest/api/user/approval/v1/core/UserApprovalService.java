@@ -44,7 +44,7 @@ import org.wso2.carbon.identity.rest.api.user.approval.v1.core.functions.TaskMod
 import org.wso2.carbon.identity.rest.api.user.approval.v1.core.model.TaskModel;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskDataDTO;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskSummeryDTO;
+import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskSummaryDTO;
 
 import java.util.Arrays;
 import java.util.List;
@@ -73,7 +73,7 @@ public class UserApprovalService {
 
     private static final String APPROVAL_STATUS = "approvalStatus";
     private static final String PENDING = "PENDING";
-    private static Log log = LogFactory.getLog(UserApprovalService.class);
+    private static final Log log = LogFactory.getLog(UserApprovalService.class);
     private static final String APPROVAL_DATA_STRING = "<sch:ApprovalCBData xmlns:sch=\"http://ht.bpel.mgt.workflow" +
             ".identity.carbon.wso2.org/wsdl/schema\"><approvalStatus>%s</approvalStatus></sch:ApprovalCBData>";
 
@@ -94,7 +94,7 @@ public class UserApprovalService {
      * @param status state of the tasks [RESERVED, READY or COMPLETED]
      * @return
      */
-    public List<TaskSummeryDTO> listTasks(Integer limit, Integer offset, List<String> status) {
+    public List<TaskSummaryDTO> listTasks(Integer limit, Integer offset, List<String> status) {
 
         try {
             TSimpleQueryInput queryInput = new TSimpleQueryInput();

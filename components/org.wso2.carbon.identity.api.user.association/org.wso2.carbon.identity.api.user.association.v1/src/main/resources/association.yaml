@@ -9,12 +9,12 @@ info:
   version: "v1"
   title: "WSO2 Identity Server - User Account Associations API Definition"
   contact:
-    name: "WSO2 Identity Server"
-    url: "https://wso2.com/identity-and-access-management/"
-    email: "architecture@wso2.org"
+    name: "WSO2"
+    url: "http://wso2.com/products/identity-server/"
+    email: "architecture@wso2.com"
   license:
-    name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 
 ######################################################
 # The fixed parts of the URLs of the API
@@ -400,4 +400,4 @@ securityDefinitions:
     tokenUrl: https://localhost:9443/oauth/token
 # Added by API Auto Mocking Plugin
 host: localhost:9443
-basePath: /t/carbon.super/api/users/v1
+basePath: /t/{tenant-domain}/api/users/v1

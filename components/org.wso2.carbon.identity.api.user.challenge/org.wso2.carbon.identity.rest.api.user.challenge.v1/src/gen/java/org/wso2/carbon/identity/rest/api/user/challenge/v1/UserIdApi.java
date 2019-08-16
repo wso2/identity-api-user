@@ -52,7 +52,7 @@ public class UserIdApi  {
     @Path("/challenge-answers/{challenge-set-id}")
     
     
-    @io.swagger.annotations.ApiOperation(value = "answers a new challenge question", notes = "Update new challenge question answer to the system for a specific user.\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Answers a specific new challenge.", notes = "Provide an **answer** to **a specific challenge** in the system for the user identified by user-id. The user can at most select one question from a challenge set of interest.\n\n  <b>Permission required:</b>\n    * /permission/admin/manage/identity\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 201, message = "Item Created"),
         
@@ -68,9 +68,9 @@ public class UserIdApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response addChallengeAnswerOfAUser(@ApiParam(value = "Challenge Question set Id",required=true ) @PathParam("challenge-set-id")  String challengeSetId,
-    @ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId,
-    @ApiParam(value = "challenge-question with answer"  ) UserChallengeAnswerDTO challengeAnswer)
+    public Response addChallengeAnswerOfAUser(@ApiParam(value = "Challenge Question Set ID",required=true ) @PathParam("challenge-set-id")  String challengeSetId,
+    @ApiParam(value = "Uniquely identifiable user ID",required=true ) @PathParam("user-id")  String userId,
+    @ApiParam(value = "The answer to the challenge along with the question."  ) UserChallengeAnswerDTO challengeAnswer)
     {
     return delegate.addChallengeAnswerOfAUser(challengeSetId,userId,challengeAnswer);
     }
@@ -78,7 +78,7 @@ public class UserIdApi  {
     @Path("/challenge-answers")
     
     
-    @io.swagger.annotations.ApiOperation(value = "answers a new challenge question", notes = "Adds a new challenge question answer to the system for a specific user.\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Answer to a collection of new challenges.", notes = "Provide answer(s) to one or more candidate challenge question set(s) available in the system for the user identified by user-id. A user can pick at maximum one question from each set to answer. A user may answer **one or more distinct** challenge question **set(s)**.\n\n  <b>Permission required:</b>\n    * /permission/admin/manage/identity\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 201, message = "Item Created"),
         
@@ -94,8 +94,8 @@ public class UserIdApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response addChallengeAnswersOfAUser(@ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId,
-    @ApiParam(value = "challenge question with answer"  ) List<ChallengeAnswerDTO> challengeAnswer)
+    public Response addChallengeAnswersOfAUser(@ApiParam(value = "Uniquely identifiable user ID",required=true ) @PathParam("user-id")  String userId,
+    @ApiParam(value = "One or more challenge(s) with the answer."  ) List<ChallengeAnswerDTO> challengeAnswer)
     {
     return delegate.addChallengeAnswersOfAUser(userId,challengeAnswer);
     }
@@ -103,7 +103,7 @@ public class UserIdApi  {
     @Path("/challenge-answers/{challenge-set-id}")
     
     
-    @io.swagger.annotations.ApiOperation(value = "removes a challenge question answer", notes = "Removes existing challenge question answers of a user\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Remove a challenge question answer.", notes = "Removes existing answer provided by the user(identified by user-id) to a specific challenge.\n\n  <b>Permission required:</b>\n    * /permission/admin/manage/identity\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 204, message = "No Content"),
         
@@ -115,8 +115,8 @@ public class UserIdApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response deleteChallengeAnswerOfAUser(@ApiParam(value = "Challenge Question set Id",required=true ) @PathParam("challenge-set-id")  String challengeSetId,
-    @ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId)
+    public Response deleteChallengeAnswerOfAUser(@ApiParam(value = "Challenge Question Set ID",required=true ) @PathParam("challenge-set-id")  String challengeSetId,
+    @ApiParam(value = "Uniquely identifiable user ID",required=true ) @PathParam("user-id")  String userId)
     {
     return delegate.deleteChallengeAnswerOfAUser(challengeSetId,userId);
     }
@@ -124,7 +124,7 @@ public class UserIdApi  {
     @Path("/challenge-answers")
     
     
-    @io.swagger.annotations.ApiOperation(value = "removes challenge question answers", notes = "Removes existing challenge question answers of a user\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Remove challenge question answers.", notes = "Removes all the existing challenge answers of the user identified by user-id.\n\n  <b>Permission required:</b>\n    * /permission/admin/manage/identity\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 204, message = "No Content"),
         
@@ -136,7 +136,7 @@ public class UserIdApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response deleteChallengeAnswersOfAUser(@ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId)
+    public Response deleteChallengeAnswersOfAUser(@ApiParam(value = "Uniquely identifiable user ID",required=true ) @PathParam("user-id")  String userId)
     {
     return delegate.deleteChallengeAnswersOfAUser(userId);
     }
@@ -144,9 +144,9 @@ public class UserIdApi  {
     @Path("/challenge-answers")
     
     
-    @io.swagger.annotations.ApiOperation(value = "get user's challenge answers", notes = "Get answered challenges in the system for a specific user.\n", response = UserChallengeAnswerResponseDTO.class, responseContainer = "List")
+    @io.swagger.annotations.ApiOperation(value = "Get user's answered challenges.", notes = "Get previously answered challenge(s) in the system by the user idenrified by user-id.\n\n  <b>Permission required:</b>\n    * /permission/admin/manage/identity\n", response = UserChallengeAnswerResponseDTO.class, responseContainer = "List")
     @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "search results matching criteria"),
+        @io.swagger.annotations.ApiResponse(code = 200, message = "Array of Challenge(s) that are already answered by the authenticated user."),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
         
@@ -156,7 +156,7 @@ public class UserIdApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response getAnsweredChallengesOfAUser(@ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId)
+    public Response getAnsweredChallengesOfAUser(@ApiParam(value = "Uniquely identifiable user ID",required=true ) @PathParam("user-id")  String userId)
     {
     return delegate.getAnsweredChallengesOfAUser(userId);
     }
@@ -164,9 +164,9 @@ public class UserIdApi  {
     @Path("/challenges")
     
     
-    @io.swagger.annotations.ApiOperation(value = "searches challenges available for a user", notes = "Search for\navailable challenges in the system for the user.\n", response = ChallengeSetDTO.class, responseContainer = "List")
+    @io.swagger.annotations.ApiOperation(value = "Retrieve challenges available for a user identified by the user-id.", notes = "Retrieves the available challenges in the system for the specified user. In the response challenge questions are grouped as **challenge set**s.\n\n<b>Permission required:</b>\n    * /permission/admin/manage/identity\n", response = ChallengeSetDTO.class, responseContainer = "List")
     @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "search results matching criteria"),
+        @io.swagger.annotations.ApiResponse(code = 200, message = "All the available challenges in the system that can be answered by the user.\n"),
         
         @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid input request"),
         
@@ -178,17 +178,17 @@ public class UserIdApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response getChallengesForAUser(@ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId,
-    @ApiParam(value = "number of records to skip for pagination") @QueryParam("offset")  Integer offset,
-    @ApiParam(value = "maximum number of records to return") @QueryParam("limit")  Integer limit)
+    public Response getChallengesForAUser(@ApiParam(value = "Uniquely identifiable user ID",required=true ) @PathParam("user-id")  String userId,
+    @ApiParam(value = "Maximum number of records to return. _*This filtering is not yet supported._") @QueryParam("limit")  Integer limit,
+    @ApiParam(value = "Number of records to skip for pagination. _*This filtering is not yet supported._") @QueryParam("offset")  Integer offset)
     {
-    return delegate.getChallengesForAUser(userId,offset,limit);
+    return delegate.getChallengesForAUser(userId,limit,offset);
     }
     @PUT
     @Path("/challenge-answers/{challenge-set-id}")
     
     
-    @io.swagger.annotations.ApiOperation(value = "update answer of a challenge question", notes = "Update challenge question answer of a specific user.\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Update challenge answer of an already answered challenge.", notes = "Update challenge answer in a specific challenge for authenticated user.\n\n  <b>Permission required:</b>\n    * /permission/admin/manage/identity\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "OK"),
         
@@ -202,9 +202,9 @@ public class UserIdApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response updateChallengeAnswerOfAUser(@ApiParam(value = "Challenge Question set Id",required=true ) @PathParam("challenge-set-id")  String challengeSetId,
-    @ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId,
-    @ApiParam(value = "challenge-question with answer"  ) UserChallengeAnswerDTO challengeAnswer)
+    public Response updateChallengeAnswerOfAUser(@ApiParam(value = "Challenge Question Set ID",required=true ) @PathParam("challenge-set-id")  String challengeSetId,
+    @ApiParam(value = "Uniquely identifiable user ID",required=true ) @PathParam("user-id")  String userId,
+    @ApiParam(value = "The challenge answer with the challenge-question."  ) UserChallengeAnswerDTO challengeAnswer)
     {
     return delegate.updateChallengeAnswerOfAUser(challengeSetId,userId,challengeAnswer);
     }
@@ -212,7 +212,7 @@ public class UserIdApi  {
     @Path("/challenge-answers")
     
     
-    @io.swagger.annotations.ApiOperation(value = "answers new challenge question combination", notes = "Addsnew challenge question answers to the system for a specific user.\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Answer new challenge question combination over existing answers.", notes = "Overrides the *already answered challenges* in the system with a set of *new challenge question answers* for the user identified by user-id. A user can pick at maximum one question from each set to answer. A user may answer **one or more distinct** challenge question **sets**.\n\n  <b>Permission required:</b>\n    * /permission/admin/manage/identity\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "OK"),
         
@@ -226,8 +226,8 @@ public class UserIdApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response updateChallengeAnswersOfAUser(@ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId,
-    @ApiParam(value = "set of challenge question with answer"  ) List<ChallengeAnswerDTO> challengeAnswers)
+    public Response updateChallengeAnswersOfAUser(@ApiParam(value = "Uniquely identifiable user ID",required=true ) @PathParam("user-id")  String userId,
+    @ApiParam(value = "Set of challenges with answer."  ) List<ChallengeAnswerDTO> challengeAnswers)
     {
     return delegate.updateChallengeAnswersOfAUser(userId,challengeAnswers);
     }

@@ -43,8 +43,9 @@ public class ChallengeAnswerDTO  {
 
   
   /**
+   * A unique ID to identify the challenge set.
    **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A unique ID to identify the challenge set.")
   @JsonProperty("questionSetId")
   public String getQuestionSetId() {
     return questionSetId;
@@ -55,8 +56,9 @@ public class ChallengeAnswerDTO  {
 
   
   /**
+   * A challenge question that is selected to answer from the set.
    **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A challenge question that is selected to answer from the set.")
   @JsonProperty("challengeQuestion")
   public ChallengeQuestionDTO getChallengeQuestion() {
     return challengeQuestion;
@@ -67,8 +69,9 @@ public class ChallengeAnswerDTO  {
 
   
   /**
+   * Answer to the challenge question.
    **/
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "Answer to the challenge question.")
   @JsonProperty("answer")
   public String getAnswer() {
     return answer;

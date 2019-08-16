@@ -42,8 +42,9 @@ public class ChallengeQuestionDTO  {
 
   
   /**
+   * The locale of the question.
    **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "The locale of the question.")
   @JsonProperty("locale")
   public String getLocale() {
     return locale;
@@ -54,8 +55,9 @@ public class ChallengeQuestionDTO  {
 
   
   /**
+   * Challenge question display value.
    **/
-  @ApiModelProperty(required = true, value = "")
+  @ApiModelProperty(required = true, value = "Challenge question display value.")
   @JsonProperty("question")
   public String getQuestion() {
     return question;
@@ -66,8 +68,9 @@ public class ChallengeQuestionDTO  {
 
   
   /**
+   * A unique ID for the challenge quesion within the set.
    **/
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(value = "A unique ID for the challenge quesion within the set.")
   @JsonProperty("questionId")
   public String getQuestionId() {
     return questionId;

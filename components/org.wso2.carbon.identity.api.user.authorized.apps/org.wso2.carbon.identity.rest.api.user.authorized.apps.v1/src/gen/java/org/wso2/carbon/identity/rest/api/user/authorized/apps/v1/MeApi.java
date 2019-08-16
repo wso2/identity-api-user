@@ -41,18 +41,20 @@ import javax.ws.rs.*;
 @io.swagger.annotations.Api(value = "/me", description = "the me API")
 public class MeApi  {
 
-    @Autowired
-    private MeApiService delegate;
+   @Autowired
+   private MeApiService delegate;
 
     @DELETE
     @Path("/authorized-apps/{application-id}")
     
     
-    @io.swagger.annotations.ApiOperation(value = "removes autherized app by app ID for the authenticated user", notes = "Removes autherized OAuth app by an app ID for for the authenticated user\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "removes authorized app by app ID for the authenticated user", notes = "Removes autherized OAuth app by an app ID for for the authenticated user\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 204, message = "Item Deleted"),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
+        
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
         
         @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource was not found"),
         
@@ -72,6 +74,8 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
         
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
+        
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
     public Response deleteLoggedInUserAuthorizedApps()
@@ -82,11 +86,13 @@ public class MeApi  {
     @Path("/authorized-apps/{application-id}")
     
     
-    @io.swagger.annotations.ApiOperation(value = "retrieve autherized app by app ID for the authenticated user", notes = "Retrived autherized OAuth app by an app ID for for the authenticated user\n", response = AuthorizedAppDTO.class)
+    @io.swagger.annotations.ApiOperation(value = "retrieve authorized app by app ID for the authenticated user", notes = "Retrived autherized OAuth app by an app ID for for the authenticated user\n", response = AuthorizedAppDTO.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "search results matching criteria"),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
+        
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
         
         @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource was not found"),
         
@@ -105,6 +111,8 @@ public class MeApi  {
         @io.swagger.annotations.ApiResponse(code = 200, message = "search results matching criteria"),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
+        
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
