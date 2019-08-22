@@ -3,6 +3,7 @@ package org.wso2.carbon.identity.rest.api.user.fido2.v1.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.api.user.fido2.common.Constants;
 import org.wso2.carbon.identity.api.user.fido2.common.Util;
 import org.wso2.carbon.identity.application.authenticator.fido2.core.WebAuthnService;
@@ -26,13 +27,14 @@ public class MeApiServiceImpl extends MeApiService {
 
     private static final Log log = LogFactory.getLog(MeApiServiceImpl.class);
 
-    private WebAuthnService service = new WebAuthnService();
+    @Autowired
+    private WebAuthnService webAuthnService;
 
     @Override
     public Response meWebauthnCredentialIdDelete(String credentialId) {
 
         try {
-            service.deregisterCredential(credentialId);
+            webAuthnService.deregisterCredential(credentialId);
         } catch (IOException e) {
             throw Util.handleError(Response.Status.INTERNAL_SERVER_ERROR, Constants.ErrorMessages
                     .ERROR_CODE_DELETE_CREDENTIALS, credentialId);
@@ -47,7 +49,7 @@ public class MeApiServiceImpl extends MeApiService {
             log.debug(MessageFormat.format("Received finish registration response: {0}", response));
         }
         try {
-            service.finishRegistration(response);
+            webAuthnService.finishRegistration(response);
         } catch (FIDO2AuthenticatorServerException ex) {
             throw Util.handleError(Response.Status.INTERNAL_SERVER_ERROR, Constants.ErrorMessages
                     .ERROR_CODE_FINISH_REGISTRATION);
@@ -68,7 +70,7 @@ public class MeApiServiceImpl extends MeApiService {
             if (username.contains(Constants.EQUAL_OPERATOR)) {
                 username = URLDecoder.decode(username.split(Constants.EQUAL_OPERATOR)[1], IdentityCoreConstants.UTF_8);
             }
-            return Response.ok().entity(FIDOUtil.writeJson(service.getDeviceMetaData(username))).build();
+            return Response.ok().entity(FIDOUtil.writeJson(webAuthnService.getDeviceMetaData(username))).build();
         } catch (IOException e) {
             throw Util.handleError(Response.Status.INTERNAL_SERVER_ERROR, Constants.ErrorMessages
                     .ERROR_CODE_FETCH_CREDENTIALS, username);
@@ -79,7 +81,7 @@ public class MeApiServiceImpl extends MeApiService {
     public Response meWebauthnStartRegistrationPost(String appID) {
 
         try {
-            Either<String, RegistrationRequest> result = service.startRegistration(appID);
+            Either<String, RegistrationRequest> result = webAuthnService.startRegistration(appID);
             if (result.isRight()) {
                 return Response.ok().entity(FIDOUtil.writeJson(result.right().get())).build();
             } else {
