@@ -333,6 +333,9 @@ definitions:
       userStoreDomain:
         type: string
         example: PRIMARY
+      tenantDomain:
+        type: string
+        example: carbon.super
 #-----------------------------------------------------
 # The Property  object
 #-----------------------------------------------------

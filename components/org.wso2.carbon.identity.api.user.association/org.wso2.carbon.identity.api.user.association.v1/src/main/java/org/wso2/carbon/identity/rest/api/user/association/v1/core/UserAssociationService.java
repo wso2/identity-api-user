@@ -113,6 +113,7 @@ public class UserAssociationService {
         userDTO.setUserId(userAccountAssociationDTO.getUsername());
         userDTO.setUsername(userAccountAssociationDTO.getUsername());
         userDTO.setUserStoreDomain(userAccountAssociationDTO.getDomain());
+        userDTO.setTenantDomain(userAccountAssociationDTO.getTenantDomain());
         return userDTO;
     }
 
