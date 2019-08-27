@@ -34,13 +34,13 @@ public class ApprovalConstant {
      */
     public enum ErrorMessage {
 
-        SERVER_ERROR_RETRIEVING_APPROVALS_FOR_USER("50002",
+        SERVER_ERROR_RETRIEVING_APPROVALS_FOR_USER("15002",
                 "Unable to retrieve approvals for the user.",
                 "Server Encountered an error while retrieving approvals for user."),
-        SERVER_ERROR_RETRIEVING_APPROVAL_OF_USER("50003",
+        SERVER_ERROR_RETRIEVING_APPROVAL_OF_USER("15003",
                 "Unable to retrieve the user approval.",
                 "Server Encountered an error while retrieving information on the approval task."),
-        SERVER_ERROR_CHANGING_APPROVALS_STATE("50004",
+        SERVER_ERROR_CHANGING_APPROVALS_STATE("15004",
                 "Unable to update the approval status.",
                 "Server Encountered an error while updating the approval task status."),
         USER_ERROR_UNAUTHORIZED_USER("10001",
