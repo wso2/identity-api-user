@@ -39,6 +39,9 @@ public class UserDTO  {
   
   
   private String userStoreDomain = null;
+  
+  
+  private String tenantDomain = null;
 
   
   /**
@@ -77,6 +80,18 @@ public class UserDTO  {
   }
 
   
+  /**
+   **/
+  @ApiModelProperty(value = "")
+  @JsonProperty("tenantDomain")
+  public String getTenantDomain() {
+    return tenantDomain;
+  }
+  public void setTenantDomain(String tenantDomain) {
+    this.tenantDomain = tenantDomain;
+  }
+
+  
 
   @Override
   public String toString()  {
@@ -86,6 +101,7 @@ public class UserDTO  {
     sb.append("  userId: ").append(userId).append("\n");
     sb.append("  username: ").append(username).append("\n");
     sb.append("  userStoreDomain: ").append(userStoreDomain).append("\n");
+    sb.append("  tenantDomain: ").append(tenantDomain).append("\n");
     sb.append("}\n");
     return sb.toString();
   }
