@@ -97,6 +97,15 @@ public class UserAssociationService {
         }
     }
 
+    public void deleteAllUserAssociations(String userId) {
+
+        try {
+            Utils.getUserAccountConnector().deleteAllUserAssociations(userId);
+        } catch (UserAccountAssociationException e) {
+            throw handleUserAccountAssociationException(e, "Error while deleting user associations: " + userId);
+        }
+    }
+
     private List<UserDTO> getUserAssociationsDTO(UserAccountAssociationDTO[] accountAssociationsOfUser) {
 
         List<UserDTO> userDTOList = new ArrayList<>();

@@ -27,7 +27,7 @@ public class MeApiServiceImpl extends MeApiService {
     @Override
     public Response meAssociationsDelete() {
 
-        userAssociationService.deleteUserAccountAssociation(getUserId());
+        userAssociationService.deleteAllUserAssociations(getUserId());
         return Response.noContent().build();
     }
 
