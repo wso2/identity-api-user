@@ -24,7 +24,6 @@ import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.humantask.client.api.IllegalAccessFault;
 import org.wso2.carbon.humantask.client.api.IllegalArgumentFault;
 import org.wso2.carbon.humantask.client.api.IllegalOperationFault;
@@ -33,10 +32,10 @@ import org.wso2.carbon.humantask.client.api.types.TSimpleQueryCategory;
 import org.wso2.carbon.humantask.client.api.types.TSimpleQueryInput;
 import org.wso2.carbon.humantask.client.api.types.TStatus;
 import org.wso2.carbon.humantask.client.api.types.TTaskSimpleQueryResultSet;
-import org.wso2.carbon.humantask.core.TaskOperationService;
 import org.wso2.carbon.humantask.core.api.client.TaskOperationsImpl;
 import org.wso2.carbon.humantask.core.dao.TaskStatus;
 import org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant;
+import org.wso2.carbon.identity.api.user.approval.common.UserApprovalUtil;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.core.functions.TTaskSimpleQueryResultRowToExternal;
@@ -62,9 +61,7 @@ import static org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant
 import static org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant.ErrorMessage.USER_ERROR_NOT_ACCEPTABLE_INPUT_FOR_NEXT_STATE;
 import static org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant.ErrorMessage.USER_ERROR_UNAUTHORIZED_USER;
 import static org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO.ActionEnum.APPROVE;
-import static org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO.ActionEnum.CLAIM;
 import static org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO.ActionEnum.REJECT;
-import static org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO.ActionEnum.RELEASE;
 
 /**
  * Call internal osgi services to perform user's approval task related operations
@@ -76,16 +73,6 @@ public class UserApprovalService {
     private static final Log log = LogFactory.getLog(UserApprovalService.class);
     private static final String APPROVAL_DATA_STRING = "<sch:ApprovalCBData xmlns:sch=\"http://ht.bpel.mgt.workflow" +
             ".identity.carbon.wso2.org/wsdl/schema\"><approvalStatus>%s</approvalStatus></sch:ApprovalCBData>";
-
-    /**
-     * Get TaskOperationService osgi service
-     *
-     * @return TaskOperationService
-     */
-    public TaskOperationService getTaskOperationService() {
-        return (TaskOperationService) PrivilegedCarbonContext.getThreadLocalCarbonContext()
-                .getOSGiService(TaskOperationService.class, null);
-    }
 
     /**
      * Search available approval tasks for the current authenticated user
@@ -109,7 +96,7 @@ public class UserApprovalService {
 
             queryInput.setSimpleQueryCategory(TSimpleQueryCategory.CLAIMABLE);
             queryInput.setStatus(tStatuses);
-            TTaskSimpleQueryResultSet taskResults = getTaskOperationService().simpleQuery(queryInput);
+            TTaskSimpleQueryResultSet taskResults = UserApprovalUtil.getTaskOperationService().simpleQuery(queryInput);
             if (taskResults != null && taskResults.getRow() != null) {
                 return Arrays.stream(taskResults.getRow()).map(new TTaskSimpleQueryResultRowToExternal())
                         .collect(Collectors.toList());

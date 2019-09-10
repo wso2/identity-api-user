@@ -120,6 +120,11 @@
             <scope>provided</scope>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.business-process</groupId>
+            <artifactId>org.wso2.carbon.humantask</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>
