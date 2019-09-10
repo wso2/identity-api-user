@@ -18,10 +18,10 @@ package org.wso2.carbon.identity.rest.api.user.challenge.v1.core;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.identity.api.user.challenge.common.ChallengeUtil;
 import org.wso2.carbon.identity.api.user.challenge.common.Constant;
 import org.wso2.carbon.identity.api.user.common.Constants;
 import org.wso2.carbon.identity.api.user.common.ContextLoader;
-import org.wso2.carbon.identity.api.user.common.Util;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.application.common.model.User;
@@ -64,7 +64,7 @@ public class UserChallengeService {
     public List<ChallengeSetDTO> getChallengesForUser(User user, Integer offset, Integer limit) {
 
         try {
-            return buildChallengesDTO(Util.getChallengeQuestionManager()
+            return buildChallengesDTO(ChallengeUtil.getChallengeQuestionManager()
                     .getAllChallengeQuestionsForUser(ContextLoader.getTenantDomainFromContext(), user), offset, limit);
         } catch (IdentityRecoveryException e) {
             throw handleIdentityRecoveryException(e,
@@ -84,12 +84,12 @@ public class UserChallengeService {
 
         List<UserChallengeAnswer> answers = buildChallengeAnswers(challengeAnswers);
         try {
-            List<String> answeredList = Util.getChallengeQuestionManager().getChallengeQuestionUris(user);
+            List<String> answeredList = ChallengeUtil.getChallengeQuestionManager().getChallengeQuestionUris(user);
             if (answeredList.size() > 0) {
                 throw handleError(Response.Status.CONFLICT,
                         Constant.ErrorMessage.ERROR_CODE_USER_ALREADY_ANSWERED_CHALLENGES);
             }
-            Util.getChallengeQuestionManager()
+            ChallengeUtil.getChallengeQuestionManager()
                     .setChallengesOfUser(user, answers.toArray(new UserChallengeAnswer[answers.size()]));
         } catch (IdentityRecoveryException e) {
             throw handleIdentityRecoveryException(e,
@@ -110,7 +110,7 @@ public class UserChallengeService {
         List<UserChallengeAnswer> answers = buildChallengeAnswers(newChallengeAnswers);
         try {
             validateUserAnsweredChallenges(user);
-            Util.getChallengeQuestionManager()
+            ChallengeUtil.getChallengeQuestionManager()
                     .setChallengesOfUser(user, answers.toArray(new UserChallengeAnswer[answers.size()]));
 
         } catch (IdentityRecoveryException e) {
@@ -130,14 +130,14 @@ public class UserChallengeService {
      * @return operation success
      */
     public boolean updateChallengeAnswerOfUser(User user, String challengeSetId,
-            UserChallengeAnswerDTO challengeAnswer) {
+                                               UserChallengeAnswerDTO challengeAnswer) {
 
         try {
             validateUserAnsweredChallenge(user, challengeSetId);
             UserChallengeAnswer answer = new UserChallengeAnswer(
                     createChallengeQuestion(challengeSetId, challengeAnswer.getChallengeQuestion()),
                     challengeAnswer.getAnswer());
-            Util.getChallengeQuestionManager().setChallengeOfUser(user, answer);
+            ChallengeUtil.getChallengeQuestionManager().setChallengeOfUser(user, answer);
         } catch (IdentityRecoveryException e) {
 
             throw handleIdentityRecoveryException(e,
@@ -157,7 +157,7 @@ public class UserChallengeService {
     public boolean addChallengeAnswerOfUser(User user, String challengeSetId, UserChallengeAnswerDTO challengeAnswer) {
 
         try {
-            List<String> answeredList = Util.getChallengeQuestionManager().getChallengeQuestionUris(user);
+            List<String> answeredList = ChallengeUtil.getChallengeQuestionManager().getChallengeQuestionUris(user);
             if (!answeredList.isEmpty() && answeredList.contains(WSO2_CLAIM_DIALECT + challengeSetId)) {
                 throw handleError(Response.Status.CONFLICT,
                         Constant.ErrorMessage.ERROR_CODE_USER_ALREADY_ANSWERED_CHALLENGE);
@@ -165,7 +165,7 @@ public class UserChallengeService {
             UserChallengeAnswer answer = new UserChallengeAnswer(
                     createChallengeQuestion(challengeSetId, challengeAnswer.getChallengeQuestion()),
                     challengeAnswer.getAnswer());
-            Util.getChallengeQuestionManager().setChallengeOfUser(user, answer);
+            ChallengeUtil.getChallengeQuestionManager().setChallengeOfUser(user, answer);
         } catch (IdentityRecoveryException e) {
 
             throw handleIdentityRecoveryException(e,
@@ -202,7 +202,7 @@ public class UserChallengeService {
         try {
             validateUserAnsweredChallenges(user);
 
-            Util.getChallengeQuestionManager().removeChallengeAnswersOfUser(user);
+            ChallengeUtil.getChallengeQuestionManager().removeChallengeAnswersOfUser(user);
         } catch (IdentityRecoveryException e) {
 
             throw handleIdentityRecoveryException(e,
@@ -221,7 +221,8 @@ public class UserChallengeService {
     public boolean removeChallengeAnswerOfUser(User user, String challengeSetId) {
         try {
             validateUserAnsweredChallenge(user, challengeSetId);
-            Util.getChallengeQuestionManager().removeChallengeAnswerOfUser(user, WSO2_CLAIM_DIALECT + challengeSetId);
+            ChallengeUtil.getChallengeQuestionManager()
+                    .removeChallengeAnswerOfUser(user, WSO2_CLAIM_DIALECT + challengeSetId);
         } catch (IdentityRecoveryException e) {
 
             throw handleIdentityRecoveryException(e,
@@ -237,7 +238,7 @@ public class UserChallengeService {
      * @throws IdentityRecoveryException
      */
     private void validateUserAnsweredChallenges(User user) throws IdentityRecoveryException {
-        List<String> answeredList = Util.getChallengeQuestionManager().getChallengeQuestionUris(user);
+        List<String> answeredList = ChallengeUtil.getChallengeQuestionManager().getChallengeQuestionUris(user);
         if (answeredList.size() < 1) {
             throw handleError(Response.Status.NOT_FOUND,
                     Constant.ErrorMessage.ERROR_CODE_USER_HAS_NOT_ANSWERED_CHALLENGES);
@@ -252,7 +253,7 @@ public class UserChallengeService {
      * @throws IdentityRecoveryException
      */
     private void validateUserAnsweredChallenge(User user, String challengeSetId) throws IdentityRecoveryException {
-        List<String> answeredList = Util.getChallengeQuestionManager().getChallengeQuestionUris(user);
+        List<String> answeredList = ChallengeUtil.getChallengeQuestionManager().getChallengeQuestionUris(user);
         if (answeredList.isEmpty() || !answeredList.contains(WSO2_CLAIM_DIALECT + challengeSetId)) {
             throw handleError(Response.Status.NOT_FOUND,
                     Constant.ErrorMessage.ERROR_CODE_USER_HAS_NOT_ANSWERED_CHALLENGE);
@@ -268,7 +269,7 @@ public class UserChallengeService {
      */
     private List<UserChallengeAnswerResponseDTO> getUserChallengeAnswerDTOsOfUser(User user)
             throws IdentityRecoveryException {
-        UserChallengeAnswer[] answers = Util.getChallengeQuestionManager().getChallengeAnswersOfUser(user);
+        UserChallengeAnswer[] answers = ChallengeUtil.getChallengeQuestionManager().getChallengeAnswersOfUser(user);
         return Arrays.stream(answers).map(new UserChallengeAnswerToExternal()).collect(Collectors.toList());
     }
 
@@ -292,7 +293,7 @@ public class UserChallengeService {
      * @return
      */
     private List<ChallengeSetDTO> buildChallengesDTO(List<ChallengeQuestion> challengeQuestions, Integer offset,
-            Integer limit) {
+                                                     Integer limit) {
 
         Map<String, List<ChallengeQuestion>> challengeSets = groupChallenges(challengeQuestions);
         return challengeSets.entrySet().stream().map((e) -> getChallengeSetDTO(e.getKey(), e.getValue()))

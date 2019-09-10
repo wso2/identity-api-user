@@ -19,4 +19,9 @@
     <bean class="org.wso2.carbon.identity.rest.api.user.challenge.v1.core.UserChallengeService"/>
     <bean class="org.wso2.carbon.identity.rest.api.user.challenge.v1.impl.UserIdApiServiceImpl"/>
     <bean class="org.wso2.carbon.identity.rest.api.user.challenge.v1.impl.MeApiServiceImpl"/>
+    <bean id="UserChallengeUtilBean" class="org.wso2.carbon.identity.api.user.challenge.common.ChallengeUtil">
+        <property name="challengeQuestionManager" ref="challengeQuestionServiceFactoryBean"/>
+    </bean>
+    <bean id="challengeQuestionServiceFactoryBean"
+          class="org.wso2.carbon.identity.api.user.challenge.common.factory.OSGIServiceFactory"/>
 </beans>
