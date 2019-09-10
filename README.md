@@ -89,6 +89,9 @@ for the file name of the API definition is `<resource>.yaml`
         </configuration>
     </plugin>
     ```
+    Note: Make sure to uncomment above plugin when you commit to remote as this plugin is not available in the maven 
+    repository.
+    
 3. Run the following command inside the module `org.wso2.carbon.identity.api.user.<resource>.<version>` to generate the stubs
     ```
     mvn swagger2cxf:generate
