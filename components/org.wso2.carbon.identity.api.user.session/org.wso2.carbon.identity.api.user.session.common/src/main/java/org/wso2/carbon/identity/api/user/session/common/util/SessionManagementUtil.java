@@ -18,7 +18,6 @@
 
 package org.wso2.carbon.identity.api.user.session.common.util;
 
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.application.authentication.framework.UserSessionManagementService;
 
 /**
@@ -26,13 +25,18 @@ import org.wso2.carbon.identity.application.authentication.framework.UserSession
  */
 public class SessionManagementUtil {
 
+    private static UserSessionManagementService userSessionManagementService;
+
     /**
      * Method to get the session management osgi service.
      *
      * @return UserSessionManagementService
      */
     public static UserSessionManagementService getUserSessionManagementService() {
-        return (UserSessionManagementService) PrivilegedCarbonContext.getThreadLocalCarbonContext()
-                .getOSGiService(UserSessionManagementService.class, null);
+        return userSessionManagementService;
+    }
+
+    public static void setUserSessionManagementService(UserSessionManagementService userSessionManagementService) {
+        SessionManagementUtil.userSessionManagementService = userSessionManagementService;
     }
 }
