@@ -19,14 +19,14 @@ package org.wso2.carbon.identity.api.user.challenge.common;
 import org.wso2.carbon.identity.recovery.ChallengeQuestionManager;
 
 /**
- * Common util class for user challenge services
+ * Service holder class for user challenge services.
  */
 public class ChallengeQuestionServiceHolder {
 
     private static ChallengeQuestionManager challengeQuestionManager;
 
     /**
-     * Get ChallengeQuestionManager osgi service
+     * Get ChallengeQuestionManager osgi service.
      * @return ChallengeQuestionManager
      */
     public static ChallengeQuestionManager getChallengeQuestionManager() {

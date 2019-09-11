@@ -19,7 +19,7 @@ package org.wso2.carbon.identity.api.user.approval.common;
 import org.wso2.carbon.humantask.core.TaskOperationService;
 
 /**
- * Util class for user approvals
+ * Service holder class for user approvals.
  */
 public class UserApprovalServiceHolder {
 
@@ -30,7 +30,7 @@ public class UserApprovalServiceHolder {
     }
 
     /**
-     * Get TaskOperationService osgi service
+     * Get TaskOperationService osgi service.
      *
      * @return TaskOperationService
      */

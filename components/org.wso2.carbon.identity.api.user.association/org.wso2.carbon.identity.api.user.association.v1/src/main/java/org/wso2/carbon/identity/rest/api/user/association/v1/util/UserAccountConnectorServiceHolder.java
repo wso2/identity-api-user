@@ -18,7 +18,7 @@ package org.wso2.carbon.identity.rest.api.user.association.v1.util;
 import org.wso2.carbon.identity.user.account.association.UserAccountConnector;
 
 /**
- * This class contains the utilities require for Associations APIs.
+ * Service holder class for User Associations.
  */
 public class UserAccountConnectorServiceHolder {
 

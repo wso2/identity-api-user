@@ -21,7 +21,7 @@ package org.wso2.carbon.identity.api.user.session.common.util;
 import org.wso2.carbon.identity.application.authentication.framework.UserSessionManagementService;
 
 /**
- * Contains all session management related util methods.
+ * Service holder class for user session management services.
  */
 public class SessionManagementServiceHolder {
 
