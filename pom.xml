@@ -28,7 +28,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>identity-api-user</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.39-SNAPSHOT</version>
+    <version>1.0.40-SNAPSHOT</version>
     <name>WSO2 Identity Server - User API Module</name>
     <description>
 
