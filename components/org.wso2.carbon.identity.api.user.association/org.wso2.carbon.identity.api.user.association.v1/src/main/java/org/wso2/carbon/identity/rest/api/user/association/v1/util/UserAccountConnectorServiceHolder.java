@@ -20,7 +20,7 @@ import org.wso2.carbon.identity.user.account.association.UserAccountConnector;
 /**
  * This class contains the utilities require for Associations APIs.
  */
-public class Utils {
+public class UserAccountConnectorServiceHolder {
 
     private static UserAccountConnector userAccountConnector;
 
@@ -30,6 +30,6 @@ public class Utils {
     }
 
     public static void setUserAccountConnector(UserAccountConnector userAccountConnector) {
-        Utils.userAccountConnector = userAccountConnector;
+        UserAccountConnectorServiceHolder.userAccountConnector = userAccountConnector;
     }
 }

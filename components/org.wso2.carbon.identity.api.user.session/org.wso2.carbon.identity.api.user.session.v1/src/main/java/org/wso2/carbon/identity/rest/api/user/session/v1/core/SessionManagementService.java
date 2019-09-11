@@ -23,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants;
-import org.wso2.carbon.identity.api.user.session.common.util.SessionManagementUtil;
+import org.wso2.carbon.identity.api.user.session.common.util.SessionManagementServiceHolder;
 import org.wso2.carbon.identity.application.authentication.framework.exception.session.mgt
         .SessionManagementClientException;
 import org.wso2.carbon.identity.application.authentication.framework.exception.session.mgt.SessionManagementException;
@@ -72,7 +72,8 @@ public class SessionManagementService {
         SessionsDTO sessions = new SessionsDTO();
         try {
             String userId = resolveUserIdFromUser(user);
-            sessionsForUser = SessionManagementUtil.getUserSessionManagementService().getSessionsByUserId(userId);
+            sessionsForUser = SessionManagementServiceHolder.getUserSessionManagementService()
+                    .getSessionsByUserId(userId);
             sessions.setUserId(userId);
             sessions.setSessions(buildSessionDTOs(sessionsForUser));
             return sessions;
@@ -91,7 +92,7 @@ public class SessionManagementService {
     public void terminateSessionBySessionId(User user, String sessionId) {
 
         String userId = resolveUserIdFromUser(user);
-        SessionManagementUtil.getUserSessionManagementService().terminateSessionBySessionId(userId, sessionId);
+        SessionManagementServiceHolder.getUserSessionManagementService().terminateSessionBySessionId(userId, sessionId);
 
     }
 
@@ -104,7 +105,7 @@ public class SessionManagementService {
 
         try {
             String userId = resolveUserIdFromUser(user);
-            SessionManagementUtil.getUserSessionManagementService().terminateSessionsByUserId(userId);
+            SessionManagementServiceHolder.getUserSessionManagementService().terminateSessionsByUserId(userId);
         } catch (SessionManagementException e) {
             throw handleSessionManagementException(e);
         }

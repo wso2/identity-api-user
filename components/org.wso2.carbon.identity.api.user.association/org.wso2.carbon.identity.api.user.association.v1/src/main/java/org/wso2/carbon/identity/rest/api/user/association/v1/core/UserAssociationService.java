@@ -22,7 +22,7 @@ import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationUserRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.UserDTO;
-import org.wso2.carbon.identity.rest.api.user.association.v1.util.Utils;
+import org.wso2.carbon.identity.rest.api.user.association.v1.util.UserAccountConnectorServiceHolder;
 import org.wso2.carbon.identity.user.account.association.dto.UserAccountAssociationDTO;
 import org.wso2.carbon.identity.user.account.association.exception.UserAccountAssociationClientException;
 import org.wso2.carbon.identity.user.account.association.exception.UserAccountAssociationException;
@@ -46,8 +46,8 @@ public class UserAssociationService {
     public List<UserDTO> getAssociationsOfUser(String userId) {
 
         try {
-            UserAccountAssociationDTO[] accountAssociationsOfUser = Utils.getUserAccountConnector()
-                    .getAccountAssociationsOfUser(userId);
+            UserAccountAssociationDTO[] accountAssociationsOfUser = UserAccountConnectorServiceHolder
+                    .getUserAccountConnector().getAccountAssociationsOfUser(userId);
             return getUserAssociationsDTO(accountAssociationsOfUser);
         } catch (UserAccountAssociationException e) {
             throw handleUserAccountAssociationException(e, "Error while getting associations of user: " + userId);
@@ -61,8 +61,9 @@ public class UserAssociationService {
                 throw new UserAccountAssociationClientException(ERROR_CODE_PW_MANDATORY.getCode(),
                         ERROR_CODE_PW_MANDATORY.getDescription());
             }
-            Utils.getUserAccountConnector().createUserAccountAssociation(associationUserRequestDTO.getUserId(),
-                    associationUserRequestDTO.getPassword().toCharArray());
+            UserAccountConnectorServiceHolder.getUserAccountConnector()
+                    .createUserAccountAssociation(associationUserRequestDTO.getUserId(),
+                            associationUserRequestDTO.getPassword().toCharArray());
         } catch (UserAccountAssociationException e) {
             throw handleUserAccountAssociationException(e,
                     "Error while adding associations of user: " + associationUserRequestDTO.getUserId());
@@ -72,7 +73,8 @@ public class UserAssociationService {
     public void createUserAccountAssociation(AssociationRequestDTO association, String userId) {
 
         try {
-            Utils.getUserAccountConnector().createUserAccountAssociation(userId, association.getAssociateUserId());
+            UserAccountConnectorServiceHolder.getUserAccountConnector()
+                    .createUserAccountAssociation(userId, association.getAssociateUserId());
         } catch (UserAccountAssociationException e) {
             throw handleUserAccountAssociationException(e, "Error while associating user: " + userId);
         }
@@ -82,7 +84,7 @@ public class UserAssociationService {
     public boolean switchLoggedInUser(String userName)  {
 
         try {
-            return Utils.getUserAccountConnector().switchLoggedInUser(userName);
+            return UserAccountConnectorServiceHolder.getUserAccountConnector().switchLoggedInUser(userName);
         } catch (UserAccountAssociationException e) {
             throw handleUserAccountAssociationException(e, "Error while switching user: " + userName);
         }
@@ -91,7 +93,7 @@ public class UserAssociationService {
     public void deleteUserAccountAssociation(String userId) {
 
         try {
-            Utils.getUserAccountConnector().deleteUserAccountAssociation(userId);
+            UserAccountConnectorServiceHolder.getUserAccountConnector().deleteUserAccountAssociation(userId);
         } catch (UserAccountAssociationException e) {
             throw handleUserAccountAssociationException(e, "Error while deleting user association: " + userId);
         }

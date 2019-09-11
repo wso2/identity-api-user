@@ -35,7 +35,7 @@ import org.wso2.carbon.humantask.client.api.types.TTaskSimpleQueryResultSet;
 import org.wso2.carbon.humantask.core.api.client.TaskOperationsImpl;
 import org.wso2.carbon.humantask.core.dao.TaskStatus;
 import org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant;
-import org.wso2.carbon.identity.api.user.approval.common.UserApprovalUtil;
+import org.wso2.carbon.identity.api.user.approval.common.UserApprovalServiceHolder;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.core.functions.TTaskSimpleQueryResultRowToExternal;
@@ -96,7 +96,8 @@ public class UserApprovalService {
 
             queryInput.setSimpleQueryCategory(TSimpleQueryCategory.CLAIMABLE);
             queryInput.setStatus(tStatuses);
-            TTaskSimpleQueryResultSet taskResults = UserApprovalUtil.getTaskOperationService().simpleQuery(queryInput);
+            TTaskSimpleQueryResultSet taskResults = UserApprovalServiceHolder.getTaskOperationService()
+                    .simpleQuery(queryInput);
             if (taskResults != null && taskResults.getRow() != null) {
                 return Arrays.stream(taskResults.getRow()).map(new TTaskSimpleQueryResultRowToExternal())
                         .collect(Collectors.toList());

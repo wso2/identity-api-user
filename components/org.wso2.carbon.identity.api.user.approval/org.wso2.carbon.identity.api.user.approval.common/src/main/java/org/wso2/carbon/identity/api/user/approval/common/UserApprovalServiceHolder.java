@@ -21,12 +21,12 @@ import org.wso2.carbon.humantask.core.TaskOperationService;
 /**
  * Util class for user approvals
  */
-public class UserApprovalUtil {
+public class UserApprovalServiceHolder {
 
     private static TaskOperationService taskOperationService;
 
     public static void setTaskOperationService(TaskOperationService taskOperationService) {
-        UserApprovalUtil.taskOperationService = taskOperationService;
+        UserApprovalServiceHolder.taskOperationService = taskOperationService;
     }
 
     /**

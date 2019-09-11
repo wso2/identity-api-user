@@ -21,7 +21,7 @@ import org.wso2.carbon.identity.recovery.ChallengeQuestionManager;
 /**
  * Common util class for user challenge services
  */
-public class ChallengeUtil {
+public class ChallengeQuestionServiceHolder {
 
     private static ChallengeQuestionManager challengeQuestionManager;
 
@@ -34,6 +34,6 @@ public class ChallengeUtil {
     }
 
     public static void setChallengeQuestionManager(ChallengeQuestionManager challengeQuestionManager) {
-        ChallengeUtil.challengeQuestionManager = challengeQuestionManager;
+        ChallengeQuestionServiceHolder.challengeQuestionManager = challengeQuestionManager;
     }
 }

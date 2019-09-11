@@ -23,7 +23,7 @@ import org.wso2.carbon.identity.application.authentication.framework.UserSession
 /**
  * Contains all session management related util methods.
  */
-public class SessionManagementUtil {
+public class SessionManagementServiceHolder {
 
     private static UserSessionManagementService userSessionManagementService;
 
@@ -37,6 +37,6 @@ public class SessionManagementUtil {
     }
 
     public static void setUserSessionManagementService(UserSessionManagementService userSessionManagementService) {
-        SessionManagementUtil.userSessionManagementService = userSessionManagementService;
+        SessionManagementServiceHolder.userSessionManagementService = userSessionManagementService;
     }
 }
