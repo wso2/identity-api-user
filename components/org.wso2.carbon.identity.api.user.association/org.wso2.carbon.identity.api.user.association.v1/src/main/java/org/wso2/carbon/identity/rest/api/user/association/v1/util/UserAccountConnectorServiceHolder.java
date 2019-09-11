@@ -15,24 +15,21 @@
  */
 package org.wso2.carbon.identity.rest.api.user.association.v1.util;
 
-import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.identity.user.account.association.UserAccountAssociationService;
 import org.wso2.carbon.identity.user.account.association.UserAccountConnector;
 
 /**
- * This class contains the utilities require for Associations APIs.
+ * Service holder class for User Associations.
  */
-public class Utils {
+public class UserAccountConnectorServiceHolder {
+
+    private static UserAccountConnector userAccountConnector;
 
     public static UserAccountConnector getUserAccountConnector() {
 
-        return (UserAccountConnector) PrivilegedCarbonContext.getThreadLocalCarbonContext()
-                .getOSGiService(UserAccountConnector.class, null);
+        return userAccountConnector;
     }
 
-    public static UserAccountAssociationService getUserAccountAssociationService() {
-
-        return (UserAccountAssociationService) PrivilegedCarbonContext.getThreadLocalCarbonContext()
-                .getOSGiService(UserAccountAssociationService.class, null);
+    public static void setUserAccountConnector(UserAccountConnector userAccountConnector) {
+        UserAccountConnectorServiceHolder.userAccountConnector = userAccountConnector;
     }
 }

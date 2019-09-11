@@ -22,4 +22,9 @@
     <bean class="org.wso2.carbon.identity.rest.api.user.session.v1.core.SessionManagementService"/>
     <bean class="org.wso2.carbon.identity.rest.api.user.session.v1.impl.UserIdApiServiceImpl"/>
     <bean class="org.wso2.carbon.identity.rest.api.user.session.v1.impl.MeApiServiceImpl"/>
+    <bean id="UserSessionsUtilBean" class="org.wso2.carbon.identity.api.user.session.common.util.SessionManagementServiceHolder">
+        <property name="userSessionManagementService" ref="userSessionManagementServiceFactoryBean"/>
+    </bean>
+    <bean id="userSessionManagementServiceFactoryBean"
+          class="org.wso2.carbon.identity.api.user.session.common.factory.OSGIServiceFactory"/>
 </beans>
