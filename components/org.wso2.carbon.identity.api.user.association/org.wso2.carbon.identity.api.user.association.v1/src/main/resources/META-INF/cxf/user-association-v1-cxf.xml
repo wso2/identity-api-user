@@ -19,7 +19,7 @@
     <bean class="org.wso2.carbon.identity.rest.api.user.association.v1.core.UserAssociationService"/>
     <bean class="org.wso2.carbon.identity.rest.api.user.association.v1.impl.UserIdApiServiceImpl"/>
     <bean class="org.wso2.carbon.identity.rest.api.user.association.v1.impl.MeApiServiceImpl"/>
-    <bean id="UserApprovalUtilBean"
+    <bean id="UserAssociationServiceHolderBean"
           class="org.wso2.carbon.identity.rest.api.user.association.v1.util.UserAccountConnectorServiceHolder">
         <property name="userAccountConnector" ref="userAccountConnectorServiceFactoryBean"/>
     </bean>
