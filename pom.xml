@@ -242,11 +242,22 @@
                 <version>${carbon.identity.framework.version}</version>
                 <scope>provided</scope>
             </dependency>
-
+            <dependency>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
+                <artifactId>org.wso2.carbon.identity.application.common</artifactId>
+                <version>${carbon.identity.framework.version}</version>
+                <scope>provided</scope>
+            </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.identity.inbound.auth.oauth2</groupId>
                 <artifactId>org.wso2.carbon.identity.oauth</artifactId>
                 <version>${identity.oauth.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wso2.carbon.extension.identity.authenticator.outbound.totp</groupId>
+                <artifactId>org.wso2.carbon.extension.identity.authenticator.totp.connector</artifactId>
+                <version>${identity.totp.version}</version>
             </dependency>
 
             <!-- Test Dependencies -->
@@ -360,6 +371,7 @@
         <identity.oauth.version>6.1.5</identity.oauth.version>
         <testng.version>6.9.10</testng.version>
         <fido2.version>5.1.17</fido2.version>
+        <identity.totp.version>2.1.4</identity.totp.version>
         <!--<maven.checkstyleplugin.excludes>**/gen/**/*</maven.checkstyleplugin.excludes>-->
     </properties>
 
@@ -371,6 +383,8 @@
         <module>components/org.wso2.carbon.identity.api.user.approval</module>
         <module>components/org.wso2.carbon.identity.api.user.session</module>
         <module>components/org.wso2.carbon.identity.api.user.fido2</module>
+        <module>components/org.wso2.carbon.identity.api.user.totp</module>
+
     </modules>
 
 </project>
