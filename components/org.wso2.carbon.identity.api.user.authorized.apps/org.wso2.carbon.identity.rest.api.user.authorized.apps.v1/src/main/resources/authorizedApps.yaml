@@ -18,8 +18,13 @@ schemes:
 
 # tags are used for organizing operations
 tags:
-- name: developers
-  description: Operations available to regular developers
+- name: me
+  description: Operations for the authenticated user.
+- name: admin
+  description: >
+    Operations available for privileged users, to be invoked on behalf of another user.
+    **These endpoints are not released in WSO2 Identity Server - 5.9.0 version and will be released in the next product version.**
+
 security:
   - OAuth2: []
   - BasicAuth: []
@@ -28,7 +33,7 @@ paths:
   /{user-id}/authorized-apps:
     get:
       tags:
-        - developers
+        - admin
       summary: list authorized applications of a user
       operationId: listUserAuthorizedApps
       description: |
@@ -50,7 +55,7 @@ paths:
           $ref: '#/responses/ServerError'
     delete:
       tags:
-        - developers
+        - admin
       summary: "remove all authorized applications of a user"
       operationId:  deleteUserAuthorizedApps
       description: |
@@ -69,7 +74,7 @@ paths:
   /{user-id}/authorized-apps/{application-id}:
     get:
       tags:
-        - developers
+        - admin
       summary: "retrieve autherized app by app ID for a user"
       operationId: listUserAuthorizedAppsByAppId
       description: |
@@ -92,7 +97,7 @@ paths:
           $ref: '#/responses/ServerError'
     delete:
       tags:
-        - developers
+        - admin
       summary: "removes challenge question answers"
       operationId: deleteUserAuthorizedAppsByAppId
       description: |
@@ -114,7 +119,7 @@ paths:
   /me/authorized-apps:
     get:
       tags:
-        - developers
+        - me
       summary: "list authorized applications for the authenticated user"
       operationId: listLoggedInUserAuthorizedApps
       description: |
@@ -134,7 +139,7 @@ paths:
           $ref: '#/responses/ServerError'
     delete:
       tags:
-        - developers
+        - me
       summary: "removes authorized applications for the authenticated user"
       operationId: deleteLoggedInUserAuthorizedApps
       description: |
@@ -151,7 +156,7 @@ paths:
   /me/authorized-apps/{application-id}:
     get:
       tags:
-        - developers
+        - me
       summary: "retrieve authorized app by app ID for the authenticated user"
       operationId: getLoggedInUserAuthorizedAppByAppId
       description: |
@@ -173,7 +178,7 @@ paths:
           $ref: '#/responses/ServerError'
     delete:
       tags:
-        - developers
+        - me
       summary: "removes authorized app by app ID for the authenticated user"
       operationId: deleteLoggedInUserAuthorizedAppByAppId
       description: |

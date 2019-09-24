@@ -16,6 +16,15 @@ info:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 
+# Tags are used for organizing operations
+tags:
+- name: me
+  description: Operations for the authenticated user.
+- name: admin
+  description: >
+    Operations available for privileged users, to be invoked on behalf of another user.
+    **These endpoints are not released in WSO2 Identity Server - 5.9.0 version and will be released in the next product version.**
+
 ######################################################
 # The fixed parts of the URLs of the API
 ######################################################
@@ -27,6 +36,7 @@ schemes:
 security:
   - OAuth2: []
   - BasicAuth: []
+
 
 # The domain of the API.
 # This is configured by the customer during deployment.
@@ -96,10 +106,10 @@ paths:
           schema:
              $ref: '#/definitions/Error'
       tags:
-        - Associations
+        - me
     get:
       tags:
-      - Associations
+      - me
       summary: Retrive the associations of the authenticated user.
       description: |
         This API is used to retrieve the associations of the authenticated user.
@@ -145,7 +155,7 @@ paths:
           schema:
              $ref: '#/definitions/Error'
       tags:
-      - Associations
+      - me
   /me/associations/switch:
     put:
       parameters:
@@ -181,7 +191,7 @@ paths:
           schema:
              $ref: '#/definitions/Error'
       tags:
-      - Associations
+      - me
 
   /{user-id}/associations:
     post:
@@ -227,10 +237,10 @@ paths:
           schema:
              $ref: '#/definitions/Error'
       tags:
-        - Associations
+        - admin
     get:
       tags:
-      - Associations
+      - admin
       summary: Get user's associations
       description: |
           This API is used to retrieve the associations of the user.
@@ -294,7 +304,7 @@ paths:
           schema:
              $ref: '#/definitions/Error'
       tags:
-      - Associations
+      - admin
 definitions:
 
 #-----------------------------------------------------
