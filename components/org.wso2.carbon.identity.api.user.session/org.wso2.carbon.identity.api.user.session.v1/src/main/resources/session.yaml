@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   description: This is the RESTful API for managing Sessions in WSO2 Identity Server
-  version: '1.0.0'
+  version: 'v1'
   title: WSO2 Identity Server - Session Management API
   contact:
     name: 'WSO2 Identity Server'
@@ -16,12 +16,14 @@ schemes:
 host: localhost:9443
 basePath: /t/{tenant-domain}/api/users/v1
 
-# tags are used for organizing operations
 tags:
-- name: management
-  description: Secured Admin-only calls
-- name: developers
-  description: Operations available to regular developers
+- name: me
+  description: Operations for the authenticated user.
+- name: admin
+  description: >
+    Operations available for privileged users, to be invoked on behalf of another user.
+    **These endpoints are not released in WSO2 Identity Server - 5.9.0 version and will be released in the next product version.**
+
 security:
   - OAuth2: []
   - BasicAuth: []
@@ -30,7 +32,7 @@ paths:
   /{user-id}/sessions:
     get:
       tags:
-        - management
+        - admin
       description: Retrieve information related to the active sessions of the user.
       summary: get active sessions
       operationId: getSessionsByUserId
@@ -57,7 +59,7 @@ paths:
             $ref: '#/responses/ServerError'
     delete:
       tags:
-        - management
+        - admin
       description: Delete all the sessions of the given in user
       summary: Terminate all sessions
       operationId: terminateSessionsByUserId
@@ -76,7 +78,7 @@ paths:
   /me/sessions:
     get:
       tags:
-        - developers
+        - me
       description: Retrieve information related to the active sessions of the logged in user.
       summary: get active sessions
       operationId: getSessionsOfLoggedInUser
@@ -101,7 +103,7 @@ paths:
 
     delete:
       tags:
-        - developers
+        - me
       description: Delete all the sessions of the logged in user
       summary: Terminate all sessions
       operationId: terminateSessionsByLoggedInUser
@@ -118,7 +120,7 @@ paths:
   /{user-id}/sessions/{session-id}:
     delete:
       tags:
-        - management
+        - admin
       description: Terminate a given session of a given user
       summary: Terminate a session
       operationId: terminateSessionBySessionId
@@ -138,7 +140,7 @@ paths:
   /me/sessions/{session-id}:
     delete:
       tags:
-        - developers
+        - me
       description: Terminate a given session of the logged in user
       summary: Terminate a session
       operationId: terminateSessionByLoggedInUser
