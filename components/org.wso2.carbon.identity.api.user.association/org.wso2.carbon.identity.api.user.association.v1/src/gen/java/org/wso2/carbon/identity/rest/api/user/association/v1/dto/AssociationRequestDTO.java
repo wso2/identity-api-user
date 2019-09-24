@@ -23,6 +23,7 @@ import org.wso2.carbon.identity.rest.api.user.association.v1.dto.PropertyDTO;
 import io.swagger.annotations.*;
 import com.fasterxml.jackson.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -34,10 +35,10 @@ import javax.validation.constraints.Pattern;
 public class AssociationRequestDTO  {
   
   
-  
+  @Valid 
   private String associateUserId = null;
   
-  
+  @Valid 
   private List<PropertyDTO> properties = new ArrayList<PropertyDTO>();
 
   

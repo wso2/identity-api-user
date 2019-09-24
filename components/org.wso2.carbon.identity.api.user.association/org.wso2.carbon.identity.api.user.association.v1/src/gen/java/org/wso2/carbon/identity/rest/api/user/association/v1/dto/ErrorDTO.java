@@ -20,6 +20,7 @@ package org.wso2.carbon.identity.rest.api.user.association.v1.dto;
 import io.swagger.annotations.*;
 import com.fasterxml.jackson.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -31,16 +32,16 @@ import javax.validation.constraints.Pattern;
 public class ErrorDTO  {
   
   
-  @NotNull 
+  @Valid @NotNull(message = "Property code cannot be null.") 
   private String code = null;
   
-  @NotNull 
+  @Valid @NotNull(message = "Property message cannot be null.") 
   private String message = null;
   
-  
+  @Valid 
   private String description = null;
   
-  
+  @Valid 
   private String traceId = null;
 
   

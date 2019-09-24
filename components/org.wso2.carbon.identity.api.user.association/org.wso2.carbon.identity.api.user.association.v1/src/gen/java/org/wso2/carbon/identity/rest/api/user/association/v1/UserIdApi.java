@@ -33,6 +33,7 @@ import java.io.InputStream;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 
+import javax.validation.Valid;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.*;
 
@@ -45,6 +46,7 @@ public class UserIdApi  {
    @Autowired
    private UserIdApiService delegate;
 
+    @Valid
     @DELETE
     @Path("/associations")
     @Consumes({ "application/json" })
@@ -65,6 +67,7 @@ public class UserIdApi  {
     {
     return delegate.userIdAssociationsDelete(userId);
     }
+    @Valid
     @GET
     @Path("/associations")
     @Consumes({ "application/json" })
@@ -87,6 +90,7 @@ public class UserIdApi  {
     {
     return delegate.userIdAssociationsGet(userId);
     }
+    @Valid
     @POST
     @Path("/associations")
     @Consumes({ "application/json" })
@@ -105,7 +109,7 @@ public class UserIdApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Server Error") })
 
-    public Response userIdAssociationsPost(@ApiParam(value = "Fully qualified username of the associating user." ,required=true ) AssociationRequestDTO association,
+    public Response userIdAssociationsPost(@ApiParam(value = "Fully qualified username of the associating user." ,required=true ) @Valid AssociationRequestDTO association,
     @ApiParam(value = "user id",required=true ) @PathParam("user-id")  String userId)
     {
     return delegate.userIdAssociationsPost(association,userId);

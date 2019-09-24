@@ -1,7 +1,9 @@
 package org.wso2.carbon.identity.rest.api.user.association.v1.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
+import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.rest.api.user.association.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.association.v1.core.UserAssociationService;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationSwitchRequestDTO;
@@ -25,10 +27,20 @@ public class MeApiServiceImpl extends MeApiService {
     private UserAssociationService userAssociationService;
 
     @Override
-    public Response meAssociationsDelete() {
+    public Response meAssociationsDelete(String username, String userStoreDomain) {
 
-        userAssociationService.deleteUserAccountAssociation(getUserId());
-        return Response.noContent().build();
+        if (StringUtils.isBlank(username)) {
+            userAssociationService.deleteUserAccountAssociation(getUserId());
+            return Response.noContent().build();
+        } else {
+            User user = new User();
+            user.setUserName(username);
+            if (StringUtils.isNotBlank(userStoreDomain)) {
+                user.setUserStoreDomain(userStoreDomain);
+            }
+            userAssociationService.deleteUserAccountAssociation(user.toFullQualifiedUsername());
+            return Response.noContent().build();
+        }
     }
 
     @Override

@@ -20,6 +20,7 @@ package org.wso2.carbon.identity.rest.api.user.association.v1.dto;
 import io.swagger.annotations.*;
 import com.fasterxml.jackson.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -31,10 +32,10 @@ import javax.validation.constraints.Pattern;
 public class PropertyDTO  {
   
   
-  
+  @Valid 
   private String key = null;
   
-  
+  @Valid 
   private String value = null;
 
   

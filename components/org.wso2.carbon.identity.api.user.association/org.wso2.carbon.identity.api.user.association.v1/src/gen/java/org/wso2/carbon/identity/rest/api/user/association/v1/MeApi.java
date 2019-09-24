@@ -34,6 +34,7 @@ import java.io.InputStream;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 
+import javax.validation.Valid;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.*;
 
@@ -46,11 +47,12 @@ public class MeApi  {
    @Autowired
    private MeApiService delegate;
 
+    @Valid
     @DELETE
     @Path("/associations")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @io.swagger.annotations.ApiOperation(value = "Delete all my user associations", notes = "This API is used to delete all associations of the auhtentiated user.\n\n  <b>Permission required:</b>\n\n  * /permission/admin/login\n", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Delete my user associations", notes = "This API is used to delete a given association(s) of the auhtentiated user.\n\n  <b>Permission required:</b>\n\n  * /permission/admin/login\n", response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 204, message = "No content"),
         
@@ -60,10 +62,12 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Server Error") })
 
-    public Response meAssociationsDelete()
+    public Response meAssociationsDelete(@ApiParam(value = "Username of the user that need to be removed from authenticated user's associations.") @QueryParam("username")  String username,
+    @ApiParam(value = "UserStore domain of the user that need to be removed from authenticated user's associations.") @QueryParam("userStoreDomain")  String userStoreDomain)
     {
-    return delegate.meAssociationsDelete();
+    return delegate.meAssociationsDelete(username,userStoreDomain);
     }
+    @Valid
     @GET
     @Path("/associations")
     @Consumes({ "application/json" })
@@ -84,6 +88,7 @@ public class MeApi  {
     {
     return delegate.meAssociationsGet();
     }
+    @Valid
     @POST
     @Path("/associations")
     @Consumes({ "application/json" })
@@ -102,10 +107,11 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Server Error") })
 
-    public Response meAssociationsPost(@ApiParam(value = "User details to be associated. userId should be the fully qalified username of the user." ,required=true ) AssociationUserRequestDTO association)
+    public Response meAssociationsPost(@ApiParam(value = "User details to be associated. userId should be the fully qalified username of the user." ,required=true ) @Valid AssociationUserRequestDTO association)
     {
     return delegate.meAssociationsPost(association);
     }
+    @Valid
     @PUT
     @Path("/associations/switch")
     @Consumes({ "application/json" })
@@ -124,7 +130,7 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 501, message = "Not Implemented") })
 
-    public Response meAssociationsSwitchPut(@ApiParam(value = "" ,required=true ) AssociationSwitchRequestDTO switchUserReqeust)
+    public Response meAssociationsSwitchPut(@ApiParam(value = "" ,required=true ) @Valid AssociationSwitchRequestDTO switchUserReqeust)
     {
     return delegate.meAssociationsSwitchPut(switchUserReqeust);
     }

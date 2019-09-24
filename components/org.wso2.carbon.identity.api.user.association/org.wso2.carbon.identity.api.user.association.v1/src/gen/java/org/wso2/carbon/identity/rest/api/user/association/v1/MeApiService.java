@@ -32,7 +32,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import javax.ws.rs.core.Response;
 
 public abstract class MeApiService {
-    public abstract Response meAssociationsDelete();
+    public abstract Response meAssociationsDelete(String username,String userStoreDomain);
     public abstract Response meAssociationsGet();
     public abstract Response meAssociationsPost(AssociationUserRequestDTO association);
     public abstract Response meAssociationsSwitchPut(AssociationSwitchRequestDTO switchUserReqeust);
