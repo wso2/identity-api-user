@@ -70,6 +70,8 @@ public class UserApprovalService {
 
     private static final String APPROVAL_STATUS = "approvalStatus";
     private static final String PENDING = "PENDING";
+    private static final String APPROVED = "APPROVED";
+    private static final String REJECTED = "REJECTED";
     private static final Log log = LogFactory.getLog(UserApprovalService.class);
     private static final String APPROVAL_DATA_STRING = "<sch:ApprovalCBData xmlns:sch=\"http://ht.bpel.mgt.workflow" +
             ".identity.carbon.wso2.org/wsdl/schema\"><approvalStatus>%s</approvalStatus></sch:ApprovalCBData>";
@@ -173,10 +175,10 @@ public class UserApprovalService {
                     taskOperations.release(taskIdURI);
                     break;
                 case APPROVE:
-                    completeTask(taskOperations, taskIdURI, APPROVE);
+                    completeTask(taskOperations, taskIdURI, APPROVED);
                     break;
                 case REJECT:
-                    completeTask(taskOperations, taskIdURI, REJECT);
+                    completeTask(taskOperations, taskIdURI, REJECTED);
                     break;
                 default:
                     handleError(Response.Status.NOT_ACCEPTABLE, USER_ERROR_NOT_ACCEPTABLE_INPUT_FOR_NEXT_STATE);
@@ -197,10 +199,10 @@ public class UserApprovalService {
         }
     }
 
-    private void completeTask(TaskOperationsImpl taskOperations, URI taskIdURI, StateDTO.ActionEnum action) throws
+    private void completeTask(TaskOperationsImpl taskOperations, URI taskIdURI, String action) throws
             Exception {
         taskOperations.start(taskIdURI);
-        taskOperations.complete(taskIdURI, String.format(APPROVAL_DATA_STRING, action.name()));
+        taskOperations.complete(taskIdURI, String.format(APPROVAL_DATA_STRING, action));
     }
 
     private void addApprovalStatus(TaskOperationsImpl taskOperations, URI taskIdURI, XmlMapper xmlMapper,
