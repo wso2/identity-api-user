@@ -302,8 +302,10 @@ definitions:
       approvalStatus:
         type: string
         example: "APPROVE"
-        description: Available only for the completed Tasks, APPROVE or REJECT if the task has been completed, PENDING otherwise
-        enum: [PENDING, APPROVE, REJECT]
+        description: >
+            Available only for the completed Tasks, APPROVED or REJECTED if the task has been completed,
+            PENDING otherwise
+        enum: [PENDING, APPROVED, REJECTED]
       assignees:
         type: array
         items:
