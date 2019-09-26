@@ -50,7 +50,7 @@ public class TaskDataDTO  {
   private String initiator = null;
   
   public enum ApprovalStatusEnum {
-     PENDING,  APPROVE,  REJECT, 
+     PENDING,  APPROVED,  REJECTED, 
   };
   
   private ApprovalStatusEnum approvalStatus = null;
@@ -128,9 +128,9 @@ public class TaskDataDTO  {
 
   
   /**
-   * Available only for the completed Tasks, APPROVE or REJECT if the task has been completed, PENDING otherwise
+   * Available only for the completed Tasks, APPROVED or REJECTED if the task has been completed, PENDING otherwise\n
    **/
-  @ApiModelProperty(value = "Available only for the completed Tasks, APPROVE or REJECT if the task has been completed, PENDING otherwise")
+  @ApiModelProperty(value = "Available only for the completed Tasks, APPROVED or REJECTED if the task has been completed, PENDING otherwise\n")
   @JsonProperty("approvalStatus")
   public ApprovalStatusEnum getApprovalStatus() {
     return approvalStatus;
