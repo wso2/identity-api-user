@@ -29,6 +29,7 @@ import org.wso2.carbon.identity.application.authentication.framework.exception.s
         .SessionManagementClientException;
 import org.wso2.carbon.identity.application.authentication.framework.exception.session.mgt.SessionManagementException;
 import org.wso2.carbon.identity.application.authentication.framework.model.UserSession;
+import org.wso2.carbon.identity.application.authentication.framework.util.SessionMgtConstants;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.rest.api.user.session.v1.core.function.UserSessionToExternal;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionDTO;
@@ -40,8 +41,6 @@ import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.ERROR_CODE_DELIMITER;
 import static org.wso2.carbon.identity.api.user.common.Util.resolveUserIdFromUser;
-import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants
-        .ERROR_CODE_FORBIDDEN_ACTION;
 import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants.ErrorMessage
         .ERROR_CODE_FILTERING_NOT_IMPLEMENTED;
 import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants.ErrorMessage
@@ -147,7 +146,8 @@ public class SessionManagementService {
         Response.Status status;
 
         if (e instanceof SessionManagementClientException) {
-            if (StringUtils.equals(ERROR_CODE_FORBIDDEN_ACTION, e.getErrorCode())) {
+            if (StringUtils.equals(SessionMgtConstants.ErrorMessages.ERROR_CODE_FORBIDDEN_ACTION.getCode(),
+                    e.getErrorCode())) {
                 status = Response.Status.FORBIDDEN;
             } else {
                 status = Response.Status.BAD_REQUEST;

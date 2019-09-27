@@ -25,24 +25,23 @@ public class SessionManagementConstants {
 
     public static final String ERROR_CODE_DELIMITER = "-";
     public static final String USER_SESSION_MANAGEMENT_PREFIX = "USM";
-    public static final String ERROR_CODE_FORBIDDEN_ACTION = "USM-00007";
 
     /**
      * Enum for user error messages.
      */
     public enum ErrorMessage {
 
-        ERROR_CODE_PAGINATION_NOT_IMPLEMENTED("00003",
-                "Pagination not supported.",
+        ERROR_CODE_PAGINATION_NOT_IMPLEMENTED("10003",
+                "Pagination not supported",
                 "Pagination capabilities are not supported in this version of the API."),
-        ERROR_CODE_FILTERING_NOT_IMPLEMENTED("00004",
-                "Filtering not supported.",
+        ERROR_CODE_FILTERING_NOT_IMPLEMENTED("10004",
+                "Filtering not supported",
                 "Filtering capability is not supported in this version of the API."),
-        ERROR_CODE_SORTING_NOT_IMPLEMENTED("00005",
-                "Sorting not supported.",
+        ERROR_CODE_SORTING_NOT_IMPLEMENTED("10005",
+                "Sorting not supported",
                 "Sorting capability is not supported in this version of the API."),
-        ERROR_CODE_SESSION_TERMINATE_FORBIDDEN("00010",
-                "Action Forbidden.",
+        ERROR_CODE_SESSION_TERMINATE_FORBIDDEN("10010",
+                "Action Forbidden",
                 "User is not authorized to terminate the session/s.");
 
         private final String code;
