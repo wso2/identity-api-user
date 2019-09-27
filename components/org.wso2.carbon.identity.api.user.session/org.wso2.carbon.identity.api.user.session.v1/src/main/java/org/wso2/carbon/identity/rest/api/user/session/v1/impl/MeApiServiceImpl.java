@@ -21,7 +21,9 @@ package org.wso2.carbon.identity.rest.api.user.session.v1.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.session.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.core.SessionManagementService;
+import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionsDTO;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.ContextLoader.getUserFromContext;
@@ -37,8 +39,14 @@ public class MeApiServiceImpl extends MeApiService {
     @Override
     public Response getSessionsOfLoggedInUser(Integer limit, Integer offset, String filter, String sort) {
 
-        return Response.ok().entity(sessionManagementService.getSessionsBySessionId(getUserFromContext(), limit,
-                offset, filter, sort)).build();
+        SessionsDTO sessionsOfUser = sessionManagementService.getSessionsBySessionId(getUserFromContext(), limit,
+                offset, filter, sort);
+
+        if (sessionsOfUser == null || sessionsOfUser.getSessions().isEmpty()) {
+            return Response.ok().entity("{}").type(MediaType.APPLICATION_JSON).build();
+        } else {
+            return Response.ok().entity(sessionsOfUser).build();
+        }
     }
 
     @Override

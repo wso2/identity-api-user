@@ -25,6 +25,7 @@ public class SessionManagementConstants {
 
     public static final String ERROR_CODE_DELIMITER = "-";
     public static final String USER_SESSION_MANAGEMENT_PREFIX = "USM";
+    public static final String ERROR_CODE_FORBIDDEN_ACTION = "USM-00007";
 
     /**
      * Enum for user error messages.
@@ -39,7 +40,10 @@ public class SessionManagementConstants {
                 "Filtering capability is not supported in this version of the API."),
         ERROR_CODE_SORTING_NOT_IMPLEMENTED("00005",
                 "Sorting not supported.",
-                "Sorting capability is not supported in this version of the API.");
+                "Sorting capability is not supported in this version of the API."),
+        ERROR_CODE_SESSION_TERMINATE_FORBIDDEN("00010",
+                "Action Forbidden.",
+                "User is not authorized to terminate the session/s.");
 
         private final String code;
         private final String message;
