@@ -1,6 +1,11 @@
 swagger: '2.0'
 info:
-  description: This is the RESTful API for managing OAuth2 Authorized Apps
+  description: |
+    This is the RESTful API for managing OAuth2 Authorized Apps.
+
+    Through this API, authenticated users can view and revoke the OAuth2/OIDC applications which they have permanently provided consent (by clicking on 'Approve Always' during OAuth2 user consent collection) to act on behalf of the user without continuously requesting consent.
+
+    Additionally, privileged user can view and revoke other users' authorized apps using the API.
   version: "v1"
   title: WSO2 Identity Server - OAuth2 Authorized Apps API
   contact:
@@ -21,8 +26,9 @@ tags:
 - name: me
   description: Operations for the authenticated user.
 - name: admin
-  description: >
+  description: |
     Operations available for privileged users, to be invoked on behalf of another user.
+
     **These endpoints are not released in WSO2 Identity Server - 5.9.0 version and will be released in the next product version.**
 
 security:
@@ -75,7 +81,7 @@ paths:
     get:
       tags:
         - admin
-      summary: "retrieve autherized app by app ID for a user"
+      summary: "retrieve authorized app by app ID for a user"
       operationId: listUserAuthorizedAppsByAppId
       description: |
         Retrived autherized OAuth apps by an app ID for a given user
