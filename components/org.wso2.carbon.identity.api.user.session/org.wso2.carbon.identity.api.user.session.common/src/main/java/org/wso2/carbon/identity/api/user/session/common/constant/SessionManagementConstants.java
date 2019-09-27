@@ -31,15 +31,18 @@ public class SessionManagementConstants {
      */
     public enum ErrorMessage {
 
-        ERROR_CODE_PAGINATION_NOT_IMPLEMENTED("00003",
-                "Pagination not supported.",
+        ERROR_CODE_PAGINATION_NOT_IMPLEMENTED("10003",
+                "Pagination not supported",
                 "Pagination capabilities are not supported in this version of the API."),
-        ERROR_CODE_FILTERING_NOT_IMPLEMENTED("00004",
-                "Filtering not supported.",
+        ERROR_CODE_FILTERING_NOT_IMPLEMENTED("10004",
+                "Filtering not supported",
                 "Filtering capability is not supported in this version of the API."),
-        ERROR_CODE_SORTING_NOT_IMPLEMENTED("00005",
-                "Sorting not supported.",
-                "Sorting capability is not supported in this version of the API.");
+        ERROR_CODE_SORTING_NOT_IMPLEMENTED("10005",
+                "Sorting not supported",
+                "Sorting capability is not supported in this version of the API."),
+        ERROR_CODE_SESSION_TERMINATE_FORBIDDEN("10010",
+                "Action Forbidden",
+                "User is not authorized to terminate the session/s.");
 
         private final String code;
         private final String message;

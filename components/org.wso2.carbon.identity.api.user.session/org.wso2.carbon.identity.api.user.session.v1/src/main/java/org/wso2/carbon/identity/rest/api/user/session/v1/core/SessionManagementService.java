@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.rest.api.user.session.v1.core;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
@@ -28,6 +29,7 @@ import org.wso2.carbon.identity.application.authentication.framework.exception.s
         .SessionManagementClientException;
 import org.wso2.carbon.identity.application.authentication.framework.exception.session.mgt.SessionManagementException;
 import org.wso2.carbon.identity.application.authentication.framework.model.UserSession;
+import org.wso2.carbon.identity.application.authentication.framework.util.SessionMgtConstants;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.rest.api.user.session.v1.core.function.UserSessionToExternal;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionDTO;
@@ -43,6 +45,8 @@ import static org.wso2.carbon.identity.api.user.session.common.constant.SessionM
         .ERROR_CODE_FILTERING_NOT_IMPLEMENTED;
 import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants.ErrorMessage
         .ERROR_CODE_PAGINATION_NOT_IMPLEMENTED;
+import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants.ErrorMessage
+        .ERROR_CODE_SESSION_TERMINATE_FORBIDDEN;
 import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants.ErrorMessage
         .ERROR_CODE_SORTING_NOT_IMPLEMENTED;
 
@@ -69,13 +73,16 @@ public class SessionManagementService {
         handleNotImplementedCapabilities(limit, offset, filter, sort);
 
         List<UserSession> sessionsForUser;
-        SessionsDTO sessions = new SessionsDTO();
+        SessionsDTO sessions = null;
         try {
             String userId = resolveUserIdFromUser(user);
-            sessionsForUser = SessionManagementServiceHolder.getUserSessionManagementService()
-                    .getSessionsByUserId(userId);
-            sessions.setUserId(userId);
-            sessions.setSessions(buildSessionDTOs(sessionsForUser));
+            if (userId != null) {
+                sessions = new SessionsDTO();
+                sessionsForUser = SessionManagementServiceHolder.getUserSessionManagementService()
+                        .getSessionsByUserId(userId);
+                sessions.setUserId(userId);
+                sessions.setSessions(buildSessionDTOs(sessionsForUser));
+            }
             return sessions;
 
         } catch (SessionManagementException e) {
@@ -90,10 +97,17 @@ public class SessionManagementService {
      * @param sessionId session id
      */
     public void terminateSessionBySessionId(User user, String sessionId) {
-
-        String userId = resolveUserIdFromUser(user);
-        SessionManagementServiceHolder.getUserSessionManagementService().terminateSessionBySessionId(userId, sessionId);
-
+        try {
+            String userId = resolveUserIdFromUser(user);
+            if (userId != null && sessionId != null) {
+                SessionManagementServiceHolder.getUserSessionManagementService().terminateSessionBySessionId(userId,
+                        sessionId);
+            } else {
+                throw handleInvalidParameters();
+            }
+        } catch (SessionManagementException e) {
+            throw handleSessionManagementException(e);
+        }
     }
 
     /**
@@ -105,7 +119,9 @@ public class SessionManagementService {
 
         try {
             String userId = resolveUserIdFromUser(user);
-            SessionManagementServiceHolder.getUserSessionManagementService().terminateSessionsByUserId(userId);
+            if (userId != null) {
+                SessionManagementServiceHolder.getUserSessionManagementService().terminateSessionsByUserId(userId);
+            }
         } catch (SessionManagementException e) {
             throw handleSessionManagementException(e);
         }
@@ -130,8 +146,12 @@ public class SessionManagementService {
         Response.Status status;
 
         if (e instanceof SessionManagementClientException) {
-            errorResponse.setDescription(e.getMessage());
-            status = Response.Status.BAD_REQUEST;
+            if (StringUtils.equals(SessionMgtConstants.ErrorMessages.ERROR_CODE_FORBIDDEN_ACTION.getCode(),
+                    e.getErrorCode())) {
+                status = Response.Status.FORBIDDEN;
+            } else {
+                status = Response.Status.BAD_REQUEST;
+            }
         } else {
             status = Response.Status.INTERNAL_SERVER_ERROR;
         }
@@ -175,5 +195,13 @@ public class SessionManagementService {
 
             throw new APIError(status, errorResponse);
         }
+    }
+
+    private APIError handleInvalidParameters() {
+
+        ErrorResponse errorResponse = getErrorBuilder(ERROR_CODE_SESSION_TERMINATE_FORBIDDEN).build(log,
+                ERROR_CODE_SESSION_TERMINATE_FORBIDDEN.getDescription());
+        Response.Status status = Response.Status.FORBIDDEN;
+        return new APIError(status, errorResponse);
     }
 }
