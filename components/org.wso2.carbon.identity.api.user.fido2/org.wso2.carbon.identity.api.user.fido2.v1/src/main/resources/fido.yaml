@@ -4,7 +4,7 @@ swagger: '2.0'
 ######################################################
 info:
   version: "v1"
-  title: "WSO2 Identity Server FIDO 2 Rest API "
+  title: "WSO2 Identity Server FIDO2 Rest API "
   description: |
     This document specifies a **FIDO 2 RESTfulAPI** for WSO2 **Identity Server** .
 
@@ -20,8 +20,8 @@ info:
 
 # Tags are used for organizing operations
 tags:
-- name: me
-  description: Operations for the authenticated user.
+  - name: me
+    description: Operations for the authenticated user.
 
 ######################################################
 # The fixed parts of the URLs of the API
@@ -57,23 +57,29 @@ consumes:
 # set the value, but supporting it serves extensibility.
 produces:
   - application/json
+# Applicable authentication mechanisms
+security:
+  - OAuth2: []
+  - BasicAuth: []
 paths:
   # Endpoint used to start registration
   /me/webauthn/start-registration:
-    post:
+    get:
       description: |
-        This API is used to start fido device registration process.
-      summary: |
-        Start FIDO registration
+        This API is used to trigger FIDO2 device registration flow.
 
+         <b>Permission required:</b>
+         * /permission/admin/login
+      summary: |
+        Trigger FIDO2 device registration
       consumes:
         - application/x-www-form-urlencoded
       # post parameters:
       parameters:
         -
           name: appId
-          in: formData
-          description:  This represents the appId of FIDO request initiator
+          in: query
+          description:  This represents the host name of FIDO request initiator
           required: true
           type: string
       responses:
@@ -81,6 +87,28 @@ paths:
           description: Successful response
           schema:
             type: string
+            example:
+              application/json:
+                username: admin@carbon.super
+                requestId: veiLaU2yg0-pAhn1sRlXZBbxS5KaidyAyfWt-sQUajU
+                publicKeyCredentialCreationOptions:
+                  rp:
+                    name: WSO2 Identity Server
+                    id: localhost
+                  user:
+                    name: admin@carbon.super
+                    displayName: admin
+                    id: iAgKlKucOIjxUoUq510BXTI9_p3NENmQo2ZM5gQMcoA
+                  challenge: tvyJuz16drO390L5VPheOG5zpY9zEcSVbc1QNeFv0Fs
+                  pubKeyCredParams:
+                    - alg: -7
+                      type: public-key
+                    - alg: -257
+                      type: public-key
+                  excludeCredentials: []
+                  attestation: none
+                  extensions: {}
+
         400:
           description: Bad Request
           schema:
@@ -102,9 +130,12 @@ paths:
   /me/webauthn/finish-registration:
     post:
       description: |
-        This API is used to complete the device registration
+        This API is used to complete FIDO2 device registration flow.
+
+        <b>Permission required:</b>
+         * /permission/admin/login
       summary: |
-        complete device registration
+        Complete FIDO2 device registration
       # post parameters:
       parameters:
         -
@@ -116,13 +147,9 @@ paths:
             type: string
       responses:
         201:
-          description: Successful response
+          description: Device registered successfully
           schema:
             type: string
-          headers:
-            Location:
-              type: 'string'
-              description: 'Location of the newly created purpose category.'
         400:
           description: Bad Request
           schema:
@@ -145,6 +172,9 @@ paths:
     delete:
       description: |
         This API is used to deregister devices by username and credentialId.
+
+        <b>Permission required:</b>
+         * /permission/admin/login
       summary: |
         Deregister devices by username and credentialId
       parameters:
@@ -180,6 +210,9 @@ paths:
     get:
       description: |
         This API is used to get fido metadata by username.
+
+        <b>Permission required:</b>
+         * /permission/admin/login
       summary: |
         Device Metadata
       consumes:
@@ -196,10 +229,6 @@ paths:
           description: Successful response
           schema:
             type: string
-          headers:
-            Location:
-              type: 'string'
-              description: 'Metadata of devices registerd to the user'
         400:
           description: Bad Request
           schema:
@@ -233,3 +262,12 @@ definitions:
       description:
         type: string
 #-----------------------------------------------------
+securityDefinitions:
+  BasicAuth:
+    type: basic
+  OAuth2:
+    type: oauth2
+    flow: accessCode
+    authorizationUrl: https://localhost:9443/oauth2/authorize
+    tokenUrl: https://localhost:9443/oauth2/token
+host: localhost:9443
