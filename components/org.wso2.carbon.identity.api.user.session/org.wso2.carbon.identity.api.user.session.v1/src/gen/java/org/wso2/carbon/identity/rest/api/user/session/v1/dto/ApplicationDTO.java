@@ -1,19 +1,17 @@
 /*
  * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- * WSO2 Inc. licenses this file to you under the Apache License,
- * Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.wso2.carbon.identity.rest.api.user.session.v1.dto;
@@ -44,9 +42,9 @@ public class ApplicationDTO  {
 
   
   /**
-   * Username for the application
+   * Username of the logged in user for the application.
    **/
-  @ApiModelProperty(required = true, value = "Username for the application")
+  @ApiModelProperty(required = true, value = "Username of the logged in user for the application.")
   @JsonProperty("subject")
   public String getSubject() {
     return subject;
@@ -57,9 +55,9 @@ public class ApplicationDTO  {
 
   
   /**
-   * Name of the application
+   * Name of the application.
    **/
-  @ApiModelProperty(required = true, value = "Name of the application")
+  @ApiModelProperty(required = true, value = "Name of the application.")
   @JsonProperty("appName")
   public String getAppName() {
     return appName;
@@ -70,9 +68,9 @@ public class ApplicationDTO  {
 
   
   /**
-   * ID of the application
+   * ID of the application.
    **/
-  @ApiModelProperty(required = true, value = "ID of the application")
+  @ApiModelProperty(required = true, value = "ID of the application.")
   @JsonProperty("appId")
   public String getAppId() {
     return appId;

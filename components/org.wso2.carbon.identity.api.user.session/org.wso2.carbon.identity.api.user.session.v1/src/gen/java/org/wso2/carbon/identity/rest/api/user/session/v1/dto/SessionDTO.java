@@ -1,19 +1,17 @@
 /*
  * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- * WSO2 Inc. licenses this file to you under the Apache License,
- * Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.wso2.carbon.identity.rest.api.user.session.v1.dto;
@@ -56,9 +54,9 @@ public class SessionDTO  {
 
   
   /**
-   * List of active applications in the session
+   * List of applications in the session.
    **/
-  @ApiModelProperty(value = "List of active applications in the session")
+  @ApiModelProperty(value = "List of applications in the session.")
   @JsonProperty("applications")
   public List<ApplicationDTO> getApplications() {
     return applications;
@@ -69,9 +67,9 @@ public class SessionDTO  {
 
   
   /**
-   * User agent of the session
+   * User agent of the session.
    **/
-  @ApiModelProperty(value = "User agent of the session")
+  @ApiModelProperty(value = "User agent of the session.")
   @JsonProperty("userAgent")
   public String getUserAgent() {
     return userAgent;
@@ -82,9 +80,9 @@ public class SessionDTO  {
 
   
   /**
-   * IP address of the session
+   * IP address of the session.
    **/
-  @ApiModelProperty(value = "IP address of the session")
+  @ApiModelProperty(value = "IP address of the session.")
   @JsonProperty("ip")
   public String getIp() {
     return ip;
@@ -95,9 +93,9 @@ public class SessionDTO  {
 
   
   /**
-   * Login time of the session
+   * Login time of the session.
    **/
-  @ApiModelProperty(value = "Login time of the session")
+  @ApiModelProperty(value = "Login time of the session.")
   @JsonProperty("loginTime")
   public String getLoginTime() {
     return loginTime;
@@ -108,9 +106,9 @@ public class SessionDTO  {
 
   
   /**
-   * Last access time of the session
+   * Last access time of the session.
    **/
-  @ApiModelProperty(value = "Last access time of the session")
+  @ApiModelProperty(value = "Last access time of the session.")
   @JsonProperty("lastAccessTime")
   public String getLastAccessTime() {
     return lastAccessTime;
@@ -121,9 +119,9 @@ public class SessionDTO  {
 
   
   /**
-   * ID of the session
+   * ID of the session.
    **/
-  @ApiModelProperty(value = "ID of the session")
+  @ApiModelProperty(value = "ID of the session.")
   @JsonProperty("id")
   public String getId() {
     return id;
