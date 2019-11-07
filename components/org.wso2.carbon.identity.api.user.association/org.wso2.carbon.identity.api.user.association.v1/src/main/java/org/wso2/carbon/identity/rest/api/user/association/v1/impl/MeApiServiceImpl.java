@@ -2,9 +2,11 @@ package org.wso2.carbon.identity.rest.api.user.association.v1.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
+import org.wso2.carbon.identity.api.user.common.ContextLoader;
+import org.wso2.carbon.identity.api.user.common.function.UserIdToUser;
+import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.rest.api.user.association.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.association.v1.core.UserAssociationService;
-import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationSwitchRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationUserRequestDTO;
 import org.wso2.carbon.user.core.util.UserCoreUtil;
 
@@ -32,8 +34,14 @@ public class MeApiServiceImpl extends MeApiService {
     }
 
     @Override
-    public Response meAssociationsGet() {
+    public Response meAssociationsAssociatedUserIdDelete(String associatedUserId) {
 
+        userAssociationService.deleteAssociatedUserAccount(getUserId(), getDecodedUserId(associatedUserId));
+        return Response.noContent().build();
+    }
+
+    @Override
+    public Response meAssociationsGet() {
         return Response.ok().entity(userAssociationService.getAssociationsOfUser(getUserId())).build();
     }
 
@@ -45,9 +53,23 @@ public class MeApiServiceImpl extends MeApiService {
     }
 
     @Override
-    public Response meAssociationsSwitchPut(AssociationSwitchRequestDTO switchUserReqeust) {
+    public Response meFederatedAssociationsGet() {
 
-        return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+        return Response.ok().entity(userAssociationService.getFederatedAssociationsOfUser(getUserId())).build();
+    }
+
+    @Override
+    public Response meFederatedAssociationsDelete() {
+
+        userAssociationService.deleteFederatedUserAccountAssociation(getUserId());
+        return Response.noContent().build();
+    }
+
+    @Override
+    public Response meFederatedAssociationsIdDelete(String id) {
+
+        userAssociationService.deleteFederatedUserAccountAssociation(getUserId(), id);
+        return Response.noContent().build();
     }
 
     private String getUserId() {
@@ -55,6 +77,12 @@ public class MeApiServiceImpl extends MeApiService {
         String username = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
         return UserCoreUtil.addTenantDomainToEntry(username, PrivilegedCarbonContext.getThreadLocalCarbonContext()
                 .getTenantDomain());
+    }
+
+    private String getDecodedUserId(String encodedUserId) {
+
+        User user = new UserIdToUser().apply(encodedUserId, ContextLoader.getTenantDomainFromContext());
+        return user.toFullQualifiedUsername();
     }
 
     private URI getAssociationsLocationURI() {

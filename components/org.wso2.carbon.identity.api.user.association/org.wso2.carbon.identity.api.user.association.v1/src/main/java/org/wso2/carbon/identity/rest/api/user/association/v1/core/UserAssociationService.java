@@ -19,15 +19,20 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
-import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationUserRequestDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.FederatedAssociationDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.UserDTO;
-import org.wso2.carbon.identity.rest.api.user.association.v1.util.UserAccountConnectorServiceHolder;
+import org.wso2.carbon.identity.rest.api.user.association.v1.util.UserAssociationServiceHolder;
 import org.wso2.carbon.identity.user.account.association.dto.UserAccountAssociationDTO;
 import org.wso2.carbon.identity.user.account.association.exception.UserAccountAssociationClientException;
 import org.wso2.carbon.identity.user.account.association.exception.UserAccountAssociationException;
+import org.wso2.carbon.identity.user.profile.mgt.association.federation.exception.FederatedAssociationManagerClientException;
+import org.wso2.carbon.identity.user.profile.mgt.association.federation.exception.FederatedAssociationManagerException;
+import org.wso2.carbon.identity.user.profile.mgt.association.federation.model.FederatedAssociation;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import javax.ws.rs.core.Response;
 
@@ -35,6 +40,7 @@ import static org.wso2.carbon.identity.api.user.common.Constants.ERROR_CODE_DELI
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ASSOCIATION_ERROR_PREFIX;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ERROR_MSG_DELIMITER;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ErrorMessages.ERROR_CODE_PW_MANDATORY;
+import static org.wso2.carbon.user.core.UserCoreConstants.DOMAIN_SEPARATOR;
 
 /**
  * This service is used to execute the association related APIs through the UserAccountConnector OSGI service.
@@ -46,11 +52,22 @@ public class UserAssociationService {
     public List<UserDTO> getAssociationsOfUser(String userId) {
 
         try {
-            UserAccountAssociationDTO[] accountAssociationsOfUser = UserAccountConnectorServiceHolder
+            UserAccountAssociationDTO[] accountAssociationsOfUser = UserAssociationServiceHolder
                     .getUserAccountConnector().getAccountAssociationsOfUser(userId);
-            return getUserAssociationsDTO(accountAssociationsOfUser);
+            return getUserAssociationsDTOs(accountAssociationsOfUser);
         } catch (UserAccountAssociationException e) {
             throw handleUserAccountAssociationException(e, "Error while getting associations of user: " + userId);
+        }
+    }
+
+    public List<FederatedAssociationDTO> getFederatedAssociationsOfUser(String userId) {
+
+        try {
+            FederatedAssociation[] federatedAccountAssociationsOfUser = UserAssociationServiceHolder
+                    .getFederatedAssociationManager().getFederatedAssociationsOfUser(userId);
+            return getFederatedAssociationDTOs(federatedAccountAssociationsOfUser);
+        } catch (FederatedAssociationManagerException e) {
+            throw handleFederatedAssociationManagerException(e, "Error while getting associations of user: " + userId);
         }
     }
 
@@ -61,7 +78,7 @@ public class UserAssociationService {
                 throw new UserAccountAssociationClientException(ERROR_CODE_PW_MANDATORY.getCode(),
                         ERROR_CODE_PW_MANDATORY.getDescription());
             }
-            UserAccountConnectorServiceHolder.getUserAccountConnector()
+            UserAssociationServiceHolder.getUserAccountConnector()
                     .createUserAccountAssociation(associationUserRequestDTO.getUserId(),
                             associationUserRequestDTO.getPassword().toCharArray());
         } catch (UserAccountAssociationException e) {
@@ -70,21 +87,10 @@ public class UserAssociationService {
         }
     }
 
-    public void createUserAccountAssociation(AssociationRequestDTO association, String userId) {
-
-        try {
-            UserAccountConnectorServiceHolder.getUserAccountConnector()
-                    .createUserAccountAssociation(userId, association.getAssociateUserId());
-        } catch (UserAccountAssociationException e) {
-            throw handleUserAccountAssociationException(e, "Error while associating user: " + userId);
-        }
-    }
-
-
     public boolean switchLoggedInUser(String userName)  {
 
         try {
-            return UserAccountConnectorServiceHolder.getUserAccountConnector().switchLoggedInUser(userName);
+            return UserAssociationServiceHolder.getUserAccountConnector().switchLoggedInUser(userName);
         } catch (UserAccountAssociationException e) {
             throw handleUserAccountAssociationException(e, "Error while switching user: " + userName);
         }
@@ -93,13 +99,45 @@ public class UserAssociationService {
     public void deleteUserAccountAssociation(String userId) {
 
         try {
-            UserAccountConnectorServiceHolder.getUserAccountConnector().deleteUserAccountAssociation(userId);
+            UserAssociationServiceHolder.getUserAccountConnector().deleteUserAccountAssociation(userId);
         } catch (UserAccountAssociationException e) {
             throw handleUserAccountAssociationException(e, "Error while deleting user association: " + userId);
         }
     }
 
-    private List<UserDTO> getUserAssociationsDTO(UserAccountAssociationDTO[] accountAssociationsOfUser) {
+    public void deleteAssociatedUserAccount(String ownerUserId, String associatedUserId) {
+
+        try {
+            UserAssociationServiceHolder.getUserAccountConnector().deleteAssociatedUserAccount(ownerUserId,
+                    associatedUserId);
+        } catch (UserAccountAssociationException e) {
+            throw handleUserAccountAssociationException(e, "Error while deleting user association of the user: "
+                    + ownerUserId + ", with the user: " + associatedUserId);
+        }
+    }
+
+    public void deleteFederatedUserAccountAssociation(String userId, String federatedAssociationId) {
+
+        try {
+            UserAssociationServiceHolder.getFederatedAssociationManager()
+                    .deleteFederatedAssociation(userId, federatedAssociationId);
+        } catch (FederatedAssociationManagerException e) {
+            throw handleFederatedAssociationManagerException(e, "Error while deleting federated user association: "
+                    + userId);
+        }
+    }
+
+    public void deleteFederatedUserAccountAssociation(String userId) {
+
+        try {
+            UserAssociationServiceHolder.getFederatedAssociationManager().deleteFederatedAssociation(userId);
+        } catch (FederatedAssociationManagerException e) {
+            throw handleFederatedAssociationManagerException(e, "Error while deleting federated user association: "
+                    + userId);
+        }
+    }
+
+    private List<UserDTO> getUserAssociationsDTOs(UserAccountAssociationDTO[] accountAssociationsOfUser) {
 
         List<UserDTO> userDTOList = new ArrayList<>();
 
@@ -109,14 +147,33 @@ public class UserAssociationService {
         return userDTOList;
     }
 
+    private List<FederatedAssociationDTO> getFederatedAssociationDTOs(FederatedAssociation[]
+                                                                              federatedAssociations) {
+
+        List<FederatedAssociationDTO> federatedAssociationDTOs = new ArrayList<>();
+        for (FederatedAssociation federatedAssociation : federatedAssociations) {
+            federatedAssociationDTOs.add(getFederatedAssociationDTO(federatedAssociation));
+        }
+        return federatedAssociationDTOs;
+    }
+
     private UserDTO getUserDTO(UserAccountAssociationDTO userAccountAssociationDTO) {
 
         UserDTO userDTO = new UserDTO();
-        userDTO.setUserId(userAccountAssociationDTO.getUsername());
+        userDTO.setUserId(getEncodedUserId(userAccountAssociationDTO));
         userDTO.setUsername(userAccountAssociationDTO.getUsername());
         userDTO.setUserStoreDomain(userAccountAssociationDTO.getDomain());
         userDTO.setTenantDomain(userAccountAssociationDTO.getTenantDomain());
         return userDTO;
+    }
+
+    private FederatedAssociationDTO getFederatedAssociationDTO(FederatedAssociation federatedAssociation) {
+
+        FederatedAssociationDTO federatedAssociationDTO = new FederatedAssociationDTO();
+        federatedAssociationDTO.setId(federatedAssociation.getId());
+        federatedAssociationDTO.setIdpId(federatedAssociation.getIdpId());
+        federatedAssociationDTO.setFederatedUserId(federatedAssociation.getFederatedUserId());
+        return federatedAssociationDTO;
     }
 
     private APIError handleUserAccountAssociationException(UserAccountAssociationException e, String message) {
@@ -143,7 +200,42 @@ public class UserAssociationService {
         return new APIError(status, errorResponse);
     }
 
+    private APIError handleFederatedAssociationManagerException(FederatedAssociationManagerException e,
+                                                                String message) {
+
+        ErrorResponse errorResponse = new ErrorResponse.Builder()
+                .withCode(e.getErrorCode())
+                .withMessage(message)
+                .build(log, e, e.getMessage());
+
+        Response.Status status;
+
+        if (e instanceof FederatedAssociationManagerClientException) {
+            if (e.getErrorCode() != null) {
+                String errorCode = e.getErrorCode();
+                errorCode = errorCode.contains(ERROR_CODE_DELIMITER) ? errorCode : ASSOCIATION_ERROR_PREFIX
+                        + errorCode;
+                errorResponse.setCode(errorCode);
+            }
+            handleErrorDescription(e, errorResponse);
+            status = Response.Status.BAD_REQUEST;
+        } else {
+            status = Response.Status.INTERNAL_SERVER_ERROR;
+        }
+        return new APIError(status, errorResponse);
+    }
+
     private void handleErrorDescription(UserAccountAssociationException e, ErrorResponse errorResponse) {
+
+        handleCommonErrorDescription(e, errorResponse);
+    }
+
+    private void handleErrorDescription(FederatedAssociationManagerException e, ErrorResponse errorResponse) {
+
+        handleCommonErrorDescription(e, errorResponse);
+    }
+
+    private void handleCommonErrorDescription(Exception e, ErrorResponse errorResponse) {
 
         if (e.getMessage() != null && e.getMessage().contains(ERROR_MSG_DELIMITER)) {
             String[] splittedMessage = e.getMessage().split(ERROR_MSG_DELIMITER);
@@ -155,5 +247,12 @@ public class UserAssociationService {
         } else if (!e.getMessage().contains(ERROR_MSG_DELIMITER)) {
             errorResponse.setDescription(e.getMessage());
         }
+    }
+
+    private String getEncodedUserId(UserAccountAssociationDTO userAccountAssociationDTO) {
+
+        String domainAwareUserName = userAccountAssociationDTO.getDomain() + DOMAIN_SEPARATOR
+                + userAccountAssociationDTO.getUsername();
+        return Base64.getUrlEncoder().encodeToString(domainAwareUserName.getBytes(StandardCharsets.UTF_8));
     }
 }
