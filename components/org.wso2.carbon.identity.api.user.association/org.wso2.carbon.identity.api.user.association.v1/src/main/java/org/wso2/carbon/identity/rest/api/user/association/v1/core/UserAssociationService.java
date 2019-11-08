@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
+import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationUserRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.FederatedAssociationDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.UserDTO;
@@ -29,6 +30,8 @@ import org.wso2.carbon.identity.user.account.association.exception.UserAccountAs
 import org.wso2.carbon.identity.user.profile.mgt.association.federation.exception.FederatedAssociationManagerClientException;
 import org.wso2.carbon.identity.user.profile.mgt.association.federation.exception.FederatedAssociationManagerException;
 import org.wso2.carbon.identity.user.profile.mgt.association.federation.model.FederatedAssociation;
+import org.wso2.carbon.user.core.util.UserCoreUtil;
+import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -64,7 +67,7 @@ public class UserAssociationService {
 
         try {
             FederatedAssociation[] federatedAccountAssociationsOfUser = UserAssociationServiceHolder
-                    .getFederatedAssociationManager().getFederatedAssociationsOfUser(userId);
+                    .getFederatedAssociationManager().getFederatedAssociationsOfUser(getUser(userId));
             return getFederatedAssociationDTOs(federatedAccountAssociationsOfUser);
         } catch (FederatedAssociationManagerException e) {
             throw handleFederatedAssociationManagerException(e, "Error while getting associations of user: " + userId);
@@ -120,7 +123,7 @@ public class UserAssociationService {
 
         try {
             UserAssociationServiceHolder.getFederatedAssociationManager()
-                    .deleteFederatedAssociation(userId, federatedAssociationId);
+                    .deleteFederatedAssociation(getUser(userId), federatedAssociationId);
         } catch (FederatedAssociationManagerException e) {
             throw handleFederatedAssociationManagerException(e, "Error while deleting federated user association: "
                     + userId);
@@ -130,7 +133,7 @@ public class UserAssociationService {
     public void deleteFederatedUserAccountAssociation(String userId) {
 
         try {
-            UserAssociationServiceHolder.getFederatedAssociationManager().deleteFederatedAssociation(userId);
+            UserAssociationServiceHolder.getFederatedAssociationManager().deleteFederatedAssociation(getUser(userId));
         } catch (FederatedAssociationManagerException e) {
             throw handleFederatedAssociationManagerException(e, "Error while deleting federated user association: "
                     + userId);
@@ -254,5 +257,14 @@ public class UserAssociationService {
         String domainAwareUserName = userAccountAssociationDTO.getDomain() + DOMAIN_SEPARATOR
                 + userAccountAssociationDTO.getUsername();
         return Base64.getUrlEncoder().encodeToString(domainAwareUserName.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private User getUser(String userId) {
+
+        User user = new User();
+        user.setTenantDomain(MultitenantUtils.getTenantDomain(userId));
+        user.setUserStoreDomain(UserCoreUtil.extractDomainFromName(userId));
+        user.setUserName(MultitenantUtils.getTenantAwareUsername(userId));
+        return user;
     }
 }
