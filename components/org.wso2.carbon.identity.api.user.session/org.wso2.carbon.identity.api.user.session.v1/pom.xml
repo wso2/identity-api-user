@@ -23,7 +23,7 @@
         <groupId>org.wso2.carbon.identity.user.api</groupId>
         <artifactId>org.wso2.carbon.identity.api.user.session</artifactId>
         <relativePath>../pom.xml</relativePath>
-        <version>1.0.53-SNAPSHOT</version>
+        <version>1.0.53</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.identity.rest.api.user.session.v1</artifactId>
