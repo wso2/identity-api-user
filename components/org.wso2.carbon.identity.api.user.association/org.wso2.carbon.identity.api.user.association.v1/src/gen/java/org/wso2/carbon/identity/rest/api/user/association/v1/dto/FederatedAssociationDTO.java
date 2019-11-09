@@ -24,74 +24,59 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @ApiModel(description = "")
-public class UserDTO {
+public class FederatedAssociationDTO {
 
     @Valid 
-    private String userId = null;
+    private String id = null;
 
     @Valid 
-    private String username = null;
+    private String idpId = null;
 
     @Valid 
-    private String userStoreDomain = null;
-
-    @Valid 
-    private String tenantDomain = null;
+    private String federatedUserId = null;
 
     /**
     **/
     @ApiModelProperty(value = "")
-    @JsonProperty("userId")
-    public String getUserId() {
-        return userId;
+    @JsonProperty("id")
+    public String getId() {
+        return id;
     }
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    /**
-    **/
-    @ApiModelProperty(value = "")
-    @JsonProperty("username")
-    public String getUsername() {
-        return username;
-    }
-    public void setUsername(String username) {
-        this.username = username;
+    public void setId(String id) {
+        this.id = id;
     }
 
     /**
     **/
     @ApiModelProperty(value = "")
-    @JsonProperty("userStoreDomain")
-    public String getUserStoreDomain() {
-        return userStoreDomain;
+    @JsonProperty("idpId")
+    public String getIdpId() {
+        return idpId;
     }
-    public void setUserStoreDomain(String userStoreDomain) {
-        this.userStoreDomain = userStoreDomain;
+    public void setIdpId(String idpId) {
+        this.idpId = idpId;
     }
 
     /**
     **/
     @ApiModelProperty(value = "")
-    @JsonProperty("tenantDomain")
-    public String getTenantDomain() {
-        return tenantDomain;
+    @JsonProperty("federatedUserId")
+    public String getFederatedUserId() {
+        return federatedUserId;
     }
-    public void setTenantDomain(String tenantDomain) {
-        this.tenantDomain = tenantDomain;
+    public void setFederatedUserId(String federatedUserId) {
+        this.federatedUserId = federatedUserId;
     }
 
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("class UserDTO {\n");
+        sb.append("class FederatedAssociationDTO {\n");
         
-        sb.append("    userId: ").append(userId).append("\n");
-        sb.append("    username: ").append(username).append("\n");
-        sb.append("    userStoreDomain: ").append(userStoreDomain).append("\n");
-        sb.append("    tenantDomain: ").append(tenantDomain).append("\n");
+        sb.append("    id: ").append(id).append("\n");
+        sb.append("    idpId: ").append(idpId).append("\n");
+        sb.append("    federatedUserId: ").append(federatedUserId).append("\n");
         
         sb.append("}\n");
         return sb.toString();

@@ -6,14 +6,8 @@ import org.wso2.carbon.identity.api.user.common.function.UserIdToUser;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.rest.api.user.association.v1.UserIdApiService;
 import org.wso2.carbon.identity.rest.api.user.association.v1.core.UserAssociationService;
-import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationRequestDTO;
 
-import java.net.URI;
 import javax.ws.rs.core.Response;
-
-import static org.wso2.carbon.identity.api.user.common.ContextLoader.buildURI;
-import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.USER_ASSOCIATIONS_PATH_COMPONENT;
-import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.V1_API_PATH_COMPONENT;
 
 /**
  * Association API service implementation for users/{userId} endpoint.
@@ -36,21 +30,29 @@ public class UserIdApiServiceImpl extends UserIdApiService {
         return Response.ok().entity(userAssociationService.getAssociationsOfUser(getUser(userId))).build();
     }
 
-    @Override
-    public Response userIdAssociationsPost(AssociationRequestDTO association, String userId) {
-
-        userAssociationService.createUserAccountAssociation(association, getUser(userId));
-        return Response.created(getAssociationsLocationURI(userId)).build();
-    }
-
-    private URI getAssociationsLocationURI(String userId) {
-
-        return buildURI(String.format(V1_API_PATH_COMPONENT + USER_ASSOCIATIONS_PATH_COMPONENT, userId));
-    }
-
     private String getUser(String userId) {
 
         User user = new UserIdToUser().apply(userId, ContextLoader.getTenantDomainFromContext());
         return user.toFullQualifiedUsername();
+    }
+
+    @Override
+    public Response userIdFederatedAssociationsGet(String userId) {
+
+        return Response.ok().entity(userAssociationService.getFederatedAssociationsOfUser(getUser(userId))).build();
+    }
+
+    @Override
+    public Response userIdFederatedAssociationsDelete(String userId) {
+
+        userAssociationService.deleteFederatedUserAccountAssociation(getUser(userId));
+        return Response.noContent().build();
+    }
+
+    @Override
+    public Response userIdFederatedAssociationsIdDelete(String userId, String id) {
+
+        userAssociationService.deleteFederatedUserAccountAssociation(getUser(userId), id);
+        return Response.noContent().build();
     }
 }

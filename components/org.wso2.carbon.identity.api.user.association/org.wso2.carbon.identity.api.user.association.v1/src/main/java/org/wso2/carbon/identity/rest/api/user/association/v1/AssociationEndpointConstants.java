@@ -23,6 +23,7 @@ public class AssociationEndpointConstants {
     public static final String ASSOCIATION_ERROR_PREFIX = "UAA-";
     public static final String V1_API_PATH_COMPONENT = "/v1";
     public static final String USER_ASSOCIATIONS_PATH_COMPONENT = "/%s/associations";
+    public static final String FEDERATED_USER_ASSOCIATIONS_PATH_COMPONENT = "/%s/federated-associations";
     public static final String ME_CONTEXT = "me";
     public static final String ERROR_MSG_DELIMITER = "-";
 

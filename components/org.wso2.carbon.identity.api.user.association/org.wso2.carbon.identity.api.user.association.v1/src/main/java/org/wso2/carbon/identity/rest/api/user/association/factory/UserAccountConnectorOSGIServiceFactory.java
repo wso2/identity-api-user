@@ -24,7 +24,7 @@ import org.wso2.carbon.identity.user.account.association.UserAccountConnector;
  * Factory Beans serves as a factory for creating other beans within the IOC container. This factory bean is used to
  * instantiate the UserAccountConnector type of object inside the container.
  */
-public class OSGIServiceFactory extends AbstractFactoryBean<UserAccountConnector> {
+public class UserAccountConnectorOSGIServiceFactory extends AbstractFactoryBean<UserAccountConnector> {
 
     private UserAccountConnector userAccountConnector;
 

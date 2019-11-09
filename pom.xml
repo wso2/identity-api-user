@@ -243,6 +243,12 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
+                <artifactId>org.wso2.carbon.identity.user.profile</artifactId>
+                <version>${carbon.identity.framework.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.wso2.carbon.identity.inbound.auth.oauth2</groupId>
                 <artifactId>org.wso2.carbon.identity.oauth</artifactId>
                 <version>${identity.oauth.version}</version>
@@ -370,8 +376,8 @@
         <maven.buildnumber.plugin.version>1.4</maven.buildnumber.plugin.version>
         <org.apache.felix.annotations.version>1.2.4</org.apache.felix.annotations.version>
         <identity.governance.version>1.2.6</identity.governance.version>
-        <carbon.identity.framework.version>5.14.125</carbon.identity.framework.version>
-        <carbon.identity.account.association.version>5.2.3</carbon.identity.account.association.version>
+        <carbon.identity.framework.version>5.14.135</carbon.identity.framework.version>
+        <carbon.identity.account.association.version>5.3.5</carbon.identity.account.association.version>
         <maven.findbugsplugin.version>3.0.4</maven.findbugsplugin.version>
         <carbon.business-process.version>4.5.2</carbon.business-process.version>
         <identity.oauth.version>6.1.5</identity.oauth.version>
