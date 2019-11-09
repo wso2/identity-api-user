@@ -51,7 +51,7 @@ import static org.wso2.carbon.identity.api.user.application.common.ApplicationSe
  */
 public class ApplicationService {
 
-    private static final String APPLICATIONS_PAGINATION_LINK_FORMAT = "/me/applications?offset=%d&limit=%d";
+    private static final String APPLICATIONS_PAGINATION_LINK_FORMAT = "/v1/me/applications?offset=%d&limit=%d";
     private static final Log LOG = LogFactory.getLog(ApplicationService.class);
     private static final String PAGE_LINK_REL_NEXT = "next";
     private static final String PAGE_LINK_REL_PREVIOUS = "previous";
