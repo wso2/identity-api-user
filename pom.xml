@@ -28,7 +28,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>identity-api-user</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.51-SNAPSHOT</version>
+    <version>1.0.52-SNAPSHOT</version>
     <name>WSO2 Identity Server - User API Module</name>
     <description>
 
@@ -259,6 +259,18 @@
                 <artifactId>org.wso2.carbon.extension.identity.authenticator.totp.connector</artifactId>
                 <version>${identity.totp.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
+                <artifactId>org.wso2.carbon.identity.application.mgt</artifactId>
+                <version>${carbon.identity.framework.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.user.api</groupId>
+                <artifactId>org.wso2.carbon.identity.api.user.application.common</artifactId>
+                <version>${project.version}</version>
+                <scope>provided</scope>
+            </dependency>
 
             <!-- Test Dependencies -->
             <dependency>
@@ -365,14 +377,14 @@
         <org.apache.felix.annotations.version>1.2.4</org.apache.felix.annotations.version>
         <identity.governance.version>1.2.6</identity.governance.version>
         <carbon.identity.framework.version>5.14.135</carbon.identity.framework.version>
-        <carbon.identity.account.association.version>5.2.3</carbon.identity.account.association.version>
+        <carbon.identity.account.association.version>5.3.5</carbon.identity.account.association.version>
         <maven.findbugsplugin.version>3.0.4</maven.findbugsplugin.version>
         <carbon.business-process.version>4.5.2</carbon.business-process.version>
         <identity.oauth.version>6.1.5</identity.oauth.version>
         <testng.version>6.9.10</testng.version>
         <fido2.version>5.1.17</fido2.version>
         <identity.totp.version>2.1.4</identity.totp.version>
-        <!--<maven.checkstyleplugin.excludes>**/gen/**/*</maven.checkstyleplugin.excludes>-->
+        <maven.checkstyleplugin.excludes>**/gen/**/*</maven.checkstyleplugin.excludes>
     </properties>
 
     <modules>
@@ -384,6 +396,7 @@
         <module>components/org.wso2.carbon.identity.api.user.session</module>
         <module>components/org.wso2.carbon.identity.api.user.fido2</module>
         <module>components/org.wso2.carbon.identity.api.user.totp</module>
+        <module>components/org.wso2.carbon.identity.api.user.application</module>
 
     </modules>
 
