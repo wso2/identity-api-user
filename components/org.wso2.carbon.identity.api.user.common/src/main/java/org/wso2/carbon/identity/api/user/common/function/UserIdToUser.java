@@ -46,7 +46,7 @@ public class UserIdToUser implements Function<String[], User> {
         try {
             userId = args[0];
             tenantDomain = args[1];
-            String decodedUsername = new String(Base64.getDecoder().decode(userId), StandardCharsets.UTF_8);
+            String decodedUsername = new String(Base64.getUrlDecoder().decode(userId), StandardCharsets.UTF_8);
 
             if (StringUtils.isBlank(userId)) {
                 throw new WebApplicationException("UserID is empty.");
