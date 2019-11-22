@@ -478,6 +478,15 @@ definitions:
       tenantDomain:
         type: string
         example: carbon.super
+      firstName:
+        type: string
+        example: john
+      lastName:
+        type: string
+        example: doe
+      email:
+        type: string
+        example: john.doe@wso2.com
   #-----------------------------------------------------
   # The Federated Association Response  object
   #-----------------------------------------------------
