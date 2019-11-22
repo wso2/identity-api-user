@@ -38,6 +38,15 @@ public class UserDTO {
     @Valid 
     private String tenantDomain = null;
 
+    @Valid 
+    private String firstName = null;
+
+    @Valid 
+    private String lastName = null;
+
+    @Valid 
+    private String email = null;
+
     /**
     **/
     @ApiModelProperty(value = "")
@@ -82,6 +91,39 @@ public class UserDTO {
         this.tenantDomain = tenantDomain;
     }
 
+    /**
+    **/
+    @ApiModelProperty(value = "")
+    @JsonProperty("firstName")
+    public String getFirstName() {
+        return firstName;
+    }
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+    **/
+    @ApiModelProperty(value = "")
+    @JsonProperty("lastName")
+    public String getLastName() {
+        return lastName;
+    }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    /**
+    **/
+    @ApiModelProperty(value = "")
+    @JsonProperty("email")
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
 
@@ -92,6 +134,9 @@ public class UserDTO {
         sb.append("    username: ").append(username).append("\n");
         sb.append("    userStoreDomain: ").append(userStoreDomain).append("\n");
         sb.append("    tenantDomain: ").append(tenantDomain).append("\n");
+        sb.append("    firstName: ").append(firstName).append("\n");
+        sb.append("    lastName: ").append(lastName).append("\n");
+        sb.append("    email: ").append(email).append("\n");
         
         sb.append("}\n");
         return sb.toString();
