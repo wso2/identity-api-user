@@ -24,12 +24,11 @@ import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.user.api.UserStoreManager;
-import org.wso2.carbon.user.core.UniqueIDUserStoreManager;
 import org.wso2.carbon.user.core.UserStoreException;
+import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.user.core.util.UserCoreUtil;
 
-import java.util.List;
 import java.util.function.BiFunction;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -58,9 +57,8 @@ public class UserToUniqueId implements BiFunction<RealmService, User, String> {
         }
         String tenantDomain = user.getTenantDomain();
         try {
-            UniqueIDUserStoreManager uniqueIdEnabledUserStoreManager = getUniqueIdEnabledUserStoreManager(
-                    realmService, tenantDomain);
-            return getUniqueIdForUser(user, uniqueIdEnabledUserStoreManager);
+            AbstractUserStoreManager abstractUserStoreManager = getAbstractUserStoreManager(realmService, tenantDomain);
+            return getUniqueIdForUser(user, abstractUserStoreManager);
         } catch (Exception e) {
             throw new APIError(Response.Status.BAD_REQUEST, new ErrorResponse.Builder()
                     .withCode(ERROR_CODE_INVALID_USERNAME.getCode())
@@ -70,36 +68,31 @@ public class UserToUniqueId implements BiFunction<RealmService, User, String> {
         }
     }
 
-    private String getUniqueIdForUser(User user, UniqueIDUserStoreManager uniqueIdEnabledUserStoreManager) {
+    private String getUniqueIdForUser(User user, AbstractUserStoreManager abstractUserStoreManager) {
 
         try {
-            List<org.wso2.carbon.user.core.common.User> users = uniqueIdEnabledUserStoreManager.getUserListWithID(
-                    USERNAME_CLAIM_URI, UserCoreUtil.addDomainToName(user.getUserName(), user.getUserStoreDomain()),
-                    null);
-            if (users == null || users.size() != 1) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Invalid number of users returned for the claim URI: " + USERNAME_CLAIM_URI + ", " +
-                            "equal to: " + user.toFullQualifiedUsername());
-                }
-                throw new WebApplicationException("Invalid number of users retrieved for the given username.");
-            }
-            return users.get(0).getUserID();
+            return abstractUserStoreManager.getUserIDFromUserName(UserCoreUtil.addDomainToName(user.getUserName(),
+                    user.getUserStoreDomain()));
         } catch (UserStoreException e) {
             if (log.isDebugEnabled()) {
-                log.error("Error occurred while retrieving Id for the user: " + user.toFullQualifiedUsername(), e);
+                log.debug("Error occurred while retrieving Id for the user: " + user.toFullQualifiedUsername(), e);
             }
             throw new WebApplicationException("Unable to retrieve Id for the user: " + user.toFullQualifiedUsername());
         }
     }
 
-    private UniqueIDUserStoreManager getUniqueIdEnabledUserStoreManager(RealmService realmService, String tenantDomain)
+    private AbstractUserStoreManager getAbstractUserStoreManager(RealmService realmService, String tenantDomain)
             throws org.wso2.carbon.user.api.UserStoreException {
 
         UserStoreManager userStoreManager = realmService.getTenantUserRealm(
                 IdentityTenantUtil.getTenantId(tenantDomain)).getUserStoreManager();
-        if (!(userStoreManager instanceof UniqueIDUserStoreManager)) {
-            throw new WebApplicationException("Provided user store manager does not support unique user IDs.");
+        if (!(userStoreManager instanceof AbstractUserStoreManager)) {
+            if (log.isDebugEnabled()) {
+                log.debug("Provided user store manager: " + userStoreManager.getClass() + ", is not an instance of "
+                        + "the AbstractUserStore manager");
+            }
+            throw new WebApplicationException("Unsupported user store manager.");
         }
-        return (UniqueIDUserStoreManager) userStoreManager;
+        return (AbstractUserStoreManager) userStoreManager;
     }
 }
