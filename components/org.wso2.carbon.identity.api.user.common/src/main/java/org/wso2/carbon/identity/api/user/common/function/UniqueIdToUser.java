@@ -60,7 +60,7 @@ public class UniqueIdToUser implements BiFunction<RealmService, String[], User> 
                     tenantDomain);
             org.wso2.carbon.user.core.common.User user = getUserByUniqueId(userId, uniqueIdEnabledUserStoreManager);
             return getUser(user);
-        } catch (Exception e) {
+        } catch (org.wso2.carbon.user.api.UserStoreException e) {
             throw new APIError(Response.Status.BAD_REQUEST, new ErrorResponse.Builder()
                     .withCode(ERROR_CODE_INVALID_USERNAME.getCode())
                     .withMessage(ERROR_CODE_INVALID_USERNAME.getMessage())
