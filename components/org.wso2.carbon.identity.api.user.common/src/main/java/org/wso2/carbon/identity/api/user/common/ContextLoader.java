@@ -16,6 +16,7 @@
 
 package org.wso2.carbon.identity.api.user.common;
 
+import org.apache.commons.lang.StringUtils;
 import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
@@ -97,6 +98,42 @@ public class ContextLoader {
         user.setUserStoreDomain(realm);
         user.setTenantDomain(tenantDomain);
         return user;
+    }
+
+    /**
+     * Build {@link org.wso2.carbon.identity.application.common.model} object from the
+     * {@link org.wso2.carbon.user.core.common.User}.
+     *
+     * @param user Common user {@link org.wso2.carbon.user.core.common.User}.
+     * @return Application user {@link org.wso2.carbon.identity.application.common.model}.
+     */
+    public static org.wso2.carbon.identity.application.common.model.User getUser(org.wso2.carbon.user.core.common.User
+                                                                                         user) {
+
+        String realm = UserStoreConfigConstants.PRIMARY;
+        String username;
+        String tenantDomain;
+
+        if (StringUtils.isNotEmpty(user.getUsername()) && StringUtils.isNotEmpty(user.getTenantDomain())) {
+            username = user.getUsername();
+            tenantDomain = user.getTenantDomain();
+        } else {
+            throw new APIError(Response.Status.BAD_REQUEST, new ErrorResponse.Builder().withDescription("Provided " +
+                    "user cannot be empty.")
+                    .withCode(ERROR_CODE_INVALID_USERNAME.getCode())
+                    .withMessage(ERROR_CODE_INVALID_USERNAME.getMessage()).build());
+        }
+
+        if (StringUtils.isNotEmpty(user.getUserStoreDomain())) {
+            realm = user.getUserStoreDomain();
+        }
+
+        org.wso2.carbon.identity.application.common.model.User constructedUser = new org.wso2.carbon.identity.
+                application.common.model.User();
+        constructedUser.setUserName(username);
+        constructedUser.setUserStoreDomain(realm);
+        constructedUser.setTenantDomain(tenantDomain);
+        return constructedUser;
     }
 
     /**

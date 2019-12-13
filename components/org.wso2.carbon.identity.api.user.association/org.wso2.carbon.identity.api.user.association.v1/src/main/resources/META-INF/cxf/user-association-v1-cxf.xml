@@ -24,9 +24,12 @@
           class="org.wso2.carbon.identity.rest.api.user.association.factory.UserAccountConnectorOSGIServiceFactory"/>
     <bean id="FederatedAssociationManagerFactoryBean"
           class="org.wso2.carbon.identity.rest.api.user.association.factory.FederatedAssociationManagerOSGIServiceFactory"/>
+    <bean id="RealmServiceOSGIServiceFactoryBean"
+          class="org.wso2.carbon.identity.rest.api.user.association.factory.RealmServiceOSGIServiceFactory"/>
     <bean id="UserAssociationServiceHolderBean"
           class="org.wso2.carbon.identity.rest.api.user.association.v1.util.UserAssociationServiceHolder">
         <property name="userAccountConnector" ref="userAccountConnectorServiceFactoryBean"/>
         <property name="federatedAssociationManager" ref="FederatedAssociationManagerFactoryBean"/>
+        <property name="realmService" ref="RealmServiceOSGIServiceFactoryBean"/>
     </bean>
 </beans>

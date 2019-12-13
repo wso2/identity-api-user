@@ -18,15 +18,15 @@ package org.wso2.carbon.identity.rest.api.user.association.factory;
 
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.identity.user.profile.mgt.association.federation.FederatedAssociationManager;
+import org.wso2.carbon.user.core.service.RealmService;
 
 /**
  * Factory Beans serves as a factory for creating other beans within the IOC container. This factory bean is used to
- * instantiate the FederatedAssociationManager type of object inside the container.
+ * instantiate the RealmService type of object inside the container.
  */
-public class FederatedAssociationManagerOSGIServiceFactory extends AbstractFactoryBean<FederatedAssociationManager> {
+public class RealmServiceOSGIServiceFactory extends AbstractFactoryBean<RealmService> {
 
-    private FederatedAssociationManager federatedAssociationManager;
+    private RealmService realmService;
 
     @Override
     public Class<?> getObjectType() {
@@ -35,18 +35,18 @@ public class FederatedAssociationManagerOSGIServiceFactory extends AbstractFacto
     }
 
     @Override
-    protected FederatedAssociationManager createInstance() throws Exception {
+    protected RealmService createInstance() throws Exception {
 
-        if (this.federatedAssociationManager == null) {
-            FederatedAssociationManager federatedAssociationManager
-                    = (FederatedAssociationManager) PrivilegedCarbonContext.getThreadLocalCarbonContext()
-                    .getOSGiService(FederatedAssociationManager.class, null);
-            if (federatedAssociationManager != null) {
-                this.federatedAssociationManager = federatedAssociationManager;
+        if (this.realmService == null) {
+            RealmService realmService
+                    = (RealmService) PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                    .getOSGiService(RealmService.class, null);
+            if (realmService != null) {
+                this.realmService = realmService;
             } else {
-                throw new Exception("Unable to retrieve FederatedAssociationManager service.");
+                throw new Exception("Unable to retrieve RealmService.");
             }
         }
-        return this.federatedAssociationManager;
+        return this.realmService;
     }
 }

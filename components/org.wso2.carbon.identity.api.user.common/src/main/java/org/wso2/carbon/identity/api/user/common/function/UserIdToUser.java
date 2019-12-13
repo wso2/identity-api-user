@@ -34,7 +34,12 @@ import static org.wso2.carbon.identity.api.user.common.ContextLoader.getUser;
 
 /**
  * Build user object from user id and tenant domain
+ *
+ * @deprecated This method uses Base64 URL encoded user name as the user id. However, the recommended approach is to
+ * use an unique id value instead. Therefore this function is deprecated and
+ * {@link UniqueIdToUser} is used instead.
  */
+@Deprecated
 public class UserIdToUser implements Function<String[], User> {
 
     private static final Log log = LogFactory.getLog(UserIdToUser.class);
@@ -48,7 +53,7 @@ public class UserIdToUser implements Function<String[], User> {
             tenantDomain = args[1];
             String decodedUsername = new String(Base64.getUrlDecoder().decode(userId), StandardCharsets.UTF_8);
 
-            if (StringUtils.isBlank(userId)) {
+            if (StringUtils.isEmpty(userId)) {
                 throw new WebApplicationException("UserID is empty.");
             }
 

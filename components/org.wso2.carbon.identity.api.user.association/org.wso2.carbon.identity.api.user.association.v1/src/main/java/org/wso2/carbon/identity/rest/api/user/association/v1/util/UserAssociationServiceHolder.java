@@ -17,6 +17,7 @@ package org.wso2.carbon.identity.rest.api.user.association.v1.util;
 
 import org.wso2.carbon.identity.user.account.association.UserAccountConnector;
 import org.wso2.carbon.identity.user.profile.mgt.association.federation.FederatedAssociationManager;
+import org.wso2.carbon.user.core.service.RealmService;
 
 /**
  * Service holder class for User Associations.
@@ -25,6 +26,7 @@ public class UserAssociationServiceHolder {
 
     private static UserAccountConnector userAccountConnector;
     private static FederatedAssociationManager federatedAssociationManager;
+    private static RealmService realmService;
 
     public static FederatedAssociationManager getFederatedAssociationManager() {
 
@@ -44,5 +46,15 @@ public class UserAssociationServiceHolder {
     public static void setUserAccountConnector(UserAccountConnector userAccountConnector) {
 
         UserAssociationServiceHolder.userAccountConnector = userAccountConnector;
+    }
+
+    public static RealmService getRealmService() {
+
+        return realmService;
+    }
+
+    public static void setRealmService(RealmService realmService) {
+
+        UserAssociationServiceHolder.realmService = realmService;
     }
 }
