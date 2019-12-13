@@ -17,6 +17,7 @@
 package org.wso2.carbon.identity.api.user.challenge.common;
 
 import org.wso2.carbon.identity.recovery.ChallengeQuestionManager;
+import org.wso2.carbon.user.core.service.RealmService;
 
 /**
  * Service holder class for user challenge services.
@@ -24,6 +25,8 @@ import org.wso2.carbon.identity.recovery.ChallengeQuestionManager;
 public class ChallengeQuestionServiceHolder {
 
     private static ChallengeQuestionManager challengeQuestionManager;
+
+    private static RealmService realmService;
 
     /**
      * Get ChallengeQuestionManager osgi service.
@@ -35,5 +38,15 @@ public class ChallengeQuestionServiceHolder {
 
     public static void setChallengeQuestionManager(ChallengeQuestionManager challengeQuestionManager) {
         ChallengeQuestionServiceHolder.challengeQuestionManager = challengeQuestionManager;
+    }
+
+    public static RealmService getRealmService() {
+
+        return realmService;
+    }
+
+    public static void setRealmService(RealmService realmService) {
+
+        ChallengeQuestionServiceHolder.realmService = realmService;
     }
 }

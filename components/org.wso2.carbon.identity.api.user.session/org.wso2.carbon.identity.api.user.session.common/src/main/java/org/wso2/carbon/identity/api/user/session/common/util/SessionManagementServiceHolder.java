@@ -19,6 +19,7 @@
 package org.wso2.carbon.identity.api.user.session.common.util;
 
 import org.wso2.carbon.identity.application.authentication.framework.UserSessionManagementService;
+import org.wso2.carbon.user.core.service.RealmService;
 
 /**
  * Service holder class for user session management services.
@@ -26,6 +27,8 @@ import org.wso2.carbon.identity.application.authentication.framework.UserSession
 public class SessionManagementServiceHolder {
 
     private static UserSessionManagementService userSessionManagementService;
+
+    private static RealmService realmService;
 
     /**
      * Method to get the session management osgi service.
@@ -38,5 +41,15 @@ public class SessionManagementServiceHolder {
 
     public static void setUserSessionManagementService(UserSessionManagementService userSessionManagementService) {
         SessionManagementServiceHolder.userSessionManagementService = userSessionManagementService;
+    }
+
+    public static RealmService getRealmService() {
+
+        return realmService;
+    }
+
+    public static void setRealmService(RealmService realmService) {
+
+        SessionManagementServiceHolder.realmService = realmService;
     }
 }

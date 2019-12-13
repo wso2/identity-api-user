@@ -20,7 +20,9 @@ package org.wso2.carbon.identity.rest.api.user.session.v1.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.api.user.common.ContextLoader;
-import org.wso2.carbon.identity.api.user.common.function.UserIdToUser;
+import org.wso2.carbon.identity.api.user.common.function.UniqueIdToUser;
+import org.wso2.carbon.identity.api.user.session.common.util.SessionManagementServiceHolder;
+import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.rest.api.user.session.v1.UserIdApiService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.core.SessionManagementService;
 
@@ -38,15 +40,14 @@ public class UserIdApiServiceImpl extends UserIdApiService {
     public Response getSessionsByUserId(String userId, Integer limit, Integer offset, String filter, String sort) {
 
         return Response.ok().entity(sessionManagementService.getSessionsBySessionId(
-                new UserIdToUser().apply(userId, ContextLoader.getTenantDomainFromContext()), limit, offset, filter,
+                getUser(userId), limit, offset, filter,
                 sort)).build();
     }
 
     @Override
     public Response terminateSessionBySessionId(String userId, String sessionId) {
 
-        sessionManagementService.terminateSessionBySessionId(new UserIdToUser().apply(userId, ContextLoader
-                .getTenantDomainFromContext()), sessionId);
+        sessionManagementService.terminateSessionBySessionId(getUser(userId), sessionId);
 
         return Response.noContent().build();
     }
@@ -54,9 +55,14 @@ public class UserIdApiServiceImpl extends UserIdApiService {
     @Override
     public Response terminateSessionsByUserId(String userId) {
 
-        sessionManagementService.terminateSessionsByUserId(new UserIdToUser().apply(userId, ContextLoader
-                .getTenantDomainFromContext()));
+        sessionManagementService.terminateSessionsByUserId(getUser(userId));
 
         return Response.noContent().build();
+    }
+
+    private User getUser(String userId) {
+
+        return new UniqueIdToUser().apply(SessionManagementServiceHolder.getRealmService(), userId,
+                ContextLoader.getTenantDomainFromContext());
     }
 }

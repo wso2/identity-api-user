@@ -24,7 +24,10 @@
     <bean class="org.wso2.carbon.identity.rest.api.user.session.v1.impl.MeApiServiceImpl"/>
     <bean id="UserSessionServiceHolderBean" class="org.wso2.carbon.identity.api.user.session.common.util.SessionManagementServiceHolder">
         <property name="userSessionManagementService" ref="userSessionManagementServiceFactoryBean"/>
+        <property name="realmService" ref="RealmServiceOSGIServiceFactoryBean"/>
     </bean>
     <bean id="userSessionManagementServiceFactoryBean"
           class="org.wso2.carbon.identity.api.user.session.common.factory.OSGIServiceFactory"/>
+    <bean id="RealmServiceOSGIServiceFactoryBean"
+          class="org.wso2.carbon.identity.api.user.session.common.factory.RealmServiceOSGIServiceFactory"/>
 </beans>
