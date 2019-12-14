@@ -2,10 +2,11 @@ package org.wso2.carbon.identity.rest.api.user.association.v1.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.api.user.common.ContextLoader;
-import org.wso2.carbon.identity.api.user.common.function.UserIdToUser;
+import org.wso2.carbon.identity.api.user.common.function.UniqueIdToUser;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.rest.api.user.association.v1.UserIdApiService;
 import org.wso2.carbon.identity.rest.api.user.association.v1.core.UserAssociationService;
+import org.wso2.carbon.identity.rest.api.user.association.v1.util.UserAssociationServiceHolder;
 
 import javax.ws.rs.core.Response;
 
@@ -32,7 +33,8 @@ public class UserIdApiServiceImpl extends UserIdApiService {
 
     private String getUser(String userId) {
 
-        User user = new UserIdToUser().apply(userId, ContextLoader.getTenantDomainFromContext());
+        User user = new UniqueIdToUser().apply(UserAssociationServiceHolder.getRealmService(), userId,
+                ContextLoader.getTenantDomainFromContext());
         return user.toFullQualifiedUsername();
     }
 

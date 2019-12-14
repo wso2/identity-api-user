@@ -3,11 +3,12 @@ package org.wso2.carbon.identity.rest.api.user.association.v1.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.ContextLoader;
-import org.wso2.carbon.identity.api.user.common.function.UserIdToUser;
+import org.wso2.carbon.identity.api.user.common.function.UniqueIdToUser;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.rest.api.user.association.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.association.v1.core.UserAssociationService;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationUserRequestDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.util.UserAssociationServiceHolder;
 import org.wso2.carbon.user.core.util.UserCoreUtil;
 
 import java.net.URI;
@@ -29,20 +30,22 @@ public class MeApiServiceImpl extends MeApiService {
     @Override
     public Response meAssociationsDelete() {
 
-        userAssociationService.deleteUserAccountAssociation(getUserId());
+        userAssociationService.deleteUserAccountAssociation(getFullyQualifiedUsernameFromContext());
         return Response.noContent().build();
     }
 
     @Override
     public Response meAssociationsAssociatedUserIdDelete(String associatedUserId) {
 
-        userAssociationService.deleteAssociatedUserAccount(getUserId(), getDecodedUserId(associatedUserId));
+        userAssociationService.deleteAssociatedUserAccount(getFullyQualifiedUsernameFromContext(),
+                getFullyQualifiedUserName(associatedUserId));
         return Response.noContent().build();
     }
 
     @Override
     public Response meAssociationsGet() {
-        return Response.ok().entity(userAssociationService.getAssociationsOfUser(getUserId())).build();
+        return Response.ok().entity(userAssociationService.getAssociationsOfUser(
+                getFullyQualifiedUsernameFromContext())).build();
     }
 
     @Override
@@ -55,33 +58,35 @@ public class MeApiServiceImpl extends MeApiService {
     @Override
     public Response meFederatedAssociationsGet() {
 
-        return Response.ok().entity(userAssociationService.getFederatedAssociationsOfUser(getUserId())).build();
+        return Response.ok().entity(userAssociationService.getFederatedAssociationsOfUser(
+                getFullyQualifiedUsernameFromContext())).build();
     }
 
     @Override
     public Response meFederatedAssociationsDelete() {
 
-        userAssociationService.deleteFederatedUserAccountAssociation(getUserId());
+        userAssociationService.deleteFederatedUserAccountAssociation(getFullyQualifiedUsernameFromContext());
         return Response.noContent().build();
     }
 
     @Override
     public Response meFederatedAssociationsIdDelete(String id) {
 
-        userAssociationService.deleteFederatedUserAccountAssociation(getUserId(), id);
+        userAssociationService.deleteFederatedUserAccountAssociation(getFullyQualifiedUsernameFromContext(), id);
         return Response.noContent().build();
     }
 
-    private String getUserId() {
+    private String getFullyQualifiedUsernameFromContext() {
 
         String username = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
         return UserCoreUtil.addTenantDomainToEntry(username, PrivilegedCarbonContext.getThreadLocalCarbonContext()
                 .getTenantDomain());
     }
 
-    private String getDecodedUserId(String encodedUserId) {
+    private String getFullyQualifiedUserName(String userId) {
 
-        User user = new UserIdToUser().apply(encodedUserId, ContextLoader.getTenantDomainFromContext());
+        User user = new UniqueIdToUser().apply(UserAssociationServiceHolder.getRealmService(), userId,
+                ContextLoader.getTenantDomainFromContext());
         return user.toFullQualifiedUsername();
     }
 

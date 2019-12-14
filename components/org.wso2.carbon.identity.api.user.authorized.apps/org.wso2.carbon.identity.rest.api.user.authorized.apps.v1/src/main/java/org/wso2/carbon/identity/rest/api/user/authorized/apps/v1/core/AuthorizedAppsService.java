@@ -30,6 +30,7 @@ import org.wso2.carbon.identity.oauth.dto.OAuthRevocationResponseDTO;
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.core.functions.OAuthConsumerAppToExternal;
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.dto.AuthorizedAppDTO;
 import org.wso2.carbon.user.core.UserCoreConstants;
+import org.wso2.carbon.user.core.service.RealmService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -47,10 +48,13 @@ public class AuthorizedAppsService {
 
     private static final Log log = LogFactory.getLog(AuthorizedAppsService.class);
     private static OAuthAdminServiceImpl oAuthAdminService = null;
+    private static RealmService realmService = null;
 
     static {
         oAuthAdminService = (OAuthAdminServiceImpl) PrivilegedCarbonContext.getThreadLocalCarbonContext()
                 .getOSGiService(OAuthAdminServiceImpl.class, null);
+        realmService = (RealmService) PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                .getOSGiService(RealmService.class, null);
     }
 
     public void deleteUserAuthorizedApps(User user) {

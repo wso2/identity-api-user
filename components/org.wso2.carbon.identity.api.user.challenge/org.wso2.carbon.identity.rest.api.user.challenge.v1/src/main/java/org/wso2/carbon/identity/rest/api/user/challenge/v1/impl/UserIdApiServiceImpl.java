@@ -19,8 +19,10 @@
 package org.wso2.carbon.identity.rest.api.user.challenge.v1.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.wso2.carbon.identity.api.user.challenge.common.ChallengeQuestionServiceHolder;
 import org.wso2.carbon.identity.api.user.common.ContextLoader;
-import org.wso2.carbon.identity.api.user.common.function.UserIdToUser;
+import org.wso2.carbon.identity.api.user.common.function.UniqueIdToUser;
+import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.rest.api.user.challenge.v1.UserIdApiService;
 import org.wso2.carbon.identity.rest.api.user.challenge.v1.core.UserChallengeService;
 import org.wso2.carbon.identity.rest.api.user.challenge.v1.dto.ChallengeAnswerDTO;
@@ -44,74 +46,68 @@ public class UserIdApiServiceImpl extends UserIdApiService {
 
     @Override
     public Response addChallengeAnswerOfAUser(String challengeSetId, String userId,
-            UserChallengeAnswerDTO challengeAnswer) {
+                                              UserChallengeAnswerDTO challengeAnswer) {
 
-        challengeService
-                .addChallengeAnswerOfUser(new UserIdToUser().apply(userId, ContextLoader.getTenantDomainFromContext()),
-                        challengeSetId, challengeAnswer);
+        challengeService.addChallengeAnswerOfUser(getUser(userId), challengeSetId, challengeAnswer);
         return Response.created(getUserChallengeAnswersLocation(userId)).build();
     }
 
     @Override
     public Response addChallengeAnswersOfAUser(String userId, List<ChallengeAnswerDTO> challengeAnswer) {
 
-        challengeService
-                .setChallengeAnswersOfUser(new UserIdToUser().apply(userId, ContextLoader.getTenantDomainFromContext()),
-                        challengeAnswer);
+        challengeService.setChallengeAnswersOfUser(getUser(userId), challengeAnswer);
         return Response.created(getUserChallengeAnswersLocation(userId)).build();
     }
 
     @Override
     public Response deleteChallengeAnswerOfAUser(String challengeSetId, String userId) {
 
-        challengeService.removeChallengeAnswerOfUser(
-                new UserIdToUser().apply(userId, ContextLoader.getTenantDomainFromContext()), challengeSetId);
+        challengeService.removeChallengeAnswerOfUser(getUser(userId), challengeSetId);
         return Response.noContent().build();
     }
 
     @Override
     public Response deleteChallengeAnswersOfAUser(String userId) {
 
-        challengeService.removeChallengeAnswersOfUser(
-                new UserIdToUser().apply(userId, ContextLoader.getTenantDomainFromContext()));
+        challengeService.removeChallengeAnswersOfUser(getUser(userId));
         return Response.noContent().build();
     }
 
     @Override
     public Response getAnsweredChallengesOfAUser(String userId) {
 
-        return Response.ok().entity(challengeService.getChallengeAnswersOfUser(
-                new UserIdToUser().apply(userId, ContextLoader.getTenantDomainFromContext()))).build();
+        return Response.ok().entity(challengeService.getChallengeAnswersOfUser(getUser(userId))).build();
     }
 
     @Override
     public Response getChallengesForAUser(String userId, Integer offset, Integer limit) {
 
-        return Response.ok().entity(challengeService
-                .getChallengesForUser(new UserIdToUser().apply(userId, ContextLoader.getTenantDomainFromContext()),
-                        offset, limit)).build();
+        return Response.ok().entity(challengeService.getChallengesForUser(getUser(userId), offset, limit)).build();
     }
 
     @Override
     public Response updateChallengeAnswerOfAUser(String challengeSetId, String userId,
-            UserChallengeAnswerDTO challengeAnswer) {
+                                                 UserChallengeAnswerDTO challengeAnswer) {
 
-        challengeService.updateChallengeAnswerOfUser(
-                new UserIdToUser().apply(userId, ContextLoader.getTenantDomainFromContext()), challengeSetId,
-                challengeAnswer);
+        challengeService.updateChallengeAnswerOfUser(getUser(userId), challengeSetId, challengeAnswer);
         return Response.ok().build();
     }
 
     @Override
     public Response updateChallengeAnswersOfAUser(String userId, List<ChallengeAnswerDTO> challengeAnswers) {
 
-        challengeService.updateChallengeAnswersOfUser(
-                new UserIdToUser().apply(userId, ContextLoader.getTenantDomainFromContext()), challengeAnswers);
+        challengeService.updateChallengeAnswersOfUser(getUser(userId), challengeAnswers);
         return Response.ok().build();
     }
 
     private URI getUserChallengeAnswersLocation(String userId) {
+
         return buildURI(String.format(V1_API_PATH_COMPONENT + USER_CHALLENGE_ANSWERS_PATH_COMPONENT, userId));
     }
 
+    private User getUser(String userId) {
+
+        return new UniqueIdToUser().apply(ChallengeQuestionServiceHolder.getRealmService(), userId,
+                ContextLoader.getTenantDomainFromContext());
+    }
 }

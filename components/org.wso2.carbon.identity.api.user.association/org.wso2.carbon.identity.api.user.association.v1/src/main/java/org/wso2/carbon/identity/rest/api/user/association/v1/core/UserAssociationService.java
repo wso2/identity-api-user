@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
+import org.wso2.carbon.identity.api.user.common.function.UserToUniqueId;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationUserRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.FederatedAssociationDTO;
@@ -33,9 +34,7 @@ import org.wso2.carbon.identity.user.profile.mgt.association.federation.model.Fe
 import org.wso2.carbon.user.core.util.UserCoreUtil;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import javax.ws.rs.core.Response;
 
@@ -43,7 +42,6 @@ import static org.wso2.carbon.identity.api.user.common.Constants.ERROR_CODE_DELI
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ASSOCIATION_ERROR_PREFIX;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ERROR_MSG_DELIMITER;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ErrorMessages.ERROR_CODE_PW_MANDATORY;
-import static org.wso2.carbon.user.core.UserCoreConstants.DOMAIN_SEPARATOR;
 
 /**
  * This service is used to execute the association related APIs through the UserAccountConnector OSGI service.
@@ -163,7 +161,7 @@ public class UserAssociationService {
     private UserDTO getUserDTO(UserAccountAssociationDTO userAccountAssociationDTO) {
 
         UserDTO userDTO = new UserDTO();
-        userDTO.setUserId(getEncodedUserId(userAccountAssociationDTO));
+        userDTO.setUserId(getUniqueUserId(userAccountAssociationDTO));
         userDTO.setUsername(userAccountAssociationDTO.getUsername());
         userDTO.setUserStoreDomain(userAccountAssociationDTO.getDomain());
         userDTO.setTenantDomain(userAccountAssociationDTO.getTenantDomain());
@@ -256,11 +254,13 @@ public class UserAssociationService {
         }
     }
 
-    private String getEncodedUserId(UserAccountAssociationDTO userAccountAssociationDTO) {
+    private String getUniqueUserId(UserAccountAssociationDTO userAccountAssociationDTO) {
 
-        String domainAwareUserName = userAccountAssociationDTO.getDomain() + DOMAIN_SEPARATOR
-                + userAccountAssociationDTO.getUsername();
-        return Base64.getUrlEncoder().encodeToString(domainAwareUserName.getBytes(StandardCharsets.UTF_8));
+        User user = new User();
+        user.setUserName(userAccountAssociationDTO.getUsername());
+        user.setUserStoreDomain(userAccountAssociationDTO.getDomain());
+        user.setTenantDomain(userAccountAssociationDTO.getTenantDomain());
+        return new UserToUniqueId().apply(UserAssociationServiceHolder.getRealmService(), user);
     }
 
     private User getUser(String userId) {

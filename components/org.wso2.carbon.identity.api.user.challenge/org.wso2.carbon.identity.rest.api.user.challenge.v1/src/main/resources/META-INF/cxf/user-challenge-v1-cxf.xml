@@ -21,7 +21,10 @@
     <bean class="org.wso2.carbon.identity.rest.api.user.challenge.v1.impl.MeApiServiceImpl"/>
     <bean id="UserChallengeServiceHolderBean" class="org.wso2.carbon.identity.api.user.challenge.common.ChallengeQuestionServiceHolder">
         <property name="challengeQuestionManager" ref="challengeQuestionServiceFactoryBean"/>
+        <property name="realmService" ref="RealmServiceOSGIServiceFactoryBean"/>
     </bean>
     <bean id="challengeQuestionServiceFactoryBean"
           class="org.wso2.carbon.identity.api.user.challenge.common.factory.OSGIServiceFactory"/>
+    <bean id="RealmServiceOSGIServiceFactoryBean"
+          class="org.wso2.carbon.identity.api.user.challenge.common.factory.RealmServiceOSGIServiceFactory"/>
 </beans>
