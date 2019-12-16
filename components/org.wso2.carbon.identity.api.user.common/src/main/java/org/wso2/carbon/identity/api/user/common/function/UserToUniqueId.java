@@ -57,8 +57,9 @@ public class UserToUniqueId implements BiFunction<RealmService, User, String> {
         }
         String tenantDomain = user.getTenantDomain();
         try {
-            AbstractUserStoreManager abstractUserStoreManager = getAbstractUserStoreManager(realmService, tenantDomain);
-            return getUniqueIdForUser(user, abstractUserStoreManager);
+            UserStoreManager userStoreManager = getUserStoreManager(realmService, tenantDomain,
+                    user.getUserStoreDomain());
+            return getUniqueIdForUser(user, userStoreManager);
         } catch (Exception e) {
             throw new APIError(Response.Status.BAD_REQUEST, new ErrorResponse.Builder()
                     .withCode(ERROR_CODE_INVALID_USERNAME.getCode())
@@ -68,11 +69,18 @@ public class UserToUniqueId implements BiFunction<RealmService, User, String> {
         }
     }
 
-    private String getUniqueIdForUser(User user, AbstractUserStoreManager abstractUserStoreManager) {
+    private String getUniqueIdForUser(User user, UserStoreManager userStoreManager) {
 
         try {
-            return abstractUserStoreManager.getUserIDFromUserName(UserCoreUtil.addDomainToName(user.getUserName(),
-                    user.getUserStoreDomain()));
+            if (userStoreManager instanceof AbstractUserStoreManager) {
+                return ((AbstractUserStoreManager) userStoreManager).getUserIDFromUserName(user.getUserName());
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("Provided user store manager for the user: " + user.toFullQualifiedUsername() + ", is " +
+                        "not an instance of the AbstractUserStore manager");
+            }
+            throw new WebApplicationException("Unable to get the unique id of the user: "
+                    + user.toFullQualifiedUsername() + ".");
         } catch (UserStoreException e) {
             if (log.isDebugEnabled()) {
                 log.debug("Error occurred while retrieving Id for the user: " + user.toFullQualifiedUsername(), e);
@@ -81,18 +89,17 @@ public class UserToUniqueId implements BiFunction<RealmService, User, String> {
         }
     }
 
-    private AbstractUserStoreManager getAbstractUserStoreManager(RealmService realmService, String tenantDomain)
+    private org.wso2.carbon.user.api.UserStoreManager getUserStoreManager(RealmService realmService,
+                                                                          String tenantDomain,
+                                                                          String userStoreDomain)
             throws org.wso2.carbon.user.api.UserStoreException {
 
-        UserStoreManager userStoreManager = realmService.getTenantUserRealm(
-                IdentityTenantUtil.getTenantId(tenantDomain)).getUserStoreManager();
-        if (!(userStoreManager instanceof AbstractUserStoreManager)) {
-            if (log.isDebugEnabled()) {
-                log.debug("Provided user store manager: " + userStoreManager.getClass() + ", is not an instance of "
-                        + "the AbstractUserStore manager");
-            }
-            throw new WebApplicationException("Unsupported user store manager.");
+        UserStoreManager userStoreManager = realmService.getTenantUserRealm(IdentityTenantUtil
+                .getTenantId(tenantDomain)).getUserStoreManager();
+        if (userStoreManager instanceof org.wso2.carbon.user.core.UserStoreManager) {
+            return ((org.wso2.carbon.user.core.UserStoreManager) userStoreManager).getSecondaryUserStoreManager(
+                    userStoreDomain);
         }
-        return (AbstractUserStoreManager) userStoreManager;
+        return userStoreManager;
     }
 }
