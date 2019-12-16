@@ -99,6 +99,12 @@ public class UserToUniqueId implements BiFunction<RealmService, User, String> {
             return ((org.wso2.carbon.user.core.UserStoreManager) userStoreManager).getSecondaryUserStoreManager(
                     userStoreDomain);
         }
+        if (log.isDebugEnabled()) {
+            log.debug("Unable to resolve the corresponding user store manager for the domain: " + userStoreDomain
+                    + ", as the provided user store manager: " + userStoreManager.getClass() + ", is not an instance " +
+                    "of org.wso2.carbon.user.core.UserStoreManager. Therefore returning the user store " +
+                    "manager: " + userStoreManager.getClass() + ", from the realm.");
+        }
         return userStoreManager;
     }
 }
