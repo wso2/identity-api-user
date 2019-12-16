@@ -73,8 +73,7 @@ public class UserToUniqueId implements BiFunction<RealmService, User, String> {
 
         try {
             if (userStoreManager instanceof AbstractUserStoreManager) {
-                return ((AbstractUserStoreManager) userStoreManager).getUserIDFromUserName(UserCoreUtil
-                        .addDomainToName(user.getUserName(), user.getUserStoreDomain()));
+                return ((AbstractUserStoreManager) userStoreManager).getUserIDFromUserName(user.getUserName());
             }
             if (log.isDebugEnabled()) {
                 log.debug("Provided user store manager for the user: " + user.toFullQualifiedUsername() + ", is " +
