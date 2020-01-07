@@ -358,7 +358,7 @@ public class RecoveryUtil {
     private static NotAcceptableException buildRequestNotAcceptableResponseObject(String className, String description,
                                                                                   String code, String correlationId) {
 
-        ErrorResponseDTO errorDTO = buildErrorResponseDTO(Constants.STATUS_METHOD_NOT_ACCPETED_MESSAGE_DEFAULT, code,
+        ErrorResponseDTO errorDTO = buildErrorResponseDTO(Constants.STATUS_METHOD_NOT_ACCEPTED_MESSAGE_DEFAULT, code,
                 description, correlationId);
         if (StringUtils.isNotBlank(className)) {
             description = String.format("%s : %s - %s", LOG_MESSAGE_PREFIX, className, description);

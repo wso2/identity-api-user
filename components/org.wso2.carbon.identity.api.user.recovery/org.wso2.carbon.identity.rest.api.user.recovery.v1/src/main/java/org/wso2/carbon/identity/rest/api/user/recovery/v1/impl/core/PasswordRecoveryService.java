@@ -15,13 +15,11 @@
  */
 package org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.base.MultitenantConstants;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.Util;
 import org.wso2.carbon.identity.api.user.recovery.commons.UserAccountRecoveryServiceDataHolder;
-import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.governance.service.notification.NotificationChannels;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryClientException;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryConstants;
@@ -69,7 +67,7 @@ public class PasswordRecoveryService {
      */
     public Response initiatePasswordRecovery(InitRequestDTO initRequestDTO) {
 
-        String tenantDomain = resolveTenantDomain();
+        String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         Map<String, String> userClaims = RecoveryUtil.buildUserClaimsMap(initRequestDTO.getClaims());
         try {
             // Get password recovery notification information.
@@ -110,7 +108,7 @@ public class PasswordRecoveryService {
      */
     public Response recoverPassword(RecoveryRequestDTO recoveryRequestDTO) {
 
-        String tenantDomain = resolveTenantDomain();
+        String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         String recoveryId = recoveryRequestDTO.getRecoveryCode();
         String channelId = recoveryRequestDTO.getChannelId();
         try {
@@ -150,7 +148,7 @@ public class PasswordRecoveryService {
      */
     public Response confirmRecovery(ConfirmRequestDTO confirmRequestDTO) {
 
-        String tenantDomain = resolveTenantDomain();
+        String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         try {
             PasswordResetCodeDTO passwordResetCodeDTO =
                     UserAccountRecoveryServiceDataHolder.getPasswordRecoveryManager()
@@ -180,7 +178,7 @@ public class PasswordRecoveryService {
      */
     public Response resetPassword(ResetRequestDTO requestDTO) {
 
-        String tenantDomain = resolveTenantDomain();
+        String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         char[] password = requestDTO.getPassword().toCharArray();
         try {
             SuccessfulPasswordResetDTO successfulPasswordResetDTO =
@@ -213,7 +211,7 @@ public class PasswordRecoveryService {
      */
     public Response resendConfirmation(ResendConfirmationRequestDTO resendConfirmationRequest) {
 
-        String tenantDomain = resolveTenantDomain();
+        String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         String resendCode = resendConfirmationRequest.getResendCode();
         Map<String, String> properties = RecoveryUtil.buildPropertiesMap(resendConfirmationRequest.getProperties());
         try {
@@ -459,33 +457,9 @@ public class PasswordRecoveryService {
                             recoveryInformationDTO.getUsername()));
             // Build recovery information for recover with security questions.
             AccountRecoveryTypeDTO accountRecoveryTypeDTO = buildAccountRecoveryType(
-                    Constants.RECOVER_WITH_CHALLENGE_QUESTIIONS, null, apiCallDTOArrayList);
+                    Constants.RECOVER_WITH_CHALLENGE_QUESTIONS, null, apiCallDTOArrayList);
             recoveryTypeDTOS.add(accountRecoveryTypeDTO);
         }
         return recoveryTypeDTOS;
-    }
-
-    /**
-     * Resolve the tenant domain of the request.
-     *
-     * @return Tenant domain
-     */
-    private String resolveTenantDomain() {
-
-        String tenantDomain = StringUtils.EMPTY;
-        if (IdentityUtil.threadLocalProperties.get() != null) {
-            if (IdentityUtil.threadLocalProperties.get().get(Constants.TENANT_NAME_FROM_CONTEXT) != null) {
-                tenantDomain = (String) IdentityUtil.threadLocalProperties.get()
-                        .get(Constants.TENANT_NAME_FROM_CONTEXT);
-            }
-        }
-        if (StringUtils.isBlank(tenantDomain)) {
-            tenantDomain = MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
-            if (log.isDebugEnabled()) {
-                log.debug("Tenant domain is not in the request. Therefore, domain set to : "
-                        + MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
-            }
-        }
-        return tenantDomain;
     }
 }

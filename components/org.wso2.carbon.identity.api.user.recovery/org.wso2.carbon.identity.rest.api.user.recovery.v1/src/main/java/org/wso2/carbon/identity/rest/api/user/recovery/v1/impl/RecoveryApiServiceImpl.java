@@ -35,10 +35,10 @@ import javax.ws.rs.core.Response;
 public class RecoveryApiServiceImpl extends RecoveryApiService {
 
     @Autowired
-    UsernameRecoveryService usernameRecoveryService;
+    private UsernameRecoveryService usernameRecoveryService;
 
     @Autowired
-    PasswordRecoveryService passwordRecoveryService;
+    private PasswordRecoveryService passwordRecoveryService;
 
     @Override
     public Response confirmRecovery(ConfirmRequestDTO confirmRequest) {

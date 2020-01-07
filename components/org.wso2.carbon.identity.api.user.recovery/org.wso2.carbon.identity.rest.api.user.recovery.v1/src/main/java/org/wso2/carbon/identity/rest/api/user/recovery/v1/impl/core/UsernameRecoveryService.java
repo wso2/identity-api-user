@@ -19,11 +19,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.wso2.carbon.base.MultitenantConstants;
-
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.Util;
 import org.wso2.carbon.identity.api.user.recovery.commons.UserAccountRecoveryServiceDataHolder;
-import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.governance.service.notification.NotificationChannels;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryClientException;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryConstants;
@@ -61,7 +59,7 @@ public class UsernameRecoveryService {
      */
     public Response initiateUsernameRecovery(InitRequestDTO initRequestDTO) {
 
-        String tenantDomain = resolveTenantDomain();
+        String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         Map<String, String> userClaims = RecoveryUtil.buildUserClaimsMap(initRequestDTO.getClaims());
         try {
             // Get username recovery notification information.
@@ -102,7 +100,7 @@ public class UsernameRecoveryService {
      */
     public Response recoverUsername(RecoveryRequestDTO recoveryRequestDTO) {
 
-        String tenantDomain = resolveTenantDomain();
+        String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         String recoveryId = recoveryRequestDTO.getRecoveryCode();
         String channelId = recoveryRequestDTO.getChannelId();
         try {
@@ -186,29 +184,5 @@ public class UsernameRecoveryService {
         ArrayList<AccountRecoveryTypeDTO> recoveryTypeDTOS = new ArrayList<>();
         recoveryTypeDTOS.add(accountRecoveryTypeDTO);
         return recoveryTypeDTOS;
-    }
-
-    /**
-     * Resolve the tenant domain of the request.
-     *
-     * @return Tenant domain
-     */
-    private String resolveTenantDomain() {
-
-        String tenantDomain = StringUtils.EMPTY;
-        if (IdentityUtil.threadLocalProperties.get() != null) {
-            if (IdentityUtil.threadLocalProperties.get().get(Constants.TENANT_NAME_FROM_CONTEXT) != null) {
-                tenantDomain = (String) IdentityUtil.threadLocalProperties.get()
-                        .get(Constants.TENANT_NAME_FROM_CONTEXT);
-            }
-        }
-        if (StringUtils.isBlank(tenantDomain)) {
-            tenantDomain = MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
-            if (log.isDebugEnabled()) {
-                log.debug("Tenant domain is not in the request. Therefore, domain set to : "
-                        + MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
-            }
-        }
-        return tenantDomain;
     }
 }

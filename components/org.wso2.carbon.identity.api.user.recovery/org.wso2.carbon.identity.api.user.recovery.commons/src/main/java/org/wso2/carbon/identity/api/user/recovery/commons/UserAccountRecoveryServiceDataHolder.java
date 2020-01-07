@@ -41,8 +41,7 @@ public class UserAccountRecoveryServiceDataHolder {
      *
      * @param usernameRecoveryManager UsernameRecoveryManager
      */
-    public static void setUsernameRecoveryManager(
-            UsernameRecoveryManager usernameRecoveryManager) {
+    public static void setUsernameRecoveryManager(UsernameRecoveryManager usernameRecoveryManager) {
 
         UserAccountRecoveryServiceDataHolder.usernameRecoveryManager = usernameRecoveryManager;
     }
