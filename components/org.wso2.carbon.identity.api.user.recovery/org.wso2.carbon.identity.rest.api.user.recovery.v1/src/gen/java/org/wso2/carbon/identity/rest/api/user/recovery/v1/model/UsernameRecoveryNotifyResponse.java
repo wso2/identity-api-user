@@ -31,16 +31,17 @@ import java.util.Objects;
 import javax.validation.Valid;
 import javax.xml.bind.annotation.*;
 @ApiModel(description = "API response for successful username recovery")
-public class UsernameRecoveryInternalNotifyResponse  {
+public class UsernameRecoveryNotifyResponse  {
   
     private String code;
     private String message;
     private String notificationChannel;
+    private String username;
 
     /**
     * Success status code
     **/
-    public UsernameRecoveryInternalNotifyResponse code(String code) {
+    public UsernameRecoveryNotifyResponse code(String code) {
 
         this.code = code;
         return this;
@@ -61,7 +62,7 @@ public class UsernameRecoveryInternalNotifyResponse  {
     /**
     * Success status message
     **/
-    public UsernameRecoveryInternalNotifyResponse message(String message) {
+    public UsernameRecoveryNotifyResponse message(String message) {
 
         this.message = message;
         return this;
@@ -82,13 +83,13 @@ public class UsernameRecoveryInternalNotifyResponse  {
     /**
     * Channel which the recovery information is sent to the user
     **/
-    public UsernameRecoveryInternalNotifyResponse notificationChannel(String notificationChannel) {
+    public UsernameRecoveryNotifyResponse notificationChannel(String notificationChannel) {
 
         this.notificationChannel = notificationChannel;
         return this;
     }
     
-    @ApiModelProperty(example = "EMAIL", required = true, value = "Channel which the recovery information is sent to the user")
+    @ApiModelProperty(example = "EXTERNAL", required = true, value = "Channel which the recovery information is sent to the user")
     @JsonProperty("notificationChannel")
     @Valid
     @NotNull(message = "Property notificationChannel cannot be null.")
@@ -98,6 +99,27 @@ public class UsernameRecoveryInternalNotifyResponse  {
     }
     public void setNotificationChannel(String notificationChannel) {
         this.notificationChannel = notificationChannel;
+    }
+
+    /**
+    * - Username of the user - Username will be returned _ONLY IF_ the notification channel is &#x60;EXTERNAL&#x60; 
+    **/
+    public UsernameRecoveryNotifyResponse username(String username) {
+
+        this.username = username;
+        return this;
+    }
+    
+    @ApiModelProperty(example = "user1", required = true, value = "- Username of the user - Username will be returned _ONLY IF_ the notification channel is `EXTERNAL` ")
+    @JsonProperty("username")
+    @Valid
+    @NotNull(message = "Property username cannot be null.")
+
+    public String getUsername() {
+        return username;
+    }
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 
@@ -111,26 +133,28 @@ public class UsernameRecoveryInternalNotifyResponse  {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        UsernameRecoveryInternalNotifyResponse usernameRecoveryInternalNotifyResponse = (UsernameRecoveryInternalNotifyResponse) o;
-        return Objects.equals(this.code, usernameRecoveryInternalNotifyResponse.code) &&
-            Objects.equals(this.message, usernameRecoveryInternalNotifyResponse.message) &&
-            Objects.equals(this.notificationChannel, usernameRecoveryInternalNotifyResponse.notificationChannel);
+        UsernameRecoveryNotifyResponse usernameRecoveryNotifyResponse = (UsernameRecoveryNotifyResponse) o;
+        return Objects.equals(this.code, usernameRecoveryNotifyResponse.code) &&
+            Objects.equals(this.message, usernameRecoveryNotifyResponse.message) &&
+            Objects.equals(this.notificationChannel, usernameRecoveryNotifyResponse.notificationChannel) &&
+            Objects.equals(this.username, usernameRecoveryNotifyResponse.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, message, notificationChannel);
+        return Objects.hash(code, message, notificationChannel, username);
     }
 
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("class UsernameRecoveryInternalNotifyResponse {\n");
+        sb.append("class UsernameRecoveryNotifyResponse {\n");
         
         sb.append("    code: ").append(toIndentedString(code)).append("\n");
         sb.append("    message: ").append(toIndentedString(message)).append("\n");
         sb.append("    notificationChannel: ").append(toIndentedString(notificationChannel)).append("\n");
+        sb.append("    username: ").append(toIndentedString(username)).append("\n");
         sb.append("}");
         return sb.toString();
     }

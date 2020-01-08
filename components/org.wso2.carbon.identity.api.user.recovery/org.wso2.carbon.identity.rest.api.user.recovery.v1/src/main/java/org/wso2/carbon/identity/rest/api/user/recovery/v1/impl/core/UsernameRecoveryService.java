@@ -37,7 +37,7 @@ import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.InitRequest;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RecoveryChannel;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RecoveryChannelInformation;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RecoveryRequest;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.UsernameRecoveryExternalNotifyResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.UsernameRecoveryNotifyResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,16 +140,16 @@ public class UsernameRecoveryService {
      */
     private Response buildUsernameRecoveryResponse(String notificationChannel, UsernameRecoverDTO usernameRecoverDTO) {
 
-        UsernameRecoveryExternalNotifyResponse usernameRecoveryExternalNotifyResponse =
-                new UsernameRecoveryExternalNotifyResponse();
-        usernameRecoveryExternalNotifyResponse.setCode(usernameRecoverDTO.getCode());
-        usernameRecoveryExternalNotifyResponse.setMessage(usernameRecoverDTO.getMessage());
-        usernameRecoveryExternalNotifyResponse.setNotificationChannel(usernameRecoverDTO.getNotificationChannel());
+        UsernameRecoveryNotifyResponse usernameRecoveryNotifyResponse =
+                new UsernameRecoveryNotifyResponse();
+        usernameRecoveryNotifyResponse.setCode(usernameRecoverDTO.getCode());
+        usernameRecoveryNotifyResponse.setMessage(usernameRecoverDTO.getMessage());
+        usernameRecoveryNotifyResponse.setNotificationChannel(usernameRecoverDTO.getNotificationChannel());
         if (NotificationChannels.EXTERNAL_CHANNEL.getChannelType().equals(notificationChannel)) {
-            usernameRecoveryExternalNotifyResponse.setUsername(usernameRecoverDTO.getUsername());
-            return Response.ok().entity(usernameRecoveryExternalNotifyResponse).build();
+            usernameRecoveryNotifyResponse.setUsername(usernameRecoverDTO.getUsername());
+            return Response.ok().entity(usernameRecoveryNotifyResponse).build();
         } else {
-            return Response.accepted().entity(usernameRecoveryExternalNotifyResponse).build();
+            return Response.accepted().entity(usernameRecoveryNotifyResponse).build();
         }
     }
 

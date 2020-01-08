@@ -36,6 +36,7 @@ public class RetryErrorResponse  {
     private String code;
     private String message;
     private String description;
+    private String traceId;
     private String resetCode;
     private List<APICall> links = null;
 
@@ -95,6 +96,25 @@ public class RetryErrorResponse  {
     }
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+    * Some Correlation for Error Instance
+    **/
+    public RetryErrorResponse traceId(String traceId) {
+
+        this.traceId = traceId;
+        return this;
+    }
+    
+    @ApiModelProperty(example = "2345dfgh678h789bhjk", value = "Some Correlation for Error Instance")
+    @JsonProperty("traceId")
+    @Valid
+    public String getTraceId() {
+        return traceId;
+    }
+    public void setTraceId(String traceId) {
+        this.traceId = traceId;
     }
 
     /**
@@ -158,13 +178,14 @@ public class RetryErrorResponse  {
         return Objects.equals(this.code, retryErrorResponse.code) &&
             Objects.equals(this.message, retryErrorResponse.message) &&
             Objects.equals(this.description, retryErrorResponse.description) &&
+            Objects.equals(this.traceId, retryErrorResponse.traceId) &&
             Objects.equals(this.resetCode, retryErrorResponse.resetCode) &&
             Objects.equals(this.links, retryErrorResponse.links);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, message, description, resetCode, links);
+        return Objects.hash(code, message, description, traceId, resetCode, links);
     }
 
     @Override
@@ -176,6 +197,7 @@ public class RetryErrorResponse  {
         sb.append("    code: ").append(toIndentedString(code)).append("\n");
         sb.append("    message: ").append(toIndentedString(message)).append("\n");
         sb.append("    description: ").append(toIndentedString(description)).append("\n");
+        sb.append("    traceId: ").append(toIndentedString(traceId)).append("\n");
         sb.append("    resetCode: ").append(toIndentedString(resetCode)).append("\n");
         sb.append("    links: ").append(toIndentedString(links)).append("\n");
         sb.append("}");

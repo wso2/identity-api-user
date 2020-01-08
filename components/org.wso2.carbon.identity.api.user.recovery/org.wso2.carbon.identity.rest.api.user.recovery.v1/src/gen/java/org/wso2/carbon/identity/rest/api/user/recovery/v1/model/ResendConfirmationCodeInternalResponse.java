@@ -20,38 +20,41 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.ArrayList;
+import java.util.List;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.APICall;
 import javax.validation.constraints.*;
 
 /**
- * API response for successful username recovery
+ * Object encapsulate the details regarding resend confirmation code
  **/
 
 import io.swagger.annotations.*;
 import java.util.Objects;
 import javax.validation.Valid;
 import javax.xml.bind.annotation.*;
-@ApiModel(description = "API response for successful username recovery")
-public class UsernameRecoveryExternalNotifyResponse  {
+@ApiModel(description = "Object encapsulate the details regarding resend confirmation code")
+public class ResendConfirmationCodeInternalResponse  {
   
     private String code;
     private String message;
     private String notificationChannel;
-    private String username;
+    private String resendCode;
+    private List<APICall> links = null;
+
 
     /**
     * Success status code
     **/
-    public UsernameRecoveryExternalNotifyResponse code(String code) {
+    public ResendConfirmationCodeInternalResponse code(String code) {
 
         this.code = code;
         return this;
     }
     
-    @ApiModelProperty(example = "UNR-02001", required = true, value = "Success status code")
+    @ApiModelProperty(example = "PWR-02002", value = "Success status code")
     @JsonProperty("code")
     @Valid
-    @NotNull(message = "Property code cannot be null.")
-
     public String getCode() {
         return code;
     }
@@ -62,17 +65,15 @@ public class UsernameRecoveryExternalNotifyResponse  {
     /**
     * Success status message
     **/
-    public UsernameRecoveryExternalNotifyResponse message(String message) {
+    public ResendConfirmationCodeInternalResponse message(String message) {
 
         this.message = message;
         return this;
     }
     
-    @ApiModelProperty(example = "successful_request", required = true, value = "Success status message")
+    @ApiModelProperty(example = "successful_request", value = "Success status message")
     @JsonProperty("message")
     @Valid
-    @NotNull(message = "Property message cannot be null.")
-
     public String getMessage() {
         return message;
     }
@@ -81,19 +82,17 @@ public class UsernameRecoveryExternalNotifyResponse  {
     }
 
     /**
-    * Channel which the recovery information is sent to the user
+    * Channel that is used to send recovery information
     **/
-    public UsernameRecoveryExternalNotifyResponse notificationChannel(String notificationChannel) {
+    public ResendConfirmationCodeInternalResponse notificationChannel(String notificationChannel) {
 
         this.notificationChannel = notificationChannel;
         return this;
     }
     
-    @ApiModelProperty(example = "EXTERNAL", required = true, value = "Channel which the recovery information is sent to the user")
+    @ApiModelProperty(example = "EMAIL", value = "Channel that is used to send recovery information")
     @JsonProperty("notificationChannel")
     @Valid
-    @NotNull(message = "Property notificationChannel cannot be null.")
-
     public String getNotificationChannel() {
         return notificationChannel;
     }
@@ -102,27 +101,52 @@ public class UsernameRecoveryExternalNotifyResponse  {
     }
 
     /**
-    * - Username of the user - Username will be returned _ONLY IF_ the notification channel is &#x60;EXTERNAL&#x60; 
+    * Resend code to resend the confirmation code
     **/
-    public UsernameRecoveryExternalNotifyResponse username(String username) {
+    public ResendConfirmationCodeInternalResponse resendCode(String resendCode) {
 
-        this.username = username;
+        this.resendCode = resendCode;
         return this;
     }
     
-    @ApiModelProperty(example = "user1", required = true, value = "- Username of the user - Username will be returned _ONLY IF_ the notification channel is `EXTERNAL` ")
-    @JsonProperty("username")
+    @ApiModelProperty(example = "1234-12345-234-123456", value = "Resend code to resend the confirmation code")
+    @JsonProperty("resendCode")
     @Valid
-    @NotNull(message = "Property username cannot be null.")
-
-    public String getUsername() {
-        return username;
+    public String getResendCode() {
+        return resendCode;
     }
-    public void setUsername(String username) {
-        this.username = username;
+    public void setResendCode(String resendCode) {
+        this.resendCode = resendCode;
     }
 
+    /**
+    * Contains available api calls
+    **/
+    public ResendConfirmationCodeInternalResponse links(List<APICall> links) {
 
+        this.links = links;
+        return this;
+    }
+    
+    @ApiModelProperty(value = "Contains available api calls")
+    @JsonProperty("links")
+    @Valid
+    public List<APICall> getLinks() {
+        return links;
+    }
+    public void setLinks(List<APICall> links) {
+        this.links = links;
+    }
+
+    public ResendConfirmationCodeInternalResponse addLinksItem(APICall linksItem) {
+        if (this.links == null) {
+            this.links = new ArrayList<>();
+        }
+        this.links.add(linksItem);
+        return this;
+    }
+
+    
 
     @Override
     public boolean equals(java.lang.Object o) {
@@ -133,28 +157,30 @@ public class UsernameRecoveryExternalNotifyResponse  {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        UsernameRecoveryExternalNotifyResponse usernameRecoveryExternalNotifyResponse = (UsernameRecoveryExternalNotifyResponse) o;
-        return Objects.equals(this.code, usernameRecoveryExternalNotifyResponse.code) &&
-            Objects.equals(this.message, usernameRecoveryExternalNotifyResponse.message) &&
-            Objects.equals(this.notificationChannel, usernameRecoveryExternalNotifyResponse.notificationChannel) &&
-            Objects.equals(this.username, usernameRecoveryExternalNotifyResponse.username);
+        ResendConfirmationCodeInternalResponse resendConfirmationCodeInternalResponse = (ResendConfirmationCodeInternalResponse) o;
+        return Objects.equals(this.code, resendConfirmationCodeInternalResponse.code) &&
+            Objects.equals(this.message, resendConfirmationCodeInternalResponse.message) &&
+            Objects.equals(this.notificationChannel, resendConfirmationCodeInternalResponse.notificationChannel) &&
+            Objects.equals(this.resendCode, resendConfirmationCodeInternalResponse.resendCode) &&
+            Objects.equals(this.links, resendConfirmationCodeInternalResponse.links);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, message, notificationChannel, username);
+        return Objects.hash(code, message, notificationChannel, resendCode, links);
     }
 
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("class UsernameRecoveryExternalNotifyResponse {\n");
+        sb.append("class ResendConfirmationCodeInternalResponse {\n");
         
         sb.append("    code: ").append(toIndentedString(code)).append("\n");
         sb.append("    message: ").append(toIndentedString(message)).append("\n");
         sb.append("    notificationChannel: ").append(toIndentedString(notificationChannel)).append("\n");
-        sb.append("    username: ").append(toIndentedString(username)).append("\n");
+        sb.append("    resendCode: ").append(toIndentedString(resendCode)).append("\n");
+        sb.append("    links: ").append(toIndentedString(links)).append("\n");
         sb.append("}");
         return sb.toString();
     }

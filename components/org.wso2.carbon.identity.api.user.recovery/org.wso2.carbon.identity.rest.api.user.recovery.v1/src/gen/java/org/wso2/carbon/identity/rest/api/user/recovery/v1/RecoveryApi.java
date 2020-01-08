@@ -29,13 +29,13 @@ import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.PasswordRecovery
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.PasswordRecoveryInternalNotifyResponse;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.PasswordResetResponse;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RecoveryRequest;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResendConfirmationCodeResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResendConfirmationCodeExternalResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResendConfirmationCodeInternalResponse;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResendConfirmationRequest;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResetCodeResponse;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResetRequest;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RetryErrorResponse;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.UsernameRecoveryExternalNotifyResponse;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.UsernameRecoveryInternalNotifyResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.UsernameRecoveryNotifyResponse;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.RecoveryApiService;
 
 import javax.validation.Valid;
@@ -133,10 +133,10 @@ public class RecoveryApi  {
     @Path("/username/recover")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @ApiOperation(value = "Get Recovery Information", notes = "- This API is used to confirm username recovery and send username recovery information to the user who matches the recovery code via the channel specified by the channel Id.  - __NOTE__: If the notification channel is __EXTERNAL__, the API will return the username of the user. ", response = UsernameRecoveryExternalNotifyResponse.class, tags={ "Username Recovery", })
+    @ApiOperation(value = "Get Recovery Information", notes = "- This API is used to confirm username recovery and send username recovery information to the user who matches the recovery code via the channel specified by the channel Id.  - __NOTE__: If the notification channel is __EXTERNAL__, the API will return the username of the user. ", response = UsernameRecoveryNotifyResponse.class, tags={ "Username Recovery", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Username is successfully recovered and the __notification channel__ is `EXTERNAL`.", response = UsernameRecoveryExternalNotifyResponse.class),
-        @ApiResponse(code = 202, message = "Username is successfully recovered.", response = UsernameRecoveryInternalNotifyResponse.class),
+        @ApiResponse(code = 200, message = "Username is successfully recovered and the __notification channel__ is `EXTERNAL`.", response = UsernameRecoveryNotifyResponse.class),
+        @ApiResponse(code = 202, message = "Username is successfully recovered.", response = UsernameRecoveryNotifyResponse.class),
         @ApiResponse(code = 400, message = "Bad Request. Request cannot be processed by the server.", response = ErrorResponse.class),
         @ApiResponse(code = 404, message = "Recovery code is not found.", response = ErrorResponse.class),
         @ApiResponse(code = 406, message = "- Recovery code given in the request is not valid or expired. - Channel id is not valid ", response = ErrorResponse.class),
@@ -152,9 +152,10 @@ public class RecoveryApi  {
     @Path("/password/resend")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @ApiOperation(value = "Resend password recovery confirmation details ", notes = "- This API is used to resend a confirmation code to the user via a user preferred channel defined at password recovery. - NOTE: The API cannot be used when the notification channel is external. - The API will return the next API calls. ", response = ResendConfirmationCodeResponse.class, tags={ "Password Recovery", })
+    @ApiOperation(value = "Resend password recovery confirmation details ", notes = "- This API is used to resend a confirmation code to the user via a user preferred channel defined at password recovery. - NOTE: The API cannot be used when the notification channel is external. - The API will return the next API calls. ", response = ResendConfirmationCodeExternalResponse.class, tags={ "Password Recovery", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 202, message = "- API will send a `confirmationCode` to the channel specified by the user. - Use the confirmation code with __password recpvery confirm API__ to confirm the password recovery. ", response = ResendConfirmationCodeResponse.class),
+        @ApiResponse(code = 200, message = "- API will return a new `confirmationCode`. - Use the confirmation code with __password recovery confirm API__ to confirm the password recovery. ", response = ResendConfirmationCodeExternalResponse.class),
+        @ApiResponse(code = 202, message = "- API will send a `confirmationCode` to the channel specified by the user. - Use the confirmation code with __password recovery confirm API__ to confirm the password recovery. ", response = ResendConfirmationCodeInternalResponse.class),
         @ApiResponse(code = 400, message = "Bad Request. Request cannot be processed by the server.", response = ErrorResponse.class),
         @ApiResponse(code = 404, message = "Resend code is not found.", response = ErrorResponse.class),
         @ApiResponse(code = 406, message = "Resend code given in the request is not valid or expired.", response = ErrorResponse.class),

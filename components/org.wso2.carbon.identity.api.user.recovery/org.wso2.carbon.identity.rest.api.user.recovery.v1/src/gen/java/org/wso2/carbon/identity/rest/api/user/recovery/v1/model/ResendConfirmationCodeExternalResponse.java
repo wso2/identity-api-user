@@ -34,11 +34,12 @@ import java.util.Objects;
 import javax.validation.Valid;
 import javax.xml.bind.annotation.*;
 @ApiModel(description = "Object encapsulate the details regarding resend confirmation code")
-public class ResendConfirmationCodeResponse  {
+public class ResendConfirmationCodeExternalResponse  {
   
     private String code;
     private String message;
     private String notificationChannel;
+    private String confirmationCode;
     private String resendCode;
     private List<APICall> links = null;
 
@@ -46,7 +47,7 @@ public class ResendConfirmationCodeResponse  {
     /**
     * Success status code
     **/
-    public ResendConfirmationCodeResponse code(String code) {
+    public ResendConfirmationCodeExternalResponse code(String code) {
 
         this.code = code;
         return this;
@@ -65,7 +66,7 @@ public class ResendConfirmationCodeResponse  {
     /**
     * Success status message
     **/
-    public ResendConfirmationCodeResponse message(String message) {
+    public ResendConfirmationCodeExternalResponse message(String message) {
 
         this.message = message;
         return this;
@@ -84,7 +85,7 @@ public class ResendConfirmationCodeResponse  {
     /**
     * Channel that is used to send recovery information
     **/
-    public ResendConfirmationCodeResponse notificationChannel(String notificationChannel) {
+    public ResendConfirmationCodeExternalResponse notificationChannel(String notificationChannel) {
 
         this.notificationChannel = notificationChannel;
         return this;
@@ -101,9 +102,28 @@ public class ResendConfirmationCodeResponse  {
     }
 
     /**
+    * Confirmation code to confirm the password recovery
+    **/
+    public ResendConfirmationCodeExternalResponse confirmationCode(String confirmationCode) {
+
+        this.confirmationCode = confirmationCode;
+        return this;
+    }
+    
+    @ApiModelProperty(example = "1234-12345-234-123456", value = "Confirmation code to confirm the password recovery")
+    @JsonProperty("confirmationCode")
+    @Valid
+    public String getConfirmationCode() {
+        return confirmationCode;
+    }
+    public void setConfirmationCode(String confirmationCode) {
+        this.confirmationCode = confirmationCode;
+    }
+
+    /**
     * Resend code to resend the confirmation code
     **/
-    public ResendConfirmationCodeResponse resendCode(String resendCode) {
+    public ResendConfirmationCodeExternalResponse resendCode(String resendCode) {
 
         this.resendCode = resendCode;
         return this;
@@ -122,7 +142,7 @@ public class ResendConfirmationCodeResponse  {
     /**
     * Contains available api calls
     **/
-    public ResendConfirmationCodeResponse links(List<APICall> links) {
+    public ResendConfirmationCodeExternalResponse links(List<APICall> links) {
 
         this.links = links;
         return this;
@@ -138,7 +158,7 @@ public class ResendConfirmationCodeResponse  {
         this.links = links;
     }
 
-    public ResendConfirmationCodeResponse addLinksItem(APICall linksItem) {
+    public ResendConfirmationCodeExternalResponse addLinksItem(APICall linksItem) {
         if (this.links == null) {
             this.links = new ArrayList<>();
         }
@@ -157,28 +177,30 @@ public class ResendConfirmationCodeResponse  {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ResendConfirmationCodeResponse resendConfirmationCodeResponse = (ResendConfirmationCodeResponse) o;
-        return Objects.equals(this.code, resendConfirmationCodeResponse.code) &&
-            Objects.equals(this.message, resendConfirmationCodeResponse.message) &&
-            Objects.equals(this.notificationChannel, resendConfirmationCodeResponse.notificationChannel) &&
-            Objects.equals(this.resendCode, resendConfirmationCodeResponse.resendCode) &&
-            Objects.equals(this.links, resendConfirmationCodeResponse.links);
+        ResendConfirmationCodeExternalResponse resendConfirmationCodeExternalResponse = (ResendConfirmationCodeExternalResponse) o;
+        return Objects.equals(this.code, resendConfirmationCodeExternalResponse.code) &&
+            Objects.equals(this.message, resendConfirmationCodeExternalResponse.message) &&
+            Objects.equals(this.notificationChannel, resendConfirmationCodeExternalResponse.notificationChannel) &&
+            Objects.equals(this.confirmationCode, resendConfirmationCodeExternalResponse.confirmationCode) &&
+            Objects.equals(this.resendCode, resendConfirmationCodeExternalResponse.resendCode) &&
+            Objects.equals(this.links, resendConfirmationCodeExternalResponse.links);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, message, notificationChannel, resendCode, links);
+        return Objects.hash(code, message, notificationChannel, confirmationCode, resendCode, links);
     }
 
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("class ResendConfirmationCodeResponse {\n");
+        sb.append("class ResendConfirmationCodeExternalResponse {\n");
         
         sb.append("    code: ").append(toIndentedString(code)).append("\n");
         sb.append("    message: ").append(toIndentedString(message)).append("\n");
         sb.append("    notificationChannel: ").append(toIndentedString(notificationChannel)).append("\n");
+        sb.append("    confirmationCode: ").append(toIndentedString(confirmationCode)).append("\n");
         sb.append("    resendCode: ").append(toIndentedString(resendCode)).append("\n");
         sb.append("    links: ").append(toIndentedString(links)).append("\n");
         sb.append("}");

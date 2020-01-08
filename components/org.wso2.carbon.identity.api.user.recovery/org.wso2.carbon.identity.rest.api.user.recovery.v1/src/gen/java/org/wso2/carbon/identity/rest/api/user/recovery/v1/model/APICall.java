@@ -65,7 +65,7 @@ public class APICall  {
         return this;
     }
     
-    @ApiModelProperty(example = "/api/identity/recovery/v1/recovery", value = "Next API url")
+    @ApiModelProperty(example = "/api/users/recovery/v1/", value = "Next API url")
     @JsonProperty("href")
     @Valid
     public String getHref() {

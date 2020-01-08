@@ -42,7 +42,8 @@ import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.PasswordResetRes
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RecoveryChannel;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RecoveryChannelInformation;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RecoveryRequest;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResendConfirmationCodeResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResendConfirmationCodeExternalResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResendConfirmationCodeInternalResponse;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResendConfirmationRequest;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResetCodeResponse;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResetRequest;
@@ -122,7 +123,7 @@ public class PasswordRecoveryService {
                             .format("No password recovery data object for recovery code : %s", recoveryId);
                     log.debug(message);
                 }
-                return Response.status(Response.Status.OK).build();
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
             return buildPasswordRecoveryResponse(tenantDomain, passwordRecoverDTO.getNotificationChannel(),
                     passwordRecoverDTO);
@@ -223,10 +224,9 @@ public class PasswordRecoveryService {
                 if (log.isDebugEnabled()) {
                     log.debug("No ResendConfirmationDTO data for resend code :" + resendCode);
                 }
-                return Response.status(Response.Status.OK).build();
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
-            return Response.ok().entity(buildResendConfirmationCodeResponse(tenantDomain, resendConfirmationDTO))
-                    .build();
+            return buildResendConfirmationResponse(tenantDomain, resendConfirmationDTO);
         } catch (IdentityRecoveryClientException e) {
             throw RecoveryUtil.handleClientExceptions(PasswordRecoveryService.class.getName(), tenantDomain,
                     IdentityRecoveryConstants.PASSWORD_RECOVERY_SCENARIO, Util.getCorrelation(), e);
@@ -242,17 +242,16 @@ public class PasswordRecoveryService {
     }
 
     /**
-     * Build ResendConfirmationCodeResponse for a successful resend operation.
+     * Build Resend confirmation code response according to the notification channel.
      *
-     * @param tenantDomain          Tenant domain
+     * @param tenantDomain          Tenant domain in the request.
      * @param resendConfirmationDTO ResendConfirmationDTO
-     * @return ResendConfirmationCodeResponse
+     * @return Response
      */
-    private ResendConfirmationCodeResponse buildResendConfirmationCodeResponse(String tenantDomain,
-                                                                         ResendConfirmationDTO resendConfirmationDTO) {
+    private Response buildResendConfirmationResponse(String tenantDomain,
+                                                     ResendConfirmationDTO resendConfirmationDTO) {
 
         ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
-
         // Add confirm API call information.
         apiCallsArrayList.add(RecoveryUtil.buildApiCall(Constants.APICall.CONFIRM_PASSWORD_RECOVERY_API.getType(),
                 Constants.RelationStates.NEXT_REL, RecoveryUtil
@@ -263,14 +262,30 @@ public class PasswordRecoveryService {
                 Constants.RelationStates.RESEND_REL, RecoveryUtil
                         .buildUri(tenantDomain, Constants.APICall.RESEND_CONFIRMATION_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
-
-        ResendConfirmationCodeResponse resendConfirmationCodeResponseDTO = new ResendConfirmationCodeResponse();
-        resendConfirmationCodeResponseDTO.setCode(resendConfirmationDTO.getSuccessCode());
-        resendConfirmationCodeResponseDTO.setMessage(resendConfirmationDTO.getSuccessMessage());
-        resendConfirmationCodeResponseDTO.setNotificationChannel(resendConfirmationDTO.getNotificationChannel());
-        resendConfirmationCodeResponseDTO.setResendCode(resendConfirmationDTO.getResendCode());
-        resendConfirmationCodeResponseDTO.setLinks(apiCallsArrayList);
-        return resendConfirmationCodeResponseDTO;
+        if (NotificationChannels.EXTERNAL_CHANNEL.getChannelType()
+                .equals(resendConfirmationDTO.getNotificationChannel())) {
+            ResendConfirmationCodeExternalResponse resendConfirmationCodeExternalResponse =
+                    new ResendConfirmationCodeExternalResponse();
+            resendConfirmationCodeExternalResponse.setCode(resendConfirmationDTO.getSuccessCode());
+            resendConfirmationCodeExternalResponse.setMessage(resendConfirmationDTO.getSuccessMessage());
+            resendConfirmationCodeExternalResponse
+                    .setNotificationChannel(resendConfirmationDTO.getNotificationChannel());
+            resendConfirmationCodeExternalResponse.setResendCode(resendConfirmationDTO.getResendCode());
+            resendConfirmationCodeExternalResponse
+                    .setConfirmationCode(resendConfirmationDTO.getExternalConfirmationCode());
+            resendConfirmationCodeExternalResponse.setLinks(apiCallsArrayList);
+            return Response.ok().entity(resendConfirmationCodeExternalResponse).build();
+        } else {
+            ResendConfirmationCodeInternalResponse resendConfirmationCodeInternalResponse =
+                    new ResendConfirmationCodeInternalResponse();
+            resendConfirmationCodeInternalResponse.setCode(resendConfirmationDTO.getSuccessCode());
+            resendConfirmationCodeInternalResponse.setMessage(resendConfirmationDTO.getSuccessMessage());
+            resendConfirmationCodeInternalResponse
+                    .setNotificationChannel(resendConfirmationDTO.getNotificationChannel());
+            resendConfirmationCodeInternalResponse.setResendCode(resendConfirmationDTO.getResendCode());
+            resendConfirmationCodeInternalResponse.setLinks(apiCallsArrayList);
+            return Response.accepted().entity(resendConfirmationCodeInternalResponse).build();
+        }
     }
 
     /**
@@ -327,17 +342,15 @@ public class PasswordRecoveryService {
                 Constants.RelationStates.NEXT_REL, RecoveryUtil
                         .buildUri(tenantDomain, Constants.APICall.CONFIRM_PASSWORD_RECOVERY_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
-
+        // Add resend confirmation code API call information.
+        apiCallsArrayList.add(RecoveryUtil.buildApiCall(Constants.APICall.RESEND_CONFIRMATION_API.getType(),
+                Constants.RelationStates.RESEND_REL, RecoveryUtil
+                        .buildUri(tenantDomain, Constants.APICall.RESEND_CONFIRMATION_API.getApiUrl(),
+                                Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
         if (NotificationChannels.EXTERNAL_CHANNEL.getChannelType().equals(notificationChannel)) {
             return Response.ok()
                     .entity(buildPasswordRecoveryExternalResponse(passwordRecoverDTO, apiCallsArrayList)).build();
         } else {
-
-            // Add resend confirmation code API call information.
-            apiCallsArrayList.add(RecoveryUtil.buildApiCall(Constants.APICall.RESEND_CONFIRMATION_API.getType(),
-                    Constants.RelationStates.RESEND_REL, RecoveryUtil
-                            .buildUri(tenantDomain, Constants.APICall.RESEND_CONFIRMATION_API.getApiUrl(),
-                                    Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
             return Response.accepted()
                     .entity(buildPasswordRecoveryInternalResponse(passwordRecoverDTO, apiCallsArrayList)).build();
         }
@@ -359,6 +372,7 @@ public class PasswordRecoveryService {
         passwordRecoveryResponse.setMessage(passwordRecoverDTO.getMessage());
         passwordRecoveryResponse.setNotificationChannel(passwordRecoverDTO.getNotificationChannel());
         passwordRecoveryResponse.setConfirmationCode(passwordRecoverDTO.getConfirmationCode());
+        passwordRecoveryResponse.setResendCode(passwordRecoverDTO.getResendCode());
         passwordRecoveryResponse.setLinks(apiCallsArrayList);
         return passwordRecoveryResponse;
     }

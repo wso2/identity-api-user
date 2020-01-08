@@ -37,6 +37,7 @@ public class PasswordRecoveryExternalNotifyResponse  {
     private String message;
     private String notificationChannel;
     private String confirmationCode;
+    private String resendCode;
     private List<APICall> links = null;
 
 
@@ -49,11 +50,9 @@ public class PasswordRecoveryExternalNotifyResponse  {
         return this;
     }
     
-    @ApiModelProperty(example = "PWR-02002", required = true, value = "Success status code")
+    @ApiModelProperty(example = "PWR-02002", value = "Success status code")
     @JsonProperty("code")
     @Valid
-    @NotNull(message = "Property code cannot be null.")
-
     public String getCode() {
         return code;
     }
@@ -70,11 +69,9 @@ public class PasswordRecoveryExternalNotifyResponse  {
         return this;
     }
     
-    @ApiModelProperty(example = "successful_request", required = true, value = "Success status message")
+    @ApiModelProperty(example = "successful_request", value = "Success status message")
     @JsonProperty("message")
     @Valid
-    @NotNull(message = "Property message cannot be null.")
-
     public String getMessage() {
         return message;
     }
@@ -91,11 +88,9 @@ public class PasswordRecoveryExternalNotifyResponse  {
         return this;
     }
     
-    @ApiModelProperty(example = "EXTERNAL", required = true, value = "Channel that is used to send recovery information")
+    @ApiModelProperty(example = "EXTERNAL", value = "Channel that is used to send recovery information")
     @JsonProperty("notificationChannel")
     @Valid
-    @NotNull(message = "Property notificationChannel cannot be null.")
-
     public String getNotificationChannel() {
         return notificationChannel;
     }
@@ -112,16 +107,33 @@ public class PasswordRecoveryExternalNotifyResponse  {
         return this;
     }
     
-    @ApiModelProperty(example = "12345-45678-6789098-8765", required = true, value = "- Confirmation code for password recovery when the notifications are externally managed. - The confirmation code will be returned only if the notification channel is _EXTERNAL_. Use this code with password confirm API to get a password reset code. ")
+    @ApiModelProperty(example = "12345-45678-6789098-8765", value = "- Confirmation code for password recovery when the notifications are externally managed. - The confirmation code will be returned only if the notification channel is _EXTERNAL_. Use this code with password confirm API to get a password reset code. ")
     @JsonProperty("confirmationCode")
     @Valid
-    @NotNull(message = "Property confirmationCode cannot be null.")
-
     public String getConfirmationCode() {
         return confirmationCode;
     }
     public void setConfirmationCode(String confirmationCode) {
         this.confirmationCode = confirmationCode;
+    }
+
+    /**
+    * Code to get a new confirmation code.
+    **/
+    public PasswordRecoveryExternalNotifyResponse resendCode(String resendCode) {
+
+        this.resendCode = resendCode;
+        return this;
+    }
+    
+    @ApiModelProperty(example = "1234-123456-12345-12345", value = "Code to get a new confirmation code.")
+    @JsonProperty("resendCode")
+    @Valid
+    public String getResendCode() {
+        return resendCode;
+    }
+    public void setResendCode(String resendCode) {
+        this.resendCode = resendCode;
     }
 
     /**
@@ -167,12 +179,13 @@ public class PasswordRecoveryExternalNotifyResponse  {
             Objects.equals(this.message, passwordRecoveryExternalNotifyResponse.message) &&
             Objects.equals(this.notificationChannel, passwordRecoveryExternalNotifyResponse.notificationChannel) &&
             Objects.equals(this.confirmationCode, passwordRecoveryExternalNotifyResponse.confirmationCode) &&
+            Objects.equals(this.resendCode, passwordRecoveryExternalNotifyResponse.resendCode) &&
             Objects.equals(this.links, passwordRecoveryExternalNotifyResponse.links);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, message, notificationChannel, confirmationCode, links);
+        return Objects.hash(code, message, notificationChannel, confirmationCode, resendCode, links);
     }
 
     @Override
@@ -185,6 +198,7 @@ public class PasswordRecoveryExternalNotifyResponse  {
         sb.append("    message: ").append(toIndentedString(message)).append("\n");
         sb.append("    notificationChannel: ").append(toIndentedString(notificationChannel)).append("\n");
         sb.append("    confirmationCode: ").append(toIndentedString(confirmationCode)).append("\n");
+        sb.append("    resendCode: ").append(toIndentedString(resendCode)).append("\n");
         sb.append("    links: ").append(toIndentedString(links)).append("\n");
         sb.append("}");
         return sb.toString();

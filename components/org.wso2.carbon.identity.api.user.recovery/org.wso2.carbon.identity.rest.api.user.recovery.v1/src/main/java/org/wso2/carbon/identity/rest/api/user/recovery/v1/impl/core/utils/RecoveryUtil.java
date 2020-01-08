@@ -191,7 +191,7 @@ public class RecoveryUtil {
                             correlationId);
                 case RETRY_ERROR_CATEGORY:
                     return buildRetryPasswordResetObject(className, tenantDomain, exception.getMessage(), errorCode,
-                            code);
+                            code, correlationId);
                 default:
                     return buildConflictRequestResponseObject(className, exception.getMessage(), errorCode,
                             correlationId);
@@ -298,16 +298,17 @@ public class RecoveryUtil {
     /**
      * Returns a new PreconditionFailedException.
      *
-     * @param className    Class name
-     * @param tenantDomain Tenant domain
-     * @param description  Description of the exception
-     * @param code         Error code
-     * @param resetCode    Reset code given to the user by confirmation API
+     * @param className     Class name
+     * @param tenantDomain  Tenant domain
+     * @param description   Description of the exception
+     * @param code          Error code
+     * @param resetCode     Reset code given to the user by confirmation API
+     * @param correlationId Correlation Id
      * @return A new PreconditionFailedException with the specified details as a response
      */
     private static PreconditionFailedException buildRetryPasswordResetObject(String className, String tenantDomain,
                                                                              String description, String code,
-                                                                             String resetCode) {
+                                                                             String resetCode, String correlationId) {
 
         // Build next API calls.
         ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
@@ -316,7 +317,7 @@ public class RecoveryUtil {
                         buildUri(tenantDomain, Constants.APICall.RESET_PASSWORD_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
         RetryErrorResponse retryErrorResponse = buildRetryErrorResponse(
-                Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, code, description, resetCode,
+                Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, code, description, resetCode, correlationId,
                 apiCallsArrayList);
         if (StringUtils.isNotBlank(className)) {
             description = String.format("%s : %s - %s", LOG_MESSAGE_PREFIX, className, description);
@@ -328,15 +329,16 @@ public class RecoveryUtil {
     /**
      * Build the RetryErrorResponse for not valid password scenario.
      *
-     * @param message             Error message
-     * @param description         Error description
-     * @param code                Error code
-     * @param resetCode           Password reset code
+     * @param message           Error message
+     * @param description       Error description
+     * @param code              Error code
+     * @param resetCode         Password reset code
+     * @param correlationId     Trace Id
      * @param apiCallsArrayList Available APIs
      * @return RetryErrorResponse
      */
     private static RetryErrorResponse buildRetryErrorResponse(String message, String description, String code,
-                                                              String resetCode,
+                                                              String resetCode, String correlationId,
                                                               ArrayList<APICall> apiCallsArrayList) {
 
         RetryErrorResponse retryErrorResponse = new RetryErrorResponse();
@@ -344,6 +346,7 @@ public class RecoveryUtil {
         retryErrorResponse.setMessage(message);
         retryErrorResponse.setDescription(description);
         retryErrorResponse.setResetCode(resetCode);
+        retryErrorResponse.setTraceId(correlationId);
         retryErrorResponse.setLinks(apiCallsArrayList);
         return retryErrorResponse;
     }

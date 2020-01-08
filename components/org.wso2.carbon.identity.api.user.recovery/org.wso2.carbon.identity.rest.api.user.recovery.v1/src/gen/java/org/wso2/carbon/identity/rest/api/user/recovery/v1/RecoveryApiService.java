@@ -29,13 +29,13 @@ import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.PasswordRecovery
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.PasswordRecoveryInternalNotifyResponse;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.PasswordResetResponse;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RecoveryRequest;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResendConfirmationCodeResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResendConfirmationCodeExternalResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResendConfirmationCodeInternalResponse;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResendConfirmationRequest;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResetCodeResponse;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResetRequest;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RetryErrorResponse;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.UsernameRecoveryExternalNotifyResponse;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.UsernameRecoveryInternalNotifyResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.UsernameRecoveryNotifyResponse;
 import javax.ws.rs.core.Response;
 
 

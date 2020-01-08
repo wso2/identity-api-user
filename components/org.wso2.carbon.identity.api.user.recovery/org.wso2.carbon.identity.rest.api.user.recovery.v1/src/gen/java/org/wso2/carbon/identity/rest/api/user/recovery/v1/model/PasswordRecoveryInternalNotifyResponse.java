@@ -49,11 +49,9 @@ public class PasswordRecoveryInternalNotifyResponse  {
         return this;
     }
     
-    @ApiModelProperty(example = "PWR-02002", required = true, value = "Success status code")
+    @ApiModelProperty(example = "PWR-02002", value = "Success status code")
     @JsonProperty("code")
     @Valid
-    @NotNull(message = "Property code cannot be null.")
-
     public String getCode() {
         return code;
     }
@@ -70,11 +68,9 @@ public class PasswordRecoveryInternalNotifyResponse  {
         return this;
     }
     
-    @ApiModelProperty(example = "successful_request", required = true, value = "Success status message")
+    @ApiModelProperty(example = "successful_request", value = "Success status message")
     @JsonProperty("message")
     @Valid
-    @NotNull(message = "Property message cannot be null.")
-
     public String getMessage() {
         return message;
     }
@@ -91,11 +87,9 @@ public class PasswordRecoveryInternalNotifyResponse  {
         return this;
     }
     
-    @ApiModelProperty(example = "EMAIL", required = true, value = "Channel that is used to send recovery information")
+    @ApiModelProperty(example = "EMAIL", value = "Channel that is used to send recovery information")
     @JsonProperty("notificationChannel")
     @Valid
-    @NotNull(message = "Property notificationChannel cannot be null.")
-
     public String getNotificationChannel() {
         return notificationChannel;
     }

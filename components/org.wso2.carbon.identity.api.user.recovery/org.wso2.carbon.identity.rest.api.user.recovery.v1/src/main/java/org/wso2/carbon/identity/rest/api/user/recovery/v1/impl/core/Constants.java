@@ -23,8 +23,7 @@ import static org.wso2.carbon.identity.api.user.common.Constants.USER_API_PATH_C
 public class Constants {
 
     public static final String SERVER_ERROR = "Error occurred in the server while performing the task.";
-    public static final String APPLICATION_JSON = "application/json";
-    public static final String DEFAULT_RESPONSE_CONTENT_TYPE = APPLICATION_JSON;
+    public static final String DEFAULT_RESPONSE_CONTENT_TYPE = "application/json";
     public static final String HEADER_CONTENT_TYPE = "Content-Type";
 
     // Default error messages.
@@ -50,7 +49,6 @@ public class Constants {
     public static class RelationStates {
 
         public static final String NEXT_REL = "next";
-        public static final String RETRY_REL = "retry";
         public static final String RESEND_REL = "resend";
     }
 

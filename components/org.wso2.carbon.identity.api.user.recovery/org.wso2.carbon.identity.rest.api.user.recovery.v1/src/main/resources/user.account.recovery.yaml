@@ -55,7 +55,7 @@ paths:
                             preferred: false
                       links:
                         - rel: next
-                          href: /api/identity/recovery/v1/recovery
+                          href: /api/users/v1/recovery/username/recover
                           type: POST
         '400':
           description: Bad Request. The request cannot be processed by the server.
@@ -152,7 +152,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UsernameRecoveryExternalNotifyResponse'
+                $ref: '#/components/schemas/UsernameRecoveryNotifyResponse'
               examples:
                 response:
                   value:
@@ -165,7 +165,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UsernameRecoveryInternalNotifyResponse'
+                $ref: '#/components/schemas/UsernameRecoveryNotifyResponse'
               examples:
                 response:
                   value:
@@ -293,7 +293,7 @@ paths:
                             preferred: true
                       links:
                         - rel: next
-                          href: /api/identity/recovery/v1/recovery
+                          href: /api/users/v1/recovery/password/recovery
                           type: POST
                     - mode: recoverWithChallengeQuestions
                       links:
@@ -401,9 +401,13 @@ paths:
                     message: Password recovery information sent externally
                     notificationChannel: EXTERNAL
                     confirmationCode: 12345-45678-6789098-8765
+                    resendCode: 12345-45678-6789098-8765
                     links:
                       - rel: next
-                        href: api/identity/recovery/v1/password/confirm
+                        href: api/users/v1/recovery/password/confirm
+                        type: POST
+                      - rel: resend
+                        href: api/users/v1/recovery/password/resend
                         type: POST
         '202':
           description: >
@@ -421,14 +425,14 @@ paths:
                   value:
                     code: PWR-02002
                     message: Password recovery information sent externally
-                    notificationChannel: EXTERNAL
+                    notificationChannel: EMAIL
                     resendCode: 12345-45678-6789098-8765
                     links:
                       - rel: next
-                        href: api/identity/recovery/v1/password/confirm
+                        href: api/users/v1/recovery/password/confirm
                         type: POST
                       - rel: resend
-                        href: api/identity/recovery/v1/password/resend
+                        href: api/users/v1/recovery/password/resend
                         type: POST
         '400':
           description: Bad Request. Request cannot be processed by the server.
@@ -523,17 +527,42 @@ paths:
 
         - The API will return the next API calls.
       responses:
+        '200':
+          description: >
+            - API will return a new `confirmationCode`.
+
+            - Use the confirmation code with __password recovery confirm API__
+            to confirm the password recovery.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResendConfirmationCodeExternalResponse'
+              examples:
+                response:
+                  value:
+                    code: PWR-02002
+                    message: successful_request
+                    notificationChannel: EXTERNAL
+                    confirmationCode: 1234-12345-234-123456
+                    resendCode: 1234-12345-234-123456
+                    links:
+                      - rel: next
+                        href: api/users/v1/recovery/password/recover
+                        type: POST
+                      - rel: resend
+                        href: api/users/v1/recovery/password/resend
+                        type: POST
         '202':
           description: >
             - API will send a `confirmationCode` to the channel specified by the
             user.
 
-            - Use the confirmation code with __password recpvery confirm API__
+            - Use the confirmation code with __password recovery confirm API__
             to confirm the password recovery.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResendConfirmationCodeResponse'
+                $ref: '#/components/schemas/ResendConfirmationCodeInternalResponse'
               examples:
                 response:
                   value:
@@ -543,10 +572,10 @@ paths:
                     resendCode: 1234-12345-234-123456
                     links:
                       - rel: next
-                        href: /api/identity/recovery/v1/recovery
+                        href: api/user/v1/recovery/password/recover
                         type: POST
                       - rel: resend
-                        href: api/identity/recovery/v1/password/resend
+                        href: api/users/v1/recovery/password/resend
                         type: POST
         '400':
           description: Bad Request. Request cannot be processed by the server.
@@ -642,7 +671,7 @@ paths:
                     links:
                       - rel: next
                         href: >-
-                          /t/carbon.super/api/identity/recovery/v1/password/reset
+                          /t/carbon.super/api/users/v1/recovery/password/reset
                         type: POST
         '400':
           description: Bad Request. Request cannot be processed by the server.
@@ -780,6 +809,14 @@ paths:
                     message: bad_request
                     description: password policy violation
                     traceId: 23456fghj678vb78
+                    resetCode: 1234-12345-sdf-34567567
+                    links: [
+                    {
+                      "rel": "next",
+                      "href": "/t/carbon.super/api/users/v1/recovery/password/reset",
+                      "type": "POST"
+                    }
+                    ]
         '500':
           description: Server Error.
           content:
@@ -887,16 +924,6 @@ components:
           description: (OPTIONAL) Additional META properties
           items:
             $ref: '#/components/schemas/Property'
-    UsernameRecoveryInitResponse:
-      type: array
-      description: Response with the username recovery information
-      items:
-        $ref: '#/components/schemas/AccountRecoveryType'
-    PasswordRecoveryInitResponse:
-      type: array
-      description: Response with the Password Recovery information
-      items:
-        $ref: '#/components/schemas/AccountRecoveryType'
     PasswordRecoveryInternalNotifyResponse:
       type: object
       properties:
@@ -923,10 +950,6 @@ components:
           description: Contains available api calls
           items:
             $ref: '#/components/schemas/APICall'
-      required:
-        - code
-        - message
-        - notificationChannel
     PasswordRecoveryExternalNotifyResponse:
       type: object
       properties:
@@ -952,37 +975,17 @@ components:
             channel is _EXTERNAL_. Use this code with password confirm API to
             get a password reset code.
           example: 12345-45678-6789098-8765
+        resendCode:
+          type: string
+          description: >-
+            Code to get a new confirmation code.
+          example: 1234-123456-12345-12345
         links:
           type: array
           description: Contains available api calls
           items:
             $ref: '#/components/schemas/APICall'
-      required:
-        - code
-        - message
-        - notificationChannel
-        - confirmationCode
-    UsernameRecoveryInternalNotifyResponse:
-      type: object
-      description: API response for successful username recovery
-      properties:
-        code:
-          type: string
-          description: Success status code
-          example: UNR-02001
-        message:
-          type: string
-          description: Success status message
-          example: successful_request
-        notificationChannel:
-          type: string
-          description: Channel which the recovery information is sent to the user
-          example: EMAIL
-      required:
-        - code
-        - message
-        - notificationChannel
-    UsernameRecoveryExternalNotifyResponse:
+    UsernameRecoveryNotifyResponse:
       type: object
       description: API response for successful username recovery
       properties:
@@ -1034,7 +1037,36 @@ components:
           type: string
           description: Message regarding the operation.
           example: successful_request
-    ResendConfirmationCodeResponse:
+    ResendConfirmationCodeExternalResponse:
+      type: object
+      description: Object encapsulate the details regarding resend confirmation code
+      properties:
+        code:
+          type: string
+          description: Success status code
+          example: PWR-02002
+        message:
+          type: string
+          description: Success status message
+          example: successful_request
+        notificationChannel:
+          type: string
+          description: Channel that is used to send recovery information
+          example: EMAIL
+        confirmationCode:
+          type: string
+          description: Confirmation code to confirm the password recovery
+          example: 1234-12345-234-123456
+        resendCode:
+          type: string
+          description: Resend code to resend the confirmation code
+          example: 1234-12345-234-123456
+        links:
+          type: array
+          description: Contains available api calls
+          items:
+            $ref: '#/components/schemas/APICall'
+    ResendConfirmationCodeInternalResponse:
       type: object
       description: Object encapsulate the details regarding resend confirmation code
       properties:
@@ -1074,6 +1106,10 @@ components:
           type: string
           description: Error description
           example: Password policy violation
+        traceId:
+          type: string
+          description: Some Correlation for Error Instance
+          example: 2345dfgh678h789bhjk
         resetCode:
           type: string
           description: Password reset code used in the request
@@ -1183,7 +1219,7 @@ components:
         href:
           type: string
           description: Next API url
-          example: /api/identity/recovery/v1/recovery
+          example: /api/users/recovery/v1/
         type:
           type: string
           description: HTTP method type
