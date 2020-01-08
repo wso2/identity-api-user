@@ -29,14 +29,15 @@ import org.wso2.carbon.identity.recovery.IdentityRecoveryException;
 import org.wso2.carbon.identity.recovery.dto.RecoveryChannelInfoDTO;
 import org.wso2.carbon.identity.recovery.dto.RecoveryInformationDTO;
 import org.wso2.carbon.identity.recovery.dto.UsernameRecoverDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.APICallDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.AccountRecoveryTypeDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.InitRequestDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.RecoveryChannelDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.RecoveryChannelInformationDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.RecoveryRequestDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.UsernameRecoveryExternalNotifyResponseDTO;
+
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core.utils.RecoveryUtil;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.APICall;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.AccountRecoveryType;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.InitRequest;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RecoveryChannel;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RecoveryChannelInformation;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RecoveryRequest;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.UsernameRecoveryExternalNotifyResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,19 +54,19 @@ public class UsernameRecoveryService {
     /**
      * Initiate userName recovery from POST.
      *
-     * @param initRequestDTO {@link InitRequestDTO} object which holds the information in the account recovery
-     *                       request
+     * @param initRequest {@link InitRequest} object which holds the information in the account recovery
+     *                    request
      * @return Response
      */
-    public Response initiateUsernameRecovery(InitRequestDTO initRequestDTO) {
+    public Response initiateUsernameRecovery(InitRequest initRequest) {
 
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
-        Map<String, String> userClaims = RecoveryUtil.buildUserClaimsMap(initRequestDTO.getClaims());
+        Map<String, String> userClaims = RecoveryUtil.buildUserClaimsMap(initRequest.getClaims());
         try {
             // Get username recovery notification information.
             RecoveryInformationDTO recoveryInformationDTO =
                     UserAccountRecoveryServiceDataHolder.getUsernameRecoveryManager().initiate(userClaims, tenantDomain,
-                            RecoveryUtil.buildPropertiesMap(initRequestDTO.getProperties()));
+                            RecoveryUtil.buildPropertiesMap(initRequest.getProperties()));
             if (recoveryInformationDTO == null) {
                 // If RecoveryChannelInfoDTO is null throw not found error.
                 if (log.isDebugEnabled()) {
@@ -94,19 +95,19 @@ public class UsernameRecoveryService {
     /**
      * Send the recovery notifications to the user via user preferred channel given by the channelId param.
      *
-     * @param recoveryRequestDTO {@link RecoveryRequestDTO} Object which holds the recovery information in the
-     *                           username recovery request
+     * @param recoveryRequest {@link RecoveryRequest} Object which holds the recovery information in the
+     *                        username recovery request
      * @return Response
      */
-    public Response recoverUsername(RecoveryRequestDTO recoveryRequestDTO) {
+    public Response recoverUsername(RecoveryRequest recoveryRequest) {
 
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
-        String recoveryId = recoveryRequestDTO.getRecoveryCode();
-        String channelId = recoveryRequestDTO.getChannelId();
+        String recoveryId = recoveryRequest.getRecoveryCode();
+        String channelId = recoveryRequest.getChannelId();
         try {
             UsernameRecoverDTO usernameRecoverDTO = UserAccountRecoveryServiceDataHolder.getUsernameRecoveryManager().
                     notify(recoveryId, channelId, tenantDomain,
-                            RecoveryUtil.buildPropertiesMap(recoveryRequestDTO.getProperties()));
+                            RecoveryUtil.buildPropertiesMap(recoveryRequest.getProperties()));
             if (usernameRecoverDTO == null) {
                 if (log.isDebugEnabled()) {
                     String message = String.format("No recovery data object for recovery code : %s", recoveryId);
@@ -134,21 +135,21 @@ public class UsernameRecoveryService {
      * Build the successful response according to the notification channel.
      *
      * @param notificationChannel Notification channel
-     * @param usernameRecoverDTO  {@link} Objects which holds the successful recovery information
+     * @param usernameRecoverDTO  Object which holds the successful recovery information
      * @return Response
      */
     private Response buildUsernameRecoveryResponse(String notificationChannel, UsernameRecoverDTO usernameRecoverDTO) {
 
-        UsernameRecoveryExternalNotifyResponseDTO successfulUsernameRecoveryDTO =
-                new UsernameRecoveryExternalNotifyResponseDTO();
-        successfulUsernameRecoveryDTO.setCode(usernameRecoverDTO.getCode());
-        successfulUsernameRecoveryDTO.setMessage(usernameRecoverDTO.getMessage());
-        successfulUsernameRecoveryDTO.setNotificationChannel(usernameRecoverDTO.getNotificationChannel());
+        UsernameRecoveryExternalNotifyResponse usernameRecoveryExternalNotifyResponse =
+                new UsernameRecoveryExternalNotifyResponse();
+        usernameRecoveryExternalNotifyResponse.setCode(usernameRecoverDTO.getCode());
+        usernameRecoveryExternalNotifyResponse.setMessage(usernameRecoverDTO.getMessage());
+        usernameRecoveryExternalNotifyResponse.setNotificationChannel(usernameRecoverDTO.getNotificationChannel());
         if (NotificationChannels.EXTERNAL_CHANNEL.getChannelType().equals(notificationChannel)) {
-            successfulUsernameRecoveryDTO.setUsername(usernameRecoverDTO.getUsername());
-            return Response.ok().entity(successfulUsernameRecoveryDTO).build();
+            usernameRecoveryExternalNotifyResponse.setUsername(usernameRecoverDTO.getUsername());
+            return Response.ok().entity(usernameRecoveryExternalNotifyResponse).build();
         } else {
-            return Response.accepted().entity(successfulUsernameRecoveryDTO).build();
+            return Response.accepted().entity(usernameRecoveryExternalNotifyResponse).build();
         }
     }
 
@@ -157,32 +158,32 @@ public class UsernameRecoveryService {
      *
      * @param recoveryInformationDTO User recovery information object {@link RecoveryInformationDTO}
      * @param tenantDomain           Tenant domain
-     * @return List of {@link AccountRecoveryTypeDTO}
+     * @return List of {@link AccountRecoveryType}
      */
-    private List<AccountRecoveryTypeDTO> buildUsernameRecoveryInitResponse(
+    private List<AccountRecoveryType> buildUsernameRecoveryInitResponse(
             RecoveryInformationDTO recoveryInformationDTO, String tenantDomain) {
 
         RecoveryChannelInfoDTO recoveryChannelInfoDTO = recoveryInformationDTO.getRecoveryChannelInfoDTO();
-        List<RecoveryChannelDTO> channels = RecoveryUtil
+        List<RecoveryChannel> channels = RecoveryUtil
                 .buildRecoveryChannelInformation(recoveryChannelInfoDTO.getNotificationChannelDTOs());
         // Build Recovery Channel Information.
-        RecoveryChannelInformationDTO recoveryChannelInformationDTO = new RecoveryChannelInformationDTO();
-        recoveryChannelInformationDTO.setRecoveryCode(recoveryChannelInfoDTO.getRecoveryCode());
-        recoveryChannelInformationDTO.setChannels(channels);
+        RecoveryChannelInformation recoveryChannelInformation = new RecoveryChannelInformation();
+        recoveryChannelInformation.setRecoveryCode(recoveryChannelInfoDTO.getRecoveryCode());
+        recoveryChannelInformation.setChannels(channels);
         // Build next API calls.
-        ArrayList<APICallDTO> apiCallDTOArrayList = new ArrayList<>();
-        apiCallDTOArrayList.add(RecoveryUtil
-                .buildApiCallDTO(Constants.APICall.RECOVER_USERNAME_API.getType(), Constants.RelationStates.NEXT_REL,
+        ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
+        apiCallsArrayList.add(RecoveryUtil
+                .buildApiCall(Constants.APICall.RECOVER_USERNAME_API.getType(), Constants.RelationStates.NEXT_REL,
                         RecoveryUtil.buildUri(tenantDomain, Constants.APICall.RECOVER_USERNAME_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
         // Build recovery type information.
-        AccountRecoveryTypeDTO accountRecoveryTypeDTO = new AccountRecoveryTypeDTO();
-        accountRecoveryTypeDTO.setMode(Constants.RECOVERY_WITH_NOTIFICATIONS);
-        accountRecoveryTypeDTO.setChannelInfo(recoveryChannelInformationDTO);
-        accountRecoveryTypeDTO.setLinks(apiCallDTOArrayList);
+        AccountRecoveryType accountRecoveryType = new AccountRecoveryType();
+        accountRecoveryType.setMode(Constants.RECOVERY_WITH_NOTIFICATIONS);
+        accountRecoveryType.setChannelInfo(recoveryChannelInformation);
+        accountRecoveryType.setLinks(apiCallsArrayList);
 
-        ArrayList<AccountRecoveryTypeDTO> recoveryTypeDTOS = new ArrayList<>();
-        recoveryTypeDTOS.add(accountRecoveryTypeDTO);
+        ArrayList<AccountRecoveryType> recoveryTypeDTOS = new ArrayList<>();
+        recoveryTypeDTOS.add(accountRecoveryType);
         return recoveryTypeDTOS;
     }
 }

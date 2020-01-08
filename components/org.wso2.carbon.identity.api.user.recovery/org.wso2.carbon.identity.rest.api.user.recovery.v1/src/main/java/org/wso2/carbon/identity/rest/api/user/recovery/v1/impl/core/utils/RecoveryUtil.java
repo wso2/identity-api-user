@@ -23,12 +23,6 @@ import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryClientException;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryConstants;
 import org.wso2.carbon.identity.recovery.dto.NotificationChannelDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.APICallDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.ErrorResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.PropertyDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.RecoveryChannelDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.RetryErrorResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.UserClaimDTO;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core.Constants;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core.exceptions.ConflictException;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core.exceptions.ForbiddenException;
@@ -37,6 +31,13 @@ import org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core.exceptions.N
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core.exceptions.NotFoundException;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core.exceptions.PreconditionFailedException;
 
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.APICall;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ErrorResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.Property;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RecoveryChannel;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RetryErrorResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.UserClaim;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.TENANT_CONTEXT_PATH_COMPONENT;
+
 
 /**
  * Contains the recovery endpoint utils.
@@ -62,33 +64,33 @@ public class RecoveryUtil {
     private static final HashMap<String, String> clientErrorMap = generateClientErrorMap();
 
     /**
-     * Converts a list of UserClaimDTO in to a UserClaim array.
+     * Converts a list of UserClaim in to a UserClaim array.
      *
-     * @param claimDTOs UserClaimDTO List
+     * @param userClaimsList UserClaims List
      * @return Map of user claims
      */
-    public static HashMap<String, String> buildUserClaimsMap(List<UserClaimDTO> claimDTOs) {
+    public static HashMap<String, String> buildUserClaimsMap(List<UserClaim> userClaimsList) {
 
         HashMap<String, String> userClaims = new HashMap<>();
-        for (UserClaimDTO userClaimDTO : claimDTOs) {
-            userClaims.put(userClaimDTO.getUri(), userClaimDTO.getValue());
+        for (UserClaim userClaimModel : userClaimsList) {
+            userClaims.put(userClaimModel.getUri(), userClaimModel.getValue());
         }
         return userClaims;
     }
 
     /**
-     * Convert the list of PropertyDTOs in to an array.
+     * Convert the list of Properties in to an array.
      *
-     * @param propertyDTOs Lost of {@link PropertyDTO} objects
+     * @param propertyList List of {@link Property} objects
      * @return Map of properties
      */
-    public static HashMap<String, String> buildPropertiesMap(List<PropertyDTO> propertyDTOs) {
+    public static HashMap<String, String> buildPropertiesMap(List<Property> propertyList) {
 
         HashMap<String, String> properties = new HashMap<>();
-        if (propertyDTOs == null) {
+        if (propertyList == null) {
             return properties;
         }
-        for (PropertyDTO propertyDTO : propertyDTOs) {
+        for (Property propertyDTO : propertyList) {
             properties.put(propertyDTO.getKey(), propertyDTO.getValue());
         }
         return properties;
@@ -98,22 +100,22 @@ public class RecoveryUtil {
      * Build the channel response object list.
      *
      * @param channels Available notification channels list as objects of {@link NotificationChannelDTO}
-     * @return List of RecoveryChannelDTOs {@link RecoveryChannelDTO}
+     * @return List of RecoveryChannels {@link RecoveryChannel}
      */
-    public static List<RecoveryChannelDTO> buildRecoveryChannelInformation(NotificationChannelDTO[] channels) {
+    public static List<RecoveryChannel> buildRecoveryChannelInformation(NotificationChannelDTO[] channels) {
 
-        List<RecoveryChannelDTO> recoveryChannelDTOS = new ArrayList<>();
+        List<RecoveryChannel> recoveryChannelDTOS = new ArrayList<>();
         if (channels != null) {
             // Create a response object and add the details to each object.
             for (NotificationChannelDTO channel : channels) {
-                RecoveryChannelDTO recoveryChannelDTO = new RecoveryChannelDTO();
-                recoveryChannelDTO.setId(Integer.toString(channel.getId()));
-                recoveryChannelDTO.setType(channel.getType());
-                recoveryChannelDTO.setValue(channel.getValue());
+                RecoveryChannel recoveryChannel = new RecoveryChannel();
+                recoveryChannel.setId(Integer.toString(channel.getId()));
+                recoveryChannel.setType(channel.getType());
+                recoveryChannel.setValue(channel.getValue());
                 if (StringUtils.isNotEmpty(channel.getValue())) {
-                    recoveryChannelDTO.setPreferred(channel.isPreferred());
+                    recoveryChannel.setPreferred(channel.isPreferred());
                 }
-                recoveryChannelDTOS.add(recoveryChannelDTO);
+                recoveryChannelDTOS.add(recoveryChannel);
             }
         }
         return recoveryChannelDTOS;
@@ -221,7 +223,7 @@ public class RecoveryUtil {
         } else {
             log.error(message, throwable);
         }
-        return buildInternalServerErrorErrorDTO(code, correlationId);
+        return buildInternalServerError(code, correlationId);
     }
 
     /**
@@ -231,18 +233,18 @@ public class RecoveryUtil {
      * @param rel    API relation
      * @param apiUrl Url of the API
      * @param data   Additional data
-     * @return APICallDTO {@link APICallDTO} which encapsulates the API name and the url
+     * @return APICall {@link APICall} which encapsulates the API name and the url
      */
-    public static APICallDTO buildApiCallDTO(String type, String rel, String apiUrl, String data) {
+    public static APICall buildApiCall(String type, String rel, String apiUrl, String data) {
 
         if (StringUtils.isNotEmpty(data)) {
             apiUrl = String.format(apiUrl, data);
         }
-        APICallDTO apiCallDTO = new APICallDTO();
-        apiCallDTO.setType(type);
-        apiCallDTO.setRel(rel);
-        apiCallDTO.setHref(apiUrl);
-        return apiCallDTO;
+        APICall apiCall = new APICall();
+        apiCall.setType(type);
+        apiCall.setRel(rel);
+        apiCall.setHref(apiUrl);
+        return apiCall;
     }
 
     /**
@@ -264,33 +266,33 @@ public class RecoveryUtil {
      *
      * @param code          Code
      * @param correlationId Correlation Id
-     * @return A new InternalServerErrorException with default details as a response DTO
+     * @return A new InternalServerErrorException with default details as a response
      */
-    private static InternalServerErrorException buildInternalServerErrorErrorDTO(String code, String correlationId) {
+    private static InternalServerErrorException buildInternalServerError(String code, String correlationId) {
 
-        ErrorResponseDTO errorDTO = buildErrorResponseDTO(Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT, code,
+        ErrorResponse errorResponse = buildErrorResponse(Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT, code,
                 Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT, correlationId);
-        return new InternalServerErrorException(errorDTO);
+        return new InternalServerErrorException(errorResponse);
     }
 
     /**
-     * Returns a generic errorDTO.
+     * Returns a generic error response.
      *
      * @param code          Error code
      * @param message       Specifies the error message
      * @param description   Error description
      * @param correlationId CorrelationID
-     * @return A generic errorDTO with the specified details
+     * @return A generic error with the specified details
      */
-    private static ErrorResponseDTO buildErrorResponseDTO(String message, String code, String description,
-                                                          String correlationId) {
+    private static ErrorResponse buildErrorResponse(String message, String code, String description,
+                                                       String correlationId) {
 
-        ErrorResponseDTO errorDTO = new ErrorResponseDTO();
-        errorDTO.setCode(code);
-        errorDTO.setMessage(message);
-        errorDTO.setDescription(description);
-        errorDTO.setTraceId(correlationId);
-        return errorDTO;
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setCode(code);
+        errorResponse.setMessage(message);
+        errorResponse.setDescription(description);
+        errorResponse.setTraceId(correlationId);
+        return errorResponse;
     }
 
     /**
@@ -301,49 +303,49 @@ public class RecoveryUtil {
      * @param description  Description of the exception
      * @param code         Error code
      * @param resetCode    Reset code given to the user by confirmation API
-     * @return A new PreconditionFailedException with the specified details as a response DTO
+     * @return A new PreconditionFailedException with the specified details as a response
      */
     private static PreconditionFailedException buildRetryPasswordResetObject(String className, String tenantDomain,
                                                                              String description, String code,
                                                                              String resetCode) {
 
         // Build next API calls.
-        ArrayList<APICallDTO> apiCallDTOArrayList = new ArrayList<>();
-        apiCallDTOArrayList.add(RecoveryUtil
-                .buildApiCallDTO(Constants.APICall.RESET_PASSWORD_API.getType(), Constants.RelationStates.NEXT_REL,
+        ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
+        apiCallsArrayList.add(RecoveryUtil
+                .buildApiCall(Constants.APICall.RESET_PASSWORD_API.getType(), Constants.RelationStates.NEXT_REL,
                         buildUri(tenantDomain, Constants.APICall.RESET_PASSWORD_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
-        RetryErrorResponseDTO retryErrorResponseDTO = buildRetryErrorResponseDTO(
+        RetryErrorResponse retryErrorResponse = buildRetryErrorResponse(
                 Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, code, description, resetCode,
-                apiCallDTOArrayList);
+                apiCallsArrayList);
         if (StringUtils.isNotBlank(className)) {
             description = String.format("%s : %s - %s", LOG_MESSAGE_PREFIX, className, description);
         }
         log.error(description);
-        return new PreconditionFailedException(retryErrorResponseDTO);
+        return new PreconditionFailedException(retryErrorResponse);
     }
 
     /**
-     * Build the RetryErrorDTO for not valid password scenario.
+     * Build the RetryErrorResponse for not valid password scenario.
      *
      * @param message             Error message
      * @param description         Error description
      * @param code                Error code
      * @param resetCode           Password reset code
-     * @param apiCallDTOArrayList Available APIs
-     * @return RetryErrorResponseDTO
+     * @param apiCallsArrayList Available APIs
+     * @return RetryErrorResponse
      */
-    private static RetryErrorResponseDTO buildRetryErrorResponseDTO(String message, String description, String code,
-                                                                    String resetCode,
-                                                                    ArrayList<APICallDTO> apiCallDTOArrayList) {
+    private static RetryErrorResponse buildRetryErrorResponse(String message, String description, String code,
+                                                              String resetCode,
+                                                              ArrayList<APICall> apiCallsArrayList) {
 
-        RetryErrorResponseDTO errorDTO = new RetryErrorResponseDTO();
-        errorDTO.setCode(code);
-        errorDTO.setMessage(message);
-        errorDTO.setDescription(description);
-        errorDTO.setResetCode(resetCode);
-        errorDTO.setLinks(apiCallDTOArrayList);
-        return errorDTO;
+        RetryErrorResponse retryErrorResponse = new RetryErrorResponse();
+        retryErrorResponse.setCode(code);
+        retryErrorResponse.setMessage(message);
+        retryErrorResponse.setDescription(description);
+        retryErrorResponse.setResetCode(resetCode);
+        retryErrorResponse.setLinks(apiCallsArrayList);
+        return retryErrorResponse;
     }
 
     /**
@@ -353,18 +355,18 @@ public class RecoveryUtil {
      * @param description   Description of the exception
      * @param code          Error code
      * @param correlationId Correlation Id
-     * @return A new NotAcceptableException with the specified details as a response DTO
+     * @return A new NotAcceptableException with the specified details as a response
      */
     private static NotAcceptableException buildRequestNotAcceptableResponseObject(String className, String description,
                                                                                   String code, String correlationId) {
 
-        ErrorResponseDTO errorDTO = buildErrorResponseDTO(Constants.STATUS_METHOD_NOT_ACCEPTED_MESSAGE_DEFAULT, code,
+        ErrorResponse errorResponse = buildErrorResponse(Constants.STATUS_METHOD_NOT_ACCEPTED_MESSAGE_DEFAULT, code,
                 description, correlationId);
         if (StringUtils.isNotBlank(className)) {
             description = String.format("%s : %s - %s", LOG_MESSAGE_PREFIX, className, description);
         }
         log.error(description);
-        return new NotAcceptableException(errorDTO);
+        return new NotAcceptableException(errorResponse);
     }
 
     /**
@@ -374,18 +376,18 @@ public class RecoveryUtil {
      * @param description   Description of the exception
      * @param code          Error code
      * @param correlationId Correlation Id
-     * @return A new NotAcceptableException with the specified details as a response DTO
+     * @return A new NotAcceptableException with the specified details as a response
      */
     private static NotFoundException buildRequestNotFoundResponseObject(String className, String description,
                                                                         String code, String correlationId) {
 
-        ErrorResponseDTO errorDTO = buildErrorResponseDTO(Constants.STATUS_NOT_FOUND_MESSAGE_DEFAULT, code,
+        ErrorResponse errorResponse = buildErrorResponse(Constants.STATUS_NOT_FOUND_MESSAGE_DEFAULT, code,
                 description, correlationId);
         if (StringUtils.isNotBlank(className)) {
             description = String.format("%s : %s - %s", LOG_MESSAGE_PREFIX, className, description);
         }
         log.error(description);
-        return new NotFoundException(errorDTO);
+        return new NotFoundException(errorResponse);
     }
 
     /**
@@ -395,19 +397,19 @@ public class RecoveryUtil {
      * @param description   Description of the exception
      * @param code          Error code
      * @param correlationId CorrelationId
-     * @return A new ConflictException with the specified details as a response DTO
+     * @return A new ConflictException with the specified details as a response
      */
     private static ConflictException buildConflictRequestResponseObject(String className, String description,
                                                                         String code, String correlationId) {
 
-        ErrorResponseDTO errorDTO = buildErrorResponseDTO(Constants.STATUS_CONFLICT_MESSAGE_DEFAULT, code,
+        ErrorResponse errorResponse = buildErrorResponse(Constants.STATUS_CONFLICT_MESSAGE_DEFAULT, code,
                 description, correlationId);
         if (StringUtils.isNotBlank(className)) {
             description = String.format("CorrelationIc: %s : %s : %s - %s", correlationId, LOG_MESSAGE_PREFIX,
                     className, description);
         }
         log.error(description);
-        return new ConflictException(errorDTO);
+        return new ConflictException(errorResponse);
     }
 
     /**
@@ -417,18 +419,18 @@ public class RecoveryUtil {
      * @param description   Description of the exception
      * @param code          Error code
      * @param correlationId CorrelationId
-     * @return A new ForbiddenException with the specified details as a response DTO
+     * @return A new ForbiddenException with the specified details as a response
      */
     private static ForbiddenException buildForbiddenRequestResponseObject(String className, String description,
                                                                           String code, String correlationId) {
 
-        ErrorResponseDTO errorDTO = buildErrorResponseDTO(Constants.STATUS_FORBIDDEN_MESSAGE_DEFAULT, code,
+        ErrorResponse errorResponse = buildErrorResponse(Constants.STATUS_FORBIDDEN_MESSAGE_DEFAULT, code,
                 description, correlationId);
         if (StringUtils.isNotBlank(className)) {
             description = String.format("%s : %s - %s", LOG_MESSAGE_PREFIX, className, description);
         }
         log.error(description);
-        return new ForbiddenException(errorDTO);
+        return new ForbiddenException(errorResponse);
     }
 
     /**

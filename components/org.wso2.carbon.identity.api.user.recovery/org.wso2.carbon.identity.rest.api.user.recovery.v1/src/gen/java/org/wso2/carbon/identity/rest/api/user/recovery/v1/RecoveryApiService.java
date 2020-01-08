@@ -1,61 +1,57 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 package org.wso2.carbon.identity.rest.api.user.recovery.v1;
 
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.*;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.*;
-
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.ErrorResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.ResetCodeResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.ConfirmRequestDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.InitRequestDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.AccountRecoveryTypeDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.PasswordRecoveryInternalNotifyResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.RecoveryRequestDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.PasswordRecoveryExternalNotifyResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.UsernameRecoveryInternalNotifyResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.UsernameRecoveryExternalNotifyResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.ResendConfirmationRequestDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.ResendConfirmationCodeResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.RetryErrorResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.PasswordResetResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.ResetRequestDTO;
-
-import java.util.List;
-
-import java.io.InputStream;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.*;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import java.io.InputStream;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.AccountRecoveryType;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ConfirmRequest;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ErrorResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.InitRequest;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.PasswordRecoveryExternalNotifyResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.PasswordRecoveryInternalNotifyResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.PasswordResetResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RecoveryRequest;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResendConfirmationCodeResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResendConfirmationRequest;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResetCodeResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResetRequest;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RetryErrorResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.UsernameRecoveryExternalNotifyResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.UsernameRecoveryInternalNotifyResponse;
 import javax.ws.rs.core.Response;
 
-public abstract class RecoveryApiService {
 
-    public abstract Response confirmRecovery(ConfirmRequestDTO confirmRequest);
+public interface RecoveryApiService {
 
-    public abstract Response initiatePasswordRecovery(InitRequestDTO initRequest);
+      public Response confirmRecovery(ConfirmRequest confirmRequest);
 
-    public abstract Response initiateUsernameRecovery(InitRequestDTO initRequest);
+      public Response initiatePasswordRecovery(InitRequest initRequest);
 
-    public abstract Response recoverPassword(RecoveryRequestDTO recoveryRequest);
+      public Response initiateUsernameRecovery(InitRequest initRequest);
 
-    public abstract Response recoverUsername(RecoveryRequestDTO recoveryRequest);
+      public Response recoverPassword(RecoveryRequest recoveryRequest);
 
-    public abstract Response resendConfirmation(ResendConfirmationRequestDTO resendConfirmationRequest);
+      public Response recoverUsername(RecoveryRequest recoveryRequest);
 
-    public abstract Response resetPassword(ResetRequestDTO resetRequest);
+      public Response resendConfirmation(ResendConfirmationRequest resendConfirmationRequest);
 
+      public Response resetPassword(ResetRequest resetRequest);
 }

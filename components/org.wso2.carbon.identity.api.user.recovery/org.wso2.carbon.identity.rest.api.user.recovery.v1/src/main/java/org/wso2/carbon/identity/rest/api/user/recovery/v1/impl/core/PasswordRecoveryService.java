@@ -30,21 +30,22 @@ import org.wso2.carbon.identity.recovery.dto.RecoveryChannelInfoDTO;
 import org.wso2.carbon.identity.recovery.dto.RecoveryInformationDTO;
 import org.wso2.carbon.identity.recovery.dto.ResendConfirmationDTO;
 import org.wso2.carbon.identity.recovery.dto.SuccessfulPasswordResetDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.APICallDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.AccountRecoveryTypeDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.ConfirmRequestDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.InitRequestDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.PasswordRecoveryExternalNotifyResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.PasswordRecoveryInternalNotifyResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.PasswordResetResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.RecoveryChannelDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.RecoveryChannelInformationDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.RecoveryRequestDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.ResendConfirmationCodeResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.ResendConfirmationRequestDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.ResetCodeResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.ResetRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core.utils.RecoveryUtil;
+
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.APICall;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.AccountRecoveryType;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ConfirmRequest;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.InitRequest;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.PasswordRecoveryExternalNotifyResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.PasswordRecoveryInternalNotifyResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.PasswordResetResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RecoveryChannel;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RecoveryChannelInformation;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RecoveryRequest;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResendConfirmationCodeResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResendConfirmationRequest;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResetCodeResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResetRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,19 +62,19 @@ public class PasswordRecoveryService {
     /**
      * Initiate Password Recovery from POST.
      *
-     * @param initRequestDTO {@link InitRequestDTO} object which holds the information in the account recovery
-     *                       request
+     * @param initRequest {@link InitRequest} object which holds the information in the account recovery
+     *                    request
      * @return Response
      */
-    public Response initiatePasswordRecovery(InitRequestDTO initRequestDTO) {
+    public Response initiatePasswordRecovery(InitRequest initRequest) {
 
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
-        Map<String, String> userClaims = RecoveryUtil.buildUserClaimsMap(initRequestDTO.getClaims());
+        Map<String, String> userClaims = RecoveryUtil.buildUserClaimsMap(initRequest.getClaims());
         try {
             // Get password recovery notification information.
             RecoveryInformationDTO recoveryInformationDTO =
                     UserAccountRecoveryServiceDataHolder.getPasswordRecoveryManager().initiate(userClaims, tenantDomain,
-                            RecoveryUtil.buildPropertiesMap(initRequestDTO.getProperties()));
+                            RecoveryUtil.buildPropertiesMap(initRequest.getProperties()));
             // If RecoveryChannelInfoDTO is null throw not found error.
             if (recoveryInformationDTO == null) {
                 if (log.isDebugEnabled()) {
@@ -102,19 +103,19 @@ public class PasswordRecoveryService {
     /**
      * Send the recovery notifications to the user via user preferred channel given by the channelId param.
      *
-     * @param recoveryRequestDTO {@link RecoveryRequestDTO} Object which holds the recovery information in the
-     *                           password recovery request
+     * @param recoveryRequest {@link RecoveryRequest} Object which holds the recovery information in the
+     *                        password recovery request
      * @return Response
      */
-    public Response recoverPassword(RecoveryRequestDTO recoveryRequestDTO) {
+    public Response recoverPassword(RecoveryRequest recoveryRequest) {
 
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
-        String recoveryId = recoveryRequestDTO.getRecoveryCode();
-        String channelId = recoveryRequestDTO.getChannelId();
+        String recoveryId = recoveryRequest.getRecoveryCode();
+        String channelId = recoveryRequest.getChannelId();
         try {
             PasswordRecoverDTO passwordRecoverDTO = UserAccountRecoveryServiceDataHolder.getPasswordRecoveryManager()
                     .notify(recoveryId, channelId, tenantDomain,
-                            RecoveryUtil.buildPropertiesMap(recoveryRequestDTO.getProperties()));
+                            RecoveryUtil.buildPropertiesMap(recoveryRequest.getProperties()));
             if (passwordRecoverDTO == null) {
                 if (log.isDebugEnabled()) {
                     String message = String
@@ -143,18 +144,18 @@ public class PasswordRecoveryService {
     /**
      * Validate the recovery code given for verify password reset.
      *
-     * @param confirmRequestDTO {@link ConfirmRequestDTO}Confirmation code object received for password recovery
+     * @param confirmRequest {@link ConfirmRequest}Confirmation code object received for password recovery
      * @return Response
      */
-    public Response confirmRecovery(ConfirmRequestDTO confirmRequestDTO) {
+    public Response confirmRecovery(ConfirmRequest confirmRequest) {
 
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         try {
             PasswordResetCodeDTO passwordResetCodeDTO =
                     UserAccountRecoveryServiceDataHolder.getPasswordRecoveryManager()
-                            .confirm(confirmRequestDTO.getConfirmationCode(), tenantDomain,
-                                    RecoveryUtil.buildPropertiesMap(confirmRequestDTO.getProperties()));
-            return Response.ok().entity(buildResetCodeResponseDTO(tenantDomain, passwordResetCodeDTO)).build();
+                            .confirm(confirmRequest.getConfirmationCode(), tenantDomain,
+                                    RecoveryUtil.buildPropertiesMap(confirmRequest.getProperties()));
+            return Response.ok().entity(buildResetCodeResponse(tenantDomain, passwordResetCodeDTO)).build();
         } catch (IdentityRecoveryClientException e) {
             throw RecoveryUtil.handleClientExceptions(PasswordRecoveryService.class.getName(), tenantDomain,
                     IdentityRecoveryConstants.PASSWORD_RECOVERY_SCENARIO, Util.getCorrelation(), e);
@@ -172,24 +173,24 @@ public class PasswordRecoveryService {
     /**
      * Update the password of the user with the new given password.
      *
-     * @param requestDTO {@link ResetRequestDTO} Object which holds the password reset code and password reset
-     *                   information
+     * @param resetRequest {@link ResetRequest} Object which holds the password reset code and password reset
+     *                     information
      * @return Response
      */
-    public Response resetPassword(ResetRequestDTO requestDTO) {
+    public Response resetPassword(ResetRequest resetRequest) {
 
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
-        char[] password = requestDTO.getPassword().toCharArray();
+        char[] password = resetRequest.getPassword().toCharArray();
         try {
             SuccessfulPasswordResetDTO successfulPasswordResetDTO =
                     UserAccountRecoveryServiceDataHolder.getPasswordRecoveryManager()
-                            .reset(requestDTO.getResetCode(), password,
-                                    RecoveryUtil.buildPropertiesMap(requestDTO.getProperties()));
-            return Response.ok().entity(buildPasswordResetResponseDTO(successfulPasswordResetDTO)).build();
+                            .reset(resetRequest.getResetCode(), password,
+                                    RecoveryUtil.buildPropertiesMap(resetRequest.getProperties()));
+            return Response.ok().entity(buildPasswordResetResponse(successfulPasswordResetDTO)).build();
         } catch (IdentityRecoveryClientException e) {
             // Send the reset code again for a retry attempt.
             throw RecoveryUtil.handleClientExceptions(PasswordRecoveryService.class.getName(), tenantDomain,
-                    IdentityRecoveryConstants.PASSWORD_RECOVERY_SCENARIO, requestDTO.getResetCode(),
+                    IdentityRecoveryConstants.PASSWORD_RECOVERY_SCENARIO, resetRequest.getResetCode(),
                     Util.getCorrelation(), e);
         } catch (IdentityRecoveryException e) {
             throw RecoveryUtil.buildInternalServerErrorResponse(PasswordRecoveryService.class.getName(),
@@ -205,11 +206,11 @@ public class PasswordRecoveryService {
     /**
      * Resend the recovery confirmation code to the user.
      *
-     * @param resendConfirmationRequest ResendConfirmationRequestDTO {@link ResendConfirmationRequestDTO} object
+     * @param resendConfirmationRequest ResendConfirmationRequest {@link ResendConfirmationRequest} object
      *                                  which wraps the resend request
      * @return Response
      */
-    public Response resendConfirmation(ResendConfirmationRequestDTO resendConfirmationRequest) {
+    public Response resendConfirmation(ResendConfirmationRequest resendConfirmationRequest) {
 
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         String resendCode = resendConfirmationRequest.getResendCode();
@@ -224,7 +225,7 @@ public class PasswordRecoveryService {
                 }
                 return Response.status(Response.Status.OK).build();
             }
-            return Response.ok().entity(buildResendConfirmationCodeResponseDTO(tenantDomain, resendConfirmationDTO))
+            return Response.ok().entity(buildResendConfirmationCodeResponse(tenantDomain, resendConfirmationDTO))
                     .build();
         } catch (IdentityRecoveryClientException e) {
             throw RecoveryUtil.handleClientExceptions(PasswordRecoveryService.class.getName(), tenantDomain,
@@ -241,34 +242,34 @@ public class PasswordRecoveryService {
     }
 
     /**
-     * Build ResendConfirmationCodeResponseDTO for a successful resend operation.
+     * Build ResendConfirmationCodeResponse for a successful resend operation.
      *
      * @param tenantDomain          Tenant domain
      * @param resendConfirmationDTO ResendConfirmationDTO
-     * @return ResendConfirmationCodeResponseDTO
+     * @return ResendConfirmationCodeResponse
      */
-    private ResendConfirmationCodeResponseDTO buildResendConfirmationCodeResponseDTO(String tenantDomain,
+    private ResendConfirmationCodeResponse buildResendConfirmationCodeResponse(String tenantDomain,
                                                                          ResendConfirmationDTO resendConfirmationDTO) {
 
-        ArrayList<APICallDTO> apiCallDTOArrayList = new ArrayList<>();
+        ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
 
         // Add confirm API call information.
-        apiCallDTOArrayList.add(RecoveryUtil.buildApiCallDTO(Constants.APICall.CONFIRM_PASSWORD_RECOVERY_API.getType(),
+        apiCallsArrayList.add(RecoveryUtil.buildApiCall(Constants.APICall.CONFIRM_PASSWORD_RECOVERY_API.getType(),
                 Constants.RelationStates.NEXT_REL, RecoveryUtil
                         .buildUri(tenantDomain, Constants.APICall.CONFIRM_PASSWORD_RECOVERY_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
         // Add resend confirmation code API call information.
-        apiCallDTOArrayList.add(RecoveryUtil.buildApiCallDTO(Constants.APICall.RESEND_CONFIRMATION_API.getType(),
+        apiCallsArrayList.add(RecoveryUtil.buildApiCall(Constants.APICall.RESEND_CONFIRMATION_API.getType(),
                 Constants.RelationStates.RESEND_REL, RecoveryUtil
                         .buildUri(tenantDomain, Constants.APICall.RESEND_CONFIRMATION_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
 
-        ResendConfirmationCodeResponseDTO resendConfirmationCodeResponseDTO = new ResendConfirmationCodeResponseDTO();
+        ResendConfirmationCodeResponse resendConfirmationCodeResponseDTO = new ResendConfirmationCodeResponse();
         resendConfirmationCodeResponseDTO.setCode(resendConfirmationDTO.getSuccessCode());
         resendConfirmationCodeResponseDTO.setMessage(resendConfirmationDTO.getSuccessMessage());
         resendConfirmationCodeResponseDTO.setNotificationChannel(resendConfirmationDTO.getNotificationChannel());
         resendConfirmationCodeResponseDTO.setResendCode(resendConfirmationDTO.getResendCode());
-        resendConfirmationCodeResponseDTO.setLinks(apiCallDTOArrayList);
+        resendConfirmationCodeResponseDTO.setLinks(apiCallsArrayList);
         return resendConfirmationCodeResponseDTO;
     }
 
@@ -276,36 +277,36 @@ public class PasswordRecoveryService {
      * Build successful response for successful password update.
      *
      * @param successfulPasswordResetDTO SuccessfulPasswordResetDTO object
-     * @return SuccessfulPasswordResetDTO
+     * @return PasswordResetResponse
      */
-    private PasswordResetResponseDTO buildPasswordResetResponseDTO(
+    private PasswordResetResponse buildPasswordResetResponse(
             SuccessfulPasswordResetDTO successfulPasswordResetDTO) {
 
-        PasswordResetResponseDTO passwordResetResponseDTO = new PasswordResetResponseDTO();
+        PasswordResetResponse passwordResetResponseDTO = new PasswordResetResponse();
         passwordResetResponseDTO.setCode(successfulPasswordResetDTO.getSuccessCode());
         passwordResetResponseDTO.setMessage(successfulPasswordResetDTO.getMessage());
         return passwordResetResponseDTO;
     }
 
     /**
-     * Build the ResetCodeResponseDTO for successful confirmation code validation.
+     * Build the ResetCodeResponse for successful confirmation code validation.
      *
      * @param tenantDomain         Tenant Domain
      * @param passwordResetCodeDTO {@link PasswordResetCodeDTO}PasswordResetCodeDTO
-     * @return ResetCodeResponseDTO {@link ResetCodeResponseDTO}object with a password reset code
+     * @return ResetCodeResponseDTO {@link ResetCodeResponse}object with a password reset code
      */
-    private ResetCodeResponseDTO buildResetCodeResponseDTO(String tenantDomain,
-                                                           PasswordResetCodeDTO passwordResetCodeDTO) {
+    private ResetCodeResponse buildResetCodeResponse(String tenantDomain,
+                                                     PasswordResetCodeDTO passwordResetCodeDTO) {
 
         // Build next API calls list.
-        ArrayList<APICallDTO> apiCallDTOArrayList = new ArrayList<>();
-        apiCallDTOArrayList.add(RecoveryUtil
-                .buildApiCallDTO(Constants.APICall.RESET_PASSWORD_API.getType(), Constants.RelationStates.NEXT_REL,
+        ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
+        apiCallsArrayList.add(RecoveryUtil
+                .buildApiCall(Constants.APICall.RESET_PASSWORD_API.getType(), Constants.RelationStates.NEXT_REL,
                         RecoveryUtil.buildUri(tenantDomain, Constants.APICall.RESET_PASSWORD_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
-        ResetCodeResponseDTO resetCodeResponseDTO = new ResetCodeResponseDTO();
+        ResetCodeResponse resetCodeResponseDTO = new ResetCodeResponse();
         resetCodeResponseDTO.setResetCode(passwordResetCodeDTO.getPasswordResetCode());
-        resetCodeResponseDTO.setLinks(apiCallDTOArrayList);
+        resetCodeResponseDTO.setLinks(apiCallsArrayList);
         return resetCodeResponseDTO;
     }
 
@@ -321,102 +322,102 @@ public class PasswordRecoveryService {
                                                    PasswordRecoverDTO passwordRecoverDTO) {
 
         // Build next API calls.
-        ArrayList<APICallDTO> apiCallDTOArrayList = new ArrayList<>();
-        apiCallDTOArrayList.add(RecoveryUtil.buildApiCallDTO(Constants.APICall.CONFIRM_PASSWORD_RECOVERY_API.getType(),
+        ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
+        apiCallsArrayList.add(RecoveryUtil.buildApiCall(Constants.APICall.CONFIRM_PASSWORD_RECOVERY_API.getType(),
                 Constants.RelationStates.NEXT_REL, RecoveryUtil
                         .buildUri(tenantDomain, Constants.APICall.CONFIRM_PASSWORD_RECOVERY_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
 
         if (NotificationChannels.EXTERNAL_CHANNEL.getChannelType().equals(notificationChannel)) {
             return Response.ok()
-                    .entity(buildPasswordRecoveryExternalResponseDTO(passwordRecoverDTO, apiCallDTOArrayList)).build();
+                    .entity(buildPasswordRecoveryExternalResponse(passwordRecoverDTO, apiCallsArrayList)).build();
         } else {
 
             // Add resend confirmation code API call information.
-            apiCallDTOArrayList.add(RecoveryUtil.buildApiCallDTO(Constants.APICall.RESEND_CONFIRMATION_API.getType(),
+            apiCallsArrayList.add(RecoveryUtil.buildApiCall(Constants.APICall.RESEND_CONFIRMATION_API.getType(),
                     Constants.RelationStates.RESEND_REL, RecoveryUtil
                             .buildUri(tenantDomain, Constants.APICall.RESEND_CONFIRMATION_API.getApiUrl(),
                                     Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
             return Response.accepted()
-                    .entity(buildPasswordRecoveryInternalResponseDTO(passwordRecoverDTO, apiCallDTOArrayList)).build();
+                    .entity(buildPasswordRecoveryInternalResponse(passwordRecoverDTO, apiCallsArrayList)).build();
         }
     }
 
     /**
-     * Build PasswordRecoveryExternalNotifyResponseDTO for successful password recovery.
+     * Build PasswordRecoveryExternalNotifyResponse for successful password recovery.
      *
-     * @param passwordRecoverDTO  {@link PasswordRecoverDTO}PasswordRecoverDTO object
-     * @param apiCallDTOArrayList List of available API calls
-     * @return {@link PasswordRecoveryExternalNotifyResponseDTO} Password recovery external notify response
+     * @param passwordRecoverDTO {@link PasswordRecoverDTO}PasswordRecoverDTO object
+     * @param apiCallsArrayList  List of available API calls
+     * @return {@link PasswordRecoveryExternalNotifyResponse} Password recovery external notify response
      */
-    private PasswordRecoveryExternalNotifyResponseDTO buildPasswordRecoveryExternalResponseDTO(
-            PasswordRecoverDTO passwordRecoverDTO, ArrayList<APICallDTO> apiCallDTOArrayList) {
+    private PasswordRecoveryExternalNotifyResponse buildPasswordRecoveryExternalResponse(
+            PasswordRecoverDTO passwordRecoverDTO, ArrayList<APICall> apiCallsArrayList) {
 
-        PasswordRecoveryExternalNotifyResponseDTO passwordRecoveryResponseDTO =
-                new PasswordRecoveryExternalNotifyResponseDTO();
-        passwordRecoveryResponseDTO.setCode(passwordRecoverDTO.getCode());
-        passwordRecoveryResponseDTO.setMessage(passwordRecoverDTO.getMessage());
-        passwordRecoveryResponseDTO.setNotificationChannel(passwordRecoverDTO.getNotificationChannel());
-        passwordRecoveryResponseDTO.setConfirmationCode(passwordRecoverDTO.getConfirmationCode());
-        passwordRecoveryResponseDTO.setLinks(apiCallDTOArrayList);
-        return passwordRecoveryResponseDTO;
+        PasswordRecoveryExternalNotifyResponse passwordRecoveryResponse =
+                new PasswordRecoveryExternalNotifyResponse();
+        passwordRecoveryResponse.setCode(passwordRecoverDTO.getCode());
+        passwordRecoveryResponse.setMessage(passwordRecoverDTO.getMessage());
+        passwordRecoveryResponse.setNotificationChannel(passwordRecoverDTO.getNotificationChannel());
+        passwordRecoveryResponse.setConfirmationCode(passwordRecoverDTO.getConfirmationCode());
+        passwordRecoveryResponse.setLinks(apiCallsArrayList);
+        return passwordRecoveryResponse;
     }
 
     /**
-     * Build PasswordRecoveryInternalNotifyResponseDTO for successful password recovery.
+     * Build PasswordRecoveryInternalNotifyResponse for successful password recovery.
      *
-     * @param passwordRecoverDTO  {@link PasswordRecoverDTO}PasswordRecoverDTO object
-     * @param apiCallDTOArrayList List of available API calls
-     * @return {@link PasswordRecoveryInternalNotifyResponseDTO}
+     * @param passwordRecoverDTO {@link PasswordRecoverDTO}PasswordRecoverDTO object
+     * @param apiCallsArrayList  List of available API calls
+     * @return {@link PasswordRecoveryInternalNotifyResponse}
      */
-    private PasswordRecoveryInternalNotifyResponseDTO buildPasswordRecoveryInternalResponseDTO(
-            PasswordRecoverDTO passwordRecoverDTO, ArrayList<APICallDTO> apiCallDTOArrayList) {
+    private PasswordRecoveryInternalNotifyResponse buildPasswordRecoveryInternalResponse(
+            PasswordRecoverDTO passwordRecoverDTO, ArrayList<APICall> apiCallsArrayList) {
 
-        PasswordRecoveryInternalNotifyResponseDTO passwordRecoveryResponseDTO =
-                new PasswordRecoveryInternalNotifyResponseDTO();
-        passwordRecoveryResponseDTO.setCode(passwordRecoverDTO.getCode());
-        passwordRecoveryResponseDTO.setMessage(passwordRecoverDTO.getMessage());
-        passwordRecoveryResponseDTO.setNotificationChannel(passwordRecoverDTO.getNotificationChannel());
-        passwordRecoveryResponseDTO.setLinks(apiCallDTOArrayList);
-        passwordRecoveryResponseDTO.setResendCode(passwordRecoverDTO.getResendCode());
-        return passwordRecoveryResponseDTO;
+        PasswordRecoveryInternalNotifyResponse passwordRecoveryResponse =
+                new PasswordRecoveryInternalNotifyResponse();
+        passwordRecoveryResponse.setCode(passwordRecoverDTO.getCode());
+        passwordRecoveryResponse.setMessage(passwordRecoverDTO.getMessage());
+        passwordRecoveryResponse.setNotificationChannel(passwordRecoverDTO.getNotificationChannel());
+        passwordRecoveryResponse.setLinks(apiCallsArrayList);
+        passwordRecoveryResponse.setResendCode(passwordRecoverDTO.getResendCode());
+        return passwordRecoveryResponse;
     }
 
     /**
      * Build recovery information for recover with notifications.
      *
-     * @param recoveryType                  Recovery type
-     * @param recoveryChannelInformationDTO RecoveryChannelInformationDTO which wraps recovery channel information
-     * @param apiCallDTOArrayList           Available API calls
-     * @return AccountRecoveryTypeDTO which wraps recovery options available for the user
+     * @param recoveryType               Recovery type
+     * @param recoveryChannelInformation RecoveryChannelInformation which wraps recovery channel information
+     * @param apiCallsArrayList          Available API calls
+     * @return AccountRecoveryType which wraps recovery options available for the user
      */
-    private AccountRecoveryTypeDTO buildAccountRecoveryType(String recoveryType,
-                                                            RecoveryChannelInformationDTO recoveryChannelInformationDTO,
-                                                            ArrayList<APICallDTO> apiCallDTOArrayList) {
+    private AccountRecoveryType buildAccountRecoveryType(String recoveryType,
+                                                         RecoveryChannelInformation recoveryChannelInformation,
+                                                         ArrayList<APICall> apiCallsArrayList) {
 
-        AccountRecoveryTypeDTO accountRecoveryTypeDTO = new AccountRecoveryTypeDTO();
-        accountRecoveryTypeDTO.setMode(recoveryType);
-        accountRecoveryTypeDTO.setChannelInfo(recoveryChannelInformationDTO);
-        accountRecoveryTypeDTO.setLinks(apiCallDTOArrayList);
-        return accountRecoveryTypeDTO;
+        AccountRecoveryType accountRecoveryType = new AccountRecoveryType();
+        accountRecoveryType.setMode(recoveryType);
+        accountRecoveryType.setChannelInfo(recoveryChannelInformation);
+        accountRecoveryType.setLinks(apiCallsArrayList);
+        return accountRecoveryType;
     }
 
     /**
      * Method to build recovery channel information.
      *
-     * @param recoveryInformationDTO RecoveryInformationDTO with recovery information
-     * @return RecoveryChannelInformationDTO
+     * @param recoveryInformationDTO RecoveryInformation with recovery information
+     * @return RecoveryChannelInformation
      */
-    private RecoveryChannelInformationDTO buildRecoveryChannelInformationDTO(
+    private RecoveryChannelInformation buildRecoveryChannelInformation(
             RecoveryInformationDTO recoveryInformationDTO) {
 
         RecoveryChannelInfoDTO recoveryChannelInfoDTO = recoveryInformationDTO.getRecoveryChannelInfoDTO();
-        List<RecoveryChannelDTO> channels = RecoveryUtil
+        List<RecoveryChannel> channels = RecoveryUtil
                 .buildRecoveryChannelInformation(recoveryChannelInfoDTO.getNotificationChannelDTOs());
-        RecoveryChannelInformationDTO recoveryChannelInformationDTO = new RecoveryChannelInformationDTO();
-        recoveryChannelInformationDTO.setRecoveryCode(recoveryChannelInfoDTO.getRecoveryCode());
-        recoveryChannelInformationDTO.setChannels(channels);
-        return recoveryChannelInformationDTO;
+        RecoveryChannelInformation recoveryChannelInformation = new RecoveryChannelInformation();
+        recoveryChannelInformation.setRecoveryCode(recoveryChannelInfoDTO.getRecoveryCode());
+        recoveryChannelInformation.setChannels(channels);
+        return recoveryChannelInformation;
     }
 
     /**
@@ -424,42 +425,42 @@ public class PasswordRecoveryService {
      *
      * @param tenantDomain           Tenant domain
      * @param recoveryInformationDTO RecoveryInformationDTO which wraps the password recovery information
-     * @return List of {@link AccountRecoveryTypeDTO}
+     * @return List of {@link AccountRecoveryType}
      */
-    private List<AccountRecoveryTypeDTO> buildPasswordRecoveryInitResponse(String tenantDomain,
-                                                                    RecoveryInformationDTO recoveryInformationDTO) {
+    private List<AccountRecoveryType> buildPasswordRecoveryInitResponse(String tenantDomain,
+                                                                        RecoveryInformationDTO recoveryInformationDTO) {
 
-        ArrayList<AccountRecoveryTypeDTO> recoveryTypeDTOS = new ArrayList<>();
+        ArrayList<AccountRecoveryType> accountRecoveryTypes = new ArrayList<>();
         boolean isNotificationBasedRecoveryEnabled = recoveryInformationDTO.isNotificationBasedRecoveryEnabled();
         boolean isQuestionBasedRecoveryEnabled = recoveryInformationDTO.isQuestionBasedRecoveryEnabled();
         if (isNotificationBasedRecoveryEnabled) {
             // Build next API calls list.
-            ArrayList<APICallDTO> apiCallDTOArrayList = new ArrayList<>();
-            apiCallDTOArrayList.add(RecoveryUtil.buildApiCallDTO(Constants.APICall.RECOVER_PASSWORD_API.getType(),
+            ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
+            apiCallsArrayList.add(RecoveryUtil.buildApiCall(Constants.APICall.RECOVER_PASSWORD_API.getType(),
                     Constants.RelationStates.NEXT_REL, RecoveryUtil
                             .buildUri(tenantDomain, Constants.APICall.RECOVER_PASSWORD_API.getApiUrl(),
                                     Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
-            RecoveryChannelInformationDTO recoveryChannelInformationDTO = buildRecoveryChannelInformationDTO(
+            RecoveryChannelInformation recoveryChannelInformation = buildRecoveryChannelInformation(
                     recoveryInformationDTO);
             // Build recovery information for recover with notifications.
-            AccountRecoveryTypeDTO accountRecoveryTypeDTO = buildAccountRecoveryType(
-                    Constants.RECOVERY_WITH_NOTIFICATIONS, recoveryChannelInformationDTO, apiCallDTOArrayList);
-            recoveryTypeDTOS.add(accountRecoveryTypeDTO);
+            AccountRecoveryType accountRecoveryType = buildAccountRecoveryType(
+                    Constants.RECOVERY_WITH_NOTIFICATIONS, recoveryChannelInformation, apiCallsArrayList);
+            accountRecoveryTypes.add(accountRecoveryType);
         }
         if (isQuestionBasedRecoveryEnabled) {
             // Build next API calls list.
-            ArrayList<APICallDTO> apiCallDTOArrayList = new ArrayList<>();
-            apiCallDTOArrayList.add(RecoveryUtil
-                    .buildApiCallDTO(Constants.APICall.RECOVER_WITH_SECURITY_QUESTIONS_API.getType(),
+            ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
+            apiCallsArrayList.add(RecoveryUtil
+                    .buildApiCall(Constants.APICall.RECOVER_WITH_SECURITY_QUESTIONS_API.getType(),
                             Constants.RelationStates.NEXT_REL, RecoveryUtil.buildUri(tenantDomain,
                                     Constants.APICall.RECOVER_WITH_SECURITY_QUESTIONS_API.getApiUrl(),
                                     Constants.CHALLENGE_QUESTIONS_ENDPOINT_BASEPATH),
                             recoveryInformationDTO.getUsername()));
             // Build recovery information for recover with security questions.
-            AccountRecoveryTypeDTO accountRecoveryTypeDTO = buildAccountRecoveryType(
-                    Constants.RECOVER_WITH_CHALLENGE_QUESTIONS, null, apiCallDTOArrayList);
-            recoveryTypeDTOS.add(accountRecoveryTypeDTO);
+            AccountRecoveryType accountRecoveryType = buildAccountRecoveryType(
+                    Constants.RECOVER_WITH_CHALLENGE_QUESTIONS, null, apiCallsArrayList);
+            accountRecoveryTypes.add(accountRecoveryType);
         }
-        return recoveryTypeDTOS;
+        return accountRecoveryTypes;
     }
 }

@@ -15,9 +15,9 @@
  */
 package org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core.exceptions;
 
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.ErrorResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.RetryErrorResponseDTO;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core.Constants;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ErrorResponse;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RetryErrorResponse;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -33,33 +33,35 @@ public class PreconditionFailedException extends WebApplicationException {
     private String message;
 
     /**
-     * Constructs a new exception from the ErrorDTO{@link ErrorResponseDTO} object.
+     * Constructs a new exception from the ErrorDTO{@link ErrorResponse} object.
      *
-     * @param errorDTO ErrorDTO{@link ErrorResponseDTO} object holding the error code and the message
+     * @param errorResponse ErrorResponse{@link ErrorResponse} object holding the error code and the message
      */
-    public PreconditionFailedException(ErrorResponseDTO errorDTO) {
+    public PreconditionFailedException(ErrorResponse errorResponse) {
 
-        super(Response.status(Response.Status.PRECONDITION_FAILED).entity(errorDTO)
+        super(Response.status(Response.Status.PRECONDITION_FAILED).entity(errorResponse)
                 .header(Constants.HEADER_CONTENT_TYPE, Constants.DEFAULT_RESPONSE_CONTENT_TYPE).build());
-        message = errorDTO.getDescription();
+        message = errorResponse.getDescription();
     }
 
     /**
-     * Constructs a new exception from the RetryErrorDTO{@link RetryErrorResponseDTO} object.
+     * Constructs a new exception from the RetryErrorDTO{@link RetryErrorResponse} object.
      *
-     * @param errorDTO RetryErrorDTO{@link RetryErrorResponseDTO} object holding the error code and the message
+     * @param retryErrorResponse RetryErrorResponse{@link RetryErrorResponse} object holding the error code and the
+     *                           message
      */
-    public PreconditionFailedException(RetryErrorResponseDTO errorDTO) {
+    public PreconditionFailedException(RetryErrorResponse retryErrorResponse) {
 
-        super(Response.status(Response.Status.PRECONDITION_FAILED).entity(errorDTO)
+        super(Response.status(Response.Status.PRECONDITION_FAILED).entity(retryErrorResponse)
                 .header(Constants.HEADER_CONTENT_TYPE, Constants.DEFAULT_RESPONSE_CONTENT_TYPE).build());
-        message = errorDTO.getDescription();
+        message = retryErrorResponse.getDescription();
     }
 
     /**
      * Constructs a new exception instance.
      */
     public PreconditionFailedException() {
+
         super(Response.Status.PRECONDITION_FAILED);
     }
 
@@ -70,6 +72,7 @@ public class PreconditionFailedException extends WebApplicationException {
      */
     @Override
     public String getMessage() {
+
         return message;
     }
 }

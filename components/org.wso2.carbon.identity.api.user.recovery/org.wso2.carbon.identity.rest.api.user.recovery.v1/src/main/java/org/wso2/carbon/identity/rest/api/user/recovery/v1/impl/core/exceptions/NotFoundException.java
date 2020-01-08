@@ -15,8 +15,8 @@
  */
 package org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core.exceptions;
 
-import org.wso2.carbon.identity.rest.api.user.recovery.v1.dto.ErrorResponseDTO;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core.Constants;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ErrorResponse;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -32,15 +32,15 @@ public class NotFoundException extends WebApplicationException {
     private String message;
 
     /**
-     * Constructs a new exception from the ErrorDTO{@link ErrorResponseDTO} object.
+     * Constructs a new exception from the ErrorDTO{@link ErrorResponse} object.
      *
-     * @param errorDTO ErrorDTO{@link ErrorResponseDTO} object holding the error code and the message
+     * @param errorResponse ErrorResponse{@link ErrorResponse} object holding the error code and the message
      */
-    public NotFoundException(ErrorResponseDTO errorDTO) {
+    public NotFoundException(ErrorResponse errorResponse) {
 
-        super(Response.status(Response.Status.NOT_FOUND).entity(errorDTO)
+        super(Response.status(Response.Status.NOT_FOUND).entity(errorResponse)
                 .header(Constants.HEADER_CONTENT_TYPE, Constants.DEFAULT_RESPONSE_CONTENT_TYPE).build());
-        message = errorDTO.getDescription();
+        message = errorResponse.getDescription();
     }
 
     /**
