@@ -92,12 +92,6 @@ public class PasswordRecoveryService {
         } catch (IdentityRecoveryException e) {
             throw RecoveryUtil.buildInternalServerErrorResponse(PasswordRecoveryService.class.getName(),
                     Constants.SERVER_ERROR, e.getErrorCode(), Util.getCorrelation(), e);
-        } catch (Throwable throwable) {
-            throw RecoveryUtil
-                    .buildInternalServerErrorResponse(PasswordRecoveryService.class.getName(),
-                            Constants.SERVER_ERROR,
-                            IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_UNEXPECTED_ERROR.getCode(), Util
-                                    .getCorrelation(), throwable);
         }
     }
 
@@ -133,12 +127,6 @@ public class PasswordRecoveryService {
         } catch (IdentityRecoveryException e) {
             throw RecoveryUtil.buildInternalServerErrorResponse(PasswordRecoveryService.class.getName(),
                     Constants.SERVER_ERROR, e.getErrorCode(), Util.getCorrelation(), e);
-        } catch (Throwable throwable) {
-            throw RecoveryUtil
-                    .buildInternalServerErrorResponse(PasswordRecoveryService.class.getName(),
-                            Constants.SERVER_ERROR,
-                            IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_UNEXPECTED_ERROR.getCode(),
-                            Util.getCorrelation(), throwable);
         }
     }
 
@@ -163,11 +151,6 @@ public class PasswordRecoveryService {
         } catch (IdentityRecoveryException e) {
             throw RecoveryUtil.buildInternalServerErrorResponse(PasswordRecoveryService.class.getName(),
                     Constants.SERVER_ERROR, e.getErrorCode(), Util.getCorrelation(), e);
-        } catch (Throwable throwable) {
-            throw RecoveryUtil
-                    .buildInternalServerErrorResponse(PasswordRecoveryService.class.getName(), Constants.SERVER_ERROR,
-                            IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_UNEXPECTED_ERROR.getCode(),
-                            Util.getCorrelation(), throwable);
         }
     }
 
@@ -196,11 +179,6 @@ public class PasswordRecoveryService {
         } catch (IdentityRecoveryException e) {
             throw RecoveryUtil.buildInternalServerErrorResponse(PasswordRecoveryService.class.getName(),
                     Constants.SERVER_ERROR, e.getErrorCode(), Util.getCorrelation(), e);
-        } catch (Throwable throwable) {
-            throw RecoveryUtil
-                    .buildInternalServerErrorResponse(PasswordRecoveryService.class.getName(), Constants.SERVER_ERROR,
-                            IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_UNEXPECTED_ERROR.getCode(),
-                            Util.getCorrelation(), throwable);
         }
     }
 
@@ -233,11 +211,6 @@ public class PasswordRecoveryService {
         } catch (IdentityRecoveryException e) {
             throw RecoveryUtil.buildInternalServerErrorResponse(PasswordRecoveryService.class.getName(),
                     Constants.SERVER_ERROR, e.getErrorCode(), Util.getCorrelation(), e);
-        } catch (Throwable throwable) {
-            throw RecoveryUtil
-                    .buildInternalServerErrorResponse(PasswordRecoveryService.class.getName(), Constants.SERVER_ERROR,
-                            IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_UNEXPECTED_ERROR.getCode(),
-                            Util.getCorrelation(), throwable);
         }
     }
 

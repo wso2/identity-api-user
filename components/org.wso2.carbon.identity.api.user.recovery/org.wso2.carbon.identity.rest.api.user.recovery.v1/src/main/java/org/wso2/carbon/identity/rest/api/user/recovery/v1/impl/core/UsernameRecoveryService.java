@@ -84,11 +84,6 @@ public class UsernameRecoveryService {
         } catch (IdentityRecoveryException e) {
             throw RecoveryUtil.buildInternalServerErrorResponse(UsernameRecoveryService.class.getName(),
                     Constants.SERVER_ERROR, e.getErrorCode(), Util.getCorrelation(), e);
-        } catch (Throwable throwable) {
-            throw RecoveryUtil.buildInternalServerErrorResponse(UsernameRecoveryService.class.getName(),
-                    Constants.SERVER_ERROR,
-                    IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_UNEXPECTED_ERROR.getCode(),
-                    Util.getCorrelation(), throwable);
         }
     }
 
@@ -123,11 +118,6 @@ public class UsernameRecoveryService {
         } catch (IdentityRecoveryException e) {
             throw RecoveryUtil.buildInternalServerErrorResponse(UsernameRecoveryService.class.getName(),
                     Constants.SERVER_ERROR, e.getErrorCode(), Util.getCorrelation(), e);
-        } catch (Throwable throwable) {
-            throw RecoveryUtil.buildInternalServerErrorResponse(UsernameRecoveryService.class.getName(),
-                    Constants.SERVER_ERROR,
-                    IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_UNEXPECTED_ERROR.getCode(),
-                    Util.getCorrelation(), throwable);
         }
     }
 
