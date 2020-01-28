@@ -15,6 +15,7 @@
  */
 package org.wso2.carbon.identity.rest.api.user.association.v1.core;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
@@ -23,6 +24,7 @@ import org.wso2.carbon.identity.api.user.common.function.UserToUniqueId;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationUserRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.FederatedAssociationDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.IdpDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.UserDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.util.UserAssociationServiceHolder;
 import org.wso2.carbon.identity.user.account.association.dto.UserAccountAssociationDTO;
@@ -176,8 +178,23 @@ public class UserAssociationService {
 
         FederatedAssociationDTO federatedAssociationDTO = new FederatedAssociationDTO();
         federatedAssociationDTO.setId(federatedAssociation.getId());
-        federatedAssociationDTO.setIdpId(federatedAssociation.getIdpId());
         federatedAssociationDTO.setFederatedUserId(federatedAssociation.getFederatedUserId());
+
+        IdpDTO idpDTO = new IdpDTO();
+        idpDTO.setId(federatedAssociation.getIdp().getId());
+        idpDTO.setName(federatedAssociation.getIdp().getName());
+        if (federatedAssociation.getIdp().getDisplayName() == null) {
+            idpDTO.setDisplayName(StringUtils.EMPTY);
+        } else {
+            idpDTO.setDisplayName(federatedAssociation.getIdp().getDisplayName());
+        }
+        if (federatedAssociation.getIdp().getImageUrl() == null) {
+            idpDTO.setImageUrl(StringUtils.EMPTY);
+        } else {
+            idpDTO.setImageUrl(federatedAssociation.getIdp().getImageUrl());
+        }
+
+        federatedAssociationDTO.setIdp(idpDTO);
         return federatedAssociationDTO;
     }
 
