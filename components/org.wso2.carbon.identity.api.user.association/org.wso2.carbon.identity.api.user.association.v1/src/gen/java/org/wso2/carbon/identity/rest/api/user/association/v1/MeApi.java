@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,8 +52,8 @@ public class MeApi  {
     @Path("/associations/{associated-user-id}")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @io.swagger.annotations.ApiOperation(value = "Delete all my user associations",
-            notes = "This API is used to delete all associations of the auhtentiated user.\n\n  <b>Permission required:</b>\n\n  * /permission/admin/login\n",
+    @io.swagger.annotations.ApiOperation(value = "Delete given user account from my user associations",
+            notes = "This API is used to delete the given user account from the associations of the auhtentiated user.\n\n  <b>Permission required:</b>\n\n  * /permission/admin/login\n",
             response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 204, message = "No content"),
