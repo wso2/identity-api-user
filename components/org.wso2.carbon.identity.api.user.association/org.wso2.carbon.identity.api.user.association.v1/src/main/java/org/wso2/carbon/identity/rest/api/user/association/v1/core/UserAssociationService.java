@@ -285,7 +285,7 @@ public class UserAssociationService {
         User user = new User();
         user.setTenantDomain(MultitenantUtils.getTenantDomain(userId));
         user.setUserStoreDomain(UserCoreUtil.extractDomainFromName(userId));
-        user.setUserName(MultitenantUtils.getTenantAwareUsername(userId));
+        user.setUserName(MultitenantUtils.getTenantAwareUsername(UserCoreUtil.removeDomainFromName(userId)));
         return user;
     }
 }
