@@ -26,6 +26,7 @@ import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.user.api.UserStoreManager;
 import org.wso2.carbon.user.core.UniqueIDUserStoreManager;
 import org.wso2.carbon.user.core.UserStoreException;
+import org.wso2.carbon.user.core.constants.UserCoreErrorConstants;
 import org.wso2.carbon.user.core.service.RealmService;
 
 import java.util.function.BiFunction;
@@ -76,6 +77,13 @@ public class UniqueIdToUser implements BiFunction<RealmService, String[], User> 
         try {
             user = uniqueIdEnabledUserStoreManager.getUserWithID(userId, null, null);
         } catch (UserStoreException e) {
+            if (UserCoreErrorConstants.ErrorMessages.ERROR_CODE_NON_EXISTING_USER.getCode().equals(e.getErrorCode())) {
+                throw new APIError(Response.Status.NOT_FOUND, new ErrorResponse.Builder()
+                        .withCode(ERROR_CODE_INVALID_USERNAME.getCode())
+                        .withMessage(ERROR_CODE_INVALID_USERNAME.getMessage())
+                        .withDescription(ERROR_CODE_INVALID_USERNAME.getDescription())
+                        .build(log, e, "Invalid userId: " + userId));
+            }
             log.error("Unable to retrieve user for the given user id: " + userId, e);
         }
         if (user == null) {
