@@ -52,8 +52,12 @@ public class Constants {
      */
     public enum ErrorMessage {
 
-        ERROR_CODE_INVALID_USERNAME(USER_MANAGEMENT_PREFIX.getPrefix() + "10001", "Invalid UserID provided", "The " +
-                "provided userId is invalid.");
+        ERROR_CODE_INVALID_USERNAME(USER_MANAGEMENT_PREFIX.getPrefix() + "10001",
+                "Invalid UserID provided.",
+                "The provided userId is invalid."),
+        ERROR_CODE_SERVER_ERROR(USER_MANAGEMENT_PREFIX.getPrefix() + "15001",
+                "Unable to retrieve User.",
+                "Server Encountered an error while retrieving the user.");
 
         private final String code;
         private final String message;

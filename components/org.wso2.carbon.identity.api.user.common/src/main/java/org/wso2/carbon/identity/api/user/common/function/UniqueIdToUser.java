@@ -26,6 +26,7 @@ import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.user.api.UserStoreManager;
 import org.wso2.carbon.user.core.UniqueIDUserStoreManager;
 import org.wso2.carbon.user.core.UserStoreException;
+import org.wso2.carbon.user.core.constants.UserCoreErrorConstants;
 import org.wso2.carbon.user.core.service.RealmService;
 
 import java.util.function.BiFunction;
@@ -33,6 +34,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_INVALID_USERNAME;
+import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_SERVER_ERROR;
 import static org.wso2.carbon.identity.api.user.common.ContextLoader.getUser;
 
 /**
@@ -56,33 +58,29 @@ public class UniqueIdToUser implements BiFunction<RealmService, String[], User> 
                 throw new WebApplicationException("Tenant domain is empty.");
             }
 
-            UniqueIDUserStoreManager uniqueIdEnabledUserStoreManager = getUniqueIdEnabledUserStoreManager(realmService,
-                    tenantDomain);
-            org.wso2.carbon.user.core.common.User user = getUserByUniqueId(userId, uniqueIdEnabledUserStoreManager);
+            UniqueIDUserStoreManager uniqueIdEnabledUserStoreManager =
+                    getUniqueIdEnabledUserStoreManager(realmService, tenantDomain);
+            org.wso2.carbon.user.core.common.User user =
+                    uniqueIdEnabledUserStoreManager.getUserWithID(userId, null, null);
             return getUser(user);
         } catch (org.wso2.carbon.user.api.UserStoreException e) {
-            throw new APIError(Response.Status.BAD_REQUEST, new ErrorResponse.Builder()
-                    .withCode(ERROR_CODE_INVALID_USERNAME.getCode())
-                    .withMessage(ERROR_CODE_INVALID_USERNAME.getMessage())
-                    .withDescription(ERROR_CODE_INVALID_USERNAME.getDescription())
-                    .build(log, e, "Invalid userId: " + userId));
-        }
-    }
 
-    private org.wso2.carbon.user.core.common.User getUserByUniqueId(String userId, UniqueIDUserStoreManager
-            uniqueIdEnabledUserStoreManager) {
-
-        org.wso2.carbon.user.core.common.User user = null;
-        try {
-            user = uniqueIdEnabledUserStoreManager.getUserWithID(userId, null, null);
-        } catch (UserStoreException e) {
-            log.error("Unable to retrieve user for the given user id: " + userId, e);
+            if (isUserNotExistingError(e)) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Cannot retrieve user from userId: " + userId, e);
+                }
+                throw new APIError(Response.Status.NOT_FOUND, new ErrorResponse.Builder()
+                        .withCode(ERROR_CODE_INVALID_USERNAME.getCode())
+                        .withMessage(ERROR_CODE_INVALID_USERNAME.getMessage())
+                        .withDescription(ERROR_CODE_INVALID_USERNAME.getDescription())
+                        .build());
+            }
+            throw new APIError(Response.Status.INTERNAL_SERVER_ERROR, new ErrorResponse.Builder()
+                    .withCode(ERROR_CODE_SERVER_ERROR.getCode())
+                    .withMessage(ERROR_CODE_SERVER_ERROR.getMessage())
+                    .withDescription(ERROR_CODE_SERVER_ERROR.getDescription())
+                    .build(log, e, "Error occurred when retrieving user from userId: " + userId));
         }
-        if (user == null) {
-            throw new WebApplicationException("Could not find a valid user for the UserId: " + userId + ". " +
-                    "Provided Id is either empty or invalid.");
-        }
-        return user;
     }
 
     private UniqueIDUserStoreManager getUniqueIdEnabledUserStoreManager(RealmService realmService, String tenantDomain)
@@ -94,5 +92,12 @@ public class UniqueIdToUser implements BiFunction<RealmService, String[], User> 
             throw new WebApplicationException("Provided user store manager does not support unique user IDs.");
         }
         return (UniqueIDUserStoreManager) userStoreManager;
+    }
+
+    private boolean isUserNotExistingError(org.wso2.carbon.user.api.UserStoreException e) {
+
+        return e instanceof UserStoreException &&
+                UserCoreErrorConstants.ErrorMessages.ERROR_CODE_NON_EXISTING_USER.getCode().equals(
+                        ((UserStoreException) e).getErrorCode());
     }
 }
