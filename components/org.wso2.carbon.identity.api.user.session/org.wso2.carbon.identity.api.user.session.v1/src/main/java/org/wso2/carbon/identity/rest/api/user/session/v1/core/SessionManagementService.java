@@ -105,6 +105,10 @@ public class SessionManagementService {
             } else {
                 throw handleInvalidParameters();
             }
+        } catch (SessionManagementClientException e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e);
+            }
         } catch (SessionManagementException e) {
             throw handleSessionManagementException(e);
         }
