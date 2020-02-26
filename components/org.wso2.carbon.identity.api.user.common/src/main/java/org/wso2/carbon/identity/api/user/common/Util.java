@@ -16,6 +16,7 @@
 
 package org.wso2.carbon.identity.api.user.common;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.MDC;
@@ -25,12 +26,18 @@ import org.wso2.carbon.identity.application.authentication.framework.exception.U
 import org.wso2.carbon.identity.application.authentication.framework.store.UserSessionStore;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
+import org.wso2.carbon.user.api.UserStoreException;
+import org.wso2.carbon.user.api.UserStoreManager;
+import org.wso2.carbon.user.core.UniqueIDUserStoreManager;
+import org.wso2.carbon.user.core.service.RealmService;
 
 import java.util.UUID;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.CORRELATION_ID_MDC;
 import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_INVALID_USERNAME;
+import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_SERVER_ERROR;
 
 /**
  * Common util class
@@ -41,6 +48,7 @@ public class Util {
 
     /**
      * Get correlation id of current thread
+     *
      * @return correlation-id
      */
     public static String getCorrelation() {
@@ -56,6 +64,7 @@ public class Util {
 
     /**
      * Check whether correlation id present in the log MDC
+     *
      * @return
      */
     public static boolean isCorrelationIDPresent() {
@@ -81,5 +90,55 @@ public class Util {
                     .withDescription(ERROR_CODE_INVALID_USERNAME.getDescription())
                     .build(log, e, "Invalid userId: " + user.getUserName()));
         }
+    }
+
+    /**
+     * Validate whether the given id is valid user id in the user store or in the session management data stores.
+     *
+     * @param realmService  realm service
+     * @param userId    unique user id of the user
+     * @param tenantDomain  tenant domain of the user
+     */
+    public static void validateUserId(RealmService realmService, String userId, String tenantDomain) {
+
+        if (StringUtils.isEmpty(userId)) {
+            throw new WebApplicationException("UserID is empty.");
+        }
+        boolean isUserValid;
+
+        try {
+            isUserValid = UserSessionStore.getInstance().isExistingUser(userId);
+            if (!isUserValid) {
+                isUserValid = validateUserIdInUserstore(realmService, tenantDomain, userId);
+            }
+        } catch (UserSessionException | UserStoreException e) {
+           throw new APIError(Response.Status.INTERNAL_SERVER_ERROR, new ErrorResponse.Builder()
+                    .withCode(ERROR_CODE_SERVER_ERROR.getCode())
+                    .withMessage(ERROR_CODE_SERVER_ERROR.getMessage())
+                    .withDescription(ERROR_CODE_SERVER_ERROR.getDescription())
+                    .build(log, e, "Error occurred when retrieving user from userId: " + userId));
+        }
+        if (!isUserValid) {
+            throw new APIError(Response.Status.NOT_FOUND, new ErrorResponse.Builder()
+                    .withCode(ERROR_CODE_INVALID_USERNAME.getCode())
+                    .withMessage(ERROR_CODE_INVALID_USERNAME.getMessage())
+                    .withDescription(ERROR_CODE_INVALID_USERNAME.getDescription())
+                    .build());
+        }
+    }
+
+    private static boolean validateUserIdInUserstore(RealmService realmService, String tenantDomain, String userId)
+            throws UserStoreException {
+
+        UserStoreManager userStoreManager = realmService.getTenantUserRealm(
+                IdentityTenantUtil.getTenantId(tenantDomain)).getUserStoreManager();
+        if (!(userStoreManager instanceof UniqueIDUserStoreManager)) {
+            if (log.isDebugEnabled()) {
+                log.debug("Provided user store manager does not support unique user IDs. Therefore the user id: "
+                        + userId + " cannot be validated.");
+            }
+            return false;
+        }
+        return ((UniqueIDUserStoreManager) userStoreManager).isExistingUserWithID(userId);
     }
 }
