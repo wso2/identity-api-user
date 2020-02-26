@@ -115,8 +115,6 @@ paths:
             $ref: '#/definitions/Error'
         401:
           description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
         409:
           description: Conflict
           schema:
@@ -156,8 +154,6 @@ paths:
             $ref: '#/definitions/Error'
         401:
           description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
         409:
           description: Conflict
           schema:
@@ -197,8 +193,6 @@ paths:
             $ref: '#/definitions/Error'
         401:
           description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
         500:
           description: Server Error
           schema:
@@ -235,8 +229,6 @@ paths:
             $ref: '#/definitions/Error'
         401:
           description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
         409:
           description: Conflict
           schema:
