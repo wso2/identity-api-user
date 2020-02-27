@@ -30,7 +30,6 @@ import org.wso2.carbon.user.core.constants.UserCoreErrorConstants;
 import org.wso2.carbon.user.core.service.RealmService;
 
 import java.util.function.BiFunction;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_INVALID_USERNAME;
@@ -53,9 +52,15 @@ public class UniqueIdToUser implements BiFunction<RealmService, String[], User> 
             userId = args[0];
             tenantDomain = args[1];
             if (StringUtils.isEmpty(userId)) {
-                throw new WebApplicationException("UserID is empty.");
+                if (log.isDebugEnabled()) {
+                    log.debug("UserID is empty.");
+                }
+                throw buildUserNotFoundError();
             } else if (StringUtils.isEmpty(tenantDomain)) {
-                throw new WebApplicationException("Tenant domain is empty.");
+                if (log.isDebugEnabled()) {
+                    log.debug("Tenant domain is empty.");
+                }
+                throw buildUserNotFoundError();
             }
 
             UniqueIDUserStoreManager uniqueIdEnabledUserStoreManager =
@@ -69,11 +74,7 @@ public class UniqueIdToUser implements BiFunction<RealmService, String[], User> 
                 if (log.isDebugEnabled()) {
                     log.debug("Cannot retrieve user from userId: " + userId, e);
                 }
-                throw new APIError(Response.Status.NOT_FOUND, new ErrorResponse.Builder()
-                        .withCode(ERROR_CODE_INVALID_USERNAME.getCode())
-                        .withMessage(ERROR_CODE_INVALID_USERNAME.getMessage())
-                        .withDescription(ERROR_CODE_INVALID_USERNAME.getDescription())
-                        .build());
+                throw buildUserNotFoundError();
             }
             throw new APIError(Response.Status.INTERNAL_SERVER_ERROR, new ErrorResponse.Builder()
                     .withCode(ERROR_CODE_SERVER_ERROR.getCode())
@@ -89,7 +90,10 @@ public class UniqueIdToUser implements BiFunction<RealmService, String[], User> 
         UserStoreManager userStoreManager = realmService.getTenantUserRealm(
                 IdentityTenantUtil.getTenantId(tenantDomain)).getUserStoreManager();
         if (!(userStoreManager instanceof UniqueIDUserStoreManager)) {
-            throw new WebApplicationException("Provided user store manager does not support unique user IDs.");
+            if (log.isDebugEnabled()) {
+                log.debug("Provided user store manager does not support unique user IDs.");
+            }
+            throw buildUserNotFoundError();
         }
         return (UniqueIDUserStoreManager) userStoreManager;
     }
@@ -99,5 +103,14 @@ public class UniqueIdToUser implements BiFunction<RealmService, String[], User> 
         return e instanceof UserStoreException &&
                 UserCoreErrorConstants.ErrorMessages.ERROR_CODE_NON_EXISTING_USER.getCode().equals(
                         ((UserStoreException) e).getErrorCode());
+    }
+
+    private APIError buildUserNotFoundError() {
+
+        return new APIError(Response.Status.NOT_FOUND, new ErrorResponse.Builder()
+                .withCode(ERROR_CODE_INVALID_USERNAME.getCode())
+                .withMessage(ERROR_CODE_INVALID_USERNAME.getMessage())
+                .withDescription(ERROR_CODE_INVALID_USERNAME.getDescription())
+                .build());
     }
 }
