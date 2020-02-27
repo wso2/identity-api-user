@@ -23,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
+import org.wso2.carbon.identity.api.user.common.function.UserToUniqueId;
 import org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants;
 import org.wso2.carbon.identity.api.user.session.common.util.SessionManagementServiceHolder;
 import org.wso2.carbon.identity.application.authentication.framework.exception.session.mgt
@@ -40,7 +41,6 @@ import java.util.stream.Collectors;
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.ERROR_CODE_DELIMITER;
-import static org.wso2.carbon.identity.api.user.common.Util.resolveUserIdFromUser;
 import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants.ErrorMessage
         .ERROR_CODE_FILTERING_NOT_IMPLEMENTED;
 import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants.ErrorMessage
@@ -67,7 +67,46 @@ public class SessionManagementService {
      * @param sort   sort (optional)
      * @return SessionsDTO
      */
-    public SessionsDTO getSessionsBySessionId(User user, Integer limit, Integer offset, String filter, String
+    public SessionsDTO getSessionsBySessionId(User user, Integer limit, Integer offset, String filter, String sort) {
+
+        String userId = getUserIdFromUser(user);
+        return getSessionsByUserId(userId, limit, offset, filter, sort);
+    }
+
+    /**
+     * Terminate the session of the given session id.
+     *
+     * @param user      user
+     * @param sessionId session id
+     */
+    public void terminateSessionBySessionId(User user, String sessionId) {
+
+        String userId = getUserIdFromUser(user);
+        terminateSessionBySessionId(userId, sessionId);
+    }
+
+    /**
+     * Terminate all the sessions of the given user.
+     *
+     * @param user user
+     */
+    public void terminateSessionsByUserId(User user) {
+
+        String userId = getUserIdFromUser(user);
+        terminateSessionsByUserId(userId);
+    }
+
+    /**
+     * Get all the active sessions of a given user.
+     *
+     * @param userId unique id of the user
+     * @param limit  limit (optional)
+     * @param offset offset (optional)
+     * @param filter filter (optional)
+     * @param sort   sort (optional)
+     * @return SessionsDTO
+     */
+    public SessionsDTO getSessionsByUserId(String userId, Integer limit, Integer offset, String filter, String
             sort) {
 
         handleNotImplementedCapabilities(limit, offset, filter, sort);
@@ -75,7 +114,6 @@ public class SessionManagementService {
         List<UserSession> sessionsForUser;
         SessionsDTO sessions = null;
         try {
-            String userId = resolveUserIdFromUser(user);
             if (userId != null) {
                 sessions = new SessionsDTO();
                 sessionsForUser = SessionManagementServiceHolder.getUserSessionManagementService()
@@ -93,12 +131,12 @@ public class SessionManagementService {
     /**
      * Terminate the session of the given session id.
      *
-     * @param user      user
+     * @param userId    unique id of the user
      * @param sessionId session id
      */
-    public void terminateSessionBySessionId(User user, String sessionId) {
+    public void terminateSessionBySessionId(String userId, String sessionId) {
+
         try {
-            String userId = resolveUserIdFromUser(user);
             if (userId != null && sessionId != null) {
                 SessionManagementServiceHolder.getUserSessionManagementService().terminateSessionBySessionId(userId,
                         sessionId);
@@ -117,12 +155,11 @@ public class SessionManagementService {
     /**
      * Terminate all the sessions of the given user.
      *
-     * @param user      user
+     * @param userId unique id of the user
      */
-    public void terminateSessionsByUserId(User user) {
+    public void terminateSessionsByUserId(String userId) {
 
         try {
-            String userId = resolveUserIdFromUser(user);
             if (userId != null) {
                 SessionManagementServiceHolder.getUserSessionManagementService().terminateSessionsByUserId(userId);
             }
@@ -207,5 +244,10 @@ public class SessionManagementService {
                 ERROR_CODE_SESSION_TERMINATE_FORBIDDEN.getDescription());
         Response.Status status = Response.Status.FORBIDDEN;
         return new APIError(status, errorResponse);
+    }
+
+    private String getUserIdFromUser(User user) {
+
+        return new UserToUniqueId().apply(SessionManagementServiceHolder.getRealmService(), user);
     }
 }

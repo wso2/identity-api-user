@@ -20,12 +20,13 @@ package org.wso2.carbon.identity.rest.api.user.session.v1.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.api.user.common.ContextLoader;
-import org.wso2.carbon.identity.api.user.common.function.UniqueIdToUser;
+import org.wso2.carbon.identity.api.user.common.Util;
 import org.wso2.carbon.identity.api.user.session.common.util.SessionManagementServiceHolder;
-import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.rest.api.user.session.v1.UserIdApiService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.core.SessionManagementService;
+import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionsDTO;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
@@ -39,30 +40,32 @@ public class UserIdApiServiceImpl extends UserIdApiService {
     @Override
     public Response getSessionsByUserId(String userId, Integer limit, Integer offset, String filter, String sort) {
 
-        return Response.ok().entity(sessionManagementService.getSessionsBySessionId(
-                getUser(userId), limit, offset, filter,
-                sort)).build();
+        Util.validateUserId(SessionManagementServiceHolder.getRealmService(), userId,
+                ContextLoader.getTenantDomainFromContext());
+
+        SessionsDTO sessionsOfUser = sessionManagementService.getSessionsByUserId(userId, limit, offset, filter, sort);
+        if (sessionsOfUser == null || sessionsOfUser.getSessions().isEmpty()) {
+            return Response.ok().entity("{}").type(MediaType.APPLICATION_JSON).build();
+        } else {
+            return Response.ok().entity(sessionsOfUser).build();
+        }
     }
 
     @Override
     public Response terminateSessionBySessionId(String userId, String sessionId) {
 
-        sessionManagementService.terminateSessionBySessionId(getUser(userId), sessionId);
-
+        Util.validateUserId(SessionManagementServiceHolder.getRealmService(), userId,
+                ContextLoader.getTenantDomainFromContext());
+        sessionManagementService.terminateSessionBySessionId(userId, sessionId);
         return Response.noContent().build();
     }
 
     @Override
     public Response terminateSessionsByUserId(String userId) {
 
-        sessionManagementService.terminateSessionsByUserId(getUser(userId));
-
-        return Response.noContent().build();
-    }
-
-    private User getUser(String userId) {
-
-        return new UniqueIdToUser().apply(SessionManagementServiceHolder.getRealmService(), userId,
+        Util.validateUserId(SessionManagementServiceHolder.getRealmService(), userId,
                 ContextLoader.getTenantDomainFromContext());
+        sessionManagementService.terminateSessionsByUserId(userId);
+        return Response.noContent().build();
     }
 }
