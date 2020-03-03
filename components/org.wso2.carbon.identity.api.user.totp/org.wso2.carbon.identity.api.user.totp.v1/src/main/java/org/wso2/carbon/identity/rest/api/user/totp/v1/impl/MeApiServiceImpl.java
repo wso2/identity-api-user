@@ -27,7 +27,7 @@ import static org.wso2.carbon.identity.api.user.totp.common.TOTPConstants.ErrorM
         .USER_ERROR_INVALID_VALIDATION_PARAMS;
 
 /**
- * Implementation class of TOTP API
+ * Implementation class of TOTP API.
  */
 public class MeApiServiceImpl extends MeApiService {
 

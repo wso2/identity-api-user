@@ -54,7 +54,7 @@ import static org.wso2.carbon.identity.api.user.totp.common.TOTPConstants.ErrorM
 import static org.wso2.carbon.identity.api.user.totp.common.TOTPConstants.ErrorMessage.USER_ERROR_UNAUTHORIZED_USER;
 
 /**
- * Service class for TOTP API
+ * Service class for TOTP API.
  */
 public class TOTPService {
 
@@ -256,7 +256,6 @@ public class TOTPService {
         } else {
             errorResponse = getErrorBuilder(errorEnum).build(log, e, errorEnum.getDescription());
         }
-
         if (e instanceof AuthenticationFailedException) {
             return handleError(Response.Status.UNAUTHORIZED, USER_ERROR_UNAUTHORIZED_USER);
         } else if (e instanceof UserStoreException | e instanceof CryptoException) {

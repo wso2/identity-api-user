@@ -79,7 +79,6 @@ public class MeApiServiceImpl extends MeApiService {
 
     @Override
     public Response meWebauthnStartRegistrationPost(String appID) {
-
         try {
             Either<String, RegistrationRequest> result = webAuthnService.startRegistration(appID);
             if (result.isRight()) {

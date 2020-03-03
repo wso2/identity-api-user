@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>org.wso2.carbon.identity.api.user.biometric.device</artifactId>
+        <groupId>org.wso2.carbon.identity.user.api</groupId>
+        <version>1.0.64-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>org.wso2.carbon.identity.api.user.biometric.device.common</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity.user.api</groupId>
+            <artifactId>org.wso2.carbon.identity.api.user.common</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity.outbound.auth.biometric</groupId>
+            <artifactId>org.wso2.carbon.identity.application.authenticator.biometric.device.handler</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
