@@ -16,15 +16,7 @@
 
 package org.wso2.carbon.identity.api.user.biometric.device.handler.v1;
 
-import org.wso2.carbon.identity.api.user.biometric.device.handler.v1.*;
-import org.wso2.carbon.identity.api.user.biometric.device.handler.v1.model.*;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-import java.io.InputStream;
-import org.wso2.carbon.identity.api.user.biometric.device.handler.v1.model.DeviceDTO;
-import org.wso2.carbon.identity.api.user.biometric.device.handler.v1.model.DiscoveryDataDTO;
-import org.wso2.carbon.identity.api.user.biometric.device.handler.v1.model.ErrorDTO;
-import org.wso2.carbon.identity.api.user.biometric.device.handler.v1.model.InlineResponse201;
+
 import org.wso2.carbon.identity.api.user.biometric.device.handler.v1.model.PatchDTO;
 import org.wso2.carbon.identity.api.user.biometric.device.handler.v1.model.RegistrationRequestDTO;
 import javax.ws.rs.core.Response;

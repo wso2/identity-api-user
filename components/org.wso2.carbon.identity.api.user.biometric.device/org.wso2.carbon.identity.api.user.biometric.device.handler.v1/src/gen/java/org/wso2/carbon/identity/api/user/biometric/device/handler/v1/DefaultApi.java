@@ -23,14 +23,10 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
-
-
-
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.wso2.carbon.identity.api.user.biometric.device.handler.v1.model.DeviceDTO;
 import org.wso2.carbon.identity.api.user.biometric.device.handler.v1.model.ErrorDTO;
 
