@@ -55,8 +55,7 @@ public class DefaultApiServiceImpl implements DefaultApiService {
             log.debug("Fetching data of device : {0}" + deviceId + " of user :{0}" + userId);
         }
         deviceHandlerService = new BiometricdeviceHandlerService();
-        deviceHandlerService.getDevice(deviceId);
-        return Response.noContent().build();
+        return Response.ok().entity(deviceHandlerService.getDevice(deviceId)).build();
     }
 
     @Override

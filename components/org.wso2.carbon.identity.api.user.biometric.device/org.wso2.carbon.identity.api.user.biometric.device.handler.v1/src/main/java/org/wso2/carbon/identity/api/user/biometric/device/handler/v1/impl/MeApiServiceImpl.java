@@ -58,8 +58,7 @@ public class MeApiServiceImpl implements MeApiService {
             log.debug(MessageFormat.format("Fetching data of device : {0}", deviceId));
         }
         deviceHandlerService = new BiometricdeviceHandlerService();
-        deviceHandlerService.getDevice(deviceId);
-        return Response.noContent().build();
+        return Response.ok().entity(deviceHandlerService.getDevice(deviceId)).build();
     }
 
     @Override
