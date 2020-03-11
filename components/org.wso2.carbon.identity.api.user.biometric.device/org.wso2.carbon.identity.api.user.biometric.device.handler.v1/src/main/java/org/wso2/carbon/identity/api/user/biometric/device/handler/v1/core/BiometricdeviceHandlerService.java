@@ -148,7 +148,6 @@ public class BiometricdeviceHandlerService {
         deviceDTO.setName(device.getDeviceName());
         deviceDTO.setModel(device.getDeviceModel());
         deviceDTO.setPushId(device.getDeviceId());
-        deviceDTO.setPublicKey(device.getPublicKey());
         deviceDTO.setRegistrationTime(device.getRegistrationTime());
         deviceDTO.setLastUsedTime(device.getLastUsedTime());
         return deviceDTO;
