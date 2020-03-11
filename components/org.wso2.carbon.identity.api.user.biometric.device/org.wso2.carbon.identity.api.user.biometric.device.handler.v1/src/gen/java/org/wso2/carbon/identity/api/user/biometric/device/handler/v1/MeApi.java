@@ -117,7 +117,7 @@ public class MeApi  {
     @GET
     @Path("/biometricDevice/devices")
     
-    @Produces({ "array", "application/json" })
+    @Produces({ "application/json" })
     @ApiOperation(value = "Returns All registered devices of the user ", notes = "This API is used to get a specific device. <b>Permission required:</b>  * /permission/admin/login ", response = Object.class, responseContainer = "List", authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
