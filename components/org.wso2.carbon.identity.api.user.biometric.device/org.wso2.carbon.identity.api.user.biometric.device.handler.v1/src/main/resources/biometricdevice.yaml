@@ -60,7 +60,7 @@ paths:
         - me
 
   # Endpoint used to get device information
-  /me/biometricDevice:
+  /me/biometricdevice:
     post:
       description: |
         This API is used to recieve device information and complete the device registration flow.
@@ -88,7 +88,7 @@ paths:
                     type: string
                     format: url
                     description: Link of the created resource.
-                    example: " https://localhost:9443/t/{tenant_context}/api/users/v1/me/biometricDevice/dev123"
+                    example: " https://localhost:9443/t/{tenant_context}/api/users/v1/me/biometricdevice/dev123"
         400:
           description: Bad Request
           content:
@@ -124,7 +124,7 @@ paths:
       tags:
         - me
 
-  /me/biometricDevice/{deviceId}:
+  /me/biometricdevice/{deviceId}:
     delete:
       description: |
         This API is used to remove a device deviceId.
@@ -283,7 +283,7 @@ paths:
       tags:
         - me
 
-  /me/biometricDevice/devices:
+  /me/biometricdevice/devices:
     get:
       description: |
         This API is used to get a specific device.
@@ -332,7 +332,7 @@ paths:
       tags:
         - me
   #admin apis
-  /{user-id}/biometricDevice/{deviceId}:
+  /{user-id}/biometricdevice/{deviceId}:
     delete:
       description: |
         This API is used by admins to remove a specific device
@@ -448,7 +448,7 @@ paths:
       tags:
         - admin
 
-  /{user-id}/biometricDevice/devices:
+  /{user-id}/biometricdevice/devices:
     get:
       description: |
         This API is used by admins to retrieve all devices registered under a user"
