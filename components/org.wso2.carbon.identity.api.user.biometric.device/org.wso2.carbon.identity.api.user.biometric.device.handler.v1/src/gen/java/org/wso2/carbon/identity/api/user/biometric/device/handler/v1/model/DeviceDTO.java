@@ -36,7 +36,7 @@ public class DeviceDTO  {
     private String name;
     private String model;
     private String pushId = null;
-    private Object publicKey;
+    private String publicKey;
     private Object registrationTime;
     private Object lastUsedTime;
 
@@ -115,7 +115,7 @@ public class DeviceDTO  {
 
     /**
     **/
-    public DeviceDTO publicKey(Object publicKey) {
+    public DeviceDTO publicKey(String publicKey) {
 
         this.publicKey = publicKey;
         return this;
@@ -124,10 +124,10 @@ public class DeviceDTO  {
     @ApiModelProperty(example = "81fsgfdfdsfds6768tyu78", value = "")
     @JsonProperty("publicKey")
     @Valid
-    public Object getPublicKey() {
+    public String getPublicKey() {
         return publicKey;
     }
-    public void setPublicKey(Object publicKey) {
+    public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
     }
 

@@ -30,7 +30,7 @@ public class RegistrationRequestDTO  {
     private String name;
     private String model;
     private String pushId;
-    private Object publickey;
+    private String publickey;
     private String signature;
 
     /**
@@ -89,7 +89,7 @@ public class RegistrationRequestDTO  {
 
     /**
     **/
-    public RegistrationRequestDTO publickey(Object publickey) {
+    public RegistrationRequestDTO publickey(String publickey) {
 
         this.publickey = publickey;
         return this;
@@ -98,10 +98,10 @@ public class RegistrationRequestDTO  {
     @ApiModelProperty(example = "bhkbvhbhjbh756576gfhvbe", value = "")
     @JsonProperty("publickey")
     @Valid
-    public Object getPublickey() {
+    public String getPublickey() {
         return publickey;
     }
-    public void setPublickey(Object publickey) {
+    public void setPublickey(String publickey) {
         this.publickey = publickey;
     }
 
