@@ -39,6 +39,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -48,13 +49,13 @@ import java.util.ArrayList;
 public class BiometricdeviceHandlerService {
     DeviceHandler deviceHandler;
 
-    public String registerDevice(RegistrationRequestDTO registrationRequestDTO) {
+    public Device registerDevice(RegistrationRequestDTO registrationRequestDTO) {
         RegistrationRequest registrationRequest = new RegistrationRequest();
         try {
             deviceHandler = new DeviceHandlerImpl();
             registrationRequest.setDeviceModel(registrationRequestDTO.getModel());
             registrationRequest.setDeviceName(registrationRequestDTO.getName());
-            registrationRequest.setPublicKey((PublicKey) registrationRequestDTO.getPublickey());
+            registrationRequest.setPublicKey(registrationRequestDTO.getPublickey());
             registrationRequest.setPushId(registrationRequestDTO.getPushId());
             registrationRequest.setSignature(registrationRequestDTO.getSignature());
             return deviceHandler.registerDevice(registrationRequest);
@@ -86,6 +87,9 @@ public class BiometricdeviceHandlerService {
         } catch (SQLException e) {
             throw BiometricDeviceApiUtils.handleException(e,
                     BiometricDeviceApiConstants.ErrorMessages.ERROR_CODE_DEVICE_HANDLER_SQL_EXCEPTION);
+        } catch (InvalidKeySpecException e) {
+            throw BiometricDeviceApiUtils.handleException(e,
+                    BiometricDeviceApiConstants.ErrorMessages.ERROR_CODE_INTERNAL_SERVER_ERROR);
         }
     }
 
