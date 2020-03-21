@@ -83,13 +83,11 @@ public class MeApiServiceImpl implements MeApiService {
 
     @Override
     public Response meBiometricDevicePost(RegistrationRequestDTO registrationRequest) {
-        String deviceId;
         if (log.isDebugEnabled() && registrationRequest != null) {
             log.debug("Received registration request from mobile device");
         }
         deviceHandlerService = new BiometricdeviceHandlerService();
-        deviceId = deviceHandlerService.registerDevice(registrationRequest);
-        return Response.ok().entity(deviceId).build();
+        return Response.ok().entity(deviceHandlerService.registerDevice(registrationRequest)).build();
     }
 
     @Override
