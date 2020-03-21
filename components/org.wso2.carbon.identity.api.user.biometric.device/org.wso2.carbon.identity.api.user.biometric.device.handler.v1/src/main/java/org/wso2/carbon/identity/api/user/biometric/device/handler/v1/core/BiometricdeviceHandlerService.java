@@ -49,8 +49,9 @@ import java.util.ArrayList;
 public class BiometricdeviceHandlerService {
     DeviceHandler deviceHandler;
 
-    public Device registerDevice(RegistrationRequestDTO registrationRequestDTO) {
+    public DeviceDTO registerDevice(RegistrationRequestDTO registrationRequestDTO) {
         RegistrationRequest registrationRequest = new RegistrationRequest();
+        Device device;
         try {
             deviceHandler = new DeviceHandlerImpl();
             registrationRequest.setDeviceModel(registrationRequestDTO.getModel());
@@ -58,7 +59,7 @@ public class BiometricdeviceHandlerService {
             registrationRequest.setPublicKey(registrationRequestDTO.getPublickey());
             registrationRequest.setPushId(registrationRequestDTO.getPushId());
             registrationRequest.setSignature(registrationRequestDTO.getSignature());
-            return deviceHandler.registerDevice(registrationRequest);
+            device = deviceHandler.registerDevice(registrationRequest);
 
         } catch (BiometricDeviceHandlerClientException e) {
             throw BiometricDeviceApiUtils.handleException(e,
@@ -91,6 +92,11 @@ public class BiometricdeviceHandlerService {
             throw BiometricDeviceApiUtils.handleException(e,
                     BiometricDeviceApiConstants.ErrorMessages.ERROR_CODE_INTERNAL_SERVER_ERROR);
         }
+
+        DeviceDTO deviceDTO = new DeviceDTO();
+        deviceDTO.setId(device.getDeviceId());
+        deviceDTO.setName(device.getDeviceName());
+        return deviceDTO;
     }
 
     public void unregisterDevice(String deviceId) {
