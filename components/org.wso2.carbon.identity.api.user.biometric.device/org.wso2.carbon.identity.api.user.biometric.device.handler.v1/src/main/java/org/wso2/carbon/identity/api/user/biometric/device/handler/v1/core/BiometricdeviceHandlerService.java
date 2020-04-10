@@ -54,6 +54,7 @@ public class BiometricdeviceHandlerService {
         Device device;
         try {
             deviceHandler = new DeviceHandlerImpl();
+            registrationRequest.setDeviceId(registrationRequestDTO.getId());
             registrationRequest.setDeviceModel(registrationRequestDTO.getModel());
             registrationRequest.setDeviceName(registrationRequestDTO.getName());
             registrationRequest.setPublicKey(registrationRequestDTO.getPublickey());
@@ -188,9 +189,10 @@ public class BiometricdeviceHandlerService {
                     BiometricDeviceApiConstants.ErrorMessages.ERROR_CODE_IO_ERROR);
         }
         ArrayList<DeviceDTO> deviceDTOArrayList = new ArrayList<>();
-        DeviceDTO deviceDTO = new DeviceDTO();
+        DeviceDTO deviceDTO;
         if (devices != null) {
             for (Device device : devices) {
+                deviceDTO = new DeviceDTO();
                 deviceDTO.setId(device.getDeviceId());
                 deviceDTO.setName(device.getDeviceName());
                 deviceDTO.setModel(device.getDeviceModel());
@@ -208,6 +210,7 @@ public class BiometricdeviceHandlerService {
         DiscoveryData discoveryData;
         discoveryData = deviceHandler.getDiscoveryData();
         DiscoveryDataDTO discoveryDataDTO = new DiscoveryDataDTO();
+        discoveryDataDTO.setId(discoveryData.getDeviceId());
         discoveryDataDTO.setUsername(discoveryData.getUsername());
         discoveryDataDTO.setTennantDomain(discoveryData.getTenantDomain());
         discoveryDataDTO.setUserStoreDomain(discoveryData.getUserStore());
