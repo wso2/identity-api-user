@@ -20,7 +20,6 @@
 package org.wso2.carbon.identity.api.user.biometric.device.handler.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.swagger.annotations.ApiModelProperty;
 
 
@@ -36,12 +35,11 @@ public class DeviceDTO  {
     private String name;
     private String model;
     private String pushId = null;
-    private String publicKey;
+    private String publicKey = null;
     private Object registrationTime;
     private Object lastUsedTime;
 
     /**
-     * .
     **/
     public DeviceDTO id(String id) {
 

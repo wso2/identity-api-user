@@ -22,14 +22,12 @@ package org.wso2.carbon.identity.api.user.biometric.device.handler.v1;
 
 import javax.ws.rs.core.Response;
 
-/**
- *.
- */
+
 public interface DefaultApiService {
 
-      public Response userIdBiometricDeviceDeviceIdDelete(String userId, String deviceId);
+      public Response userIdBiometricdeviceDeviceIdDelete(String userId, String deviceId);
 
-      public Response userIdBiometricDeviceDeviceIdGet(String userId, String deviceId);
+      public Response userIdBiometricdeviceDeviceIdGet(String userId, String deviceId);
 
-      public Response userIdBiometricDeviceDevicesGet(String userId);
+      public Response userIdBiometricdeviceDevicesGet(String userId);
 }

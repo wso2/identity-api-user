@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
@@ -22,14 +21,13 @@ package org.wso2.carbon.identity.api.user.biometric.device.handler.v1.factories;
 
 import org.wso2.carbon.identity.api.user.biometric.device.handler.v1.DefaultApiService;
 import org.wso2.carbon.identity.api.user.biometric.device.handler.v1.impl.DefaultApiServiceImpl;
-/**
- *.
- */
+
 public class DefaultApiServiceFactory {
 
    private final static DefaultApiService service = new DefaultApiServiceImpl();
 
-   public static DefaultApiService getDefaultApi() {
+   public static DefaultApiService getDefaultApi()
+   {
       return service;
    }
 }

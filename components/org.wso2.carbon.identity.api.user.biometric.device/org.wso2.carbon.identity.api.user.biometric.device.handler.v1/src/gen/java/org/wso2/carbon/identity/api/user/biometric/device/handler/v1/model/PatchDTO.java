@@ -18,26 +18,26 @@
  */
 
 package org.wso2.carbon.identity.api.user.biometric.device.handler.v1.model;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.Objects;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
-import javax.xml.bind.annotation.XmlType;
 
 /**
  * A JSONPatch as defined by RFC 6902.
  **/
 
+import java.util.Objects;
+import javax.validation.Valid;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlEnumValue;
 @ApiModel(description = "A JSONPatch as defined by RFC 6902.")
 public class PatchDTO  {
+  
 
-    /**
-     **/
-@XmlType(name = "OperationEnum")
+@XmlType(name="OperationEnum")
 @XmlEnum(String.class)
 public enum OperationEnum {
 
@@ -94,7 +94,7 @@ public enum OperationEnum {
     }
 
     /**
-    * The value to be used within the operations.
+    * The value to be used within the operations
     **/
     public PatchDTO value(String value) {
 
@@ -146,7 +146,7 @@ public enum OperationEnum {
     }
 
     /**
-    * Convert the given object to string with each line indented by 4 spaces.
+    * Convert the given object to string with each line indented by 4 spaces
     * (except the first line).
     */
     private String toIndentedString(java.lang.Object o) {

@@ -24,20 +24,18 @@ import org.wso2.carbon.identity.api.user.biometric.device.handler.v1.model.Patch
 import org.wso2.carbon.identity.api.user.biometric.device.handler.v1.model.RegistrationRequestDTO;
 import javax.ws.rs.core.Response;
 
-/**
- *.
- */
+
 public interface MeApiService {
 
-      public Response meBiometricDeviceDeviceIdDelete(String deviceId);
+      public Response meBiometricdeviceDeviceIdDelete(String deviceId);
 
-      public Response meBiometricDeviceDeviceIdGet(String deviceId);
+      public Response meBiometricdeviceDeviceIdGet(String deviceId);
 
-      public Response meBiometricDeviceDeviceIdPatch(String deviceId, PatchDTO patchDTO);
+      public Response meBiometricdeviceDeviceIdPatch(String deviceId, PatchDTO patchDTO);
 
-      public Response meBiometricDeviceDevicesGet();
-
-      public Response meBiometricDevicePost(RegistrationRequestDTO registrationRequestDTO);
+      public Response meBiometricdeviceDevicesGet();
 
       public Response meBiometricdeviceDiscoveryDataGet();
+
+      public Response meBiometricdevicePost(RegistrationRequestDTO registrationRequestDTO);
 }

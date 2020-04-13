@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
@@ -22,14 +21,13 @@ package org.wso2.carbon.identity.api.user.biometric.device.handler.v1.factories;
 
 import org.wso2.carbon.identity.api.user.biometric.device.handler.v1.MeApiService;
 import org.wso2.carbon.identity.api.user.biometric.device.handler.v1.impl.MeApiServiceImpl;
-/**
- *.
- */
+
 public class MeApiServiceFactory {
 
    private final static MeApiService service = new MeApiServiceImpl();
 
-   public static MeApiService getMeApi() {
+   public static MeApiService getMeApi()
+   {
       return service;
    }
 }

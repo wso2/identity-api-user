@@ -30,6 +30,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 import javax.validation.Valid;
 @ApiModel(description = "Error Code Definitions")
+
 public class ErrorDTO  {
   
     private String code;

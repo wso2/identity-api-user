@@ -22,9 +22,9 @@ package org.wso2.carbon.identity.api.user.biometric.device.handler.v1.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 
-
 import java.util.Objects;
 import javax.validation.Valid;
+
 /**
  * .
  **/
@@ -41,7 +41,7 @@ public class InlineResponse201  {
         return this;
     }
     
-    @ApiModelProperty(example = " https://localhost:9443/t/{tenant_context}/api/users/v1/me/biometricDevice/dev123", value = "Link of the created resource.")
+    @ApiModelProperty(example = " https://localhost:9443/t/{tenant_context}/api/users/v1/me/biometricdevice/dev123", value = "Link of the created resource.")
     @JsonProperty("link")
     @Valid
     public String getLink() {

@@ -34,6 +34,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import io.swagger.annotations.*;
 
+
 @Path("/me")
 @Api(description = "The me API")
 
@@ -45,48 +46,48 @@ public class MeApi  {
     @Valid
     @DELETE
     @Path("/biometricdevice/{deviceId}")
-
+    
     @Produces({ "application/json" })
     @ApiOperation(value = "Remove devices by username and deviceId. ", notes = "This API is used to remove a device deviceId. <b>Permission required:</b>  * /permission/admin/login ", response = Void.class, authorizations = {
-            @Authorization(value = "BasicAuth"),
-            @Authorization(value = "OAuth2", scopes = {
-
-            })
+        @Authorization(value = "BasicAuth"),
+        @Authorization(value = "OAuth2", scopes = {
+            
+        })
     }, tags={ "me", })
-    @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "No content", response = Void.class),
-            @ApiResponse(code = 404, message = "Not found", response = ErrorDTO.class),
-            @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
-            @ApiResponse(code = 500, message = "Server Error", response = ErrorDTO.class)
+    @ApiResponses(value = { 
+        @ApiResponse(code = 204, message = "No content", response = Void.class),
+        @ApiResponse(code = 404, message = "Not found", response = ErrorDTO.class),
+        @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
+        @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
+        @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
+        @ApiResponse(code = 500, message = "Server Error", response = ErrorDTO.class)
     })
-    public Response meBiometricDeviceDeviceIdDelete(@ApiParam(value = "Unique Id of device",required=true) @PathParam("deviceId") String deviceId) {
+    public Response meBiometricdeviceDeviceIdDelete(@ApiParam(value = "Unique Id of device",required=true) @PathParam("deviceId") String deviceId) {
 
-        return delegate.meBiometricDeviceDeviceIdDelete(deviceId );
+        return delegate.meBiometricdeviceDeviceIdDelete(deviceId );
     }
 
     @Valid
     @GET
     @Path("/biometricdevice/{deviceId}")
-
+    
     @Produces({ "application/json" })
     @ApiOperation(value = "Returns Specific Device ", notes = "This API is used to get a specific device. <b>Permission required:</b>  * /permission/admin/login ", response = DeviceDTO.class, authorizations = {
-            @Authorization(value = "BasicAuth"),
-            @Authorization(value = "OAuth2", scopes = {
-
-            })
+        @Authorization(value = "BasicAuth"),
+        @Authorization(value = "OAuth2", scopes = {
+            
+        })
     }, tags={ "me", })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Details of a specific device.", response = DeviceDTO.class),
-            @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
-            @ApiResponse(code = 500, message = "Server Error", response = ErrorDTO.class)
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Details of a specific device.", response = DeviceDTO.class),
+        @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
+        @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
+        @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
+        @ApiResponse(code = 500, message = "Server Error", response = ErrorDTO.class)
     })
-    public Response meBiometricDeviceDeviceIdGet(@ApiParam(value = "ID of device to return",required=true) @PathParam("deviceId") String deviceId) {
+    public Response meBiometricdeviceDeviceIdGet(@ApiParam(value = "ID of device to return",required=true) @PathParam("deviceId") String deviceId) {
 
-        return delegate.meBiometricDeviceDeviceIdGet(deviceId );
+        return delegate.meBiometricdeviceDeviceIdGet(deviceId );
     }
 
     @Valid
@@ -95,46 +96,68 @@ public class MeApi  {
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     @ApiOperation(value = "Update display name of device by username and deviceId. ", notes = "This API is used to update display name of a device by username and deviceId. <b>Permission required:</b>  * /permission/admin/login ", response = Void.class, authorizations = {
-            @Authorization(value = "BasicAuth"),
-            @Authorization(value = "OAuth2", scopes = {
-
-            })
+        @Authorization(value = "BasicAuth"),
+        @Authorization(value = "OAuth2", scopes = {
+            
+        })
     }, tags={ "me", })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Specific device selected by the user.", response = Void.class),
-            @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
-            @ApiResponse(code = 404, message = "Not found", response = ErrorDTO.class),
-            @ApiResponse(code = 500, message = "Server Error", response = ErrorDTO.class)
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Specific device selected by the user.", response = Void.class),
+        @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
+        @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
+        @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
+        @ApiResponse(code = 404, message = "Not found", response = ErrorDTO.class),
+        @ApiResponse(code = 500, message = "Server Error", response = ErrorDTO.class)
     })
-    public Response meBiometricDeviceDeviceIdPatch(@ApiParam(value = "deviceId",required=true) @PathParam("deviceId") String deviceId, @ApiParam(value = "Optional description in *Markdown*" ,required=true) @Valid PatchDTO patchDTO) {
+    public Response meBiometricdeviceDeviceIdPatch(@ApiParam(value = "deviceId",required=true) @PathParam("deviceId") String deviceId, @ApiParam(value = "Optional description in *Markdown*" ,required=true) @Valid PatchDTO patchDTO) {
 
-        return delegate.meBiometricDeviceDeviceIdPatch(deviceId,  patchDTO );
+        return delegate.meBiometricdeviceDeviceIdPatch(deviceId,  patchDTO );
     }
 
     @Valid
     @GET
     @Path("/biometricdevice/devices")
-
+    
     @Produces({ "application/json" })
     @ApiOperation(value = "Returns All registered devices of the user ", notes = "This API is used to get a specific device. <b>Permission required:</b>  * /permission/admin/login ", response = Object.class, responseContainer = "List", authorizations = {
-            @Authorization(value = "BasicAuth"),
-            @Authorization(value = "OAuth2", scopes = {
-
-            })
+        @Authorization(value = "BasicAuth"),
+        @Authorization(value = "OAuth2", scopes = {
+            
+        })
     }, tags={ "me", })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "All availabe devices of the user.", response = Object.class, responseContainer = "List"),
-            @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
-            @ApiResponse(code = 401, message = "Unautharized", response = ErrorDTO.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
-            @ApiResponse(code = 404, message = "Not found", response = ErrorDTO.class),
-            @ApiResponse(code = 500, message = "Server Error", response = ErrorDTO.class)
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "All availabe devices of the user.", response = Object.class, responseContainer = "List"),
+        @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
+        @ApiResponse(code = 401, message = "Unautharized", response = ErrorDTO.class),
+        @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
+        @ApiResponse(code = 404, message = "Not found", response = ErrorDTO.class),
+        @ApiResponse(code = 500, message = "Server Error", response = ErrorDTO.class)
     })
-    public Response meBiometricDeviceDevicesGet() {
+    public Response meBiometricdeviceDevicesGet() {
 
-        return delegate.meBiometricDeviceDevicesGet();
+        return delegate.meBiometricdeviceDevicesGet();
+    }
+
+    @Valid
+    @GET
+    @Path("/biometricdevice/discovery-data")
+    
+    @Produces({ "application/json" })
+    @ApiOperation(value = "Retrieve data for the Qr code ", notes = "This API is used to retrieve data for the Qr Code to trigger the biometric authentication device registration flow.  <b>Permission required:</b>  * /permission/admin/login ", response = DiscoveryDataDTO.class, authorizations = {
+        @Authorization(value = "BasicAuth"),
+        @Authorization(value = "OAuth2", scopes = {
+            
+        })
+    }, tags={ "me", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Successful response", response = DiscoveryDataDTO.class),
+        @ApiResponse(code = 401, message = "Unautharized", response = ErrorDTO.class),
+        @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
+        @ApiResponse(code = 500, message = "Internal Server Error", response = ErrorDTO.class)
+    })
+    public Response meBiometricdeviceDiscoveryDataGet() {
+
+        return delegate.meBiometricdeviceDiscoveryDataGet();
     }
 
     @Valid
@@ -143,44 +166,22 @@ public class MeApi  {
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     @ApiOperation(value = "Complete Biometric authentication device registration. ", notes = "This API is used to recieve device information and complete the device registration flow. <b>Permission required:</b>  * /permission/admin/login ", response = InlineResponse201.class, authorizations = {
-            @Authorization(value = "BasicAuth"),
-            @Authorization(value = "OAuth2", scopes = {
-
-            })
-    }, tags={ "me", })
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Created", response = InlineResponse201.class),
-            @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
-            @ApiResponse(code = 409, message = "Conflict", response = ErrorDTO.class),
-            @ApiResponse(code = 500, message = "Server Error", response = ErrorDTO.class)
-    })
-    public Response meBiometricDevicePost(@ApiParam(value = "Device details sent by mobile application" ,required=true) @Valid RegistrationRequestDTO registrationRequestDTO) {
-
-        return delegate.meBiometricDevicePost(registrationRequestDTO );
-    }
-
-    @Valid
-    @GET
-    @Path("/biometricdevice/discovery-data")
-
-    @Produces({ "application/json" })
-    @ApiOperation(value = "Retrieve data for the Qr code ", notes = "This API is used to retrieve data for the Qr Code to trigger the biometric authentication device registration flow.  <b>Permission required:</b>  * /permission/admin/login ", response = DiscoveryDataDTO.class, authorizations = {
-            @Authorization(value = "BasicAuth"),
-            @Authorization(value = "OAuth2", scopes = {
-
-            })
+        @Authorization(value = "BasicAuth"),
+        @Authorization(value = "OAuth2", scopes = {
+            
+        })
     }, tags={ "me" })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successful response", response = DiscoveryDataDTO.class),
-            @ApiResponse(code = 401, message = "Unautharized", response = ErrorDTO.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = ErrorDTO.class)
+    @ApiResponses(value = { 
+        @ApiResponse(code = 201, message = "Created", response = InlineResponse201.class),
+        @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
+        @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
+        @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
+        @ApiResponse(code = 409, message = "Conflict", response = ErrorDTO.class),
+        @ApiResponse(code = 500, message = "Server Error", response = ErrorDTO.class)
     })
-    public Response meBiometricdeviceDiscoveryDataGet() {
+    public Response meBiometricdevicePost(@ApiParam(value = "Device details sent by mobile application" ,required=true) @Valid RegistrationRequestDTO registrationRequestDTO) {
 
-        return delegate.meBiometricdeviceDiscoveryDataGet();
+        return delegate.meBiometricdevicePost(registrationRequestDTO );
     }
 
 }
