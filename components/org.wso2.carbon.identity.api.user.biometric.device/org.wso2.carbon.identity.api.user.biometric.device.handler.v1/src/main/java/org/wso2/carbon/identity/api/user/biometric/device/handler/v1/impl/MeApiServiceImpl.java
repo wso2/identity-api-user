@@ -43,7 +43,7 @@ public class MeApiServiceImpl implements MeApiService {
     private BiometricdeviceHandlerService deviceHandlerService;
 
     @Override
-    public Response meBiometricDeviceDeviceIdDelete(String deviceId) {
+    public Response meBiometricdeviceDeviceIdDelete(String deviceId) {
         if (log.isDebugEnabled()) {
             log.debug(MessageFormat.format("Removing device : {0} ", deviceId));
         }
@@ -53,7 +53,7 @@ public class MeApiServiceImpl implements MeApiService {
     }
 
     @Override
-    public Response meBiometricDeviceDeviceIdGet(String deviceId) {
+    public Response meBiometricdeviceDeviceIdGet(String deviceId) {
         if (log.isDebugEnabled()) {
             log.debug(MessageFormat.format("Fetching data of device : {0}", deviceId));
         }
@@ -62,7 +62,7 @@ public class MeApiServiceImpl implements MeApiService {
     }
 
     @Override
-    public Response meBiometricDeviceDeviceIdPatch(String deviceId, PatchDTO patch) {
+    public Response meBiometricdeviceDeviceIdPatch(String deviceId, PatchDTO patch) {
         if (log.isDebugEnabled()) {
             log.debug(MessageFormat.format("The device name could not be modified of device : {0} ", deviceId));
         }
@@ -73,7 +73,7 @@ public class MeApiServiceImpl implements MeApiService {
     }
 
     @Override
-    public Response meBiometricDeviceDevicesGet() {
+    public Response meBiometricdeviceDevicesGet() {
         if (log.isDebugEnabled()) {
             log.debug("Retrieving all devices of user ");
         }
@@ -82,7 +82,7 @@ public class MeApiServiceImpl implements MeApiService {
     }
 
     @Override
-    public Response meBiometricDevicePost(RegistrationRequestDTO registrationRequest) {
+    public Response meBiometricdevicePost(RegistrationRequestDTO registrationRequest) {
         if (log.isDebugEnabled() && registrationRequest != null) {
             log.debug("Received registration request from mobile device");
         }
@@ -98,4 +98,5 @@ public class MeApiServiceImpl implements MeApiService {
         deviceHandlerService = new BiometricdeviceHandlerService();
         return Response.ok().entity(deviceHandlerService.getDiscoveryData()).build();
     }
+
 }

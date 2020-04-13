@@ -38,7 +38,7 @@ public class DefaultApiServiceImpl implements DefaultApiService {
     private BiometricdeviceHandlerService deviceHandlerService;
 
     @Override
-    public Response userIdBiometricDeviceDeviceIdDelete(String userId, String deviceId) {
+    public Response userIdBiometricdeviceDeviceIdDelete(String userId, String deviceId) {
 
         if (log.isDebugEnabled()) {
             log.debug("Removing device : {0} " + deviceId + " of User : {0} ");
@@ -50,7 +50,7 @@ public class DefaultApiServiceImpl implements DefaultApiService {
 
 
     @Override
-    public Response userIdBiometricDeviceDeviceIdGet(String userId, String deviceId) {
+    public Response userIdBiometricdeviceDeviceIdGet(String userId, String deviceId) {
         if (log.isDebugEnabled()) {
             log.debug("Fetching data of device : {0}" + deviceId + " of user :{0}" + userId);
         }
@@ -59,7 +59,7 @@ public class DefaultApiServiceImpl implements DefaultApiService {
     }
 
     @Override
-    public Response userIdBiometricDeviceDevicesGet(String userId) {
+    public Response userIdBiometricdeviceDevicesGet(String userId) {
 
         if (log.isDebugEnabled()) {
             log.debug("Retrieving all devices of user ");
