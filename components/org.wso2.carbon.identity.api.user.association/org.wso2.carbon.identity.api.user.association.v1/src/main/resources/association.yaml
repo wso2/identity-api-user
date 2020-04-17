@@ -76,8 +76,8 @@ paths:
   /me/associations:
     post:
       description: |
-        This API is used to associate a user to the authenticated user. For example if it is required to associate  my
-        user account to the user account of 'john', this endpoint can be used. userId and the password are required to associate the accounts.<br>
+        This API is used to associate a user to the authenticated user. For example, if it is required to associate my
+        user account to the user account of 'john', this endpoint can be used. The userId and the password are required to associate the accounts.<br>
         <b>Permission required:</b>
             * None
         <b>Scope required:</b>
