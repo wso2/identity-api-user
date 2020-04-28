@@ -1,81 +1,45 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *
- * WSO2 Inc. licenses this file to you under the Apache License,
- * Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- *
- */
+* Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 package org.wso2.carbon.identity.api.user.biometric.device.handler.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 
 /**
  * A JSONPatch as defined by RFC 6902.
  **/
 
+import io.swagger.annotations.*;
 import java.util.Objects;
 import javax.validation.Valid;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
+import javax.xml.bind.annotation.*;
 @ApiModel(description = "A JSONPatch as defined by RFC 6902.")
 public class PatchDTO  {
   
-
-@XmlType(name="OperationEnum")
-@XmlEnum(String.class)
-public enum OperationEnum {
-
-    @XmlEnumValue("REPLACE") REPLACE(String.valueOf("REPLACE"));
-
-
-    private String value;
-
-    OperationEnum(String v) {
-        value = v;
-    }
-
-    public String value() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return String.valueOf(value);
-    }
-
-    public static OperationEnum fromValue(String value) {
-        for (OperationEnum b : OperationEnum.values()) {
-            if (b.value.equals(value)) {
-                return b;
-            }
-        }
-        throw new IllegalArgumentException("Unexpected value '" + value + "'");
-    }
-}
-
-    private OperationEnum operation;
+    private String operation;
     private String value;
 
     /**
-    * The operation to be performed.
+    * The operation to be performed
     **/
-    public PatchDTO operation(OperationEnum operation) {
+    public PatchDTO operation(String operation) {
 
         this.operation = operation;
         return this;
@@ -86,10 +50,10 @@ public enum OperationEnum {
     @Valid
     @NotNull(message = "Property operation cannot be null.")
 
-    public OperationEnum getOperation() {
+    public String getOperation() {
         return operation;
     }
-    public void setOperation(OperationEnum operation) {
+    public void setOperation(String operation) {
         this.operation = operation;
     }
 
@@ -102,9 +66,11 @@ public enum OperationEnum {
         return this;
     }
     
-    @ApiModelProperty(example = "My new Device", value = "The value to be used within the operations")
+    @ApiModelProperty(example = "My new Device", required = true, value = "The value to be used within the operations")
     @JsonProperty("value")
     @Valid
+    @NotNull(message = "Property value cannot be null.")
+
     public String getValue() {
         return value;
     }
