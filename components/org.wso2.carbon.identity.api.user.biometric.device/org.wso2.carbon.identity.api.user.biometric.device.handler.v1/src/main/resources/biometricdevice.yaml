@@ -559,10 +559,10 @@ components:
           type: string
           example: "Iphone 8"
         pushId:
-          type: String
+          type: string
           example: "816768tyu78"
         publicKey:
-          type: object
+          type: string
           example: "81fsgfdfdsfds6768tyu78"
         registrationTime:
           type: object
@@ -586,7 +586,7 @@ components:
           type: string
           example: "arsresdxvfy556565876"
         publickey:
-          type: object
+          type: string
           example: "bhkbvhbhjbh756576gfhvbe"
         signature:
           type: string
@@ -611,13 +611,11 @@ components:
       description: A JSONPatch as defined by RFC 6902.
       required:
         - operation
-        - path
+        - value
       properties:
         operation:
           type: string
           description: The operation to be performed
-          enum:
-            - REPLACE
           example: REPLACE
         value:
           type: string
