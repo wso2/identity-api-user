@@ -75,7 +75,13 @@ public class Constant {
                 "answered this challenge. Hence, Unable to as a new challenge answer."),
         ERROR_CODE_USER_HAS_NOT_ANSWERED_CHALLENGE("10015",
                 "Challenge Answer Not set.", "User has not " +
-                "answered this challenge. Hence, Unable to process.");
+                "answered this challenge. Hence, Unable to process."),
+        ERROR_CODE_INVALID_ANSWER_FORMAT("10016",
+                "Invalid answer format",
+                "Invalid answer format in the given answer for the challenge question '%s'."),
+        ERROR_CODE_NOT_UNIQUE_ANSWER("10017",
+                "The given challenge question answer is not unique",
+                "The given answer for the challenge question, '%s' has been used more than once.");
 
         private final String code;
         private final String message;
