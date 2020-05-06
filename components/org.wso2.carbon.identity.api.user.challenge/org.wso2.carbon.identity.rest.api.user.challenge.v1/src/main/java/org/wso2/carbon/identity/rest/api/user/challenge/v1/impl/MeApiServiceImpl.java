@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import static org.wso2.carbon.identity.api.user.challenge.common.Constant.ME_CONTEXT;
 import static org.wso2.carbon.identity.api.user.challenge.common.Constant.USER_CHALLENGE_ANSWERS_PATH_COMPONENT;
 import static org.wso2.carbon.identity.api.user.challenge.common.Constant.V1_API_PATH_COMPONENT;
-import static org.wso2.carbon.identity.api.user.common.ContextLoader.buildURI;
+import static org.wso2.carbon.identity.api.user.common.ContextLoader.buildURIForHeader;
 import static org.wso2.carbon.identity.api.user.common.ContextLoader.getUserFromContext;
 
 /**
@@ -82,7 +82,7 @@ public class MeApiServiceImpl extends MeApiService {
 
 
     private URI getMeChallengeAnswersLocation() {
-        return buildURI(String.format(V1_API_PATH_COMPONENT + USER_CHALLENGE_ANSWERS_PATH_COMPONENT,
+        return buildURIForHeader(String.format(V1_API_PATH_COMPONENT + USER_CHALLENGE_ANSWERS_PATH_COMPONENT,
                 ME_CONTEXT));
     }
 }

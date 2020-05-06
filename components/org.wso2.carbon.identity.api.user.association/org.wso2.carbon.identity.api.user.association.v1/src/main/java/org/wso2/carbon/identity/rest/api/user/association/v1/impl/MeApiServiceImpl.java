@@ -14,7 +14,7 @@ import org.wso2.carbon.user.core.util.UserCoreUtil;
 import java.net.URI;
 import javax.ws.rs.core.Response;
 
-import static org.wso2.carbon.identity.api.user.common.ContextLoader.buildURI;
+import static org.wso2.carbon.identity.api.user.common.ContextLoader.buildURIForHeader;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ME_CONTEXT;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.USER_ASSOCIATIONS_PATH_COMPONENT;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.V1_API_PATH_COMPONENT;
@@ -92,6 +92,6 @@ public class MeApiServiceImpl extends MeApiService {
 
     private URI getAssociationsLocationURI() {
 
-        return buildURI(String.format(V1_API_PATH_COMPONENT + USER_ASSOCIATIONS_PATH_COMPONENT, ME_CONTEXT));
+        return buildURIForHeader(String.format(V1_API_PATH_COMPONENT + USER_ASSOCIATIONS_PATH_COMPONENT, ME_CONTEXT));
     }
 }
