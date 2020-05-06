@@ -34,7 +34,7 @@ import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.challenge.common.Constant.USER_CHALLENGE_ANSWERS_PATH_COMPONENT;
 import static org.wso2.carbon.identity.api.user.challenge.common.Constant.V1_API_PATH_COMPONENT;
-import static org.wso2.carbon.identity.api.user.common.ContextLoader.buildURI;
+import static org.wso2.carbon.identity.api.user.common.ContextLoader.buildURIForHeader;
 
 /**
  * API service implementation of a specific user's challenge operations
@@ -102,7 +102,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
 
     private URI getUserChallengeAnswersLocation(String userId) {
 
-        return buildURI(String.format(V1_API_PATH_COMPONENT + USER_CHALLENGE_ANSWERS_PATH_COMPONENT, userId));
+        return buildURIForHeader(String.format(V1_API_PATH_COMPONENT + USER_CHALLENGE_ANSWERS_PATH_COMPONENT, userId));
     }
 
     private User getUser(String userId) {

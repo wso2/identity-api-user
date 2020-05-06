@@ -174,7 +174,7 @@ public class ApplicationService {
 
     private Link buildPageLink(String rel, int offset, int limit) {
 
-        return new Link().rel(rel).href(ContextLoader.buildURI
+        return new Link().rel(rel).href(ContextLoader.buildURIForBody
                 (String.format(APPLICATIONS_PAGINATION_LINK_FORMAT, offset, limit)));
     }
 
