@@ -145,6 +145,28 @@ public class ContextLoader {
     }
 
     /**
+     * @deprecated This was deprecated because the requirement is to get the absolute and relative URIs by using the
+     * {@link ServiceURLBuilder} methods.
+     * @since 1.1.4
+     *
+     * Please use {@link #buildURIForBody(String)} method to build URIs for body and
+     * {@link #buildURIForHeader(String)} method to build URI for headers.
+     *
+     * Build URI prepending the user API context to the endpoint.
+     * /t/<tenant-domain>/api/users/<endpoint>
+     * @param endpoint relative endpoint path
+     * @return
+     */
+    @Deprecated
+    public static URI buildURI(String endpoint) {
+
+        String tenantQualifiedRelativePath =
+                String.format(TENANT_CONTEXT_PATH_COMPONENT, getTenantDomainFromContext()) + USER_API_PATH_COMPONENT;
+        String url = tenantQualifiedRelativePath + endpoint;
+        return URI.create(url);
+    }
+
+    /**
      * Builds URI prepending the user API context with the proxy context path to the endpoint.
      * Ex: /t/<tenant-domain>/api/users/<endpoint>
      *
