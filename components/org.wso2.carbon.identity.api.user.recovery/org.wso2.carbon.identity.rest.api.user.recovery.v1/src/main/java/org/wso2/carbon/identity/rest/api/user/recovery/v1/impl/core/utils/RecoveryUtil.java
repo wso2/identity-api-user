@@ -19,6 +19,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.wso2.carbon.identity.api.user.common.error.APIError;
+import org.wso2.carbon.identity.core.ServiceURLBuilder;
+import org.wso2.carbon.identity.core.URLBuilderException;
+import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryClientException;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryConstants;
@@ -45,7 +49,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.TENANT_CONTEXT_PATH_COMPONENT;
-
+import static org.wso2.carbon.identity.application.common.util.IdentityApplicationConstants.Error.UNEXPECTED_SERVER_ERROR;
 
 /**
  * Contains the recovery endpoint utils.
@@ -248,8 +252,13 @@ public class RecoveryUtil {
     }
 
     /**
-     * Build the relative url.
+     * @deprecated This was deprecated because the requirement is to get the absolute and relative URIs by using the
+     * {@link ServiceURLBuilder} methods.
+     * @since 1.1.6
      *
+     * Please use {@link #buildURIForBody(String, String, String)} method to build URIs for body.
+     *
+     * Build the relative url.
      * @param tenantDomain Tenant Domain
      * @param endpoint     API endpoint
      * @return Url
@@ -259,6 +268,54 @@ public class RecoveryUtil {
         String tenantQualifiedRelativePath =
                 String.format(TENANT_CONTEXT_PATH_COMPONENT, tenantDomain) + baseUrl;
         return tenantQualifiedRelativePath + endpoint;
+    }
+
+    /**
+     * Builds URI prepending the user API context with the proxy context path to the endpoint.
+     * Ex: /t/<tenant-domain>/api/users/<endpoint>
+     *
+     * @param endpoint Relative endpoint path.
+     * @return Relative URI.
+     */
+    public static String buildURIForBody(String tenantDomain, String endpoint, String baseUrl) {
+
+        String url;
+        String context = getContext(tenantDomain, endpoint, baseUrl);
+
+        try {
+            url = ServiceURLBuilder.create().addPath(context).build().getRelativePublicURL();
+        } catch (URLBuilderException e) {
+            String errorDescription = "Server encountered an error while building URL for response body.";
+            org.wso2.carbon.identity.api.user.common.error.ErrorResponse errorResponse =
+                    new org.wso2.carbon.identity.api.user.common.error.ErrorResponse.Builder()
+                    .withCode(UNEXPECTED_SERVER_ERROR.getCode())
+                    .withMessage("Error while building response.")
+                    .withDescription(errorDescription)
+                    .build(log, e, errorDescription);
+
+            Response.Status status = Response.Status.INTERNAL_SERVER_ERROR;
+            throw new APIError(status, errorResponse);
+        }
+        return url;
+    }
+
+    /**
+     * Builds the API context on whether the tenant qualified url is enabled or not. In tenant qualified mode the
+     * ServiceURLBuilder appends the tenant domain to the URI as a path param automatically. But
+     * in non tenant qualified mode we need to append the tenant domain to the path manually.
+     *
+     * @param endpoint Relative endpoint path.
+     * @return Context of the API.
+     */
+    private static String getContext(String tenantDomain, String endpoint, String baseUrl) {
+
+        String context;
+        if (IdentityTenantUtil.isTenantQualifiedUrlsEnabled()) {
+            context = baseUrl + endpoint;
+        } else {
+            context = String.format(TENANT_CONTEXT_PATH_COMPONENT, tenantDomain) + baseUrl + endpoint;
+        }
+        return context;
     }
 
     /**
@@ -314,7 +371,7 @@ public class RecoveryUtil {
         ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
         apiCallsArrayList.add(RecoveryUtil
                 .buildApiCall(Constants.APICall.RESET_PASSWORD_API.getType(), Constants.RelationStates.NEXT_REL,
-                        buildUri(tenantDomain, Constants.APICall.RESET_PASSWORD_API.getApiUrl(),
+                        buildURIForBody(tenantDomain, Constants.APICall.RESET_PASSWORD_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
         RetryErrorResponse retryErrorResponse = buildRetryErrorResponse(
                 Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, code, description, resetCode, correlationId,
