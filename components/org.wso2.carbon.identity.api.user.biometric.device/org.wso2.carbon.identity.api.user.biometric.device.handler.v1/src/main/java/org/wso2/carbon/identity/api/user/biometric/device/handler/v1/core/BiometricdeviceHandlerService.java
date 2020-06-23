@@ -19,6 +19,7 @@
 package org.wso2.carbon.identity.api.user.biometric.device.handler.v1.core;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.identity.api.user.biometric.device.common.util.BiometricDeviceApiConstants;
 import org.wso2.carbon.identity.api.user.biometric.device.common.util.BiometricDeviceApiUtils;
 import org.wso2.carbon.identity.api.user.biometric.device.handler.v1.model.DeviceDTO;
@@ -31,6 +32,8 @@ import org.wso2.carbon.identity.application.authenticator.biometric.device.handl
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model.Device;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model.DiscoveryData;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model.RegistrationRequest;
+import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.base.IdentityException;
 import org.wso2.carbon.user.api.UserStoreException;
 
 import java.io.IOException;
@@ -89,6 +92,9 @@ public class BiometricdeviceHandlerService {
             throw BiometricDeviceApiUtils.handleException(e,
                     BiometricDeviceApiConstants.ErrorMessages.ERROR_CODE_DEVICE_HANDLER_SQL_EXCEPTION);
         } catch (InvalidKeySpecException e) {
+            throw BiometricDeviceApiUtils.handleException(e,
+                    BiometricDeviceApiConstants.ErrorMessages.ERROR_CODE_INTERNAL_SERVER_ERROR);
+        } catch (IdentityException e) {
             throw BiometricDeviceApiUtils.handleException(e,
                     BiometricDeviceApiConstants.ErrorMessages.ERROR_CODE_INTERNAL_SERVER_ERROR);
         }
@@ -166,8 +172,9 @@ public class BiometricdeviceHandlerService {
     public ArrayList<DeviceDTO> listDevices() {
         deviceHandler = new DeviceHandlerImpl();
         ArrayList<Device> devices = null;
+        User user = getAuthenticatedUser();
         try {
-            devices = deviceHandler.lisDevices();
+            devices = deviceHandler.lisDevices(user.getUserName(), user.getUserStoreDomain(), user.getTenantDomain());
         } catch (BiometricDeviceHandlerClientException e) {
             throw BiometricDeviceApiUtils.handleException(e,
                     BiometricDeviceApiConstants.ErrorMessages.ERROR_CODE_LIST_DEVICE_CLIENT_ERROR);
@@ -217,5 +224,10 @@ public class BiometricdeviceHandlerService {
         discoveryDataDTO.setRegistrationUrl(discoveryData.getRegistrationUrl());
         discoveryDataDTO.setAuthenticationUrl(discoveryData.getAuthenticationUrl());
         return discoveryDataDTO;
+    }
+    private User getAuthenticatedUser() {
+        User user = User.getUserFromUserName(CarbonContext.getThreadLocalCarbonContext().getUsername());
+        user.setTenantDomain(CarbonContext.getThreadLocalCarbonContext().getTenantDomain());
+        return user;
     }
 }
