@@ -31,7 +31,7 @@ public class RegistrationRequestDTO  {
     private String name;
     private String model;
     private String pushId;
-    private String publickey = null;
+    private String publickey;
     private String signature;
 
     /**
