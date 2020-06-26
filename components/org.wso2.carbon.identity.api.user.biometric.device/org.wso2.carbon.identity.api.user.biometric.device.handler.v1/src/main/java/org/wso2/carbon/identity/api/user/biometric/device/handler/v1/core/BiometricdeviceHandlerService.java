@@ -174,7 +174,7 @@ public class BiometricdeviceHandlerService {
         ArrayList<Device> devices = null;
         User user = getAuthenticatedUser();
         try {
-            devices = deviceHandler.lisDevices(user.getUserName(), user.getUserStoreDomain(), user.getTenantDomain());
+            devices = deviceHandler.listDevices(user.getUserName(), user.getUserStoreDomain(), user.getTenantDomain());
         } catch (BiometricDeviceHandlerClientException e) {
             throw BiometricDeviceApiUtils.handleException(e,
                     BiometricDeviceApiConstants.ErrorMessages.ERROR_CODE_LIST_DEVICE_CLIENT_ERROR);
@@ -213,8 +213,10 @@ public class BiometricdeviceHandlerService {
 
     public DiscoveryDataDTO getDiscoveryData() {
         deviceHandler = new DeviceHandlerImpl();
+        User user = getAuthenticatedUser();
         DiscoveryData discoveryData;
-        discoveryData = deviceHandler.getDiscoveryData();
+        discoveryData = deviceHandler.getDiscoveryData(user.getUserName(),
+                user.getUserStoreDomain(), user.getTenantDomain());
         DiscoveryDataDTO discoveryDataDTO = new DiscoveryDataDTO();
         discoveryDataDTO.setId(discoveryData.getDeviceId());
         discoveryDataDTO.setUsername(discoveryData.getUsername());
