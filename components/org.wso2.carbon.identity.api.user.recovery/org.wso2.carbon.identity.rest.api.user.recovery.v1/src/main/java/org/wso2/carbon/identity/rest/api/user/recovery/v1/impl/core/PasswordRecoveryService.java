@@ -419,7 +419,7 @@ public class PasswordRecoveryService {
 
         ArrayList<AccountRecoveryType> accountRecoveryTypes = new ArrayList<>();
         boolean isNotificationBasedRecoveryEnabled = recoveryInformationDTO.isNotificationBasedRecoveryEnabled();
-        boolean isQuestionBasedRecoveryEnabled = recoveryInformationDTO.isQuestionBasedRecoveryEnabled();
+        boolean isQuestionBasedRecoveryAllowedForUser = recoveryInformationDTO.isQuestionBasedRecoveryAllowedForUser();
         if (isNotificationBasedRecoveryEnabled) {
             // Build next API calls list.
             ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
@@ -434,7 +434,7 @@ public class PasswordRecoveryService {
                     Constants.RECOVERY_WITH_NOTIFICATIONS, recoveryChannelInformation, apiCallsArrayList);
             accountRecoveryTypes.add(accountRecoveryType);
         }
-        if (isQuestionBasedRecoveryEnabled) {
+        if (isQuestionBasedRecoveryAllowedForUser) {
             // Build next API calls list.
             ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
             apiCallsArrayList.add(RecoveryUtil
