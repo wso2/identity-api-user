@@ -28,7 +28,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>identity-api-user</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.7-SNAPSHOT</version>
+    <version>1.1.9-SNAPSHOT</version>
     <name>WSO2 Identity Server - User API Module</name>
     <description>
 
@@ -416,13 +416,13 @@
         <!--Maven Plugin Version-->
         <maven.compiler.plugin.version>2.3.1</maven.compiler.plugin.version>
         <maven.bundle.plugin.version>2.4.0</maven.bundle.plugin.version>
-        <jackson-jaxrs-json-provider.version>2.9.9</jackson-jaxrs-json-provider.version>
-        <jackson-databind.version>2.9.9.3</jackson-databind.version>
-        <jackson-dataformat-xml.version>2.9.9</jackson-dataformat-xml.version>
-        <cxf-bundle.version>3.2.8</cxf-bundle.version>
+        <jackson-jaxrs-json-provider.version>2.10.5</jackson-jaxrs-json-provider.version>
+        <jackson-databind.version>2.10.5</jackson-databind.version>
+        <jackson-dataformat-xml.version>2.10.5</jackson-dataformat-xml.version>
+        <cxf-bundle.version>3.3.7</cxf-bundle.version>
         <jackson.version>1.9.13</jackson.version>
         <spring-web.version>5.1.1.RELEASE</spring-web.version>
-        <swagger-jaxrs.version>1.5.20</swagger-jaxrs.version>
+        <swagger-jaxrs.version>1.6.2</swagger-jaxrs.version>
         <javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
         <junit.version>4.12</junit.version>
         <maven.buildnumber.plugin.version>1.4</maven.buildnumber.plugin.version>
