@@ -19,6 +19,8 @@
 package org.wso2.carbon.identity.rest.api.user.functionality.v1.core;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
@@ -45,6 +47,8 @@ import static org.wso2.carbon.identity.api.user.common.ContextLoader.getUserFrom
  * service.
  */
 public class UserFunctionalityService {
+
+    private static final Log log = LogFactory.getLog(UserFunctionalityService.class);
 
     /**
      * Lock or Unlock a functionality of a user by a privileged user.
@@ -98,9 +102,9 @@ public class UserFunctionalityService {
             if (e instanceof UserFunctionalityManagementClientException) {
                 throw handleUserFunctionalityMgtClientException(e);
             }
+            log.error("Error occurred while calling user functionality management service.", e);
             throw handleError(Response.Status.INTERNAL_SERVER_ERROR,
                     Constants.ErrorMessages.ERROR_CODE_LOCK_THE_FUNCTIONALITY_FAILED);
-
         }
     }
 
@@ -120,12 +124,12 @@ public class UserFunctionalityService {
             userFunctionalityManager.unlock(userId,
                     tenantId, functionalityIdentifier);
             userFunctionalityManager.deleteAllPropertiesForUser(userId, tenantId, functionalityIdentifier);
-
             return Response.ok().build();
         } catch (UserFunctionalityManagementException e) {
             if (e instanceof UserFunctionalityManagementClientException) {
                 throw handleUserFunctionalityMgtClientException(e);
             }
+            log.error("Error occurred while calling user functionality management service.", e);
             throw handleError(Response.Status.INTERNAL_SERVER_ERROR,
                     Constants.ErrorMessages.ERROR_CODE_UNLOCK_THE_FUNCTIONALITY_FAILED);
         }
@@ -152,6 +156,7 @@ public class UserFunctionalityService {
             if (e instanceof UserFunctionalityManagementClientException) {
                 throw handleUserFunctionalityMgtClientException(e);
             }
+            log.error("Error occurred while calling user functionality management service.", e);
             throw handleError(Response.Status.INTERNAL_SERVER_ERROR,
                     Constants.ErrorMessages.ERROR_CODE_GET_LOCK_STATUS_FAILED);
         }
@@ -209,9 +214,9 @@ public class UserFunctionalityService {
             if (e instanceof UserFunctionalityManagementClientException) {
                 throw handleUserFunctionalityMgtClientException(e);
             }
+            log.error("Error occurred while calling user functionality management service.", e);
             throw handleError(Response.Status.INTERNAL_SERVER_ERROR,
                     Constants.ErrorMessages.ERROR_CODE_LOCK_THE_FUNCTIONALITY_FAILED);
-
         }
     }
 
@@ -252,9 +257,9 @@ public class UserFunctionalityService {
             if (e instanceof UserFunctionalityManagementClientException) {
                 throw handleUserFunctionalityMgtClientException(e);
             }
+            log.error("Error occurred while calling user functionality management service.", e);
             throw handleError(Response.Status.INTERNAL_SERVER_ERROR,
                     Constants.ErrorMessages.ERROR_CODE_LOCK_THE_FUNCTIONALITY_FAILED);
-
         }
     }
 
@@ -280,9 +285,9 @@ public class UserFunctionalityService {
             if (e instanceof UserFunctionalityManagementClientException) {
                 throw handleUserFunctionalityMgtClientException(e);
             }
+            log.error("Error occurred while calling user functionality management service.", e);
             throw handleError(Response.Status.INTERNAL_SERVER_ERROR,
                     Constants.ErrorMessages.ERROR_CODE_GET_LOCK_STATUS_FAILED);
-
         }
     }
 
@@ -290,7 +295,13 @@ public class UserFunctionalityService {
 
         if (StringUtils.equals(UserFunctionalityMgtConstants.ErrorMessages.USER_NOT_FOUND.getCode(),
                 e.getErrorCode())) {
+            if (log.isDebugEnabled()) {
+                log.debug("Cannot find the user corresponding to the userId.", e);
+            }
             return handleError(Response.Status.NOT_FOUND, Constants.ErrorMessages.ERROR_CODE_INVALID_USERID);
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Error occurred while calling user functionality management service.", e);
         }
         return handleError(Response.Status.BAD_REQUEST, Constants.ErrorMessages.ERROR_CODE_BAD_REQUEST);
     }
