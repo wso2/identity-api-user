@@ -1,6 +1,0 @@
-# OpenAPI Generator Ignore
-
-# Use this file to prevent files from being overwritten by the generator.
-
-# Avoid generating impl classes.
-**/impl/*
