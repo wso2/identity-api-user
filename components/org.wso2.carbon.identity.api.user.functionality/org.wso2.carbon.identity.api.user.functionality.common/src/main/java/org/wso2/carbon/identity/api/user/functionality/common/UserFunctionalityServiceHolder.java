@@ -44,7 +44,7 @@ public class UserFunctionalityServiceHolder {
      *
      * @param userFunctionalityManager UserFunctionalityManager
      */
-    public void setUserFunctionalityManager(UserFunctionalityManager userFunctionalityManager) {
+    public static void setUserFunctionalityManager(UserFunctionalityManager userFunctionalityManager) {
 
         UserFunctionalityServiceHolder.userFunctionalityManager = userFunctionalityManager;
     }
