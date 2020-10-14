@@ -13,7 +13,7 @@ info:
 
 tags:
   - name: User Functionality Management REST API
-    description: This REST API handles user functionality management. A functionality can be locked and unlocked via this api
+    description: This REST API handles user functionality management. A functionality can be locked or unlocked for particular users via this API. 
 
 security:
   - OAuth2: []
@@ -25,8 +25,8 @@ paths:
       tags:
         - user functionality management
       summary: |
-        Get the lock status of a functionality of a user
-      description: Get the status of a functionality of a user
+        Get the lock status of a functionality for authenticated user
+      description: Get the status of a functionality for the authenticated user.
       operationId: getLockStatusOfLoggedInUser
       parameters:
         - name: function-id
@@ -67,9 +67,9 @@ paths:
     put:
       tags:
         - user functionality management
-      summary: Lock or Unlock a function of a user.
+      summary: Lock or Unlock a function for authenticated user
       operationId: changeStatusOfLoggedInUser
-      description: This API is used to lock or unlock a function for a user.
+      description: This API is used to lock or unlock a function for the authenticated user.
       parameters:
         - name: function-id
           in: path
@@ -91,7 +91,7 @@ paths:
                   action: UNLOCK
       responses:
         200:
-          description: The feature is successfully locked.
+          description: The function is successfully locked.
         '400':
           description: Bad Request
           content:
@@ -120,8 +120,8 @@ paths:
       tags:
         - user functionality management
       summary: |
-        Get the lock status of a functionality of a user
-      description: Get the status of a functionality of a user
+        Get the lock status of a functionality for a user
+      description: Get the status of a functionality for a particular user.
       operationId: getLockStatus
       parameters:
         - name: function-id
@@ -168,9 +168,9 @@ paths:
     put:
       tags:
         - user functionality management
-      summary: Lock or Unlock a function of a user.
+      summary: Lock or Unlock a function for a user
       operationId: changeStatus
-      description: This API is used to lock or unlock a function for a user.
+      description: This API is used to lock or unlock a function for a particular user.
       parameters:
         - name: function-id
           in: path
@@ -201,7 +201,7 @@ paths:
                   action: UNLOCK
       responses:
         200:
-          description: The feature is successfully locked.
+          description: The function is successfully locked.
         '400':
           description: Bad Request
           content:
