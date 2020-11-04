@@ -67,12 +67,14 @@ paths:
                       {
                         "subject": "admin",
                         "appName": "travelocity-requestpath",
-                        "appId": "4"
+                        "appId": "4",
+                        "id": "298c5fd8-01ac-4ada-bc10-1ce37f32140b"
                       },
                       {
                         "subject": "admin",
                         "appName": "avis-basic",
-                        "appId": "5"
+                        "appId": "5",
+                        "id": "27385fd8-01ac-4ada-bc10-1ce37363h40b"
                       }
                     ],
                     "userAgent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:15.0) Gecko/20100101 Firefox/15.0.1",
@@ -258,6 +260,7 @@ definitions:
       - subject
       - appName
       - appId
+      - id
     properties:
       subject:
         type: string
@@ -271,6 +274,10 @@ definitions:
         type: string
         description: ID of the application.
         example: '012'
+      id:
+        type: string
+        description: Unique ID of the application.
+        example: '298c5fd8-01ac-4ada-bc10-1ce37f32140b'
 
   #-----------------------------------------------------
   # The Session Response  object
