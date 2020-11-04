@@ -27,6 +27,10 @@ import javax.validation.constraints.Pattern;
 public class ApplicationDTO {
 
     @Valid 
+    @NotNull(message = "Property id cannot be null.") 
+    private String id = null;
+
+    @Valid 
     @NotNull(message = "Property subject cannot be null.") 
     private String subject = null;
 
@@ -38,9 +42,17 @@ public class ApplicationDTO {
     @NotNull(message = "Property appId cannot be null.") 
     private String appId = null;
 
-    @Valid 
-    @NotNull(message = "Property id cannot be null.") 
-    private String id = null;
+    /**
+    * Unique ID of the application.
+    **/
+    @ApiModelProperty(required = true, value = "Unique ID of the application.")
+    @JsonProperty("id")
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
 
     /**
     * Username of the logged in user for the application.
@@ -78,28 +90,16 @@ public class ApplicationDTO {
         this.appId = appId;
     }
 
-    /**
-    * Unique ID of the application.
-    **/
-    @ApiModelProperty(required = true, value = "Unique ID of the application.")
-    @JsonProperty("id")
-    public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
-
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
         sb.append("class ApplicationDTO {\n");
         
+        sb.append("    id: ").append(id).append("\n");
         sb.append("    subject: ").append(subject).append("\n");
         sb.append("    appName: ").append(appName).append("\n");
         sb.append("    appId: ").append(appId).append("\n");
-        sb.append("    id: ").append(id).append("\n");
         
         sb.append("}\n");
         return sb.toString();
