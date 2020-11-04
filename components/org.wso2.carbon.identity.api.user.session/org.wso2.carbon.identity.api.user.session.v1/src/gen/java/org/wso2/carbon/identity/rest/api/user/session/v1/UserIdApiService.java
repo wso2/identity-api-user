@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,11 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import javax.ws.rs.core.Response;
 
 public abstract class UserIdApiService {
-    public abstract Response getSessionsByUserId(String userId,Integer limit,Integer offset,String filter,String sort);
-    public abstract Response terminateSessionBySessionId(String userId,String sessionId);
-    public abstract Response terminateSessionsByUserId(String userId);
-}
 
+    public abstract Response getSessionsByUserId(String userId, Integer limit, Integer offset, String filter, String sort);
+
+    public abstract Response terminateSessionBySessionId(String userId, String sessionId);
+
+    public abstract Response terminateSessionsByUserId(String userId);
+
+}
