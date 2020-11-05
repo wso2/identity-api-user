@@ -325,4 +325,4 @@ responses:
     description: Resource Forbidden
 
 host: localhost:9443
-basePath: /t/{tenant-domain}/api/users/v1
+basePath: /t/{tenant-domain}/api/users/v2

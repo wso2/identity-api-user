@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.core;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -30,14 +31,17 @@ import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.application.mgt.ApplicationManagementService;
 import org.wso2.carbon.identity.oauth.IdentityOAuthAdminException;
 import org.wso2.carbon.identity.oauth.OAuthAdminServiceImpl;
+import org.wso2.carbon.identity.oauth.common.OAuthConstants;
 import org.wso2.carbon.identity.oauth.dto.OAuthConsumerAppDTO;
 import org.wso2.carbon.identity.oauth.dto.OAuthRevocationRequestDTO;
 import org.wso2.carbon.identity.oauth.dto.OAuthRevocationResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.core.functions.OAuthConsumerAppToExternal;
+import org.wso2.carbon.identity.oauth2.internal.OAuth2ServiceComponentHolder;
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.dto.AuthorizedAppDTO;
 import org.wso2.carbon.user.core.UserCoreConstants;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -141,11 +145,13 @@ public class AuthorizedAppsService {
         try {
             startTenantFlowWithUser(getUsernameWithUserStoreDomain(user), user.getTenantDomain());
             OAuthConsumerAppDTO[] appsAuthorizedByUser = oAuthAdminService.getAppsAuthorizedByUser();
-            Optional<OAuthConsumerAppDTO> first = Arrays.stream(appsAuthorizedByUser)
+            Optional<OAuthConsumerAppDTO> authConsumerAppDTO = Arrays.stream(appsAuthorizedByUser)
                     .filter(oAuthConsumerAppDTO -> oAuthConsumerAppDTO.getApplicationName().equals(applicationName))
                     .findFirst();
-            if (first.isPresent()) {
-                authorizedAppDTO = new OAuthConsumerAppToExternal().apply(first.get());
+            if (authConsumerAppDTO.isPresent()) {
+                String clientKey = authConsumerAppDTO.get().getOauthConsumerKey();
+                String resourceId = getApplicationResourceIdByClientId(clientKey, user.getTenantDomain());
+                authorizedAppDTO = buildAuthorizedAppDTO(resourceId, authConsumerAppDTO.get());
             } else {
                 throw handleError(NOT_FOUND, Constants.ErrorMessages.ERROR_CODE_INVALID_APPLICATION_ID, applicationId,
                         user.toFullQualifiedUsername());
@@ -167,12 +173,18 @@ public class AuthorizedAppsService {
      */
     public List<AuthorizedAppDTO> listUserAuthorizedApps(User user) {
 
-        List<AuthorizedAppDTO> authorizedAppDTOS;
+        List<AuthorizedAppDTO> authorizedAppDTOS = new ArrayList<>();
         try {
             startTenantFlowWithUser(getUsernameWithUserStoreDomain(user), user.getTenantDomain());
             OAuthConsumerAppDTO[] appsAuthorizedByUser = oAuthAdminService.getAppsAuthorizedByUser();
-            authorizedAppDTOS = Arrays.stream(appsAuthorizedByUser).map(new OAuthConsumerAppToExternal())
-                    .collect(Collectors.toList());
+            if (ArrayUtils.isEmpty(appsAuthorizedByUser)) {
+                return Collections.emptyList();
+            }
+            for (OAuthConsumerAppDTO authConsumerAppDTO : appsAuthorizedByUser) {
+                String clientKey = authConsumerAppDTO.getOauthConsumerKey();
+                String resourceId = getApplicationResourceIdByClientId(clientKey, user.getTenantDomain());
+                authorizedAppDTOS.add(buildAuthorizedAppDTO(resourceId, authConsumerAppDTO));
+            }
         } catch (IdentityOAuthAdminException e) {
             throw handleError(Response.Status.INTERNAL_SERVER_ERROR, Constants.ErrorMessages.ERROR_CODE_GET_APP_BY_USER,
                     user.toFullQualifiedUsername());
@@ -217,10 +229,36 @@ public class AuthorizedAppsService {
         try {
             ServiceProvider serviceProvider = applicationManagementService.getApplicationByResourceId(resourceId,
                     user.getTenantDomain());
+            if (serviceProvider == null) {
+                throw handleError(Response.Status.BAD_REQUEST,
+                        Constants.ErrorMessages.ERROR_CODE_INVALID_APPLICATION_ID,
+                        resourceId, user.toFullQualifiedUsername());
+            }
             return serviceProvider.getApplicationName();
         } catch (IdentityApplicationManagementException e) {
             throw handleError(Response.Status.INTERNAL_SERVER_ERROR,
                     Constants.ErrorMessages.ERROR_CODE_GETTING_APPLICATION_INFORMATION, resourceId);
         }
+    }
+
+    private String getApplicationResourceIdByClientId(String clientId, String spTenantDomain)
+            throws IdentityOAuthAdminException {
+
+        try {
+            ServiceProvider serviceProvider = OAuth2ServiceComponentHolder.getApplicationMgtService().
+                    getServiceProviderByClientId(clientId, OAuthConstants.Scope.OAUTH2, spTenantDomain);
+            return serviceProvider.getApplicationResourceId();
+        } catch (IdentityApplicationManagementException e) {
+            throw new IdentityOAuthAdminException("Error while retrieving the app information", e);
+        }
+    }
+
+    private AuthorizedAppDTO buildAuthorizedAppDTO(String resourceId, OAuthConsumerAppDTO consumerAppDTO) {
+
+        AuthorizedAppDTO authorizedAppDTO = new AuthorizedAppDTO();
+        authorizedAppDTO.setId(resourceId);
+        authorizedAppDTO.setName(consumerAppDTO.getApplicationName());
+        authorizedAppDTO.setClientId(consumerAppDTO.getOauthConsumerKey());
+        return authorizedAppDTO;
     }
 }

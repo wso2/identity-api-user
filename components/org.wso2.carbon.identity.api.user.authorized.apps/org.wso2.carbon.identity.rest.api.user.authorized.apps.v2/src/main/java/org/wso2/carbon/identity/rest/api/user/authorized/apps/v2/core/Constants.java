@@ -32,11 +32,8 @@ public class Constants {
     public enum ErrorMessages {
 
         // Client errors.
-        ERROR_CODE_GET_APP_BY_USER("10001", "Error retrieving authorized applications",
-                "A system error occurred while retrieving authorized applications for " +
-                        "user: %s"),
-        ERROR_CODE_INVALID_APPLICATION_ID("10002", "Invalid application ID",
-                "An application with ID: %s cannot be found for user:%s."),
+        ERROR_CODE_INVALID_APPLICATION_ID("10001", "Invalid application ID",
+                "An application with ID: %s cannot be found for user: %s."),
 
         // Server Errors.
         ERROR_CODE_GETTING_APPLICATION_INFORMATION("15001", "Error getting application information",
@@ -49,6 +46,9 @@ public class Constants {
                         "user: %s"),
         ERROR_CODE_GET_APP_BY_ID_BY_USER("15004", "Error retrieving authorized application",
                 "A system error occurred while retrieving authorized application: %s for " +
+                        "user: %s"),
+        ERROR_CODE_GET_APP_BY_USER("15005", "Error retrieving authorized applications",
+                "A system error occurred while retrieving authorized applications for " +
                         "user: %s");
 
         private final String code;

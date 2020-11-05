@@ -17,45 +17,64 @@
 package org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
+import org.wso2.carbon.identity.api.user.common.ContextLoader;
+import org.wso2.carbon.identity.api.user.common.function.UniqueIdToUser;
+import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.UserIdApiService;
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.core.AuthorizedAppsService;
+import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.dto.AuthorizedAppDTO;
+import org.wso2.carbon.user.core.service.RealmService;
+
+import java.util.List;
 
 import javax.ws.rs.core.Response;
 
 /**
-* Implementation of UserIdApi Service.
-*/
+ * Implementation of UserIdApi Service.
+ */
 public class UserIdApiServiceImpl extends UserIdApiService {
 
     @Autowired
     private AuthorizedAppsService authorizedAppsService;
+    private static RealmService realmService = null;
+
+    static {
+        realmService = (RealmService) PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                .getOSGiService(RealmService.class, null);
+    }
 
     @Override
     public Response deleteUserAuthorizedApps(String userId) {
 
-        // do some magic!
-        return Response.ok().entity("magic!").build();
+        authorizedAppsService.deleteUserAuthorizedApps(getUser(userId));
+        return Response.noContent().build();
     }
 
     @Override
     public Response deleteUserAuthorizedAppsByAppId(String userId, String applicationId) {
 
-        // do some magic!
-        return Response.ok().entity("magic!").build();
+        authorizedAppsService.deleteUserAuthorizedApps(getUser(userId), applicationId);
+        return Response.noContent().build();
     }
 
     @Override
     public Response listUserAuthorizedApps(String userId) {
 
-        // do some magic!
-        return Response.ok().entity("magic!").build();
+        List<AuthorizedAppDTO> authorizedAppDTOs = authorizedAppsService.listUserAuthorizedApps(getUser(userId));
+        return Response.ok().entity(authorizedAppDTOs).build();
     }
 
     @Override
     public Response listUserAuthorizedAppsByAppId(String userId, String applicationId) {
 
-        // do some magic!
-        return Response.ok().entity("magic!").build();
+        AuthorizedAppDTO authorizedAppDTO = authorizedAppsService
+                .listUserAuthorizedAppsByAppId(getUser(userId), applicationId);
+        return Response.ok().entity(authorizedAppDTO).build();
     }
 
+    private User getUser(String userId) {
+
+        return new UniqueIdToUser().apply(realmService, userId, ContextLoader.getTenantDomainFromContext());
+    }
 }
