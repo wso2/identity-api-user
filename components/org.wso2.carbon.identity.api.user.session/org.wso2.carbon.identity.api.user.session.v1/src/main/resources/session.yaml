@@ -65,11 +65,13 @@ paths:
                   {
                     "applications": [
                       {
+                        "id": "298c5fd8-01ac-4ada-bc10-1ce37f32140b",
                         "subject": "admin",
                         "appName": "travelocity-requestpath",
                         "appId": "4"
                       },
                       {
+                        "id": "27385fd8-01ac-4ada-bc10-1ce37363h40b",
                         "subject": "admin",
                         "appName": "avis-basic",
                         "appId": "5"
@@ -255,10 +257,15 @@ definitions:
   Application:
     type: object
     required:
+      - id
       - subject
       - appName
       - appId
     properties:
+      id:
+        type: string
+        description: Unique ID of the application.
+        example: '298c5fd8-01ac-4ada-bc10-1ce37f32140b'
       subject:
         type: string
         description: Username of the logged in user for the application.

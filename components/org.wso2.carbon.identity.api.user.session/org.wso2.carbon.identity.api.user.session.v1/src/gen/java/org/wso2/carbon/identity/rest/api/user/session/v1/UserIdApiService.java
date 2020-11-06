@@ -30,8 +30,11 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import javax.ws.rs.core.Response;
 
 public abstract class UserIdApiService {
-    public abstract Response getSessionsByUserId(String userId,Integer limit,Integer offset,String filter,String sort);
-    public abstract Response terminateSessionBySessionId(String userId,String sessionId);
-    public abstract Response terminateSessionsByUserId(String userId);
-}
 
+    public abstract Response getSessionsByUserId(String userId, Integer limit, Integer offset, String filter, String sort);
+
+    public abstract Response terminateSessionBySessionId(String userId, String sessionId);
+
+    public abstract Response terminateSessionsByUserId(String userId);
+
+}

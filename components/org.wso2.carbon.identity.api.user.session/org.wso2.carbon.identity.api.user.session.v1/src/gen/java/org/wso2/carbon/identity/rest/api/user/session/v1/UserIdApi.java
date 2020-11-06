@@ -32,23 +32,24 @@ import java.io.InputStream;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 
+import javax.validation.Valid;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.*;
 
 @Path("/{user-id}")
-
-
 @io.swagger.annotations.Api(value = "/{user-id}", description = "the {user-id} API")
 public class UserIdApi  {
 
-   @Autowired
-   private UserIdApiService delegate;
+    @Autowired
+    private UserIdApiService delegate;
 
+    @Valid
     @GET
     @Path("/sessions")
-    
     @Produces({ "application/json" })
-    @io.swagger.annotations.ApiOperation(value = "Get active sessions", notes = "Retrieves information related to the active sessions of a user identified by the user-id.", response = SessionsDTO.class)
+    @io.swagger.annotations.ApiOperation(value = "Get active sessions",
+            notes = "Retrieves information related to the active sessions of a user identified by the user-id. <br> <b>Permission required:</b> <br> * /permission/admin/manage/identity/authentication/session/view <br> <b>Scope required:</b> <br> * internal_session_view",
+            response = SessionsDTO.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "Successfully retrieved session information."),
         
@@ -66,15 +67,17 @@ public class UserIdApi  {
     @ApiParam(value = "Maximum number of records to return.\n_This parameter is not supported yet._\n") @QueryParam("limit")  Integer limit,
     @ApiParam(value = "Number of records to skip for pagination.\n_This parameter is not supported yet._\n") @QueryParam("offset")  Integer offset,
     @ApiParam(value = "Condition to filter the retrival of records.\n_This parameter is not supported yet._\n") @QueryParam("filter")  String filter,
-    @ApiParam(value = "Define the order in which the retrieved records should be sorted.\n_This parameter is not supported yet._\n") @QueryParam("sort")  String sort)
-    {
-    return delegate.getSessionsByUserId(userId,limit,offset,filter,sort);
+    @ApiParam(value = "Define the order in which the retrieved records should be sorted.\n_This parameter is not supported yet._\n") @QueryParam("sort")  String sort) {
+
+        return delegate.getSessionsByUserId(userId,limit,offset,filter,sort);
     }
+
+    @Valid
     @DELETE
     @Path("/sessions/{session-id}")
-    
-    
-    @io.swagger.annotations.ApiOperation(value = "Terminate a session", notes = "Terminate a specific session of a user by the session-id.", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Terminate a session",
+            notes = "Terminate a specific session of a user by the session-id. <br> <b>Permission required:</b> <br> * /permission/admin/manage/identity/authentication/session/delete <br> <b>Scope required:</b> <br> * internal_session_delete",
+            response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 204, message = "No Content"),
         
@@ -85,15 +88,17 @@ public class UserIdApi  {
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
     public Response terminateSessionBySessionId(@ApiParam(value = "ID of the user.",required=true ) @PathParam("user-id")  String userId,
-    @ApiParam(value = "ID of the session.",required=true ) @PathParam("session-id")  String sessionId)
-    {
-    return delegate.terminateSessionBySessionId(userId,sessionId);
+    @ApiParam(value = "ID of the session.",required=true ) @PathParam("session-id")  String sessionId) {
+
+        return delegate.terminateSessionBySessionId(userId,sessionId);
     }
+
+    @Valid
     @DELETE
     @Path("/sessions")
-    
-    
-    @io.swagger.annotations.ApiOperation(value = "Terminate all sessions", notes = "Delete all the sessions of a user identified by the user-id.", response = void.class)
+    @io.swagger.annotations.ApiOperation(value = "Terminate all sessions",
+            notes = "Delete all the sessions of a user identified by the user-id. <br> <b>Permission required:</b> <br> * /permission/admin/manage/identity/authentication/session/delete <br> <b>Scope required:</b> <br> * internal_session_delete",
+            response = void.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 204, message = "No Content"),
         
@@ -103,9 +108,9 @@ public class UserIdApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
 
-    public Response terminateSessionsByUserId(@ApiParam(value = "ID of the user.",required=true ) @PathParam("user-id")  String userId)
-    {
-    return delegate.terminateSessionsByUserId(userId);
-    }
-}
+    public Response terminateSessionsByUserId(@ApiParam(value = "ID of the user.",required=true ) @PathParam("user-id")  String userId) {
 
+        return delegate.terminateSessionsByUserId(userId);
+    }
+
+}

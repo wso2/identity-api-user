@@ -30,8 +30,11 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import javax.ws.rs.core.Response;
 
 public abstract class MeApiService {
-    public abstract Response getSessionsOfLoggedInUser(Integer limit,Integer offset,String filter,String sort);
-    public abstract Response terminateSessionByLoggedInUser(String sessionId);
-    public abstract Response terminateSessionsByLoggedInUser();
-}
 
+    public abstract Response getSessionsOfLoggedInUser(Integer limit, Integer offset, String filter, String sort);
+
+    public abstract Response terminateSessionByLoggedInUser(String sessionId);
+
+    public abstract Response terminateSessionsByLoggedInUser();
+
+}

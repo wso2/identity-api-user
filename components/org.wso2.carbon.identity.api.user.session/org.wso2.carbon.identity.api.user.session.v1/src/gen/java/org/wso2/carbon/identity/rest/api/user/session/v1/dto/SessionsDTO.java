@@ -19,62 +19,55 @@ package org.wso2.carbon.identity.rest.api.user.session.v1.dto;
 import java.util.ArrayList;
 import java.util.List;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionDTO;
-
 import io.swagger.annotations.*;
 import com.fasterxml.jackson.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-
-
-
-
 @ApiModel(description = "")
-public class SessionsDTO  {
-  
-  
-  
-  private String userId = null;
-  
-  
-  private List<SessionDTO> sessions = new ArrayList<SessionDTO>();
+public class SessionsDTO {
 
-  
-  /**
-   **/
-  @ApiModelProperty(value = "")
-  @JsonProperty("userId")
-  public String getUserId() {
-    return userId;
-  }
-  public void setUserId(String userId) {
-    this.userId = userId;
-  }
+    @Valid 
+    private String userId = null;
 
-  
-  /**
-   * List of active sessions.
-   **/
-  @ApiModelProperty(value = "List of active sessions.")
-  @JsonProperty("sessions")
-  public List<SessionDTO> getSessions() {
-    return sessions;
-  }
-  public void setSessions(List<SessionDTO> sessions) {
-    this.sessions = sessions;
-  }
+    @Valid 
+    private List<SessionDTO> sessions = new ArrayList<SessionDTO>();
 
-  
+    /**
+    **/
+    @ApiModelProperty(value = "")
+    @JsonProperty("userId")
+    public String getUserId() {
+        return userId;
+    }
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
-  @Override
-  public String toString()  {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class SessionsDTO {\n");
-    
-    sb.append("  userId: ").append(userId).append("\n");
-    sb.append("  sessions: ").append(sessions).append("\n");
-    sb.append("}\n");
-    return sb.toString();
-  }
+    /**
+    * List of active sessions.
+    **/
+    @ApiModelProperty(value = "List of active sessions.")
+    @JsonProperty("sessions")
+    public List<SessionDTO> getSessions() {
+        return sessions;
+    }
+    public void setSessions(List<SessionDTO> sessions) {
+        this.sessions = sessions;
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("class SessionsDTO {\n");
+        
+        sb.append("    userId: ").append(userId).append("\n");
+        sb.append("    sessions: ").append(sessions).append("\n");
+        
+        sb.append("}\n");
+        return sb.toString();
+    }
 }

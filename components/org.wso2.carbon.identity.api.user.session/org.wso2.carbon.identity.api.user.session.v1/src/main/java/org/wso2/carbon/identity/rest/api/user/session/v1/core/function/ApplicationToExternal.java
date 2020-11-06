@@ -32,6 +32,7 @@ public class ApplicationToExternal implements Function<Application, ApplicationD
     public ApplicationDTO apply(Application application) {
 
         ApplicationDTO applicationDTO = new ApplicationDTO();
+        applicationDTO.setId(application.getResourceId());
         applicationDTO.setAppId(application.getAppId());
         applicationDTO.setSubject(application.getSubject());
         applicationDTO.setAppName(application.getAppName());
