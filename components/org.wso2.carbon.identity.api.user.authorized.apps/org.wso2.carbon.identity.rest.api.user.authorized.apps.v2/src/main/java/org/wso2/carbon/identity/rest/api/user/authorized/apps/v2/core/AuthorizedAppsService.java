@@ -230,7 +230,7 @@ public class AuthorizedAppsService {
             ServiceProvider serviceProvider = applicationManagementService.getApplicationByResourceId(resourceId,
                     user.getTenantDomain());
             if (serviceProvider == null) {
-                throw handleError(Response.Status.BAD_REQUEST,
+                throw handleError(Response.Status.NOT_FOUND,
                         Constants.ErrorMessages.ERROR_CODE_INVALID_APPLICATION_ID,
                         resourceId, user.toFullQualifiedUsername());
             }
