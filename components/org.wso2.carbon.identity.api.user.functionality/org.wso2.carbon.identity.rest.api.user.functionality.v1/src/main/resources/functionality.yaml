@@ -26,7 +26,15 @@ paths:
         - user functionality management
       summary: |
         Get the lock status of a functionality for authenticated user
-      description: Get the status of a functionality for the authenticated user.
+      description: |
+        Get the status of a functionality for the authenticated user.
+
+        <b>Permission required:</b> <br/>
+          - none
+
+        <b>Scope required:</b> <br/>
+          - internal_login
+
       operationId: getLockStatusOfLoggedInUser
       parameters:
         - name: function-id
@@ -69,7 +77,15 @@ paths:
         - user functionality management
       summary: Lock or Unlock a function for authenticated user
       operationId: changeStatusOfLoggedInUser
-      description: This API is used to lock or unlock a function for the authenticated user.
+      description: |
+        This API is used to lock or unlock a function for the authenticated user.
+
+        <b>Permission required:</b> <br/>
+          - none
+
+        <b>Scope required:</b> <br/>
+          - internal_login
+
       parameters:
         - name: function-id
           in: path
@@ -121,7 +137,15 @@ paths:
         - user functionality management
       summary: |
         Get the lock status of a functionality for a user
-      description: Get the status of a functionality for a particular user.
+      description: |
+        Get the status of a functionality for a particular user.
+
+        <b>Permission required:</b> <br/>
+          - /permission/admin/manage/identity/identitymgt/view
+
+        <b>Scope required:</b> <br/>
+          - internal_identity_mgt_view
+
       operationId: getLockStatus
       parameters:
         - name: function-id
@@ -170,7 +194,15 @@ paths:
         - user functionality management
       summary: Lock or Unlock a function for a user
       operationId: changeStatus
-      description: This API is used to lock or unlock a function for a particular user.
+      description: |
+        This API is used to lock or unlock a function for a particular user.
+
+        <b>Permission required:</b> <br/>
+          - /permission/admin/manage/identity/identitymgt/update
+
+        <b>Scope required:</b> <br/>
+          - internal_identity_mgt_update
+
       parameters:
         - name: function-id
           in: path
