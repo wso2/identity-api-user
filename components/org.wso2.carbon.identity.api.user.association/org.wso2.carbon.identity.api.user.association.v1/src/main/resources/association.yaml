@@ -91,7 +91,13 @@ paths:
           description:  User details to be associated. userId should be the fully qualified username of the user.
           required: true
           schema:
-            $ref: '#/definitions/AssociationUserRequest'
+            allOf:
+              - $ref: '#/definitions/AssociationUserRequest'
+            example: |
+              {
+                "userId": "john",
+                "password": "userpassword"
+              }
       responses:
         201:
           description: Successfully created
