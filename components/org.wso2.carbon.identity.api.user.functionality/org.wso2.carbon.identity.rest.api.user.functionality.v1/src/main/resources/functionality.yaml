@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  description: This is the RESTful API
+  description: This is the RESTful API for handling user functionality manangement in WSO2 Identity Server.
   version: "1.0.0"
   title: WSO2 Identity Server - User Functionality Management API
   contact:
