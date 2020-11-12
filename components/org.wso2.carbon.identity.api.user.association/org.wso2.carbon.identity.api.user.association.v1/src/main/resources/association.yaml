@@ -96,7 +96,7 @@ paths:
             example: |
               {
                 "userId": "john",
-                "password": "userpassword",
+                "password": "userpassword"
               }
       responses:
         201:
