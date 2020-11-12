@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  description: This is the RESTful API for handling user functionality manangement in WSO2 Identity Server.
+  description: This is the RESTful API for handling user functionality manangement in WSO2 Identity Server. A functionality can be locked or unlocked for particular users via this API. 
   version: "1.0.0"
   title: WSO2 Identity Server - User Functionality Management API
   contact:
@@ -12,8 +12,11 @@ info:
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 
 tags:
-  - name: User Functionality Management REST API
-    description: This REST API handles user functionality management. A functionality can be locked or unlocked for particular users via this API. 
+  - name: me
+    description: Operations for the authenticated user
+  - name: admin
+    description: >
+      Operations available for privileged users, to be invoked on behalf of another user.
 
 security:
   - OAuth2: []
@@ -23,7 +26,7 @@ paths:
   /me/user-functionality/{function-id}:
     get:
       tags:
-        - user functionality management
+        - me
       summary: |
         Get the lock status of a functionality for authenticated user
       description: |
@@ -74,7 +77,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     put:
       tags:
-        - user functionality management
+        - me
       summary: Lock or Unlock a function for authenticated user
       operationId: changeStatusOfLoggedInUser
       description: |
@@ -134,7 +137,7 @@ paths:
   '/{user-id}/user-functionality/{function-id}':
     get:
       tags:
-        - user functionality management
+        - admin
       summary: |
         Get the lock status of a functionality for a user
       description: |
@@ -191,7 +194,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     put:
       tags:
-        - user functionality management
+        - admin
       summary: Lock or Unlock a function for a user
       operationId: changeStatus
       description: |
