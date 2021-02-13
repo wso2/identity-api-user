@@ -33,7 +33,7 @@ import javax.ws.rs.core.Response;
 /**
  * Implementation of UserIdApi Service.
  */
-public class UserIdApiServiceImpl extends UserIdApiService {
+public class UserIdApiServiceImpl implements UserIdApiService {
 
     @Autowired
     private AuthorizedAppsService authorizedAppsService;

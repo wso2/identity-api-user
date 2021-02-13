@@ -25,19 +25,25 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
+import org.wso2.carbon.identity.api.user.common.function.UserToUniqueId;
 import org.wso2.carbon.identity.application.common.IdentityApplicationManagementException;
 import org.wso2.carbon.identity.application.common.model.ServiceProvider;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.application.mgt.ApplicationManagementService;
+import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.oauth.IdentityOAuthAdminException;
 import org.wso2.carbon.identity.oauth.OAuthAdminServiceImpl;
 import org.wso2.carbon.identity.oauth.common.OAuthConstants;
 import org.wso2.carbon.identity.oauth.dto.OAuthConsumerAppDTO;
 import org.wso2.carbon.identity.oauth.dto.OAuthRevocationRequestDTO;
 import org.wso2.carbon.identity.oauth.dto.OAuthRevocationResponseDTO;
+import org.wso2.carbon.identity.oauth2.IdentityOAuth2ScopeConsentException;
+import org.wso2.carbon.identity.oauth2.OAuth2ScopeService;
 import org.wso2.carbon.identity.oauth2.internal.OAuth2ServiceComponentHolder;
+import org.wso2.carbon.identity.oauth2.model.OAuth2ScopeConsentResponse;
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.dto.AuthorizedAppDTO;
 import org.wso2.carbon.user.core.UserCoreConstants;
+import org.wso2.carbon.user.core.service.RealmService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,12 +65,19 @@ public class AuthorizedAppsService {
     private static final Log log = LogFactory.getLog(AuthorizedAppsService.class);
     private static final ApplicationManagementService applicationManagementService;
     private static final OAuthAdminServiceImpl oAuthAdminService;
+    private static final OAuth2ScopeService oAuth2ScopeService;
+    private static final RealmService realmService;
+
 
     static {
         applicationManagementService = (ApplicationManagementService) PrivilegedCarbonContext.
                 getThreadLocalCarbonContext().getOSGiService(ApplicationManagementService.class, null);
         oAuthAdminService = (OAuthAdminServiceImpl) PrivilegedCarbonContext.getThreadLocalCarbonContext()
                 .getOSGiService(OAuthAdminServiceImpl.class, null);
+        oAuth2ScopeService = (OAuth2ScopeService) PrivilegedCarbonContext.
+                getThreadLocalCarbonContext().getOSGiService(OAuth2ScopeService.class, null);
+        realmService = (RealmService) PrivilegedCarbonContext.
+                getThreadLocalCarbonContext().getOSGiService(RealmService.class, null);
     }
 
     /**
@@ -84,6 +97,9 @@ public class AuthorizedAppsService {
             Optional<OAuthConsumerAppDTO> first = Arrays.stream(appsAuthorizedByUser)
                     .filter(oAuthConsumerAppDTO -> oAuthConsumerAppDTO.getApplicationName().equals(applicationName))
                     .findFirst();
+            String userId = getUserIdFromUser(user);
+            oAuth2ScopeService.revokeUserConsentForApplication(userId, applicationId,
+                    IdentityTenantUtil.getTenantId(user.getTenantDomain()));
             if (!first.isPresent()) {
                 throw handleError(NOT_FOUND, Constants.ErrorMessages.ERROR_CODE_INVALID_APPLICATION_ID, applicationId,
                         user.toFullQualifiedUsername());
@@ -94,7 +110,7 @@ public class AuthorizedAppsService {
                 //TODO: Handle
                 log.warn("Given application: " + applicationId + " has been deleted by a PreRevokeListener.");
             }
-        } catch (IdentityOAuthAdminException e) {
+        } catch (IdentityOAuthAdminException | IdentityOAuth2ScopeConsentException e) {
             throw handleError(INTERNAL_SERVER_ERROR, Constants.ErrorMessages.ERROR_CODE_REVOKE_APP_BY_ID_BY_USER,
                     applicationId, user.toFullQualifiedUsername());
         } finally {
@@ -118,12 +134,14 @@ public class AuthorizedAppsService {
             oAuthRevocationRequestDTO.setApps(allAuthorizedApps.toArray(new String[0]));
             OAuthRevocationResponseDTO oAuthRevocationResponseDTO = oAuthAdminService
                     .revokeAuthzForAppsByResourceOwner(oAuthRevocationRequestDTO);
+            String userId = getUserIdFromUser(user);
+            oAuth2ScopeService.revokeUserConsents(userId, IdentityTenantUtil.getTenantId(user.getTenantDomain()));
             if (!oAuthRevocationResponseDTO.isError()) {
                 //TODO: Handle
                 log.warn("No applications can be found for the user: " + user.getUserName());
 
             }
-        } catch (IdentityOAuthAdminException e) {
+        } catch (IdentityOAuthAdminException |  IdentityOAuth2ScopeConsentException e) {
             throw handleError(INTERNAL_SERVER_ERROR, Constants.ErrorMessages.ERROR_CODE_REVOKE_APP_BY_USER,
                     user.toFullQualifiedUsername());
         } finally {
@@ -151,12 +169,17 @@ public class AuthorizedAppsService {
             if (authConsumerAppDTO.isPresent()) {
                 String clientKey = authConsumerAppDTO.get().getOauthConsumerKey();
                 String resourceId = getApplicationResourceIdByClientId(clientKey, user.getTenantDomain());
-                authorizedAppDTO = buildAuthorizedAppDTO(resourceId, authConsumerAppDTO.get());
+                String userId = getUserIdFromUser(user);
+                OAuth2ScopeConsentResponse oAuth2ScopeConsentResponse =
+                        oAuth2ScopeService.getUserConsentByAppId(userId, resourceId,
+                                IdentityTenantUtil.getTenantId(user.getTenantDomain()));
+                authorizedAppDTO = buildAuthorizedAppDTO(resourceId, authConsumerAppDTO.get(),
+                        oAuth2ScopeConsentResponse);
             } else {
                 throw handleError(NOT_FOUND, Constants.ErrorMessages.ERROR_CODE_INVALID_APPLICATION_ID, applicationId,
                         user.toFullQualifiedUsername());
             }
-        } catch (IdentityOAuthAdminException e) {
+        } catch (IdentityOAuthAdminException | IdentityOAuth2ScopeConsentException e) {
             throw handleError(INTERNAL_SERVER_ERROR, Constants.ErrorMessages.ERROR_CODE_GET_APP_BY_ID_BY_USER,
                     applicationId, user.toFullQualifiedUsername());
         } finally {
@@ -183,9 +206,14 @@ public class AuthorizedAppsService {
             for (OAuthConsumerAppDTO authConsumerAppDTO : appsAuthorizedByUser) {
                 String clientKey = authConsumerAppDTO.getOauthConsumerKey();
                 String resourceId = getApplicationResourceIdByClientId(clientKey, user.getTenantDomain());
-                authorizedAppDTOS.add(buildAuthorizedAppDTO(resourceId, authConsumerAppDTO));
+                String userId = getUserIdFromUser(user);
+                OAuth2ScopeConsentResponse oAuth2ScopeConsentResponse =
+                        oAuth2ScopeService.getUserConsentByAppId(userId, resourceId,
+                        IdentityTenantUtil.getTenantId(user.getTenantDomain()));
+                authorizedAppDTOS.add(buildAuthorizedAppDTO(resourceId, authConsumerAppDTO,
+                        oAuth2ScopeConsentResponse));
             }
-        } catch (IdentityOAuthAdminException e) {
+        } catch (IdentityOAuthAdminException | IdentityOAuth2ScopeConsentException e) {
             throw handleError(Response.Status.INTERNAL_SERVER_ERROR, Constants.ErrorMessages.ERROR_CODE_GET_APP_BY_USER,
                     user.toFullQualifiedUsername());
         } finally {
@@ -253,12 +281,19 @@ public class AuthorizedAppsService {
         }
     }
 
-    private AuthorizedAppDTO buildAuthorizedAppDTO(String resourceId, OAuthConsumerAppDTO consumerAppDTO) {
+    private AuthorizedAppDTO buildAuthorizedAppDTO(String resourceId, OAuthConsumerAppDTO consumerAppDTO,
+                                                   OAuth2ScopeConsentResponse oAuth2ScopeConsentResponse) {
 
         AuthorizedAppDTO authorizedAppDTO = new AuthorizedAppDTO();
         authorizedAppDTO.setId(resourceId);
         authorizedAppDTO.setName(consumerAppDTO.getApplicationName());
         authorizedAppDTO.setClientId(consumerAppDTO.getOauthConsumerKey());
+        authorizedAppDTO.approvedScopes(oAuth2ScopeConsentResponse.getApprovedScopes());
         return authorizedAppDTO;
+    }
+
+    private String getUserIdFromUser(User user) {
+
+        return new UserToUniqueId().apply(realmService, user);
     }
 }
