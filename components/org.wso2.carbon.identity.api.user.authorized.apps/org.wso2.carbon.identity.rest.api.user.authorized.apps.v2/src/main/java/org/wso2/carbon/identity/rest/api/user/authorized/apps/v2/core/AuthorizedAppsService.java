@@ -171,7 +171,7 @@ public class AuthorizedAppsService {
                 String resourceId = getApplicationResourceIdByClientId(clientKey, user.getTenantDomain());
                 String userId = getUserIdFromUser(user);
                 OAuth2ScopeConsentResponse oAuth2ScopeConsentResponse =
-                        oAuth2ScopeService.getUserConsentByAppId(userId, resourceId,
+                        oAuth2ScopeService.getUserConsentForApp(userId, resourceId,
                                 IdentityTenantUtil.getTenantId(user.getTenantDomain()));
                 authorizedAppDTO = buildAuthorizedAppDTO(resourceId, authConsumerAppDTO.get(),
                         oAuth2ScopeConsentResponse);
@@ -208,7 +208,7 @@ public class AuthorizedAppsService {
                 String resourceId = getApplicationResourceIdByClientId(clientKey, user.getTenantDomain());
                 String userId = getUserIdFromUser(user);
                 OAuth2ScopeConsentResponse oAuth2ScopeConsentResponse =
-                        oAuth2ScopeService.getUserConsentByAppId(userId, resourceId,
+                        oAuth2ScopeService.getUserConsentForApp(userId, resourceId,
                         IdentityTenantUtil.getTenantId(user.getTenantDomain()));
                 authorizedAppDTOS.add(buildAuthorizedAppDTO(resourceId, authConsumerAppDTO,
                         oAuth2ScopeConsentResponse));

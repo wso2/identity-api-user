@@ -263,7 +263,7 @@ components:
       type: object
       required:
         - id
-        - appName
+        - name
         - clientId
         - approvedScopes
       properties:
