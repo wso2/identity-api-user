@@ -107,9 +107,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AuthorizedAppDTO'
+                $ref: '#/components/schemas/AuthorizedAppDTO'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -186,6 +184,7 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/ServerError'
+
   '/{user-id}/authorized-apps/{application-id}':
     get:
       tags:
@@ -199,13 +198,11 @@ paths:
         - $ref: '#/components/parameters/applicationNamePathParam'
       responses:
         '200':
-          description: search results matching criteria
+          description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AuthorizedAppDTO'
+                $ref: '#/components/schemas/AuthorizedAppDTO'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -235,8 +232,6 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/ServerError'
-
-
 
 components:
   parameters:
