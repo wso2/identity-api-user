@@ -36,7 +36,7 @@ public class UserIdApi {
 
     @Valid
     @DELETE
-    @Path("/{user-id}/authorized-apps")
+    @Path("/authorized-apps")
     
     @Produces({ "application/json" })
     @ApiOperation(value = "Remove all authorized applications of a user", notes = "Removes authorization from all OAuth apps of a given user ", response = Void.class, authorizations = {
@@ -58,7 +58,7 @@ public class UserIdApi {
 
     @Valid
     @DELETE
-    @Path("/{user-id}/authorized-apps/{application-id}")
+    @Path("/authorized-apps/{application-id}")
     
     @Produces({ "application/json" })
     @ApiOperation(value = "Removes challenge question answers", notes = "Removes autherized OAuth apps by an app ID for a given user ", response = Void.class, authorizations = {
@@ -81,7 +81,7 @@ public class UserIdApi {
 
     @Valid
     @GET
-    @Path("/{user-id}/authorized-apps")
+    @Path("/authorized-apps")
     
     @Produces({ "application/json" })
     @ApiOperation(value = "List authorized applications of a user", notes = "List approved OAuth applications for a given user ", response = AuthorizedAppDTO.class, responseContainer = "List", authorizations = {
@@ -103,7 +103,7 @@ public class UserIdApi {
 
     @Valid
     @GET
-    @Path("/{user-id}/authorized-apps/{application-id}")
+    @Path("/authorized-apps/{application-id}")
     
     @Produces({ "application/json" })
     @ApiOperation(value = "Retrieve authorized app by app ID for a user", notes = "Retrived autherized OAuth apps by an app ID for a given user ", response = AuthorizedAppDTO.class, responseContainer = "List", authorizations = {
