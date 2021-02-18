@@ -16,34 +16,38 @@
 
 package org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.*;
+
+
 import io.swagger.annotations.*;
-import com.fasterxml.jackson.annotation.*;
-
+import java.util.Objects;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.xml.bind.annotation.*;
 
-@ApiModel(description = "")
-public class ErrorDTO {
-
-    @Valid 
-    @NotNull(message = "Property code cannot be null.") 
-    private String code = null;
-
-    @Valid 
-    @NotNull(message = "Property message cannot be null.") 
-    private String message = null;
-
-    @Valid 
-    private String description = null;
-
-    @Valid 
-    private String traceId = null;
+public class ErrorDTO  {
+  
+    private String code;
+    private String message;
+    private String description;
+    private String traceId;
 
     /**
     **/
-    @ApiModelProperty(required = true, value = "")
+    public ErrorDTO code(String code) {
+
+        this.code = code;
+        return this;
+    }
+    
+    @ApiModelProperty(example = "some_error_code", required = true, value = "")
     @JsonProperty("code")
+    @Valid
+    @NotNull(message = "Property code cannot be null.")
+
     public String getCode() {
         return code;
     }
@@ -53,8 +57,17 @@ public class ErrorDTO {
 
     /**
     **/
-    @ApiModelProperty(required = true, value = "")
+    public ErrorDTO message(String message) {
+
+        this.message = message;
+        return this;
+    }
+    
+    @ApiModelProperty(example = "Some Error Message", required = true, value = "")
     @JsonProperty("message")
+    @Valid
+    @NotNull(message = "Property message cannot be null.")
+
     public String getMessage() {
         return message;
     }
@@ -64,8 +77,15 @@ public class ErrorDTO {
 
     /**
     **/
-    @ApiModelProperty(value = "")
+    public ErrorDTO description(String description) {
+
+        this.description = description;
+        return this;
+    }
+    
+    @ApiModelProperty(example = "Some Error Description", value = "")
     @JsonProperty("description")
+    @Valid
     public String getDescription() {
         return description;
     }
@@ -75,13 +95,43 @@ public class ErrorDTO {
 
     /**
     **/
-    @ApiModelProperty(value = "")
+    public ErrorDTO traceId(String traceId) {
+
+        this.traceId = traceId;
+        return this;
+    }
+    
+    @ApiModelProperty(example = "Some Correlation for Error Instance", value = "")
     @JsonProperty("traceId")
+    @Valid
     public String getTraceId() {
         return traceId;
     }
     public void setTraceId(String traceId) {
         this.traceId = traceId;
+    }
+
+
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ErrorDTO errorDTO = (ErrorDTO) o;
+        return Objects.equals(this.code, errorDTO.code) &&
+            Objects.equals(this.message, errorDTO.message) &&
+            Objects.equals(this.description, errorDTO.description) &&
+            Objects.equals(this.traceId, errorDTO.traceId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, message, description, traceId);
     }
 
     @Override
@@ -90,12 +140,24 @@ public class ErrorDTO {
         StringBuilder sb = new StringBuilder();
         sb.append("class ErrorDTO {\n");
         
-        sb.append("    code: ").append(code).append("\n");
-        sb.append("    message: ").append(message).append("\n");
-        sb.append("    description: ").append(description).append("\n");
-        sb.append("    traceId: ").append(traceId).append("\n");
-        
-        sb.append("}\n");
+        sb.append("    code: ").append(toIndentedString(code)).append("\n");
+        sb.append("    message: ").append(toIndentedString(message)).append("\n");
+        sb.append("    description: ").append(toIndentedString(description)).append("\n");
+        sb.append("    traceId: ").append(toIndentedString(traceId)).append("\n");
+        sb.append("}");
         return sb.toString();
     }
+
+    /**
+    * Convert the given object to string with each line indented by 4 spaces
+    * (except the first line).
+    */
+    private String toIndentedString(java.lang.Object o) {
+
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n");
+    }
 }
+

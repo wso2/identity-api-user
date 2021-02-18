@@ -16,27 +16,16 @@
 
 package org.wso2.carbon.identity.rest.api.user.authorized.apps.v2;
 
-import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.*;
-import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.dto.*;
-
-import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.dto.ErrorDTO;
-import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.dto.AuthorizedAppDTO;
-
-import java.util.List;
-
-import java.io.InputStream;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-
 import javax.ws.rs.core.Response;
 
-public abstract class MeApiService {
 
-    public abstract Response deleteLoggedInUserAuthorizedAppByAppId(String applicationId);
+public interface MeApiService {
 
-    public abstract Response deleteLoggedInUserAuthorizedApps();
+      public Response deleteLoggedInUserAuthorizedAppByAppId(String applicationId);
 
-    public abstract Response getLoggedInUserAuthorizedAppByAppId(String applicationId);
+      public Response deleteLoggedInUserAuthorizedApps();
 
-    public abstract Response listLoggedInUserAuthorizedApps();
+      public Response getLoggedInUserAuthorizedAppByAppId(String applicationId);
 
+      public Response listLoggedInUserAuthorizedApps();
 }

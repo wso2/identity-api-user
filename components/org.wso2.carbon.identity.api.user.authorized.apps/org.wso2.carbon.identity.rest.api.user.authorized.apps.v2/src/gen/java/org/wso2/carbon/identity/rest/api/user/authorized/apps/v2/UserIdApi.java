@@ -17,28 +17,19 @@
 package org.wso2.carbon.identity.rest.api.user.authorized.apps.v2;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.dto.*;
-import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.UserIdApiService;
-import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.factories.UserIdApiServiceFactory;
 
-import io.swagger.annotations.ApiParam;
-
-import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.dto.ErrorDTO;
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.dto.AuthorizedAppDTO;
-
-import java.util.List;
-
-import java.io.InputStream;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.dto.ErrorDTO;
 
 import javax.validation.Valid;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
+import io.swagger.annotations.*;
 
 @Path("/{user-id}")
-@io.swagger.annotations.Api(value = "/{user-id}", description = "the {user-id} API")
-public class UserIdApi  {
+@Api(description = "The {user-id} API")
+
+public class UserIdApi {
 
     @Autowired
     private UserIdApiService delegate;
@@ -46,87 +37,91 @@ public class UserIdApi  {
     @Valid
     @DELETE
     @Path("/authorized-apps")
-    @io.swagger.annotations.ApiOperation(value = "Remove all authorized applications of a user",
-            notes = "Removes authorization from all OAuth apps of a given user\n",
-            response = void.class)
-    @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 204, message = "Item Deleted"),
-        
-        @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
-        
-        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
-        
-        @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
+    
+    @Produces({ "application/json" })
+    @ApiOperation(value = "Remove all authorized applications of a user", notes = "Removes authorization from all OAuth apps of a given user ", response = Void.class, authorizations = {
+        @Authorization(value = "BasicAuth"),
+        @Authorization(value = "OAuth2", scopes = {
+            
+        })
+    }, tags={ "admin", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 204, message = "Item Deleted", response = Void.class),
+        @ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
+        @ApiResponse(code = 403, message = "Resource Forbidden", response = Void.class),
+        @ApiResponse(code = 500, message = "Internal Server Error", response = ErrorDTO.class)
+    })
+    public Response deleteUserAuthorizedApps(@ApiParam(value = "username of the user",required=true) @PathParam("user-id") String userId) {
 
-    public Response deleteUserAuthorizedApps(@ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId) {
-
-        return delegate.deleteUserAuthorizedApps(userId);
+        return delegate.deleteUserAuthorizedApps(userId );
     }
 
     @Valid
     @DELETE
     @Path("/authorized-apps/{application-id}")
-    @io.swagger.annotations.ApiOperation(value = "Removes challenge question answers",
-            notes = "Removes autherized OAuth apps by an app ID for a given user\n",
-            response = void.class)
-    @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 204, message = "Item Deleted"),
-        
-        @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
-        
-        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
-        
-        @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource was not found"),
-        
-        @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
+    
+    @Produces({ "application/json" })
+    @ApiOperation(value = "Removes challenge question answers", notes = "Removes autherized OAuth apps by an app ID for a given user ", response = Void.class, authorizations = {
+        @Authorization(value = "BasicAuth"),
+        @Authorization(value = "OAuth2", scopes = {
+            
+        })
+    }, tags={ "admin", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 204, message = "Item Deleted", response = Void.class),
+        @ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
+        @ApiResponse(code = 403, message = "Resource Forbidden", response = Void.class),
+        @ApiResponse(code = 404, message = "The specified resource was not found", response = ErrorDTO.class),
+        @ApiResponse(code = 500, message = "Internal Server Error", response = ErrorDTO.class)
+    })
+    public Response deleteUserAuthorizedAppsByAppId(@ApiParam(value = "username of the user",required=true) @PathParam("user-id") String userId, @ApiParam(value = "Application ID",required=true) @PathParam("application-id") String applicationId) {
 
-    public Response deleteUserAuthorizedAppsByAppId(@ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId,
-    @ApiParam(value = "Application ID",required=true ) @PathParam("application-id")  String applicationId) {
-
-        return delegate.deleteUserAuthorizedAppsByAppId(userId,applicationId);
+        return delegate.deleteUserAuthorizedAppsByAppId(userId,  applicationId );
     }
 
     @Valid
     @GET
     @Path("/authorized-apps")
-    @io.swagger.annotations.ApiOperation(value = "List authorized applications of a user",
-            notes = "List approved OAuth applications for a given user\n",
-            response = AuthorizedAppDTO.class, responseContainer = "List")
-    @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "search results matching criteria"),
-        
-        @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
-        
-        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
-        
-        @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
+    
+    @Produces({ "application/json" })
+    @ApiOperation(value = "List authorized applications of a user", notes = "List approved OAuth applications for a given user ", response = AuthorizedAppDTO.class, responseContainer = "List", authorizations = {
+        @Authorization(value = "BasicAuth"),
+        @Authorization(value = "OAuth2", scopes = {
+            
+        })
+    }, tags={ "admin", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "search results matching criteria", response = AuthorizedAppDTO.class, responseContainer = "List"),
+        @ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
+        @ApiResponse(code = 403, message = "Resource Forbidden", response = Void.class),
+        @ApiResponse(code = 500, message = "Internal Server Error", response = ErrorDTO.class)
+    })
+    public Response listUserAuthorizedApps(@ApiParam(value = "username of the user",required=true) @PathParam("user-id") String userId) {
 
-    public Response listUserAuthorizedApps(@ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId) {
-
-        return delegate.listUserAuthorizedApps(userId);
+        return delegate.listUserAuthorizedApps(userId );
     }
 
     @Valid
     @GET
     @Path("/authorized-apps/{application-id}")
-    @io.swagger.annotations.ApiOperation(value = "Retrieve authorized app by app ID for a user",
-            notes = "Retrived autherized OAuth apps by an app ID for a given user\n",
-            response = AuthorizedAppDTO.class)
-    @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "search results matching criteria"),
-        
-        @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
-        
-        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
-        
-        @io.swagger.annotations.ApiResponse(code = 404, message = "The specified resource was not found"),
-        
-        @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
+    
+    @Produces({ "application/json" })
+    @ApiOperation(value = "Retrieve authorized app by app ID for a user", notes = "Retrived autherized OAuth apps by an app ID for a given user ", response = AuthorizedAppDTO.class, responseContainer = "List", authorizations = {
+        @Authorization(value = "BasicAuth"),
+        @Authorization(value = "OAuth2", scopes = {
+            
+        })
+    }, tags={ "admin" })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "search results matching criteria", response = AuthorizedAppDTO.class, responseContainer = "List"),
+        @ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
+        @ApiResponse(code = 403, message = "Resource Forbidden", response = Void.class),
+        @ApiResponse(code = 404, message = "The specified resource was not found", response = ErrorDTO.class),
+        @ApiResponse(code = 500, message = "Internal Server Error", response = ErrorDTO.class)
+    })
+    public Response listUserAuthorizedAppsByAppId(@ApiParam(value = "username of the user",required=true) @PathParam("user-id") String userId, @ApiParam(value = "Application ID",required=true) @PathParam("application-id") String applicationId) {
 
-    public Response listUserAuthorizedAppsByAppId(@ApiParam(value = "username of the user",required=true ) @PathParam("user-id")  String userId,
-    @ApiParam(value = "Application ID",required=true ) @PathParam("application-id")  String applicationId) {
-
-        return delegate.listUserAuthorizedAppsByAppId(userId,applicationId);
+        return delegate.listUserAuthorizedAppsByAppId(userId,  applicationId );
     }
 
 }

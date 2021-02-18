@@ -31,7 +31,7 @@ import static org.wso2.carbon.identity.api.user.common.ContextLoader.getUserFrom
 /**
 * Implementation of MeApi Service.
 */
-public class MeApiServiceImpl extends MeApiService {
+public class MeApiServiceImpl implements MeApiService {
 
     @Autowired
     private AuthorizedAppsService authorizedAppsService;
