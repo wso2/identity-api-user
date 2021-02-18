@@ -37,7 +37,7 @@ import org.wso2.carbon.identity.oauth.common.OAuthConstants;
 import org.wso2.carbon.identity.oauth.dto.OAuthConsumerAppDTO;
 import org.wso2.carbon.identity.oauth.dto.OAuthRevocationRequestDTO;
 import org.wso2.carbon.identity.oauth.dto.OAuthRevocationResponseDTO;
-import org.wso2.carbon.identity.oauth2.IdentityOAuth2ScopeConsentException;
+import org.wso2.carbon.identity.oauth2.IdentityOAuth2ScopeException;
 import org.wso2.carbon.identity.oauth2.OAuth2ScopeService;
 import org.wso2.carbon.identity.oauth2.internal.OAuth2ServiceComponentHolder;
 import org.wso2.carbon.identity.oauth2.model.OAuth2ScopeConsentResponse;
@@ -110,7 +110,7 @@ public class AuthorizedAppsService {
                 //TODO: Handle
                 log.warn("Given application: " + applicationId + " has been deleted by a PreRevokeListener.");
             }
-        } catch (IdentityOAuthAdminException | IdentityOAuth2ScopeConsentException e) {
+        } catch (IdentityOAuthAdminException | IdentityOAuth2ScopeException e) {
             throw handleError(INTERNAL_SERVER_ERROR, Constants.ErrorMessages.ERROR_CODE_REVOKE_APP_BY_ID_BY_USER,
                     applicationId, user.toFullQualifiedUsername());
         } finally {
@@ -141,7 +141,7 @@ public class AuthorizedAppsService {
                 log.warn("No applications can be found for the user: " + user.getUserName());
 
             }
-        } catch (IdentityOAuthAdminException |  IdentityOAuth2ScopeConsentException e) {
+        } catch (IdentityOAuthAdminException |  IdentityOAuth2ScopeException e) {
             throw handleError(INTERNAL_SERVER_ERROR, Constants.ErrorMessages.ERROR_CODE_REVOKE_APP_BY_USER,
                     user.toFullQualifiedUsername());
         } finally {
@@ -179,7 +179,7 @@ public class AuthorizedAppsService {
                 throw handleError(NOT_FOUND, Constants.ErrorMessages.ERROR_CODE_INVALID_APPLICATION_ID, applicationId,
                         user.toFullQualifiedUsername());
             }
-        } catch (IdentityOAuthAdminException | IdentityOAuth2ScopeConsentException e) {
+        } catch (IdentityOAuthAdminException | IdentityOAuth2ScopeException e) {
             throw handleError(INTERNAL_SERVER_ERROR, Constants.ErrorMessages.ERROR_CODE_GET_APP_BY_ID_BY_USER,
                     applicationId, user.toFullQualifiedUsername());
         } finally {
@@ -213,7 +213,7 @@ public class AuthorizedAppsService {
                 authorizedAppDTOS.add(buildAuthorizedAppDTO(resourceId, authConsumerAppDTO,
                         oAuth2ScopeConsentResponse));
             }
-        } catch (IdentityOAuthAdminException | IdentityOAuth2ScopeConsentException e) {
+        } catch (IdentityOAuthAdminException | IdentityOAuth2ScopeException e) {
             throw handleError(Response.Status.INTERNAL_SERVER_ERROR, Constants.ErrorMessages.ERROR_CODE_GET_APP_BY_USER,
                     user.toFullQualifiedUsername());
         } finally {
