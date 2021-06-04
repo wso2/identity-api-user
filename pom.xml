@@ -417,7 +417,7 @@
         <maven.compiler.plugin.version>2.3.1</maven.compiler.plugin.version>
         <maven.bundle.plugin.version>2.4.0</maven.bundle.plugin.version>
         <jackson-jaxrs-json-provider.version>2.10.5</jackson-jaxrs-json-provider.version>
-        <jackson-databind.version>2.10.5</jackson-databind.version>
+        <jackson-databind.version>2.10.5.1</jackson-databind.version>
         <jackson-dataformat-xml.version>2.10.5</jackson-dataformat-xml.version>
         <cxf-bundle.version>3.3.7</cxf-bundle.version>
         <jackson.version>1.9.13</jackson.version>
