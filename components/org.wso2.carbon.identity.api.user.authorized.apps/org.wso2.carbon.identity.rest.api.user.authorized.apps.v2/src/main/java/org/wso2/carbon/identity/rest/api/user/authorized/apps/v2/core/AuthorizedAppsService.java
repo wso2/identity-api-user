@@ -22,11 +22,14 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.api.user.common.function.UserToUniqueId;
 import org.wso2.carbon.identity.application.common.IdentityApplicationManagementException;
+import org.wso2.carbon.identity.application.common.model.InboundAuthenticationConfig;
+import org.wso2.carbon.identity.application.common.model.InboundAuthenticationRequestConfig;
 import org.wso2.carbon.identity.application.common.model.ServiceProvider;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.application.mgt.ApplicationManagementService;
@@ -41,6 +44,7 @@ import org.wso2.carbon.identity.oauth2.IdentityOAuth2ScopeException;
 import org.wso2.carbon.identity.oauth2.OAuth2ScopeService;
 import org.wso2.carbon.identity.oauth2.internal.OAuth2ServiceComponentHolder;
 import org.wso2.carbon.identity.oauth2.model.OAuth2ScopeConsentResponse;
+import org.wso2.carbon.identity.rest.api.user.application.v1.core.ApplicationService;
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.dto.AuthorizedAppDTO;
 import org.wso2.carbon.user.core.UserCoreConstants;
 import org.wso2.carbon.user.core.service.RealmService;
@@ -63,10 +67,13 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 public class AuthorizedAppsService {
 
     private static final Log log = LogFactory.getLog(AuthorizedAppsService.class);
+    private static final String OAUTH2 = "oauth2";
     private static final ApplicationManagementService applicationManagementService;
     private static final OAuthAdminServiceImpl oAuthAdminService;
     private static final OAuth2ScopeService oAuth2ScopeService;
     private static final RealmService realmService;
+    @Autowired
+    private ApplicationService applicationService;
 
 
     static {
@@ -220,6 +227,50 @@ public class AuthorizedAppsService {
             PrivilegedCarbonContext.endTenantFlow();
         }
         return authorizedAppDTOS;
+    }
+
+    public void deleteIssuedTokensByAppId(String applicationId) {
+
+        InboundAuthenticationRequestConfig oauthInbound = getInboundAuthRequestConfig(applicationId, OAUTH2);
+        String clientId = oauthInbound.getInboundAuthKey();
+        try {
+            oAuthAdminService.revokeIssuedTokensByConsumerKey(clientId);
+        } catch (IdentityOAuthAdminException e) {
+            throw handleError(Response.Status.INTERNAL_SERVER_ERROR,
+                    Constants.ErrorMessages.ERROR_CODE_REVOKE_TOKEN_BY_APP_ID, applicationId);
+        }
+    }
+
+    private InboundAuthenticationRequestConfig getInboundAuthRequestConfig(String applicationId, String inboundType) {
+
+        ServiceProvider application = applicationService.getServiceProvider(applicationId);
+        // Extract the inbound authentication request config for the given inbound type.
+        InboundAuthenticationRequestConfig inboundAuthenticationRequestConfig =
+                getInboundAuthenticationRequestConfig(application, inboundType);
+
+        if (inboundAuthenticationRequestConfig == null) {
+            // This means the inbound is not configured for the particular app.
+            throw handleError(Response.Status.NOT_FOUND, Constants.ErrorMessages.ERROR_CODE_INVALID_INBOUND_PROTOCOL,
+                    applicationId);
+        }
+        return inboundAuthenticationRequestConfig;
+    }
+
+    private InboundAuthenticationRequestConfig getInboundAuthenticationRequestConfig(ServiceProvider application,
+                                                                                     String inboundType) {
+
+        InboundAuthenticationConfig inboundAuthConfig = application.getInboundAuthenticationConfig();
+        if (inboundAuthConfig != null) {
+            InboundAuthenticationRequestConfig[] inbounds = inboundAuthConfig.getInboundAuthenticationRequestConfigs();
+            if (inbounds != null) {
+                return Arrays.stream(inbounds)
+                        .filter(inbound -> inboundType.equals(inbound.getInboundAuthType()))
+                        .findAny()
+                        .orElse(null);
+            }
+        }
+
+        return null;
     }
 
     private static APIError handleError(Response.Status status, Constants.ErrorMessages error, String... data) {

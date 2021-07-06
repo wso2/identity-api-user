@@ -49,7 +49,11 @@ public class Constants {
                         "user: %s"),
         ERROR_CODE_GET_APP_BY_USER("15005", "Error retrieving authorized applications",
                 "A system error occurred while retrieving authorized applications for " +
-                        "user: %s");
+                        "user: %s"),
+        ERROR_CODE_REVOKE_TOKEN_BY_APP_ID("10006", "Error revoking issued tokens", "A system " +
+                "error occurred while revoking issued tokens for application: %s"),
+        ERROR_CODE_INVALID_INBOUND_PROTOCOL("10007", "Inbound protocol not found.", "Inbound " +
+                "protocol cannot be found for the provided app id: %s");
 
         private final String code;
         private final String message;
