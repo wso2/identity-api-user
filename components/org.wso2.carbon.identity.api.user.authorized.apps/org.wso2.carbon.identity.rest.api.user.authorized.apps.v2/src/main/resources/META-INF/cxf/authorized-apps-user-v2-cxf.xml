@@ -19,5 +19,5 @@
     <bean class="org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.core.AuthorizedAppsService"/>
     <bean class="org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.impl.UserIdApiServiceImpl"/>
     <bean class="org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.impl.MeApiServiceImpl"/>
-    <bean class="org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.impl.ApplicationsApiServiceImpl"/>
+    <bean class="org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.impl.AuthorizedAppsApiServiceImpl"/>
 </beans>
