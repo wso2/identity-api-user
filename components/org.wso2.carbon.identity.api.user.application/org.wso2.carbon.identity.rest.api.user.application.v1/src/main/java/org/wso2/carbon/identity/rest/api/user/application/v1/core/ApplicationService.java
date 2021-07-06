@@ -29,6 +29,7 @@ import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.application.common.IdentityApplicationManagementException;
 import org.wso2.carbon.identity.application.common.model.ApplicationBasicInfo;
+import org.wso2.carbon.identity.application.common.model.ServiceProvider;
 import org.wso2.carbon.identity.rest.api.user.application.v1.core.function.ApplicationBasicInfoToApiModel;
 import org.wso2.carbon.identity.rest.api.user.application.v1.model.ApplicationListResponse;
 import org.wso2.carbon.identity.rest.api.user.application.v1.model.ApplicationResponse;
@@ -75,6 +76,31 @@ public class ApplicationService {
 
             }
             return buildApplicationResponse(applicationBasicInfo);
+        } catch (IdentityApplicationManagementException e) {
+            ApplicationServiceConstants.ErrorMessage errorEnum =
+                    ApplicationServiceConstants.ErrorMessage.ERROR_CODE_ERROR_RETRIEVING_APPLICATION;
+            Response.Status status = Response.Status.INTERNAL_SERVER_ERROR;
+            throw handleException(e, errorEnum, status);
+        }
+    }
+
+    /**
+     * Get application from application ID.
+     *
+     * @param applicationId unique identifier of the application
+     * @return a ServiceProvider instance.
+     */
+    public ServiceProvider getServiceProvider(String applicationId) {
+
+        try {
+            String tenantDomain = ContextLoader.getTenantDomainFromContext();
+            ServiceProvider application = ApplicationServiceHolder.getApplicationManagementService().
+                    getServiceProvider(applicationId, tenantDomain);
+            if (application == null) {
+                throw handleNotFoundError(applicationId, ApplicationServiceConstants.ErrorMessage
+                        .ERROR_CODE_APPLICATION_NOT_FOUND);
+            }
+            return application;
         } catch (IdentityApplicationManagementException e) {
             ApplicationServiceConstants.ErrorMessage errorEnum =
                     ApplicationServiceConstants.ErrorMessage.ERROR_CODE_ERROR_RETRIEVING_APPLICATION;

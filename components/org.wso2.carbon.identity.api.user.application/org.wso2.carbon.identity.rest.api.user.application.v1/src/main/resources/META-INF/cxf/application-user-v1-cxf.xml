@@ -25,6 +25,12 @@
           class="org.wso2.carbon.identity.api.user.application.common.ApplicationServiceHolder">
         <property name="discoverableApplicationManager" ref="identityApplicationServiceFactoryBean"/>
     </bean>
+    <bean id="applicationManagementServiceHolderBean"
+          class="org.wso2.carbon.identity.api.user.application.common.ApplicationServiceHolder">
+        <property name="applicationManagementService" ref="applicationManagementServiceFactoryBean"/>
+    </bean>
     <bean id="identityApplicationServiceFactoryBean"
           class="org.wso2.carbon.identity.api.user.application.common.factory.OSGIServiceFactory"/>
+    <bean id="applicationManagementServiceFactoryBean"
+          class="org.wso2.carbon.identity.api.user.application.common.factory.ApplicationManagementOSGIServiceFactory"/>
 </beans>
