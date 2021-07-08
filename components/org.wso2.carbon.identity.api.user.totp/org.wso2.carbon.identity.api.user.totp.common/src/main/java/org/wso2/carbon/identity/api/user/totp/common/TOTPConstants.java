@@ -23,6 +23,8 @@ public class TOTPConstants {
 
     public static final String USER_TOTP_PREFIX = "OTP-";
 
+    public static final String AUTHENTICATED_WITH_BASIC_AUTH = "AuthenticatedWithBasicAuth";
+
     /**
      * Enum for totp related errors in the format of
      * Error Code - code to identify the error
@@ -54,7 +56,10 @@ public class TOTPConstants {
                 "No QR Code URL registered for the authenticated user"),
         USER_ERROR_INVALID_VALIDATION_PARAMS("10004",
                 "Verification code not present.",
-                "Validation operation requires verification code to be present.");
+                "Validation operation requires verification code to be present."),
+        USER_ERROR_ACCESS_DENIED("10005",
+                "Access denied.",
+                "This method is blocked for the requests with basic authentication.");
 
         private final String code;
         private final String message;
