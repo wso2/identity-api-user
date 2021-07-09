@@ -37,6 +37,7 @@ import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.oauth.IdentityOAuthAdminException;
 import org.wso2.carbon.identity.oauth.OAuthAdminServiceImpl;
 import org.wso2.carbon.identity.oauth.common.OAuthConstants;
+import org.wso2.carbon.identity.oauth.dto.OAuthAppRevocationRequestDTO;
 import org.wso2.carbon.identity.oauth.dto.OAuthConsumerAppDTO;
 import org.wso2.carbon.identity.oauth.dto.OAuthRevocationRequestDTO;
 import org.wso2.carbon.identity.oauth.dto.OAuthRevocationResponseDTO;
@@ -229,12 +230,25 @@ public class AuthorizedAppsService {
         return authorizedAppDTOS;
     }
 
+    /**
+     * Delete issued tokens for a given application id.
+     *
+     * @param applicationId Application Id.
+     */
     public void deleteIssuedTokensByAppId(String applicationId) {
 
         InboundAuthenticationRequestConfig oauthInbound = getInboundAuthRequestConfig(applicationId, OAUTH2);
         String clientId = oauthInbound.getInboundAuthKey();
+        OAuthAppRevocationRequestDTO oAuthAppRevocationRequestDTO = new OAuthAppRevocationRequestDTO();
+        oAuthAppRevocationRequestDTO.setApplicationName(applicationId);
+        oAuthAppRevocationRequestDTO.setConsumerKey(clientId);
         try {
-            oAuthAdminService.revokeIssuedTokensByConsumerKey(clientId);
+            OAuthRevocationResponseDTO oAuthRevocationResponseDTO =
+                    oAuthAdminService.revokeIssuedTokensByApplication(oAuthAppRevocationRequestDTO);
+            if (!oAuthRevocationResponseDTO.isError()) {
+                //TODO: Handle
+                log.warn("Given application: " + applicationId + " has been deleted by a PreRevokeListener.");
+            }
         } catch (IdentityOAuthAdminException e) {
             throw handleError(Response.Status.INTERNAL_SERVER_ERROR,
                     Constants.ErrorMessages.ERROR_CODE_REVOKE_TOKEN_BY_APP_ID, applicationId);
