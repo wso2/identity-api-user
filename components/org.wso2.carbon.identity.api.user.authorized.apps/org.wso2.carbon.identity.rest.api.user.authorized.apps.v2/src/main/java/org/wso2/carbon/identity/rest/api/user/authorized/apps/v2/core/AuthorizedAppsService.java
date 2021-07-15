@@ -23,10 +23,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.wso2.carbon.context.PrivilegedCarbonContext;
+import org.wso2.carbon.identity.api.user.common.ContextLoader;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.api.user.common.function.UserToUniqueId;
 import org.wso2.carbon.identity.application.common.IdentityApplicationManagementException;
+import org.wso2.carbon.identity.application.common.model.InboundAuthenticationConfig;
+import org.wso2.carbon.identity.application.common.model.InboundAuthenticationRequestConfig;
 import org.wso2.carbon.identity.application.common.model.ServiceProvider;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.application.mgt.ApplicationManagementService;
@@ -34,6 +37,7 @@ import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.oauth.IdentityOAuthAdminException;
 import org.wso2.carbon.identity.oauth.OAuthAdminServiceImpl;
 import org.wso2.carbon.identity.oauth.common.OAuthConstants;
+import org.wso2.carbon.identity.oauth.dto.OAuthAppRevocationRequestDTO;
 import org.wso2.carbon.identity.oauth.dto.OAuthConsumerAppDTO;
 import org.wso2.carbon.identity.oauth.dto.OAuthRevocationRequestDTO;
 import org.wso2.carbon.identity.oauth.dto.OAuthRevocationResponseDTO;
@@ -63,6 +67,7 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 public class AuthorizedAppsService {
 
     private static final Log log = LogFactory.getLog(AuthorizedAppsService.class);
+    private static final String OAUTH2 = "oauth2";
     private static final ApplicationManagementService applicationManagementService;
     private static final OAuthAdminServiceImpl oAuthAdminService;
     private static final OAuth2ScopeService oAuth2ScopeService;
@@ -220,6 +225,81 @@ public class AuthorizedAppsService {
             PrivilegedCarbonContext.endTenantFlow();
         }
         return authorizedAppDTOS;
+    }
+
+    /**
+     * Delete issued tokens for a given application id.
+     *
+     * @param applicationId Application Id.
+     */
+    public void deleteIssuedTokensByAppId(String applicationId) {
+
+        String tenantDomain = ContextLoader.getTenantDomainFromContext();
+        InboundAuthenticationRequestConfig reqConfig = getInboundAuthRequestConfig(applicationId, OAUTH2, tenantDomain);
+        String clientId = reqConfig.getInboundAuthKey();
+
+        OAuthAppRevocationRequestDTO oAuthAppRevocationRequestDTO = new OAuthAppRevocationRequestDTO();
+        oAuthAppRevocationRequestDTO.setApplicationName(applicationId);
+        oAuthAppRevocationRequestDTO.setConsumerKey(clientId);
+        oAuthAppRevocationRequestDTO.setTenantDomain(tenantDomain);
+        try {
+            OAuthRevocationResponseDTO oAuthRevocationResponseDTO =
+                    oAuthAdminService.revokeIssuedTokensByApplication(oAuthAppRevocationRequestDTO);
+            if (!oAuthRevocationResponseDTO.isError()) {
+                //TODO: Handle
+                log.warn("Given application: " + applicationId + " has been deleted by a PreRevokeListener.");
+            }
+        } catch (IdentityOAuthAdminException e) {
+            throw handleError(Response.Status.INTERNAL_SERVER_ERROR,
+                    Constants.ErrorMessages.ERROR_CODE_REVOKE_TOKEN_BY_APP_ID, applicationId);
+        }
+    }
+
+    private InboundAuthenticationRequestConfig getInboundAuthRequestConfig(String applicationId, String tenantDomain,
+                                                                           String inboundType) {
+
+        ServiceProvider application = getServiceProvider(applicationId, tenantDomain);
+        // Extract the inbound authentication request config for the given inbound type.
+        InboundAuthenticationRequestConfig inboundAuthenticationRequestConfig =
+                getInboundAuthenticationRequestConfig(application, inboundType);
+
+        if (inboundAuthenticationRequestConfig == null) {
+            // This means the inbound is not configured for the particular app.
+            throw handleError(Response.Status.NOT_FOUND, Constants.ErrorMessages.ERROR_CODE_INVALID_INBOUND_PROTOCOL,
+                    applicationId);
+        }
+        return inboundAuthenticationRequestConfig;
+    }
+
+    private ServiceProvider getServiceProvider(String applicationId, String tenantDomain) {
+
+        try {
+            ServiceProvider application = applicationManagementService.getServiceProvider(applicationId, tenantDomain);
+            if (application == null) {
+                throw handleError(Response.Status.NOT_FOUND, Constants.ErrorMessages.ERROR_CODE_APPLICATION_NOT_FOUND,
+                        applicationId);
+            }
+            return application;
+        } catch (IdentityApplicationManagementException e) {
+            throw handleError(Response.Status.INTERNAL_SERVER_ERROR,
+                    Constants.ErrorMessages.ERROR_CODE_GETTING_APPLICATION_INFORMATION, applicationId);
+        }
+    }
+
+    private InboundAuthenticationRequestConfig getInboundAuthenticationRequestConfig(ServiceProvider application,
+                                                                                     String inboundType) {
+
+        InboundAuthenticationConfig inboundAuthConfig = application.getInboundAuthenticationConfig();
+        if (inboundAuthConfig != null) {
+            InboundAuthenticationRequestConfig[] inbounds = inboundAuthConfig.getInboundAuthenticationRequestConfigs();
+            if (inbounds != null) {
+                return Arrays.stream(inbounds)
+                        .filter(inbound -> inboundType.equals(inbound.getInboundAuthType()))
+                        .findAny()
+                        .orElse(null);
+            }
+        }
+        return null;
     }
 
     private static APIError handleError(Response.Status status, Constants.ErrorMessages error, String... data) {
