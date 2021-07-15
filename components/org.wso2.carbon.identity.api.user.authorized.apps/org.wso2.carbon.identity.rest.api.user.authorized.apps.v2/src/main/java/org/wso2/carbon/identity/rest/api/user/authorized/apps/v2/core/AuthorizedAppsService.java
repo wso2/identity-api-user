@@ -22,8 +22,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
+import org.wso2.carbon.identity.api.user.common.ContextLoader;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.api.user.common.function.UserToUniqueId;
@@ -45,7 +45,6 @@ import org.wso2.carbon.identity.oauth2.IdentityOAuth2ScopeException;
 import org.wso2.carbon.identity.oauth2.OAuth2ScopeService;
 import org.wso2.carbon.identity.oauth2.internal.OAuth2ServiceComponentHolder;
 import org.wso2.carbon.identity.oauth2.model.OAuth2ScopeConsentResponse;
-import org.wso2.carbon.identity.rest.api.user.application.v1.core.ApplicationService;
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.dto.AuthorizedAppDTO;
 import org.wso2.carbon.user.core.UserCoreConstants;
 import org.wso2.carbon.user.core.service.RealmService;
@@ -73,8 +72,6 @@ public class AuthorizedAppsService {
     private static final OAuthAdminServiceImpl oAuthAdminService;
     private static final OAuth2ScopeService oAuth2ScopeService;
     private static final RealmService realmService;
-    @Autowired
-    private ApplicationService applicationService;
 
 
     static {
@@ -237,11 +234,14 @@ public class AuthorizedAppsService {
      */
     public void deleteIssuedTokensByAppId(String applicationId) {
 
-        InboundAuthenticationRequestConfig oauthInbound = getInboundAuthRequestConfig(applicationId, OAUTH2);
-        String clientId = oauthInbound.getInboundAuthKey();
+        String tenantDomain = ContextLoader.getTenantDomainFromContext();
+        InboundAuthenticationRequestConfig reqConfig = getInboundAuthRequestConfig(applicationId, OAUTH2, tenantDomain);
+        String clientId = reqConfig.getInboundAuthKey();
+
         OAuthAppRevocationRequestDTO oAuthAppRevocationRequestDTO = new OAuthAppRevocationRequestDTO();
         oAuthAppRevocationRequestDTO.setApplicationName(applicationId);
         oAuthAppRevocationRequestDTO.setConsumerKey(clientId);
+        oAuthAppRevocationRequestDTO.setTenantDomain(tenantDomain);
         try {
             OAuthRevocationResponseDTO oAuthRevocationResponseDTO =
                     oAuthAdminService.revokeIssuedTokensByApplication(oAuthAppRevocationRequestDTO);
@@ -255,9 +255,10 @@ public class AuthorizedAppsService {
         }
     }
 
-    private InboundAuthenticationRequestConfig getInboundAuthRequestConfig(String applicationId, String inboundType) {
+    private InboundAuthenticationRequestConfig getInboundAuthRequestConfig(String applicationId, String tenantDomain,
+                                                                           String inboundType) {
 
-        ServiceProvider application = applicationService.getServiceProvider(applicationId);
+        ServiceProvider application = getServiceProvider(applicationId, tenantDomain);
         // Extract the inbound authentication request config for the given inbound type.
         InboundAuthenticationRequestConfig inboundAuthenticationRequestConfig =
                 getInboundAuthenticationRequestConfig(application, inboundType);
@@ -268,6 +269,21 @@ public class AuthorizedAppsService {
                     applicationId);
         }
         return inboundAuthenticationRequestConfig;
+    }
+
+    private ServiceProvider getServiceProvider(String applicationId, String tenantDomain) {
+
+        try {
+            ServiceProvider application = applicationManagementService.getServiceProvider(applicationId, tenantDomain);
+            if (application == null) {
+                throw handleError(Response.Status.NOT_FOUND, Constants.ErrorMessages.ERROR_CODE_APPLICATION_NOT_FOUND,
+                        applicationId);
+            }
+            return application;
+        } catch (IdentityApplicationManagementException e) {
+            throw handleError(Response.Status.INTERNAL_SERVER_ERROR,
+                    Constants.ErrorMessages.ERROR_CODE_GETTING_APPLICATION_INFORMATION, applicationId);
+        }
     }
 
     private InboundAuthenticationRequestConfig getInboundAuthenticationRequestConfig(ServiceProvider application,
@@ -283,7 +299,6 @@ public class AuthorizedAppsService {
                         .orElse(null);
             }
         }
-
         return null;
     }
 

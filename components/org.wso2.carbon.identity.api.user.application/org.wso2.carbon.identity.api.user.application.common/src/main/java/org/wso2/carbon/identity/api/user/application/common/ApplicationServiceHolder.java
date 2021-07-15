@@ -18,7 +18,6 @@
 
 package org.wso2.carbon.identity.api.user.application.common;
 
-import org.wso2.carbon.identity.application.mgt.ApplicationManagementService;
 import org.wso2.carbon.identity.application.mgt.DiscoverableApplicationManager;
 
 /**
@@ -27,7 +26,6 @@ import org.wso2.carbon.identity.application.mgt.DiscoverableApplicationManager;
 public class ApplicationServiceHolder {
 
     private static DiscoverableApplicationManager discoverableApplicationManager;
-    private static ApplicationManagementService applicationManagementService;
 
     /**
      * Get application management service.
@@ -48,25 +46,5 @@ public class ApplicationServiceHolder {
                                                                  discoverableApplicationManager) {
 
         ApplicationServiceHolder.discoverableApplicationManager = discoverableApplicationManager;
-    }
-
-    /**
-     * Get application management service.
-     *
-     * @return ApplicationManagementService
-     */
-    public static ApplicationManagementService getApplicationManagementService() {
-
-        return applicationManagementService;
-    }
-
-    /**
-     * Set application management service.
-     *
-     * @param applicationManagementService
-     */
-    public static void setApplicationManagementService(ApplicationManagementService applicationManagementService) {
-
-        ApplicationServiceHolder.applicationManagementService = applicationManagementService;
     }
 }
