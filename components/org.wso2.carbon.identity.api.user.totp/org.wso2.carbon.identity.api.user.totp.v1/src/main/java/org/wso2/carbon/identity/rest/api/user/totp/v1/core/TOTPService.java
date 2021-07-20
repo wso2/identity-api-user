@@ -51,7 +51,7 @@ import static org.wso2.carbon.identity.api.user.totp.common.TOTPConstants.ErrorM
         .SERVER_ERROR_RETRIEVING_REALM_FOR_USER;
 import static org.wso2.carbon.identity.api.user.totp.common.TOTPConstants.ErrorMessage
         .SERVER_ERROR_RETRIEVING_USERSTORE_MANAGER;
-import static org.wso2.carbon.identity.api.user.totp.common.TOTPConstants.ErrorMessage.USER_ERROR_ACCESS_DENIED;
+import static org.wso2.carbon.identity.api.user.totp.common.TOTPConstants.ErrorMessage.USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH;
 import static org.wso2.carbon.identity.api.user.totp.common.TOTPConstants.ErrorMessage.USER_ERROR_QR_CODE_URL_NOT_EXIST;
 import static org.wso2.carbon.identity.api.user.totp.common.TOTPConstants.ErrorMessage.USER_ERROR_UNAUTHORIZED_USER;
 
@@ -70,7 +70,7 @@ public class TOTPService {
     public TOTPSecretResponseDTO getSecretKey() {
 
         if (!isValidAuthenticationType()) {
-            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED);
+            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
         }
 
         UserRealm userRealm;
@@ -124,7 +124,7 @@ public class TOTPService {
     public TOTPResponseDTO initTOTP() {
 
         if (!isValidAuthenticationType()) {
-            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED);
+            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
         }
 
         TOTPResponseDTO totpResponseDTO = new TOTPResponseDTO();
@@ -147,7 +147,7 @@ public class TOTPService {
     public TOTPResponseDTO getQRUrlCode() {
 
         if (!isValidAuthenticationType()) {
-            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED);
+            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
         }
 
         TOTPResponseDTO totpResponseDTO = new TOTPResponseDTO();
@@ -170,7 +170,7 @@ public class TOTPService {
     public void resetTOTP() {
 
         if (!isValidAuthenticationType()) {
-            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED);
+            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
         }
 
         User user = getUser();
@@ -191,7 +191,7 @@ public class TOTPService {
     public TOTPResponseDTO refreshSecretKey() {
 
         if (!isValidAuthenticationType()) {
-            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED);
+            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
         }
 
         TOTPResponseDTO totpResponseDTO = new TOTPResponseDTO();

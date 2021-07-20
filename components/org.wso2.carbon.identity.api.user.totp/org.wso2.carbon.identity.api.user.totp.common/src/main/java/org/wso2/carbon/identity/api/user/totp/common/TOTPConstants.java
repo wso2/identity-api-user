@@ -57,7 +57,7 @@ public class TOTPConstants {
         USER_ERROR_INVALID_VALIDATION_PARAMS("10004",
                 "Verification code not present.",
                 "Validation operation requires verification code to be present."),
-        USER_ERROR_ACCESS_DENIED("10005",
+        USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH("10005",
                 "Access denied.",
                 "This method is blocked for the requests with basic authentication.");
 
