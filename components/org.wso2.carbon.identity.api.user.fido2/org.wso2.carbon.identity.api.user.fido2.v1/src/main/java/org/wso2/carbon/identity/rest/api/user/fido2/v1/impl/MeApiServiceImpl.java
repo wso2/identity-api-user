@@ -74,6 +74,11 @@ public class MeApiServiceImpl extends MeApiService {
     @Override
     public Response meWebauthnGet(String username) {
 
+        if (!isValidAuthenticationType()) {
+            throw Util.handleError(Response.Status.FORBIDDEN,
+                    Constants.ErrorMessages.ERROR_CODE_ACCESS_DENIED_FOR_BASIC_AUTH);
+        }
+
         if (log.isDebugEnabled()) {
             log.debug(MessageFormat.format("fetching device metadata for the user : {0}", username));
         }
