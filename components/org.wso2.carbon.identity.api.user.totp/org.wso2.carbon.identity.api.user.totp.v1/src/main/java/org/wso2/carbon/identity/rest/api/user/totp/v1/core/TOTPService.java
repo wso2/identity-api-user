@@ -34,6 +34,7 @@ import org.wso2.carbon.identity.application.authenticator.totp.util.TOTPAuthenti
 import org.wso2.carbon.identity.application.authenticator.totp.util.TOTPKeyRepresentation;
 import org.wso2.carbon.identity.application.authenticator.totp.util.TOTPUtil;
 import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.rest.api.user.totp.v1.dto.TOTPResponseDTO;
 import org.wso2.carbon.identity.rest.api.user.totp.v1.dto.TOTPSecretResponseDTO;
 import org.wso2.carbon.user.api.UserRealm;
@@ -50,6 +51,7 @@ import static org.wso2.carbon.identity.api.user.totp.common.TOTPConstants.ErrorM
         .SERVER_ERROR_RETRIEVING_REALM_FOR_USER;
 import static org.wso2.carbon.identity.api.user.totp.common.TOTPConstants.ErrorMessage
         .SERVER_ERROR_RETRIEVING_USERSTORE_MANAGER;
+import static org.wso2.carbon.identity.api.user.totp.common.TOTPConstants.ErrorMessage.USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH;
 import static org.wso2.carbon.identity.api.user.totp.common.TOTPConstants.ErrorMessage.USER_ERROR_QR_CODE_URL_NOT_EXIST;
 import static org.wso2.carbon.identity.api.user.totp.common.TOTPConstants.ErrorMessage.USER_ERROR_UNAUTHORIZED_USER;
 
@@ -66,6 +68,10 @@ public class TOTPService {
      * @return Secret Key.
      */
     public TOTPSecretResponseDTO getSecretKey() {
+
+        if (!isValidAuthenticationType()) {
+            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
+        }
 
         UserRealm userRealm;
         String encoding;
@@ -117,6 +123,10 @@ public class TOTPService {
      */
     public TOTPResponseDTO initTOTP() {
 
+        if (!isValidAuthenticationType()) {
+            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
+        }
+
         TOTPResponseDTO totpResponseDTO = new TOTPResponseDTO();
         User user = getUser();
         try {
@@ -135,6 +145,10 @@ public class TOTPService {
      * @return Encoded QR Code URL.
      */
     public TOTPResponseDTO getQRUrlCode() {
+
+        if (!isValidAuthenticationType()) {
+            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
+        }
 
         TOTPResponseDTO totpResponseDTO = new TOTPResponseDTO();
         User user = getUser();
@@ -155,6 +169,10 @@ public class TOTPService {
      */
     public void resetTOTP() {
 
+        if (!isValidAuthenticationType()) {
+            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
+        }
+
         User user = getUser();
         try {
             TOTPKeyGenerator.resetLocal(user.toFullQualifiedUsername());
@@ -171,6 +189,10 @@ public class TOTPService {
      * @return Encoded QR Code URL for refreshed secret key
      */
     public TOTPResponseDTO refreshSecretKey() {
+
+        if (!isValidAuthenticationType()) {
+            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
+        }
 
         TOTPResponseDTO totpResponseDTO = new TOTPResponseDTO();
         User user = getUser();
@@ -291,5 +313,23 @@ public class TOTPService {
 
         return new ErrorResponse.Builder().withCode(errorEnum.getCode()).withMessage(errorEnum.getMessage())
                 .withDescription(errorEnum.getDescription());
+    }
+
+    private boolean isValidAuthenticationType() {
+
+        /*
+        Check whether the request is authenticated with basic auth. TOTP endpoint should not be allowed for basic
+        authentication. This approach can be improved by providing a Level of Assurance (LOA) and checking that in
+        TOTPService.
+         */
+        if (Boolean.parseBoolean(
+                (String) IdentityUtil.threadLocalProperties.get().get(TOTPConstants.AUTHENTICATED_WITH_BASIC_AUTH))) {
+            if (log.isDebugEnabled()) {
+                log.debug("Not a valid authentication method. "
+                        + "This method is blocked for the requests with basic authentication.");
+            }
+            return false;
+        }
+        return true;
     }
 }
