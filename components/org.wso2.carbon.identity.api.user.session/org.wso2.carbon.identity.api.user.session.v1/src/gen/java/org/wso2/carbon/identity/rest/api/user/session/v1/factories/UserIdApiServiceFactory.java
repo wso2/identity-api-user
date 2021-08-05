@@ -23,7 +23,7 @@ import org.wso2.carbon.identity.rest.api.user.session.v1.impl.UserIdApiServiceIm
 
 public class UserIdApiServiceFactory {
 
-    private final static UserIdApiService service = new UserIdApiServiceImpl();
+    private static final UserIdApiService service = new UserIdApiServiceImpl();
 
     public static UserIdApiService getUserIdApi() {
         return service;

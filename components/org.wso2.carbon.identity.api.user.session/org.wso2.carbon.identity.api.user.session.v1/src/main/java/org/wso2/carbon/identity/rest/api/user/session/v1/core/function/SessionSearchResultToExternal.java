@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -18,7 +18,7 @@
 
 package org.wso2.carbon.identity.rest.api.user.session.v1.core.function;
 
-import org.wso2.carbon.identity.application.authentication.framework.model.UserSession;
+import org.wso2.carbon.identity.application.authentication.framework.model.SessionSearchResult;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.ApplicationDTO;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionDTO;
 
@@ -27,28 +27,24 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Transform internal user session object to external SessionDTO.
+ * Transform internal session search result object to external SessionDTO.
  */
-public class UserSessionToExternal implements Function<UserSession, SessionDTO> {
+public class SessionSearchResultToExternal implements Function<SessionSearchResult, SessionDTO> {
 
     @Override
-    public SessionDTO apply(UserSession userSession) {
+    public SessionDTO apply(SessionSearchResult result) {
 
-        if (userSession == null) {
-            return null;
-        }
-
-        List<ApplicationDTO> appDTOs = userSession.getApplications().stream()
-                .map(new ApplicationToExternal())
+        List<ApplicationDTO> appDTOs = result.getApplications().stream().map(new ApplicationToExternal())
                 .collect(Collectors.toList());
 
         SessionDTO session = new SessionDTO();
         session.setApplications(appDTOs);
-        session.setIp(userSession.getIp());
-        session.setLastAccessTime(userSession.getLastAccessTime());
-        session.setLoginTime(userSession.getLoginTime());
-        session.setUserAgent(userSession.getUserAgent());
-        session.setId(userSession.getSessionId());
+        session.setIp(result.getIp());
+        session.setLastAccessTime(result.getLastAccessTime());
+        session.setLoginTime(result.getLoginTime());
+        session.setUserAgent(result.getUserAgent());
+        session.setUserId(result.getUserId());
+        session.setId(result.getSessionId());
 
         return session;
     }
