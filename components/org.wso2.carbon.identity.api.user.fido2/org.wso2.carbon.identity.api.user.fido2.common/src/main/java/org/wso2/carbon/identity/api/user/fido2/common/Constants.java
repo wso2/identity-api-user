@@ -26,6 +26,8 @@ public class Constants {
     // OAuth Authorized Apps error code prefix.
     public static final String FIDO2_ERROR_CODE_PREFIX = "FID-";
 
+    public static final String AUTHENTICATED_WITH_BASIC_AUTH = "AuthenticatedWithBasicAuth";
+
     /**
      * Enum for error messages.
      */
@@ -45,7 +47,10 @@ public class Constants {
                 "A system error occurred while deleting fido credential with credentialId : %s "),
 
         ERROR_CODE_USER_NOT_REGISTERED("10006", "Error while retrieving user credentials",
-                                              "User doesn't have fido credentials");
+                                              "User doesn't have fido credentials"),
+        ERROR_CODE_ACCESS_DENIED_FOR_BASIC_AUTH("10007",
+                "Access denied.",
+                "This method is blocked for the requests with basic authentication.");
 
         private final String code;
         private final String message;
