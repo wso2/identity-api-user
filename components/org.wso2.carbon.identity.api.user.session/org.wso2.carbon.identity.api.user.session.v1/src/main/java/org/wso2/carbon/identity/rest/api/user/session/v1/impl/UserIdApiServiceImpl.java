@@ -19,12 +19,16 @@
 package org.wso2.carbon.identity.rest.api.user.session.v1.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.identity.api.user.common.ContextLoader;
 import org.wso2.carbon.identity.api.user.common.Util;
 import org.wso2.carbon.identity.api.user.session.common.util.SessionManagementServiceHolder;
 import org.wso2.carbon.identity.rest.api.user.session.v1.UserIdApiService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.core.SessionManagementService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionsDTO;
+import org.wso2.carbon.user.api.UserRealm;
+import org.wso2.carbon.user.api.UserStoreException;
+import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -61,11 +65,27 @@ public class UserIdApiServiceImpl extends UserIdApiService {
     }
 
     @Override
-    public Response terminateSessionsByUserId(String userId) {
+    public Response terminateSessionsByUserId(String userId) throws UserStoreException {
 
-        Util.validateUserId(SessionManagementServiceHolder.getRealmService(), userId,
-                ContextLoader.getTenantDomainFromContext());
-        sessionManagementService.terminateSessionsByUserId(userId);
-        return Response.noContent().build();
+        try {
+            UserRealm userRealm = CarbonContext.getThreadLocalCarbonContext().getUserRealm();
+            AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) userRealm.getUserStoreManager();
+
+            String username = CarbonContext.getThreadLocalCarbonContext().getUsername();
+            String adminUserName = userRealm.getRealmConfiguration().getAdminUserName();
+            String adminUserID = userStoreManager.getUserIDFromUserName(adminUserName);
+
+            if (!username.equals(adminUserName) && userId.equals(adminUserID)) {
+                return Response.status(403).build();
+            }
+
+            Util.validateUserId(SessionManagementServiceHolder.getRealmService(), userId,
+                    ContextLoader.getTenantDomainFromContext());
+            sessionManagementService.terminateSessionsByUserId(userId);
+            return Response.noContent().build();
+        } catch (NullPointerException e) {
+            return Response.status(500).build();
+        }
+
     }
 }

@@ -25,7 +25,9 @@ import org.wso2.carbon.identity.rest.api.user.session.v1.dto.ErrorDTO;
 import java.util.List;
 
 import java.io.InputStream;
+
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.wso2.carbon.user.api.UserStoreException;
 
 import javax.ws.rs.core.Response;
 
@@ -35,6 +37,6 @@ public abstract class UserIdApiService {
 
     public abstract Response terminateSessionBySessionId(String userId, String sessionId);
 
-    public abstract Response terminateSessionsByUserId(String userId);
+    public abstract Response terminateSessionsByUserId(String userId) throws UserStoreException;
 
 }
