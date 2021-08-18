@@ -71,6 +71,10 @@ public class UserIdApiServiceImpl extends UserIdApiService {
             UserRealm userRealm = CarbonContext.getThreadLocalCarbonContext().getUserRealm();
             AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) userRealm.getUserStoreManager();
 
+            if ( userStoreManager == null ) {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            }
+
             String username = CarbonContext.getThreadLocalCarbonContext().getUsername();
             String adminUserName = userRealm.getRealmConfiguration().getAdminUserName();
             String adminUserID = userStoreManager.getUserIDFromUserName(adminUserName);
