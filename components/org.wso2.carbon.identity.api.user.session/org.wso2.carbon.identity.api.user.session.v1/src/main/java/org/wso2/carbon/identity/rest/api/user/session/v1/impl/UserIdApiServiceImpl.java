@@ -75,7 +75,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
             UserRealm userRealm = CarbonContext.getThreadLocalCarbonContext().getUserRealm();
             AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) userRealm.getUserStoreManager();
 
-            if ( userStoreManager == null ) {
+            if (userStoreManager == null) {
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
 
