@@ -18,6 +18,8 @@
 
 package org.wso2.carbon.identity.rest.api.user.session.v1.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.identity.api.user.common.ContextLoader;
@@ -37,6 +39,8 @@ import javax.ws.rs.core.Response;
  * API service implementation of a specific user's session related operations.
  */
 public class UserIdApiServiceImpl extends UserIdApiService {
+
+    private static final Log log = LogFactory.getLog(UserIdApiServiceImpl.class);
 
     @Autowired
     private SessionManagementService sessionManagementService;
@@ -88,6 +92,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
             sessionManagementService.terminateSessionsByUserId(userId);
             return Response.noContent().build();
         } catch (UserStoreException e) {
+            log.error("Error occurred while calling user UserStore.", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
