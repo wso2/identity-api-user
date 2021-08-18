@@ -65,7 +65,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
     }
 
     @Override
-    public Response terminateSessionsByUserId(String userId){
+    public Response terminateSessionsByUserId(String userId) {
 
         try {
             UserRealm userRealm = CarbonContext.getThreadLocalCarbonContext().getUserRealm();
@@ -76,7 +76,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
             String adminUserID = userStoreManager.getUserIDFromUserName(adminUserName);
 
             if (!username.equals(adminUserName) && userId.equals(adminUserID)) {
-                return Response.status(403).build();
+                return Response.status(Response.Status.FORBIDDEN).build();
             }
 
             Util.validateUserId(SessionManagementServiceHolder.getRealmService(), userId,
@@ -84,7 +84,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
             sessionManagementService.terminateSessionsByUserId(userId);
             return Response.noContent().build();
         } catch (UserStoreException e) {
-            return Response.status(500).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
     }
