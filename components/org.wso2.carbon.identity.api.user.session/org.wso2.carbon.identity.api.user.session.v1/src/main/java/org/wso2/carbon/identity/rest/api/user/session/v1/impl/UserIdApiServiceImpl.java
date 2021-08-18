@@ -65,7 +65,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
     }
 
     @Override
-    public Response terminateSessionsByUserId(String userId) throws UserStoreException {
+    public Response terminateSessionsByUserId(String userId){
 
         try {
             UserRealm userRealm = CarbonContext.getThreadLocalCarbonContext().getUserRealm();
@@ -83,7 +83,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
                     ContextLoader.getTenantDomainFromContext());
             sessionManagementService.terminateSessionsByUserId(userId);
             return Response.noContent().build();
-        } catch (NullPointerException e) {
+        } catch (UserStoreException e) {
             return Response.status(500).build();
         }
 
