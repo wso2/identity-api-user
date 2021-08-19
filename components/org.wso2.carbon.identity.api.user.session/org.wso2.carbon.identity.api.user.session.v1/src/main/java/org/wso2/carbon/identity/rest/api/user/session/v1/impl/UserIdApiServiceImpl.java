@@ -77,7 +77,9 @@ public class UserIdApiServiceImpl extends UserIdApiService {
             AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) userRealm.getUserStoreManager();
 
             if (userStoreManager == null) {
-                log.debug("Returns Null by UserStore Manager");
+                if (log.isDebugEnabled()) {
+                    log.debug("Returns Null by UserStore Manager");
+                }
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
 
@@ -86,8 +88,10 @@ public class UserIdApiServiceImpl extends UserIdApiService {
             String adminUserID = userStoreManager.getUserIDFromUserName(adminUserName);
 
             if (!StringUtils.equals(username, adminUserName) && StringUtils.equals(userId, adminUserID)) {
-                log.debug("Forbidden operation Collaborator having admin permissions is trying to" +
-                        " terminate the organization owner's sessions ");
+                if (log.isDebugEnabled()) {
+                    log.debug("Forbidden operation Collaborator having admin permissions is trying to" +
+                            " terminate the organization owner's sessions ");
+                }
                 return Response.status(Response.Status.FORBIDDEN).build();
             }
 
