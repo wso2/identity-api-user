@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.rest.api.user.session.v1.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
             AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) userRealm.getUserStoreManager();
 
             if (userStoreManager == null) {
+                log.debug("Returns Null by UserStore Manager");
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
 
@@ -83,7 +85,9 @@ public class UserIdApiServiceImpl extends UserIdApiService {
             String adminUserName = userRealm.getRealmConfiguration().getAdminUserName();
             String adminUserID = userStoreManager.getUserIDFromUserName(adminUserName);
 
-            if (!username.equals(adminUserName) && userId.equals(adminUserID)) {
+            if (!StringUtils.equals(username, adminUserName) && StringUtils.equals(userId, adminUserID)) {
+                log.debug("Forbidden operation Collaborator having admin permissions is trying to" +
+                        " terminate the organization owner's sessions ");
                 return Response.status(Response.Status.FORBIDDEN).build();
             }
 
@@ -92,7 +96,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
             sessionManagementService.terminateSessionsByUserId(userId);
             return Response.noContent().build();
         } catch (UserStoreException e) {
-            log.error("Error occurred while calling user UserStore.", e);
+            log.error("Error occurred while invoking user UserStore.", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
