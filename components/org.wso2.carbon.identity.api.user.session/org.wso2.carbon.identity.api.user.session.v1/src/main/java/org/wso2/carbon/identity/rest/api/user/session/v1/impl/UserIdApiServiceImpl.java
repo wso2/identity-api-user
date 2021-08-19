@@ -89,8 +89,8 @@ public class UserIdApiServiceImpl extends UserIdApiService {
 
             if (!StringUtils.equals(username, adminUserName) && StringUtils.equals(userId, adminUserID)) {
                 if (log.isDebugEnabled()) {
-                    log.debug("Forbidden operation Collaborator having admin permissions is trying to" +
-                            " terminate the organization owner's sessions ");
+                    log.debug("Forbidden operation. Admin user is not allowed to " +
+                            "terminate the organization owner's sessions");
                 }
                 return Response.status(Response.Status.FORBIDDEN).build();
             }
