@@ -78,7 +78,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
 
             if (userStoreManager == null) {
                 if (log.isDebugEnabled()) {
-                    log.debug("Returns Null by UserStore Manager");
+                    log.debug("Userstore Manager is null");
                 }
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
