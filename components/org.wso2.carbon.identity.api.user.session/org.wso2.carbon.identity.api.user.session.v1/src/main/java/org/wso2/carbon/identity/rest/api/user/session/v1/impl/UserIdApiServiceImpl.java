@@ -100,7 +100,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
             sessionManagementService.terminateSessionsByUserId(userId);
             return Response.noContent().build();
         } catch (UserStoreException e) {
-            log.error("Error occurred while invoking user UserStore.", e);
+            log.error("Error occurred while invoking userstore manager.", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
