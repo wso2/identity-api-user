@@ -18,13 +18,20 @@
 
 package org.wso2.carbon.identity.rest.api.user.session.v1.impl;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.identity.api.user.common.ContextLoader;
 import org.wso2.carbon.identity.api.user.common.Util;
 import org.wso2.carbon.identity.api.user.session.common.util.SessionManagementServiceHolder;
 import org.wso2.carbon.identity.rest.api.user.session.v1.UserIdApiService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.core.SessionManagementService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionsDTO;
+import org.wso2.carbon.user.api.UserRealm;
+import org.wso2.carbon.user.api.UserStoreException;
+import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -33,6 +40,8 @@ import javax.ws.rs.core.Response;
  * API service implementation of a specific user's session related operations.
  */
 public class UserIdApiServiceImpl extends UserIdApiService {
+
+    private static final Log log = LogFactory.getLog(UserIdApiServiceImpl.class);
 
     @Autowired
     private SessionManagementService sessionManagementService;
@@ -63,9 +72,37 @@ public class UserIdApiServiceImpl extends UserIdApiService {
     @Override
     public Response terminateSessionsByUserId(String userId) {
 
-        Util.validateUserId(SessionManagementServiceHolder.getRealmService(), userId,
-                ContextLoader.getTenantDomainFromContext());
-        sessionManagementService.terminateSessionsByUserId(userId);
-        return Response.noContent().build();
+        try {
+            UserRealm userRealm = CarbonContext.getThreadLocalCarbonContext().getUserRealm();
+            AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) userRealm.getUserStoreManager();
+
+            if (userStoreManager == null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Userstore Manager is null");
+                }
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            }
+
+            String username = CarbonContext.getThreadLocalCarbonContext().getUsername();
+            String adminUserName = userRealm.getRealmConfiguration().getAdminUserName();
+            String adminUserID = userStoreManager.getUserIDFromUserName(adminUserName);
+
+            if (!StringUtils.equals(username, adminUserName) && StringUtils.equals(userId, adminUserID)) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Forbidden operation. Admin user is not allowed to " +
+                            "terminate the organization owner's sessions");
+                }
+                return Response.status(Response.Status.FORBIDDEN).build();
+            }
+
+            Util.validateUserId(SessionManagementServiceHolder.getRealmService(), userId,
+                    ContextLoader.getTenantDomainFromContext());
+            sessionManagementService.terminateSessionsByUserId(userId);
+            return Response.noContent().build();
+        } catch (UserStoreException e) {
+            log.error("Error occurred while invoking userstore manager.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+
     }
 }
