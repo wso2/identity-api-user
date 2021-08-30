@@ -31,6 +31,8 @@ public class UserSessionToExternalTest {
 
         UserSession userSession = new UserSession();
         userSession.setSessionId("ca9c30abf30ea3755009dd19d54d1d28ebb7b4d2ef0b41bd81c1a9a735404451");
+        userSession.setCreationTime(1620318745450802700L);
+        userSession.setUserId("00fe873d-dd7a-4157-930c-65bfcbc3f35e");
         userSession.setIp("127.0.0.1");
         userSession.setLoginTime("1620318746646");
         userSession.setLastAccessTime("1620318746646");
@@ -42,18 +44,11 @@ public class UserSessionToExternalTest {
         SessionDTO sessionDTO = new UserSessionToExternal().apply(userSession);
 
         Assert.assertEquals(sessionDTO.getId(), userSession.getSessionId());
+        Assert.assertEquals(sessionDTO.getUserId(), userSession.getUserId());
         Assert.assertEquals(sessionDTO.getIp(), userSession.getIp());
         Assert.assertEquals(sessionDTO.getLoginTime(), userSession.getLoginTime());
         Assert.assertEquals(sessionDTO.getLastAccessTime(), userSession.getLastAccessTime());
         Assert.assertEquals(sessionDTO.getUserAgent(), userSession.getUserAgent());
         Assert.assertEquals(sessionDTO.getApplications().size(), userSession.getApplications().size());
-        Assert.assertNull(sessionDTO.getUserId(), "User ID is not empty!");
-    }
-
-    @Test
-    public void testApplyWithNullObject() throws Exception {
-
-        SessionDTO sessionDTO = new UserSessionToExternal().apply(null);
-        Assert.assertNull(sessionDTO, "Session object is not empty!");
     }
 }

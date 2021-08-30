@@ -28,7 +28,6 @@ import org.wso2.carbon.identity.api.user.session.common.constant.SessionManageme
 import org.wso2.carbon.identity.api.user.session.common.util.SessionManagementServiceHolder;
 import org.wso2.carbon.identity.application.authentication.framework.exception.session.mgt.SessionManagementClientException;
 import org.wso2.carbon.identity.application.authentication.framework.exception.session.mgt.SessionManagementException;
-import org.wso2.carbon.identity.application.authentication.framework.model.SessionSearchResult;
 import org.wso2.carbon.identity.application.authentication.framework.model.UserSession;
 import org.wso2.carbon.identity.application.authentication.framework.util.SessionMgtConstants;
 import org.wso2.carbon.identity.application.common.model.User;
@@ -37,7 +36,6 @@ import org.wso2.carbon.identity.core.model.ExpressionNode;
 import org.wso2.carbon.identity.core.model.FilterTreeBuilder;
 import org.wso2.carbon.identity.core.model.Node;
 import org.wso2.carbon.identity.core.model.OperationNode;
-import org.wso2.carbon.identity.rest.api.user.session.v1.core.function.SessionSearchResultToExternal;
 import org.wso2.carbon.identity.rest.api.user.session.v1.core.function.UserSessionToExternal;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SearchResponseDTO;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionDTO;
@@ -187,7 +185,7 @@ public class SessionManagementService {
             String sortOrder = since != null ? SessionMgtConstants.ASC : SessionMgtConstants.DESC;
             SearchResponseDTO response = new SearchResponseDTO();
 
-            List<SessionSearchResult> results = SessionManagementServiceHolder.getUserSessionManagementService()
+            List<UserSession> results = SessionManagementServiceHolder.getUserSessionManagementService()
                     .getSessions(tenantDomain, filterNodes, limit + 1, sortOrder);
 
             if (!results.isEmpty()) {
@@ -208,8 +206,7 @@ public class SessionManagementService {
                     Collections.reverse(results);
                 }
 
-                response.setResources(results.stream().map(new SessionSearchResultToExternal())
-                        .collect(Collectors.toList()));
+                response.setResources(results.stream().map(new UserSessionToExternal()).collect(Collectors.toList()));
                 if (!isFirstPage) {
                     response.setPrevious(buildURI(SESSIONS_SEARCH_ENDPOINT + qs + "&since=" +
                             results.get(0).getCreationTime()));

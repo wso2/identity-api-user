@@ -22,7 +22,6 @@
         <classes>
             <class name="org.wso2.carbon.identity.rest.api.user.session.v1.core.function.ApplicationToExternalTest"/>
             <class name="org.wso2.carbon.identity.rest.api.user.session.v1.core.function.UserSessionToExternalTest"/>
-            <class name="org.wso2.carbon.identity.rest.api.user.session.v1.core.function.SessionSearchResultToExternalTest"/>
         </classes>
     </test>
 </suite>

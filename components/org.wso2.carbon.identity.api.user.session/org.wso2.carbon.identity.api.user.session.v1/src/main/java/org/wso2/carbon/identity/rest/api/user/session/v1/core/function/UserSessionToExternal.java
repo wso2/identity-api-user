@@ -34,10 +34,6 @@ public class UserSessionToExternal implements Function<UserSession, SessionDTO> 
     @Override
     public SessionDTO apply(UserSession userSession) {
 
-        if (userSession == null) {
-            return null;
-        }
-
         List<ApplicationDTO> appDTOs = userSession.getApplications().stream()
                 .map(new ApplicationToExternal())
                 .collect(Collectors.toList());
@@ -48,6 +44,7 @@ public class UserSessionToExternal implements Function<UserSession, SessionDTO> 
         session.setLastAccessTime(userSession.getLastAccessTime());
         session.setLoginTime(userSession.getLoginTime());
         session.setUserAgent(userSession.getUserAgent());
+        session.setUserId(userSession.getUserId());
         session.setId(userSession.getSessionId());
 
         return session;

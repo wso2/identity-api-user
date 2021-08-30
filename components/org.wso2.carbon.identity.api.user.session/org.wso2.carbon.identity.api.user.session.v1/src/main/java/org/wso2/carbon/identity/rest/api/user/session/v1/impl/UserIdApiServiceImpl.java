@@ -54,11 +54,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
                 ContextLoader.getTenantDomainFromContext());
 
         SessionDTO session = sessionManagementService.getSessionBySessionId(userId, sessionId);
-        if (session != null) {
-            return Response.ok().entity(session).build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+        return Response.ok().entity(session).build();
     }
 
     @Override
