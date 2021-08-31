@@ -34,6 +34,8 @@ import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 
+import java.util.Optional;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -53,8 +55,12 @@ public class UserIdApiServiceImpl extends UserIdApiService {
         Util.validateUserId(SessionManagementServiceHolder.getRealmService(), userId,
                 ContextLoader.getTenantDomainFromContext());
 
-        SessionDTO session = sessionManagementService.getSessionBySessionId(userId, sessionId);
-        return Response.ok().entity(session).build();
+        Optional<SessionDTO> session = sessionManagementService.getSessionBySessionId(userId, sessionId);
+        if (session.isPresent()) {
+            return Response.ok().entity(session).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
 
     @Override

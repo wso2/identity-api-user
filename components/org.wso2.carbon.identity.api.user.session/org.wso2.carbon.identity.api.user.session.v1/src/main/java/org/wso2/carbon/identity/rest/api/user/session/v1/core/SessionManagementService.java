@@ -47,6 +47,7 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ws.rs.core.Response;
 
@@ -146,7 +147,7 @@ public class SessionManagementService {
      * @param sessionId unique id of the session
      * @return SessionDTO
      */
-    public SessionDTO getSessionBySessionId(String userId, String sessionId) {
+    public Optional<SessionDTO> getSessionBySessionId(String userId, String sessionId) {
 
         try {
             if (StringUtils.isBlank(userId)) {
@@ -157,9 +158,9 @@ public class SessionManagementService {
                 String message = "Session ID is not provided to perform session management tasks.";
                 throw new SessionManagementClientException(ERROR_CODE_INVALID_SESSION, message);
             }
-            UserSession session = SessionManagementServiceHolder.getUserSessionManagementService()
-                    .getSessionBySessionId(userId, sessionId);
-            return new UserSessionToExternal().apply(session);
+            return SessionManagementServiceHolder.getUserSessionManagementService()
+                    .getSessionBySessionId(userId, sessionId)
+                    .map(new UserSessionToExternal());
         } catch (SessionManagementException e) {
             throw handleSessionManagementException(e);
         }
