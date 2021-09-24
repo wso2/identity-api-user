@@ -22,6 +22,7 @@
     <bean class="org.wso2.carbon.identity.rest.api.user.session.v1.core.SessionManagementService"/>
     <bean class="org.wso2.carbon.identity.rest.api.user.session.v1.impl.UserIdApiServiceImpl"/>
     <bean class="org.wso2.carbon.identity.rest.api.user.session.v1.impl.MeApiServiceImpl"/>
+    <bean class="org.wso2.carbon.identity.rest.api.user.session.v1.impl.SessionsApiServiceImpl"/>
     <bean id="UserSessionServiceHolderBean" class="org.wso2.carbon.identity.api.user.session.common.util.SessionManagementServiceHolder">
         <property name="userSessionManagementService" ref="userSessionManagementServiceFactoryBean"/>
         <property name="realmService" ref="RealmServiceOSGIServiceFactoryBean"/>

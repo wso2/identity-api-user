@@ -28,10 +28,13 @@ import org.wso2.carbon.identity.api.user.common.Util;
 import org.wso2.carbon.identity.api.user.session.common.util.SessionManagementServiceHolder;
 import org.wso2.carbon.identity.rest.api.user.session.v1.UserIdApiService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.core.SessionManagementService;
+import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionDTO;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionsDTO;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
+
+import java.util.Optional;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -45,6 +48,20 @@ public class UserIdApiServiceImpl extends UserIdApiService {
 
     @Autowired
     private SessionManagementService sessionManagementService;
+
+    @Override
+    public Response getSessionBySessionId(String userId, String sessionId) {
+
+        Util.validateUserId(SessionManagementServiceHolder.getRealmService(), userId,
+                ContextLoader.getTenantDomainFromContext());
+
+        Optional<SessionDTO> session = sessionManagementService.getSessionBySessionId(userId, sessionId);
+        if (session.isPresent()) {
+            return Response.ok().entity(session).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
 
     @Override
     public Response getSessionsByUserId(String userId, Integer limit, Integer offset, String filter, String sort) {

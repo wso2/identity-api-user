@@ -26,29 +26,40 @@ import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.api.user.common.function.UserToUniqueId;
 import org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants;
 import org.wso2.carbon.identity.api.user.session.common.util.SessionManagementServiceHolder;
-import org.wso2.carbon.identity.application.authentication.framework.exception.session.mgt
-        .SessionManagementClientException;
+import org.wso2.carbon.identity.application.authentication.framework.exception.session.mgt.SessionManagementClientException;
 import org.wso2.carbon.identity.application.authentication.framework.exception.session.mgt.SessionManagementException;
 import org.wso2.carbon.identity.application.authentication.framework.model.UserSession;
 import org.wso2.carbon.identity.application.authentication.framework.util.SessionMgtConstants;
 import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.base.IdentityException;
+import org.wso2.carbon.identity.core.model.ExpressionNode;
+import org.wso2.carbon.identity.core.model.FilterTreeBuilder;
+import org.wso2.carbon.identity.core.model.Node;
+import org.wso2.carbon.identity.core.model.OperationNode;
 import org.wso2.carbon.identity.rest.api.user.session.v1.core.function.UserSessionToExternal;
+import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SearchResponseDTO;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionDTO;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionsDTO;
 
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.ERROR_CODE_DELIMITER;
-import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants.ErrorMessage
-        .ERROR_CODE_FILTERING_NOT_IMPLEMENTED;
-import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants.ErrorMessage
-        .ERROR_CODE_PAGINATION_NOT_IMPLEMENTED;
-import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants.ErrorMessage
-        .ERROR_CODE_SESSION_TERMINATE_FORBIDDEN;
-import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants.ErrorMessage
-        .ERROR_CODE_SORTING_NOT_IMPLEMENTED;
+import static org.wso2.carbon.identity.api.user.common.ContextLoader.buildURI;
+import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants.ErrorMessage.ERROR_CODE_FILTERING_NOT_IMPLEMENTED;
+import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants.ErrorMessage.ERROR_CODE_PAGINATION_NOT_IMPLEMENTED;
+import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants.ErrorMessage.ERROR_CODE_SESSION_TERMINATE_FORBIDDEN;
+import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants.ErrorMessage.ERROR_CODE_SORTING_NOT_IMPLEMENTED;
+import static org.wso2.carbon.identity.application.authentication.framework.util.SessionMgtConstants.ErrorMessages.ERROR_CODE_INVALID_DATA;
+import static org.wso2.carbon.identity.application.authentication.framework.util.SessionMgtConstants.ErrorMessages.ERROR_CODE_INVALID_SESSION;
+import static org.wso2.carbon.identity.application.authentication.framework.util.SessionMgtConstants.ErrorMessages.ERROR_CODE_INVALID_USER;
 
 /**
  * Call internal osgi services to perform user session related operations.
@@ -56,6 +67,8 @@ import static org.wso2.carbon.identity.api.user.session.common.constant.SessionM
 public class SessionManagementService {
 
     private static final Log log = LogFactory.getLog(SessionManagementService.class);
+    private static final String SESSIONS_SEARCH_ENDPOINT = "/v1/sessions";
+    private static final Integer SESSIONS_SEARCH_DEFAULT_LIMIT = 20;
 
     /**
      * Get all the active sessions of a given user.
@@ -106,8 +119,7 @@ public class SessionManagementService {
      * @param sort   sort (optional)
      * @return SessionsDTO
      */
-    public SessionsDTO getSessionsByUserId(String userId, Integer limit, Integer offset, String filter, String
-            sort) {
+    public SessionsDTO getSessionsByUserId(String userId, Integer limit, Integer offset, String filter, String sort) {
 
         handleNotImplementedCapabilities(limit, offset, filter, sort);
 
@@ -129,6 +141,90 @@ public class SessionManagementService {
     }
 
     /**
+     * Get a specific session of a given user.
+     *
+     * @param userId    unique id of the user
+     * @param sessionId unique id of the session
+     * @return SessionDTO
+     */
+    public Optional<SessionDTO> getSessionBySessionId(String userId, String sessionId) {
+
+        try {
+            if (StringUtils.isBlank(userId)) {
+                throw new SessionManagementClientException(ERROR_CODE_INVALID_USER,
+                        ERROR_CODE_INVALID_USER.getDescription());
+            }
+            if (StringUtils.isBlank(sessionId)) {
+                String message = "Session ID is not provided to perform session management tasks.";
+                throw new SessionManagementClientException(ERROR_CODE_INVALID_SESSION, message);
+            }
+            return SessionManagementServiceHolder.getUserSessionManagementService()
+                    .getSessionBySessionId(userId, sessionId)
+                    .map(new UserSessionToExternal());
+        } catch (SessionManagementException e) {
+            throw handleSessionManagementException(e);
+        }
+    }
+
+    /**
+     * Search active sessions on the system.
+     *
+     * @param tenantDomain context tenant domain
+     * @param filter       filter (optional)
+     * @param limit        limit (optional)
+     * @param since        pointer to previous page of results (optional)
+     * @param until        pointer to next page of results (optional)
+     * @return SearchResponseDTO
+     */
+    public SearchResponseDTO getSessions(String tenantDomain, String filter, Integer limit, Long since, Long until) {
+
+        try {
+            List<ExpressionNode> filterNodes = getExpressionNodes(filter, since, until);
+            validateSearchFilter(filterNodes);
+
+            limit = limit == null || limit <= 0 ? SESSIONS_SEARCH_DEFAULT_LIMIT : limit;
+            String sortOrder = since != null ? SessionMgtConstants.ASC : SessionMgtConstants.DESC;
+            SearchResponseDTO response = new SearchResponseDTO();
+
+            List<UserSession> results = SessionManagementServiceHolder.getUserSessionManagementService()
+                    .getSessions(tenantDomain, filterNodes, limit + 1, sortOrder);
+
+            if (!results.isEmpty()) {
+                boolean hasMoreItems = results.size() > limit;
+                boolean needsReverse = since != null;
+                boolean isFirstPage = (since == null && until == null) || (since != null && !hasMoreItems);
+                boolean isLastPage = !hasMoreItems && (until != null || since == null);
+
+                String qs = "?limit=" + limit;
+                if (StringUtils.isNotBlank(filter)) {
+                    qs += "&filter=" + URLEncoder.encode(filter);
+                }
+
+                if (hasMoreItems) {
+                    results.remove(results.size() - 1);
+                }
+                if (needsReverse) {
+                    Collections.reverse(results);
+                }
+
+                response.setResources(results.stream().map(new UserSessionToExternal()).collect(Collectors.toList()));
+                if (!isFirstPage) {
+                    response.setPrevious(buildURI(SESSIONS_SEARCH_ENDPOINT + qs + "&since=" +
+                            results.get(0).getCreationTime()));
+                }
+                if (!isLastPage) {
+                    response.setNext(buildURI(SESSIONS_SEARCH_ENDPOINT + qs + "&until=" +
+                            results.get(results.size() - 1).getCreationTime()));
+                }
+            }
+
+            return response;
+        } catch (SessionManagementException e) {
+            throw handleSessionManagementException(e);
+        }
+    }
+
+    /**
      * Terminate the session of the given session id.
      *
      * @param userId    unique id of the user
@@ -141,7 +237,7 @@ public class SessionManagementService {
                 SessionManagementServiceHolder.getUserSessionManagementService().terminateSessionBySessionId(userId,
                         sessionId);
             } else {
-                throw handleInvalidParameters();
+                throw handleForbiddenAction();
             }
         } catch (SessionManagementClientException e) {
             if (log.isDebugEnabled()) {
@@ -220,9 +316,7 @@ public class SessionManagementService {
 
         SessionManagementConstants.ErrorMessage errorEnum = null;
 
-        if (limit != null) {
-            errorEnum = ERROR_CODE_PAGINATION_NOT_IMPLEMENTED;
-        } else if (offset != null) {
+        if (limit != null || offset != null) {
             errorEnum = ERROR_CODE_PAGINATION_NOT_IMPLEMENTED;
         } else if (filter != null) {
             errorEnum = ERROR_CODE_FILTERING_NOT_IMPLEMENTED;
@@ -232,22 +326,143 @@ public class SessionManagementService {
 
         if (errorEnum != null) {
             ErrorResponse errorResponse = getErrorBuilder(errorEnum).build(log, errorEnum.getDescription());
-            Response.Status status = Response.Status.NOT_IMPLEMENTED;
-
-            throw new APIError(status, errorResponse);
+            throw new APIError(Response.Status.NOT_IMPLEMENTED, errorResponse);
         }
     }
 
-    private APIError handleInvalidParameters() {
+    private APIError handleForbiddenAction() {
 
         ErrorResponse errorResponse = getErrorBuilder(ERROR_CODE_SESSION_TERMINATE_FORBIDDEN).build(log,
                 ERROR_CODE_SESSION_TERMINATE_FORBIDDEN.getDescription());
-        Response.Status status = Response.Status.FORBIDDEN;
-        return new APIError(status, errorResponse);
+        return new APIError(Response.Status.FORBIDDEN, errorResponse);
     }
 
     private String getUserIdFromUser(User user) {
 
         return new UserToUniqueId().apply(SessionManagementServiceHolder.getRealmService(), user);
+    }
+
+    /**
+     * Get the filter nodes as a list.
+     *
+     * @param filter value of the filter (optional)
+     * @param since  pointer to previous page of results (optional)
+     * @param until  pointer to next page of results (optional)
+     * @return list of filter expressions
+     * @throws SessionManagementClientException if an error occurs while parsing the filter criteria
+     */
+    private List<ExpressionNode> getExpressionNodes(String filter, Long since, Long until)
+            throws SessionManagementClientException {
+
+        List<ExpressionNode> expressionNodes = new ArrayList<>();
+        FilterTreeBuilder filterTreeBuilder;
+        String paginatedFilter = StringUtils.isNotBlank(filter) ? filter : "";
+
+        try {
+            if (since != null) {
+                paginatedFilter += StringUtils.isNotBlank(paginatedFilter)
+                        ? " and since gt " + since
+                        : "since gt " + since;
+            } else if (until != null) {
+                paginatedFilter += StringUtils.isNotBlank(paginatedFilter)
+                        ? " and until lt " + until
+                        : "until lt " + until;
+            }
+            if (StringUtils.isNotBlank(paginatedFilter)) {
+                filterTreeBuilder = new FilterTreeBuilder(paginatedFilter);
+                Node rootNode = filterTreeBuilder.buildTree();
+                setExpressionNodeList(rootNode, expressionNodes);
+            }
+        } catch (IOException | IdentityException e) {
+            String message = "check filter parameter syntax";
+            throw new SessionManagementClientException(ERROR_CODE_INVALID_DATA,
+                    String.format(ERROR_CODE_INVALID_DATA.getDescription(), message), e);
+        }
+
+        return expressionNodes;
+    }
+
+    /**
+     * Set the node values as list of expression.
+     *
+     * @param node       filter node.
+     * @param expression list of filter expressions
+     */
+    private void setExpressionNodeList(Node node, List<ExpressionNode> expression) {
+
+        if (node instanceof ExpressionNode) {
+            expression.add((ExpressionNode) node);
+        } else if (node instanceof OperationNode) {
+            setExpressionNodeList(node.getLeftNode(), expression);
+            setExpressionNodeList(node.getRightNode(), expression);
+        }
+    }
+
+    public void validateSearchFilter(List<ExpressionNode> expressionNodes) throws SessionManagementClientException {
+
+        Collator collator = Collator.getInstance();
+        collator.setStrength(Collator.PRIMARY);
+
+        for (ExpressionNode expressionNode : expressionNodes) {
+            String operation = expressionNode.getOperation();
+            String value = expressionNode.getValue();
+            String attribute = expressionNode.getAttributeValue();
+
+            if (StringUtils.isBlank(attribute) || StringUtils.isBlank(operation) || StringUtils.isBlank(value)) {
+
+                String message = String.format("'%s %s %s' is not a valid filter", attribute, operation, value);
+                throw new SessionManagementClientException(ERROR_CODE_INVALID_DATA,
+                        String.format(ERROR_CODE_INVALID_DATA.getDescription(), message));
+
+            } else if (!collator.equals(attribute, SessionMgtConstants.FLD_APPLICATION) &&
+                    !collator.equals(attribute, SessionMgtConstants.FLD_IP_ADDRESS) &&
+                    !collator.equals(attribute, SessionMgtConstants.FLD_LOGIN_ID) &&
+                    !collator.equals(attribute, SessionMgtConstants.FLD_SESSION_ID) &&
+                    !collator.equals(attribute, SessionMgtConstants.FLD_USER_AGENT) &&
+                    !collator.equals(attribute, SessionMgtConstants.FLD_LAST_ACCESS_TIME) &&
+                    !collator.equals(attribute, SessionMgtConstants.FLD_LOGIN_TIME) &&
+                    !collator.equals(attribute, SessionMgtConstants.FLD_TIME_CREATED_SINCE) &&
+                    !collator.equals(attribute, SessionMgtConstants.FLD_TIME_CREATED_UNTIL)) {
+
+                String message = attribute + " is not a valid filter attribute name";
+                throw new SessionManagementClientException(ERROR_CODE_INVALID_DATA,
+                        String.format(ERROR_CODE_INVALID_DATA.getDescription(), message));
+
+            } else if (collator.equals(attribute, SessionMgtConstants.FLD_LAST_ACCESS_TIME) ||
+                    collator.equals(attribute, SessionMgtConstants.FLD_LOGIN_TIME)) {
+
+                if (!collator.equals(operation, SessionMgtConstants.LE) &&
+                        !collator.equals(operation, SessionMgtConstants.GE)) {
+                    String message = operation + " is not a supported operation for " + attribute;
+                    throw new SessionManagementClientException(ERROR_CODE_INVALID_DATA,
+                            String.format(ERROR_CODE_INVALID_DATA.getDescription(), message));
+                }
+                if (!StringUtils.isNumeric(value)) {
+                    String message = attribute + "'s value is not a valid number: " + value;
+                    throw new SessionManagementClientException(ERROR_CODE_INVALID_DATA,
+                            String.format(ERROR_CODE_INVALID_DATA.getDescription(), message));
+                }
+
+            } else if (collator.equals(attribute, SessionMgtConstants.FLD_IP_ADDRESS) &&
+                    !collator.equals(operation, SessionMgtConstants.EQ)) {
+
+                String message = operation + " is not a supported operation for " + attribute;
+                throw new SessionManagementClientException(ERROR_CODE_INVALID_DATA,
+                        String.format(ERROR_CODE_INVALID_DATA.getDescription(), message));
+
+            } else if ((collator.equals(attribute, SessionMgtConstants.FLD_APPLICATION) ||
+                    collator.equals(attribute, SessionMgtConstants.FLD_LOGIN_ID) ||
+                    collator.equals(attribute, SessionMgtConstants.FLD_SESSION_ID) ||
+                    collator.equals(attribute, SessionMgtConstants.FLD_USER_AGENT)) &&
+                    !collator.equals(operation, SessionMgtConstants.EQ) &&
+                    !collator.equals(operation, SessionMgtConstants.SW) &&
+                    !collator.equals(operation, SessionMgtConstants.EW) &&
+                    !collator.equals(operation, SessionMgtConstants.CO)) {
+
+                String message = operation + " is not a supported operation for " + attribute;
+                throw new SessionManagementClientException(ERROR_CODE_INVALID_DATA,
+                        String.format(ERROR_CODE_INVALID_DATA.getDescription(), message));
+            }
+        }
     }
 }
