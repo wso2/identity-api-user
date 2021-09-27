@@ -18,6 +18,7 @@ package org.wso2.carbon.identity.rest.api.user.session.v1.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.api.user.common.ContextLoader;
+import org.wso2.carbon.identity.api.user.common.Util;
 import org.wso2.carbon.identity.rest.api.user.session.v1.SessionsApiService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.core.SessionManagementService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SearchResponseDTO;
@@ -39,5 +40,13 @@ public class SessionsApiServiceImpl extends SessionsApiService {
                 filter, limit, since, until);
 
         return Response.ok().entity(responseDTO).build();
+    }
+
+    @Override
+    public Response terminateFilteredSessions(String filter, Integer limit, Long since, Long until) {
+
+        Util.validateFilter(filter, ContextLoader.getTenantDomainFromContext());
+        sessionManagementService.terminateFilteredSessions(ContextLoader.getTenantDomainFromContext(), filter, limit, since, until);
+        return Response.noContent().build();
     }
 }

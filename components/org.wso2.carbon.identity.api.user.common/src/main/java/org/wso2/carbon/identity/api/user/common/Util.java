@@ -25,6 +25,7 @@ import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.application.authentication.framework.exception.UserSessionException;
 import org.wso2.carbon.identity.application.authentication.framework.store.UserSessionStore;
 import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.base.IdentityRuntimeException;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.api.UserStoreManager;
@@ -36,8 +37,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.CORRELATION_ID_MDC;
-import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_INVALID_USERNAME;
-import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_SERVER_ERROR;
+import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.*;
+import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.INVALID_TENANT_DOMAIN;
 
 /**
  * Common util class
@@ -140,5 +141,28 @@ public class Util {
             return false;
         }
         return ((UniqueIDUserStoreManager) userStoreManager).isExistingUserWithID(userId);
+    }
+
+    /**
+     * Validate whether the given filter is not empty and tenantDomain is valid.
+     *
+     * @param filter    filter to be applied for session termination
+     * @param tenantDomain  tenant domain of the requester
+     */
+    public static void  validateFilter(String filter, String tenantDomain) {
+
+        if (StringUtils.isEmpty(filter)) {
+            throw new WebApplicationException("Filter is empty.");
+        }
+
+        try {
+            int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
+        } catch (IdentityRuntimeException e) {
+            throw new APIError(Response.Status.BAD_REQUEST, new ErrorResponse.Builder()
+                    .withCode(INVALID_TENANT_DOMAIN.getCode())
+                    .withMessage(INVALID_TENANT_DOMAIN.getMessage())
+                    .withDescription(INVALID_TENANT_DOMAIN.getDescription())
+                    .build(log, e, "Error occurred while retrieving tenantId for tenantDomain: " + tenantDomain));
+        }
     }
 }

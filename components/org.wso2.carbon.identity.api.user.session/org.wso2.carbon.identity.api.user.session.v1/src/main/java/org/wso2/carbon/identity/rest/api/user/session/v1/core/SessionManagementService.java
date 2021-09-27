@@ -225,6 +225,30 @@ public class SessionManagementService {
     }
 
     /**
+     * Terminate active sessions based on a filter criteria.
+     *
+     * @param filter    the filter based on which the sessions to be terminated are selected (Mandatory)
+     * @param limit maximum number of sessions to be selected (Optional)
+     * @param since timestamp data value that points to the start of the range of data to be returned (Optional)
+     * @param until timestamp data value that points to the end of the range of data to be returned (Optional)
+     */
+    public void terminateFilteredSessions(String tenantDomain, String filter, Integer limit, Long since, Long until) {
+
+        try {
+            List<ExpressionNode> filterNodes = getExpressionNodes(filter, since, until);
+            validateSearchFilter(filterNodes);
+
+            limit = limit == null || limit <= 0 ? SESSIONS_SEARCH_DEFAULT_LIMIT : limit;
+            String sortOrder = since != null ? SessionMgtConstants.ASC : SessionMgtConstants.DESC;
+
+            SessionManagementServiceHolder.getUserSessionManagementService()
+                    .terminateFilteredSessions(tenantDomain, filterNodes, limit + 1, sortOrder);
+        } catch (SessionManagementException e) {
+            throw handleSessionManagementException(e);
+        }
+    }
+
+    /**
      * Terminate the session of the given session id.
      *
      * @param userId    unique id of the user

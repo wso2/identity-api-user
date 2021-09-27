@@ -57,7 +57,10 @@ public class Constants {
                 "The provided userId is invalid."),
         ERROR_CODE_SERVER_ERROR(USER_MANAGEMENT_PREFIX.getPrefix() + "15001",
                 "Unable to retrieve User.",
-                "Server Encountered an error while retrieving the user.");
+                "Server Encountered an error while retrieving the user."),
+        INVALID_TENANT_DOMAIN(USER_MANAGEMENT_PREFIX.getPrefix() + "10002",
+                "Invalid tenant domain.",
+                "Server Encountered an error while retrieving tenantId for tenantDomain.");
 
         private final String code;
         private final String message;
