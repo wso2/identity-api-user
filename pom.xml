@@ -355,7 +355,7 @@
         <carbon.identity.account.association.version>5.3.7</carbon.identity.account.association.version>
         <maven.findbugsplugin.version>3.0.5</maven.findbugsplugin.version>
         <carbon.business-process.version>4.5.2</carbon.business-process.version>
-        <identity.oauth.version>6.4.150</identity.oauth.version>
+        <identity.oauth.version>6.7.71</identity.oauth.version>
         <testng.version>6.9.10</testng.version>
         <fido2.version>5.1.17</fido2.version>
         <identity.totp.version>2.1.4</identity.totp.version>
