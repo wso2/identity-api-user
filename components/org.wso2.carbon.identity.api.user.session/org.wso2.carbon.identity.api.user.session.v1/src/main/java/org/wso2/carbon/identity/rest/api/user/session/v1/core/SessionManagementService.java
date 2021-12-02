@@ -26,12 +26,16 @@ import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.api.user.common.function.UserToUniqueId;
 import org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants;
 import org.wso2.carbon.identity.api.user.session.common.util.SessionManagementServiceHolder;
+import org.wso2.carbon.identity.application.authentication.framework.exception.UserSessionException;
 import org.wso2.carbon.identity.application.authentication.framework.exception.session.mgt
         .SessionManagementClientException;
 import org.wso2.carbon.identity.application.authentication.framework.exception.session.mgt.SessionManagementException;
 import org.wso2.carbon.identity.application.authentication.framework.model.UserSession;
+import org.wso2.carbon.identity.application.authentication.framework.store.UserSessionStore;
 import org.wso2.carbon.identity.application.authentication.framework.util.SessionMgtConstants;
 import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
+import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.rest.api.user.session.v1.core.function.UserSessionToExternal;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionDTO;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionsDTO;
@@ -49,12 +53,18 @@ import static org.wso2.carbon.identity.api.user.session.common.constant.SessionM
         .ERROR_CODE_SESSION_TERMINATE_FORBIDDEN;
 import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants.ErrorMessage
         .ERROR_CODE_SORTING_NOT_IMPLEMENTED;
+import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants.ErrorMessage
+        .ERROR_CODE_UNABLE_TO_RETRIEVE_FEDERATED_USERID;
+import static org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants.USER_SESSION_MANAGEMENT_PREFIX;
 
 /**
  * Call internal osgi services to perform user session related operations.
  */
 public class SessionManagementService {
 
+    private static final String FEDERATED_USER_DOMAIN = "FEDERATED";
+    private static final String IS_FEDERATED_USER = "isFederatedUser";
+    private static final String IDP_NAME = "idpName";
     private static final Log log = LogFactory.getLog(SessionManagementService.class);
 
     /**
@@ -69,7 +79,12 @@ public class SessionManagementService {
      */
     public SessionsDTO getSessionsBySessionId(User user, Integer limit, Integer offset, String filter, String sort) {
 
-        String userId = getUserIdFromUser(user);
+        String userId;
+        if (isFederatedUser()) {
+            userId = getFederatedUserIdFromUser(user);
+        } else {
+            userId = getUserIdFromUser(user);
+        }
         return getSessionsByUserId(userId, limit, offset, filter, sort);
     }
 
@@ -81,7 +96,12 @@ public class SessionManagementService {
      */
     public void terminateSessionBySessionId(User user, String sessionId) {
 
-        String userId = getUserIdFromUser(user);
+        String userId;
+        if (isFederatedUser()) {
+            userId = getFederatedUserIdFromUser(user);
+        } else {
+            userId = getUserIdFromUser(user);
+        }
         terminateSessionBySessionId(userId, sessionId);
     }
 
@@ -92,7 +112,12 @@ public class SessionManagementService {
      */
     public void terminateSessionsByUserId(User user) {
 
-        String userId = getUserIdFromUser(user);
+        String userId;
+        if (isFederatedUser()) {
+            userId = getFederatedUserIdFromUser(user);
+        } else {
+            userId = getUserIdFromUser(user);
+        }
         terminateSessionsByUserId(userId);
     }
 
@@ -249,5 +274,39 @@ public class SessionManagementService {
     private String getUserIdFromUser(User user) {
 
         return new UserToUniqueId().apply(SessionManagementServiceHolder.getRealmService(), user);
+    }
+
+    private String getFederatedUserIdFromUser(User user) {
+
+        if (!IdentityUtil.threadLocalProperties.get().containsKey(IDP_NAME)) {
+            if (log.isDebugEnabled()) {
+                log.debug("Idp name cannot be found in thread local.");
+            }
+            return null;
+        }
+        String idpName = (String) IdentityUtil.threadLocalProperties.get().get(IDP_NAME);
+        try {
+            int idpId = UserSessionStore.getInstance()
+                    .getIdPId(idpName, IdentityTenantUtil.getTenantId(user.getTenantDomain()));
+            return UserSessionStore.getInstance()
+                    .getUserId(user.getUserName(), IdentityTenantUtil.getTenantId(user.getTenantDomain()),
+                            FEDERATED_USER_DOMAIN, idpId);
+        } catch (UserSessionException e) {
+            String errorDescription =
+                    String.format(ERROR_CODE_UNABLE_TO_RETRIEVE_FEDERATED_USERID.getDescription(), user.getUserName(),
+                            user.getTenantDomain());
+            ErrorResponse errorResponse = new ErrorResponse.Builder().withCode(
+                            USER_SESSION_MANAGEMENT_PREFIX + SessionManagementConstants.ERROR_CODE_DELIMITER +
+                                    ERROR_CODE_UNABLE_TO_RETRIEVE_FEDERATED_USERID.getCode())
+                    .withMessage(ERROR_CODE_UNABLE_TO_RETRIEVE_FEDERATED_USERID.getMessage())
+                    .withDescription(errorDescription).build(log, e, errorDescription);
+            throw new APIError(Response.Status.INTERNAL_SERVER_ERROR, errorResponse);
+        }
+    }
+
+    private boolean isFederatedUser() {
+
+        return IdentityUtil.threadLocalProperties.get().containsKey(IS_FEDERATED_USER) &&
+                (boolean) IdentityUtil.threadLocalProperties.get().get(IS_FEDERATED_USER);
     }
 }
