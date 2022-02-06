@@ -42,7 +42,10 @@ public class SessionManagementConstants {
                 "Sorting capability is not supported in this version of the API."),
         ERROR_CODE_SESSION_TERMINATE_FORBIDDEN("10010",
                 "Action Forbidden",
-                "User is not authorized to terminate the session/s.");
+                "User is not authorized to terminate the session/s."),
+        ERROR_CODE_UNABLE_TO_RETRIEVE_FEDERATED_USERID("10011",
+                "Unable to retrieve federated userId",
+                "Error occurred while retrieving federated userId of the user: %s in the tenant domain: %s.");
 
         private final String code;
         private final String message;

@@ -13,6 +13,7 @@ import org.wso2.carbon.identity.application.authenticator.fido2.exception.FIDO2A
 import org.wso2.carbon.identity.application.authenticator.fido2.util.Either;
 import org.wso2.carbon.identity.application.authenticator.fido2.util.FIDOUtil;
 import org.wso2.carbon.identity.core.util.IdentityCoreConstants;
+import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.rest.api.user.fido2.v1.MeApiService;
 
 import java.io.IOException;
@@ -33,6 +34,11 @@ public class MeApiServiceImpl extends MeApiService {
     @Override
     public Response meWebauthnCredentialIdDelete(String credentialId) {
 
+        if (!isValidAuthenticationType()) {
+            throw Util.handleError(Response.Status.FORBIDDEN,
+                    Constants.ErrorMessages.ERROR_CODE_ACCESS_DENIED_FOR_BASIC_AUTH);
+        }
+
         try {
             webAuthnService.deregisterCredential(credentialId);
         } catch (IOException e) {
@@ -44,6 +50,11 @@ public class MeApiServiceImpl extends MeApiService {
 
     @Override
     public Response meWebauthnFinishRegistrationPost(String response) {
+
+        if (!isValidAuthenticationType()) {
+            throw Util.handleError(Response.Status.FORBIDDEN,
+                    Constants.ErrorMessages.ERROR_CODE_ACCESS_DENIED_FOR_BASIC_AUTH);
+        }
 
         if (log.isDebugEnabled()) {
             log.debug(MessageFormat.format("Received finish registration response: {0}", response));
@@ -63,6 +74,11 @@ public class MeApiServiceImpl extends MeApiService {
     @Override
     public Response meWebauthnGet(String username) {
 
+        if (!isValidAuthenticationType()) {
+            throw Util.handleError(Response.Status.FORBIDDEN,
+                    Constants.ErrorMessages.ERROR_CODE_ACCESS_DENIED_FOR_BASIC_AUTH);
+        }
+
         if (log.isDebugEnabled()) {
             log.debug(MessageFormat.format("fetching device metadata for the user : {0}", username));
         }
@@ -80,6 +96,11 @@ public class MeApiServiceImpl extends MeApiService {
     @Override
     public Response meWebauthnStartRegistrationPost(String appID) {
 
+        if (!isValidAuthenticationType()) {
+            throw Util.handleError(Response.Status.FORBIDDEN,
+                    Constants.ErrorMessages.ERROR_CODE_ACCESS_DENIED_FOR_BASIC_AUTH);
+        }
+
         try {
             Either<String, RegistrationRequest> result = webAuthnService.startRegistration(appID);
             if (result.isRight()) {
@@ -92,5 +113,24 @@ public class MeApiServiceImpl extends MeApiService {
             throw Util.handleError(Response.Status.INTERNAL_SERVER_ERROR, Constants.ErrorMessages
                     .ERROR_CODE_START_REGISTRATION, appID);
         }
+    }
+
+    private boolean isValidAuthenticationType() {
+
+        /*
+        Check whether the request is authenticated with basic auth. FIDO endpoint should not be allowed for basic
+        authentication. This approach can be improved by providing a Level of Assurance (LOA) and checking that in
+        FIDOAdminService.
+         */
+        if (IdentityUtil.threadLocalProperties.get().get(Constants.AUTHENTICATED_WITH_BASIC_AUTH) != null || Boolean
+                .parseBoolean((String) IdentityUtil.threadLocalProperties.get()
+                        .get(Constants.AUTHENTICATED_WITH_BASIC_AUTH))) {
+            if (log.isDebugEnabled()) {
+                log.debug("Not a valid authentication method. "
+                        + "This method is blocked for the requests with basic authentication.");
+            }
+            return false;
+        }
+        return true;
     }
 }
