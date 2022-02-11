@@ -19,7 +19,7 @@ package org.wso2.carbon.identity.api.user.common;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.MDC;
+import org.apache.logging.log4j.ThreadContext;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.application.authentication.framework.exception.UserSessionException;
@@ -54,7 +54,7 @@ public class Util {
     public static String getCorrelation() {
         String ref;
         if (isCorrelationIDPresent()) {
-            ref = MDC.get(CORRELATION_ID_MDC).toString();
+            ref = ThreadContext.get(CORRELATION_ID_MDC);
         } else {
             ref = UUID.randomUUID().toString();
 
@@ -68,7 +68,7 @@ public class Util {
      * @return
      */
     public static boolean isCorrelationIDPresent() {
-        return MDC.get(CORRELATION_ID_MDC) != null;
+        return ThreadContext.get(CORRELATION_ID_MDC) != null;
     }
 
     /**
