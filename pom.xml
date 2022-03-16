@@ -200,6 +200,11 @@
                 <version>${identity.totp.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.wso2.carbon.extension.identity.authenticator.outbound.backupcode</groupId>
+                <artifactId>org.wso2.carbon.extension.identity.authenticator.backupcode.connector</artifactId>
+                <version>${identity.backup.code.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.wso2.carbon.identity.framework</groupId>
                 <artifactId>org.wso2.carbon.identity.application.mgt</artifactId>
                 <version>${carbon.identity.framework.version}</version>
@@ -359,6 +364,7 @@
         <testng.version>6.9.10</testng.version>
         <fido2.version>5.1.17</fido2.version>
         <identity.totp.version>2.1.4</identity.totp.version>
+        <identity.backup.code.version>0.0.1</identity.backup.code.version>
         <maven.checkstyleplugin.excludes>**/gen/**/*</maven.checkstyleplugin.excludes>
         <commons-lang.wso2.version>2.6.0.wso2v1</commons-lang.wso2.version>
         <mavan.findbugsplugin.exclude.file>findbugs-exclude-filter.xml</mavan.findbugsplugin.exclude.file>
@@ -376,6 +382,7 @@
         <module>components/org.wso2.carbon.identity.api.user.application</module>
         <module>components/org.wso2.carbon.identity.api.user.recovery</module>
         <module>components/org.wso2.carbon.identity.api.user.functionality</module>
+        <module>components/org.wso2.carbon.identity.api.user.backupcode</module>
     </modules>
 
 </project>
