@@ -21,7 +21,7 @@
     <parent>
         <artifactId>org.wso2.carbon.identity.api.user.functionality</artifactId>
         <groupId>org.wso2.carbon.identity.user.api</groupId>
-        <version>1.2.3</version>
+        <version>1.2.4-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.identity.rest.api.user.functionality.v1</artifactId>
