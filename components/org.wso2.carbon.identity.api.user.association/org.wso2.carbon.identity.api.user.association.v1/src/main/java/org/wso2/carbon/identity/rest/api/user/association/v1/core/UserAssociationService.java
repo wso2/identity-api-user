@@ -200,14 +200,14 @@ public class UserAssociationService {
 
     private APIError handleUserAccountAssociationException(UserAccountAssociationException e, String message) {
 
-        ErrorResponse errorResponse = new ErrorResponse.Builder()
-                .withCode(e.getErrorCode())
-                .withMessage(message)
-                .build(log, e, e.getMessage());
-
         Response.Status status;
+        ErrorResponse errorResponse;
 
         if (e instanceof UserAccountAssociationClientException) {
+            errorResponse = new ErrorResponse.Builder()
+                    .withCode(e.getErrorCode())
+                    .withMessage(message)
+                    .build(log, e.getMessage());
             if (e.getErrorCode() != null) {
                 String errorCode = e.getErrorCode();
                 errorCode = errorCode.contains(ERROR_CODE_DELIMITER) ? errorCode : ASSOCIATION_ERROR_PREFIX
@@ -217,6 +217,10 @@ public class UserAssociationService {
             handleErrorDescription(e, errorResponse);
             status = Response.Status.BAD_REQUEST;
         } else {
+            errorResponse = new ErrorResponse.Builder()
+                    .withCode(e.getErrorCode())
+                    .withMessage(message)
+                    .build(log, e, e.getMessage());
             status = Response.Status.INTERNAL_SERVER_ERROR;
         }
         return new APIError(status, errorResponse);
