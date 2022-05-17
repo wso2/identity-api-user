@@ -25,7 +25,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 /**
- * MFA code error.
+ * MFA error.
  **/
 @ApiModel(description = "MFA code error.")
 public class ErrorDTO {

@@ -26,7 +26,7 @@ public class MFAConstants {
 
     public static final String AUTHENTICATED_WITH_BASIC_AUTH = "AuthenticatedWithBasicAuth";
 
-    public static final String BACK_CODE_AUTHENTICATOR = "Backup Code Authenticator";
+    public static final String BACKUP_CODE_AUTHENTICATOR = "Backup Code Authenticator";
     public static final String TOTP_AUTHENTICATOR = "TOTP";
 
     /**
@@ -53,12 +53,9 @@ public class MFAConstants {
         USER_ERROR_UNAUTHORIZED_USER("10001",
                 "Access denied.",
                 "Unauthorized user"),
-        USER_ERROR_INVALID_INPUT("10002",
-                "Invalid input provided.",
+        USER_ERROR_INVALID_AUTHENTICATOR("10002",
+                "Invalid authenticator provided.",
                 "The provided authenticators are not valid."),
-        USER_ERROR_ENABLED_AUTHENTICATORS_NOT_EXIST("10003",
-                "Enabled authenticators doesn't exist.",
-                "No authenticators are enabled for the authenticated user"),
 
         USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH("10005",
                 "Access denied.",

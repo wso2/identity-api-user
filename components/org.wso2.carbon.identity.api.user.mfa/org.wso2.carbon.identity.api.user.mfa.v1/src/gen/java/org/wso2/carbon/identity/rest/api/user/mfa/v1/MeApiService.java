@@ -39,13 +39,14 @@ public abstract class MeApiService {
      *
      * @return API response.
      */
-    public abstract Response meMfaEnabledAuthenticatorsGet();
+    public abstract Response meMfaAuthenticatorsGet();
 
     /**
      * Update enabled authentications.
+     *
      * @param request Enabled authenticator DTO with new enabled authenticators.
      * @return API response.
      */
-    public abstract Response meMfaEnabledAuthenticatorsPost(EnabledAuthenticatorsDTO request);
+    public abstract Response meMfaAuthenticatorsPost(EnabledAuthenticatorsDTO request);
 
 }

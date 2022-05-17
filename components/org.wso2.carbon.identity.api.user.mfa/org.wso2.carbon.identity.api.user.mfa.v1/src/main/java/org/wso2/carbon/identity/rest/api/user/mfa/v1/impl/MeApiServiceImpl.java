@@ -34,13 +34,13 @@ public class MeApiServiceImpl extends MeApiService {
     MFAService mfaService;
 
     @Override
-    public Response meMfaEnabledAuthenticatorsGet() {
+    public Response meMfaAuthenticatorsGet() {
 
         return Response.ok().entity(mfaService.getEnabledAuthenticators()).build();
     }
 
     @Override
-    public Response meMfaEnabledAuthenticatorsPost(EnabledAuthenticatorsDTO request) {
+    public Response meMfaAuthenticatorsPost(EnabledAuthenticatorsDTO request) {
 
         return Response.ok().entity(mfaService.updateEnabledAuthenticators(request.getEnabledAuthenticators())).build();
     }

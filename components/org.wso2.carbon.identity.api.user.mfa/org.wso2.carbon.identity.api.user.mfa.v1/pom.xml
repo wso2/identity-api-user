@@ -43,14 +43,14 @@
                 </configuration>
             </plugin>
             <!-- Dependency to generate the code from the swagger generation. -->
-                        <plugin>
-                            <groupId>org.wso2.maven.plugins</groupId>
-                            <artifactId>swagger2cxf-maven-plugin</artifactId>
-                            <version>1.0-SNAPSHOT</version>
-                            <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/mfa.yaml</inputSpec>
-                            </configuration>
-                        </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.wso2.maven.plugins</groupId>-->
+<!--                <artifactId>swagger2cxf-maven-plugin</artifactId>-->
+<!--                <version>1.0-SNAPSHOT</version>-->
+<!--                <configuration>-->
+<!--                    <inputSpec>${project.basedir}/src/main/resources/mfa.yaml</inputSpec>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>

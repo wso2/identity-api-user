@@ -63,7 +63,7 @@ produces:
   - application/json
 paths:
   # Endpoint uses to perform mfa enabled authenticator related operations.
-  /me/mfa/enabled-authenticators:
+  /me/mfa/authenticators:
     post:
       description: |
         This API is used to perform following actions.
@@ -79,7 +79,7 @@ paths:
         -
           name: request
           in: body
-          description:  Enabled authenticators
+          description: Enable authenticators
           required: true
           schema:
             $ref: '#/definitions/EnabledAuthenticators'
@@ -135,7 +135,7 @@ definitions:
   #-----------------------------------------------------
   Error:
     type: object
-    description: MFA code error.
+    description: MFA error.
     required:
       - code
       - message

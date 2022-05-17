@@ -47,7 +47,7 @@ public class MeApi  {
 
     @Valid
     @GET
-    @Path("/mfa/enabled-authenticators")
+    @Path("/mfa/authenticators")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     @io.swagger.annotations.ApiOperation(value = "Retrieve enabled authenticators of the authenticated user.",
@@ -60,14 +60,14 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Server Error") })
 
-    public Response meMfaEnabledAuthenticatorsGet() {
+    public Response meMfaAuthenticatorsGet() {
 
-        return delegate.meMfaEnabledAuthenticatorsGet();
+        return delegate.meMfaAuthenticatorsGet();
     }
 
     @Valid
     @POST
-    @Path("/mfa/enabled-authenticators")
+    @Path("/mfa/authenticators")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     @io.swagger.annotations.ApiOperation(value = "Update Enabled Authenticators of the user.\n",
@@ -84,9 +84,9 @@ public class MeApi  {
         
         @io.swagger.annotations.ApiResponse(code = 500, message = "Server Error") })
 
-    public Response meMfaEnabledAuthenticatorsPost(@ApiParam(value = "Enabled authenticators" ,required=true ) @Valid EnabledAuthenticatorsDTO request) {
+    public Response meMfaAuthenticatorsPost(@ApiParam(value = "Enable authenticators" ,required=true ) @Valid EnabledAuthenticatorsDTO request) {
 
-        return delegate.meMfaEnabledAuthenticatorsPost(request);
+        return delegate.meMfaAuthenticatorsPost(request);
     }
 
 }

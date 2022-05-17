@@ -16,7 +16,6 @@
 
 package org.wso2.carbon.identity.rest.api.user.mfa.v1.core;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,19 +32,20 @@ import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.api.UserStoreManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
-import static org.wso2.carbon.identity.api.user.mfa.common.MFAConstants.BACK_CODE_AUTHENTICATOR;
+import static org.wso2.carbon.identity.api.user.mfa.common.MFAConstants.BACKUP_CODE_AUTHENTICATOR;
 import static org.wso2.carbon.identity.api.user.mfa.common.MFAConstants.ENABLED_AUTHENTICATORS_CLAIM;
 import static org.wso2.carbon.identity.api.user.mfa.common.MFAConstants.ErrorMessage.SERVER_ERROR_RETRIEVE_CLAIM_USERSTORE;
 import static org.wso2.carbon.identity.api.user.mfa.common.MFAConstants.ErrorMessage.SERVER_ERROR_RETRIEVING_USERSTORE_MANAGER;
 import static org.wso2.carbon.identity.api.user.mfa.common.MFAConstants.ErrorMessage.SERVER_ERROR_UPDATING_CLAIM_USERSTORE;
 import static org.wso2.carbon.identity.api.user.mfa.common.MFAConstants.ErrorMessage.USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH;
-import static org.wso2.carbon.identity.api.user.mfa.common.MFAConstants.ErrorMessage.USER_ERROR_INVALID_INPUT;
+import static org.wso2.carbon.identity.api.user.mfa.common.MFAConstants.ErrorMessage.USER_ERROR_INVALID_AUTHENTICATOR;
 import static org.wso2.carbon.identity.api.user.mfa.common.MFAConstants.ErrorMessage.USER_ERROR_UNAUTHORIZED_USER;
 import static org.wso2.carbon.identity.api.user.mfa.common.MFAConstants.TOTP_AUTHENTICATOR;
 
@@ -98,7 +98,7 @@ public class MFAService {
             throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
         }
         if (StringUtils.isNotBlank(enabledAuthenticators)) {
-            validateInput(enabledAuthenticators);
+            validateAuthenticatorList(enabledAuthenticators);
         }
         try {
             UserStoreManager userStoreManager =
@@ -121,13 +121,22 @@ public class MFAService {
         }
     }
 
-    private void validateInput(String enabledAuthenticators) {
+    /**
+     * Validate if the user input contains invalid values for authenticators.
+     *
+     * @param enabledAuthenticators Enabled authenticators.
+     */
+    private void validateAuthenticatorList(String enabledAuthenticators) {
 
-        List<String> enabledAuthList = new ArrayList<String>(Arrays.asList(enabledAuthenticators.split(",")));
+        List<String> enabledAuthList = new ArrayList<>(Arrays.asList(enabledAuthenticators.split(",")));
         for (String authenticator : enabledAuthList) {
-            if (!authenticator.equals(TOTP_AUTHENTICATOR) &&
-                    !authenticator.equals(BACK_CODE_AUTHENTICATOR)) {
-                throw handleError(Response.Status.BAD_REQUEST, USER_ERROR_INVALID_INPUT);
+            /*
+             * TODO Use configs to get available authenticator list
+             * TODO Track in https://github.com/wso2-enterprise/asgardeo-product/issues/10533
+             */
+            if (!TOTP_AUTHENTICATOR.equals(authenticator) &&
+                    !BACKUP_CODE_AUTHENTICATOR.equals(authenticator)) {
+                throw handleError(Response.Status.BAD_REQUEST, USER_ERROR_INVALID_AUTHENTICATOR);
             }
         }
     }
@@ -145,7 +154,7 @@ public class MFAService {
     /**
      * Handle Exceptions.
      *
-     * @param e Exception
+     * @param e         Exception
      * @param errorEnum Error message enum.
      * @return An APIError.
      */
@@ -172,7 +181,7 @@ public class MFAService {
      * Handle User errors.
      *
      * @param status Http status.
-     * @param error Error .
+     * @param error  Error .
      * @return An APIError.
      */
     private APIError handleError(Response.Status status, MFAConstants.ErrorMessage error) {
@@ -192,12 +201,17 @@ public class MFAService {
                 .withDescription(errorEnum.getDescription());
     }
 
+    /**
+     * Used to validate if this API call is called using basic auth or not.
+     *
+     * @return True if this API called with basic auth.
+     */
     private boolean isValidAuthenticationType() {
 
         /*
-        Check whether the request is authenticated with basic auth. MFA endpoint should not be allowed for basic
-        authentication. This approach can be improved by providing a Level of Assurance (LOA) and checking that in
-        MFAService.
+          Check whether the request is authenticated with basic auth. MFA endpoint should not be allowed for basic
+          authentication. This approach can be improved by providing a Level of Assurance (LOA) and checking that in
+          MFAService.
          */
         if (Boolean.parseBoolean(
                 (String) IdentityUtil.threadLocalProperties.get().get(MFAConstants.AUTHENTICATED_WITH_BASIC_AUTH))) {

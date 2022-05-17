@@ -19,7 +19,7 @@ package org.wso2.carbon.identity.rest.api.user.mfa.v1.util;
 import org.wso2.carbon.user.core.service.RealmService;
 
 /**
- * Service holder class for MFA enapoint.
+ * Service holder class for MFA endpoint.
  */
 public class UserMFAServiceHolder {
 
@@ -37,6 +37,7 @@ public class UserMFAServiceHolder {
 
     /**
      * Set realm service.
+     *
      * @param realmService Realm service object.
      */
     public static void setRealmService(RealmService realmService) {
