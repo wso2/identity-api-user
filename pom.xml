@@ -383,6 +383,7 @@
         <module>components/org.wso2.carbon.identity.api.user.recovery</module>
         <module>components/org.wso2.carbon.identity.api.user.functionality</module>
         <module>components/org.wso2.carbon.identity.api.user.backupcode</module>
+        <module>components/org.wso2.carbon.identity.api.user.mfa</module>
     </modules>
 
 </project>
