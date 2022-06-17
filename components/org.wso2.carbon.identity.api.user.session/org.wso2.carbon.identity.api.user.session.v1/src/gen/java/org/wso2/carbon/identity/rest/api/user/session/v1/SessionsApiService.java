@@ -18,14 +18,8 @@ package org.wso2.carbon.identity.rest.api.user.session.v1;
 
 import javax.ws.rs.core.Response;
 
-public abstract class UserIdApiService {
+public abstract class SessionsApiService {
 
-    public abstract Response getSessionBySessionId(String userId, String sessionId);
-
-    public abstract Response getSessionsByUserId(String userId, Integer limit, Integer offset, String filter, String sort);
-
-    public abstract Response terminateSessionBySessionId(String userId, String sessionId);
-
-    public abstract Response terminateSessionsByUserId(String userId);
+    public abstract Response getSessions(String filter, Integer limit, Long since, Long until);
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2022, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,6 @@
  */
 
 package org.wso2.carbon.identity.rest.api.user.session.v1;
-
-import org.wso2.carbon.identity.rest.api.user.session.v1.*;
-import org.wso2.carbon.identity.rest.api.user.session.v1.dto.*;
-
-import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionsDTO;
-import org.wso2.carbon.identity.rest.api.user.session.v1.dto.ErrorDTO;
-
-import java.util.List;
-
-import java.io.InputStream;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 
 import javax.ws.rs.core.Response;
 

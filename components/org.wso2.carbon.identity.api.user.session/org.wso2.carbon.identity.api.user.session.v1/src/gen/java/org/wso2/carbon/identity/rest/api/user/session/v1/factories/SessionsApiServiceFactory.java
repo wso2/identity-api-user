@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package org.wso2.carbon.identity.rest.api.user.session.v1;
+package org.wso2.carbon.identity.rest.api.user.session.v1.factories;
 
-import javax.ws.rs.core.Response;
+import org.wso2.carbon.identity.rest.api.user.session.v1.SessionsApiService;
+import org.wso2.carbon.identity.rest.api.user.session.v1.impl.SessionsApiServiceImpl;
 
-public abstract class UserIdApiService {
+public class SessionsApiServiceFactory {
 
-    public abstract Response getSessionBySessionId(String userId, String sessionId);
+    private static final SessionsApiService service = new SessionsApiServiceImpl();
 
-    public abstract Response getSessionsByUserId(String userId, Integer limit, Integer offset, String filter, String sort);
-
-    public abstract Response terminateSessionBySessionId(String userId, String sessionId);
-
-    public abstract Response terminateSessionsByUserId(String userId);
-
+    public static SessionsApiService getSessionsApi() {
+        return service;
+    }
 }
