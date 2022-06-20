@@ -44,8 +44,10 @@ import org.wso2.carbon.identity.rest.api.user.approval.v1.core.model.TaskModel;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskDataDTO;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskSummaryDTO;
+import org.wso2.carbon.identity.workflow.engine.ApprovalEventService;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.ws.rs.core.Response;
@@ -60,8 +62,6 @@ import static org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant
 import static org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant.ErrorMessage.USER_ERROR_NON_EXISTING_TASK_ID;
 import static org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant.ErrorMessage.USER_ERROR_NOT_ACCEPTABLE_INPUT_FOR_NEXT_STATE;
 import static org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant.ErrorMessage.USER_ERROR_UNAUTHORIZED_USER;
-import static org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO.ActionEnum.APPROVE;
-import static org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO.ActionEnum.REJECT;
 
 /**
  * Call internal osgi services to perform user's approval task related operations
@@ -109,10 +109,15 @@ public class UserApprovalService {
         } catch (Exception e) {
             throw handleException(e, SERVER_ERROR_RETRIEVING_APPROVALS_FOR_USER);
         }
+       /* ApprovalEventService approvalEventService=new ApprovalEventService();
+        List<org.wso2.carbon.identity.workflow.engine.dto.TaskSummaryDTO> taskSummaryDTOList=approvalEventService.listTasks(limit,offset,status);
+
+        return Collections.singletonList((TaskSummaryDTO) taskSummaryDTOList);*/
     }
 
     /**
      * Get details of a task identified by the taskId
+     *
      * @param taskId
      * @return
      */
@@ -144,6 +149,8 @@ public class UserApprovalService {
         } catch (Exception e) {
             throw handleException(e, SERVER_ERROR_RETRIEVING_APPROVAL_OF_USER);
         }
+       /* ApprovalEventService approvalEventService=new ApprovalEventService();
+        return approvalEventService.getTaskData(taskId);*/
     }
 
     private URI getUri(String taskId) {
