@@ -56,7 +56,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
 
         Optional<SessionDTO> session = sessionManagementService.getSessionBySessionId(userId, sessionId);
         if (session.isPresent()) {
-            return Response.ok().entity(session).build();
+            return Response.ok().entity(session.get()).build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
