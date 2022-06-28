@@ -125,6 +125,10 @@
             <artifactId>org.wso2.carbon.humantask</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity.workflow.engine</groupId>
+            <artifactId>workflow.engine</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

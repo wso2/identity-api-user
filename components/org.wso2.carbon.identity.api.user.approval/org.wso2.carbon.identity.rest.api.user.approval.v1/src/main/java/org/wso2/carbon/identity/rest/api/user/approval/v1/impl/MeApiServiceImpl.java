@@ -18,9 +18,8 @@ package org.wso2.carbon.identity.rest.api.user.approval.v1.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.MeApiService;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.core.UserApprovalService;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO;
 import org.wso2.carbon.identity.workflow.engine.ApprovalEventService;
+import org.wso2.carbon.identity.workflow.engine.dto.StateDTO;
 
 import java.util.List;
 import javax.ws.rs.core.Response;
@@ -31,27 +30,24 @@ import javax.ws.rs.core.Response;
 public class MeApiServiceImpl extends MeApiService {
 
     @Autowired
-    UserApprovalService userApprovalService;
     ApprovalEventService approvalEventService;
 
     @Override
     public Response getApprovalTaskInfo(String taskId) {
 
-        //return Response.ok().entity(userApprovalService.getTaskData(taskId)).build();
         return Response.ok().entity(approvalEventService.getTaskData(taskId)).build();
     }
 
     @Override
     public Response listApprovalTasksForLoggedInUser(Integer limit, Integer offset, List<String> status) {
 
-        //return Response.ok().entity(userApprovalService.listTasks(limit, offset, status)).build();
         return Response.ok().entity(approvalEventService.listTasks(limit, offset, status)).build();
     }
 
     @Override
     public Response updateStateOfTask(String taskId, StateDTO nextState) {
 
-        userApprovalService.updateStatus(taskId, nextState);
+        approvalEventService.updateStatus(taskId, nextState );
         return Response.ok().build();
     }
 }

@@ -16,26 +16,19 @@
 
 package org.wso2.carbon.identity.rest.api.user.approval.v1;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.*;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.MeApiService;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.factories.MeApiServiceFactory;
-
 import io.swagger.annotations.ApiParam;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskDataDTO;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.ErrorDTO;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskSummaryDTO;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO;
+import org.wso2.carbon.identity.workflow.engine.dto.StateDTO;
 
 import java.util.List;
-
-import java.io.InputStream;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.*;
 
 @Path("/me")
 

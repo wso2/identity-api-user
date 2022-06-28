@@ -17,6 +17,7 @@
 package org.wso2.carbon.identity.api.user.approval.common;
 
 import org.wso2.carbon.humantask.core.TaskOperationService;
+import org.wso2.carbon.identity.workflow.engine.ApprovalEventService;
 
 /**
  * Service holder class for user approvals.
@@ -24,9 +25,16 @@ import org.wso2.carbon.humantask.core.TaskOperationService;
 public class UserApprovalServiceHolder {
 
     private static TaskOperationService taskOperationService;
+    private static ApprovalEventService approvalEventService;
 
     public static void setTaskOperationService(TaskOperationService taskOperationService) {
+
         UserApprovalServiceHolder.taskOperationService = taskOperationService;
+    }
+
+    public static void setApprovalEventService(ApprovalEventService approvalEventService1) {
+
+        UserApprovalServiceHolder.approvalEventService = approvalEventService1;
     }
 
     /**
@@ -37,5 +45,11 @@ public class UserApprovalServiceHolder {
     public static TaskOperationService getTaskOperationService() {
         return taskOperationService;
     }
+
+    public static ApprovalEventService getApprovalEventService() {
+
+        return approvalEventService;
+    }
+
 }
 

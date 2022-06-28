@@ -16,20 +16,17 @@
 
 package org.wso2.carbon.identity.api.user.approval.common.factory;
 
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.humantask.core.TaskOperationService;
+import org.wso2.carbon.identity.workflow.engine.ApprovalEventService;
 
 /**
  * Factory Beans serves as a factory for creating other beans within the IOC container. This factory bean is used to
  * instantiate the TaskOperationService type of object inside the container.
  */
-public class OSGIServiceFactory extends AbstractFactoryBean<TaskOperationService> {
+public class OSGIServiceFactory extends AbstractFactoryBean<ApprovalEventService> {
 
-    private TaskOperationService taskOperationService;
+    private ApprovalEventService approvalEventService;
 
     @Override
     public Class<?> getObjectType() {
@@ -37,18 +34,17 @@ public class OSGIServiceFactory extends AbstractFactoryBean<TaskOperationService
     }
 
     @Override
-    protected TaskOperationService createInstance() throws Exception {
+    protected ApprovalEventService createInstance() throws Exception {
 
-        if (this.taskOperationService == null) {
-            TaskOperationService taskOperationService = (TaskOperationService) PrivilegedCarbonContext.
-                    getThreadLocalCarbonContext().getOSGiService(TaskOperationService.class, null);
-            if (taskOperationService != null) {
-                this.taskOperationService = taskOperationService;
+        if (this.approvalEventService == null) {
+            ApprovalEventService approvalEventService1 = (ApprovalEventService) PrivilegedCarbonContext.
+                    getThreadLocalCarbonContext().getOSGiService(ApprovalEventService.class, null);
+            if (approvalEventService1 != null) {
+                this.approvalEventService = approvalEventService1;
             } else {
-                throw new Exception("Unable to retrieve TaskOperationService service.");
+                throw new Exception("Unable to retrieve ApprovalEvent service.");
             }
         }
-        return this.taskOperationService;
+        return this.approvalEventService;
     }
-
 }
