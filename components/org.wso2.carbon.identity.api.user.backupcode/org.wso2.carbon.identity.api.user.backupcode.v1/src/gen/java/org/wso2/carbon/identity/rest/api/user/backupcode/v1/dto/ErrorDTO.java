@@ -16,13 +16,12 @@
 
 package org.wso2.carbon.identity.rest.api.user.backupcode.v1.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.*;
-import com.fasterxml.jackson.annotation.*;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 /**
  * Backup code error.
@@ -42,11 +41,12 @@ public class ErrorDTO {
     private String description = null;
 
     @Valid 
+    @NotNull(message = "Property traceId cannot be null.") 
     private String traceId = null;
 
     /**
-     * Error code.
-     **/
+    * Error code.
+    **/
     @ApiModelProperty(required = true, value = "Error code.")
     @JsonProperty("code")
     public String getCode() {
@@ -57,8 +57,8 @@ public class ErrorDTO {
     }
 
     /**
-     * Error message.
-     **/
+    * Error message.
+    **/
     @ApiModelProperty(required = true, value = "Error message.")
     @JsonProperty("message")
     public String getMessage() {
@@ -69,8 +69,8 @@ public class ErrorDTO {
     }
 
     /**
-     * Error description.
-     **/
+    * Error description.
+    **/
     @ApiModelProperty(value = "Error description.")
     @JsonProperty("description")
     public String getDescription() {
@@ -81,9 +81,9 @@ public class ErrorDTO {
     }
 
     /**
-     * Error trace id.
-     **/
-    @ApiModelProperty(value = "Error trace id.")
+    * Error trace id.
+    **/
+    @ApiModelProperty(required = true, value = "Error trace id.")
     @JsonProperty("traceId")
     public String getTraceId() {
         return traceId;

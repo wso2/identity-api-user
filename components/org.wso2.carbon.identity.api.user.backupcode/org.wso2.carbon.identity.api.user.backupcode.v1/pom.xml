@@ -48,7 +48,7 @@
 <!--                <artifactId>swagger2cxf-maven-plugin</artifactId>-->
 <!--                <version>1.0-SNAPSHOT</version>-->
 <!--                <configuration>-->
-<!--                <inputSpec>${project.basedir}/src/main/resources/backupcode.yaml</inputSpec>-->
+<!--                    <inputSpec>${project.basedir}/src/main/resources/backupcode.yaml</inputSpec>-->
 <!--                </configuration>-->
 <!--            </plugin>-->
             <plugin>

@@ -16,15 +16,14 @@
 
 package org.wso2.carbon.identity.rest.api.user.backupcode.v1.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.ArrayList;
 import java.util.List;
-import io.swagger.annotations.*;
-import com.fasterxml.jackson.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 /**
  * Backup code response.
@@ -36,8 +35,8 @@ public class BackupCodeResponseDTO {
     private List<String> backupCodes = new ArrayList<String>();
 
     /**
-     * Backup codes of the authenticated user.
-     **/
+    * Backup codes of the authenticated user.
+    **/
     @ApiModelProperty(value = "Backup codes of the authenticated user.")
     @JsonProperty("backupCodes")
     public List<String> getBackupCodes() {

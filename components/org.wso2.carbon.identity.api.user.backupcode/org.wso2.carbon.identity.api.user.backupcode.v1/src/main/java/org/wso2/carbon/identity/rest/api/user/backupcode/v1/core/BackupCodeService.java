@@ -28,10 +28,10 @@ import org.wso2.carbon.identity.application.authenticator.backupcode.exception.B
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.rest.api.user.backupcode.v1.dto.BackupCodeResponseDTO;
+import org.wso2.carbon.identity.rest.api.user.backupcode.v1.dto.RemainingBackupCodeResponseDTO;
 import org.wso2.carbon.user.api.UserStoreException;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
@@ -54,23 +54,24 @@ public class BackupCodeService {
      *
      * @return Backup Codes.
      */
-    public BackupCodeResponseDTO getBackupCodes() {
+    public RemainingBackupCodeResponseDTO getBackupCodes() {
 
         if (!isValidAuthenticationType()) {
             throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
         }
-        List<String> backupCodes;
+        Integer remainingBackupCodesCount;
         User user = getUser();
         try {
-            backupCodes = BackupCodeAPIHandler.getBackupCodes(user.toFullQualifiedUsername());
+            remainingBackupCodesCount =
+                    BackupCodeAPIHandler.getRemainingBackupCodesCount(user.toFullQualifiedUsername());
         } catch (BackupCodeException e) {
             throw handleException(e, SERVER_ERROR_RETRIEVE_BACKUP_CODES);
         }
 
-        BackupCodeResponseDTO backupCodeResponseDTO = new BackupCodeResponseDTO();
-        backupCodeResponseDTO.setBackupCodes(backupCodes);
+        RemainingBackupCodeResponseDTO remainingBackupCodeResponseDTO = new RemainingBackupCodeResponseDTO();
+        remainingBackupCodeResponseDTO.setRemainingBackupCodesCount(remainingBackupCodesCount);
 
-        return backupCodeResponseDTO;
+        return remainingBackupCodeResponseDTO;
     }
 
     /**
@@ -87,8 +88,8 @@ public class BackupCodeService {
         BackupCodeResponseDTO backupCodeResponseDTO = new BackupCodeResponseDTO();
         User user = getUser();
         try {
-            Map<String, String> claims =
-                    BackupCodeAPIHandler.generateBackupCodes(user.toFullQualifiedUsername(), false);
+            List<String> claims =
+                    BackupCodeAPIHandler.generateBackupCodes(user.toFullQualifiedUsername());
             List<String> backupCodes = BackupCodeAPIHandler.updateBackupCodes(claims, user.toFullQualifiedUsername());
             backupCodeResponseDTO.setBackupCodes(backupCodes);
             return backupCodeResponseDTO;
@@ -111,8 +112,10 @@ public class BackupCodeService {
         BackupCodeResponseDTO backupCodeResponseDTO = new BackupCodeResponseDTO();
         User user = getUser();
         try {
-            Map<String, String> claims = BackupCodeAPIHandler.generateBackupCodes(user.toFullQualifiedUsername(), true);
-            List<String> backupCodes = BackupCodeAPIHandler.updateBackupCodes(claims, user.toFullQualifiedUsername());
+            List<String> generateBackupCodes =
+                    BackupCodeAPIHandler.generateBackupCodes(user.toFullQualifiedUsername());
+            List<String> backupCodes = BackupCodeAPIHandler.updateBackupCodes(generateBackupCodes,
+                    user.toFullQualifiedUsername());
             backupCodeResponseDTO.setBackupCodes(backupCodes);
         } catch (BackupCodeException e) {
             throw handleException(e, SERVER_ERROR_REFRESH_BACKUP_CODES);
