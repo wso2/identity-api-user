@@ -195,5 +195,3 @@ securityDefinitions:
 # Added by API Auto Mocking Plugin
 host: localhost:9443
 basePath: /t/{tenant-domain}/api/users/v1
-
-
