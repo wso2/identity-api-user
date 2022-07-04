@@ -26,6 +26,7 @@ import org.wso2.carbon.identity.application.authentication.framework.exception.A
 import org.wso2.carbon.identity.application.authenticator.backupcode.BackupCodeAPIHandler;
 import org.wso2.carbon.identity.application.authenticator.backupcode.exception.BackupCodeException;
 import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.rest.api.user.backupcode.v1.dto.BackupCodeResponseDTO;
 import org.wso2.carbon.identity.rest.api.user.backupcode.v1.dto.RemainingBackupCodeResponseDTO;
 import org.wso2.carbon.user.api.UserStoreException;
@@ -37,6 +38,7 @@ import javax.ws.rs.core.Response;
 import static org.wso2.carbon.identity.api.user.backupcode.common.BackupCodeConstants.ErrorMessage.SERVER_ERROR_DELETING_BACKUP_CODES;
 import static org.wso2.carbon.identity.api.user.backupcode.common.BackupCodeConstants.ErrorMessage.SERVER_ERROR_INIT_BACKUP_CODES;
 import static org.wso2.carbon.identity.api.user.backupcode.common.BackupCodeConstants.ErrorMessage.SERVER_ERROR_RETRIEVE_BACKUP_CODES;
+import static org.wso2.carbon.identity.api.user.backupcode.common.BackupCodeConstants.ErrorMessage.USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH;
 import static org.wso2.carbon.identity.api.user.backupcode.common.BackupCodeConstants.ErrorMessage.USER_ERROR_UNAUTHORIZED_USER;
 
 /**
@@ -53,9 +55,9 @@ public class BackupCodeService {
      */
     public RemainingBackupCodeResponseDTO getBackupCodes() {
 
-//        if (!isValidAuthenticationType()) {
-//            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
-//        }
+        if (!isValidAuthenticationType()) {
+            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
+        }
         RemainingBackupCodeResponseDTO remainingBackupCodeResponseDTO = new RemainingBackupCodeResponseDTO();
         try {
             User user = getUser();
@@ -75,9 +77,9 @@ public class BackupCodeService {
      */
     public BackupCodeResponseDTO initBackupCodes() {
 
-//        if (!isValidAuthenticationType()) {
-//            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
-//        }
+        if (!isValidAuthenticationType()) {
+            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
+        }
         try {
             BackupCodeResponseDTO backupCodeResponseDTO = new BackupCodeResponseDTO();
             User user = getUser();
@@ -107,10 +109,9 @@ public class BackupCodeService {
      */
     public void deleteBackupCodes() {
 
-//        if (!isValidAuthenticationType()) {
-//            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
-//        }
-
+        if (!isValidAuthenticationType()) {
+            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
+        }
         try {
             User user = getUser();
             BackupCodeAPIHandler.deleteBackupCodes(user.toFullQualifiedUsername());
@@ -129,23 +130,23 @@ public class BackupCodeService {
         return ContextLoader.getUserFromContext();
     }
 
-//    private boolean isValidAuthenticationType() {
-//
-//        /*
-//         * Check whether the request is authenticated with basic auth. Backup code endpoint should not be allowed for
-//         * basic authentication. This approach can be improved by providing a Level of Assurance (LOA) and
-//         * checking that in BackupCodeService.
-//         */
-//        if (Boolean.parseBoolean((String) IdentityUtil.threadLocalProperties.get()
-//                .get(BackupCodeConstants.AUTHENTICATED_WITH_BASIC_AUTH))) {
-//            if (log.isDebugEnabled()) {
-//                log.debug("Not a valid authentication method. " +
-//                        "This method is blocked for the requests with basic authentication.");
-//            }
-//            return false;
-//        }
-//        return true;
-//    }
+    private boolean isValidAuthenticationType() {
+
+        /*
+         * Check whether the request is authenticated with basic auth. Backup code endpoint should not be allowed for
+         * basic authentication. This approach can be improved by providing a Level of Assurance (LOA) and
+         * checking that in BackupCodeService.
+         */
+        if (Boolean.parseBoolean((String) IdentityUtil.threadLocalProperties.get()
+                .get(BackupCodeConstants.AUTHENTICATED_WITH_BASIC_AUTH))) {
+            if (log.isDebugEnabled()) {
+                log.debug("Not a valid authentication method. " +
+                        "This method is blocked for the requests with basic authentication.");
+            }
+            return false;
+        }
+        return true;
+    }
 
     /**
      * Handle User errors.
