@@ -26,4 +26,25 @@
     <Match>
         <Bug pattern="JAXRS_ENDPOINT" />
     </Match>
+    <!--
+       The following exclusions are added as in java 11 and java 17,
+       findbugs shows the bug of unused fields, but the unused fields
+       cannot be removed as they are used inside unused but public classes.
+    -->
+    <Match>
+        <Class name="org.wso2.carbon.identity.rest.api.user.challenge.v1.ApiException" />
+        <Bug pattern="URF_UNREAD_FIELD"/>
+    </Match>
+    <Match>
+        <Class name="org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.ApiException" />
+        <Bug pattern="URF_UNREAD_FIELD"/>
+    </Match>
+    <Match>
+        <Class name="org.wso2.carbon.identity.rest.api.user.session.v1.ApiException" />
+        <Bug pattern="URF_UNREAD_FIELD"/>
+    </Match>
+    <Match>
+        <Class name="org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core.exceptions.InternalServerErrorException" />
+        <Bug pattern="UUF_UNUSED_FIELD"/>
+    </Match>
 </FindBugsFilter>
