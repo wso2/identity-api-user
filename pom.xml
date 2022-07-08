@@ -364,7 +364,7 @@
         <testng.version>6.9.10</testng.version>
         <fido2.version>5.1.17</fido2.version>
         <identity.totp.version>2.1.4</identity.totp.version>
-        <identity.backup.code.version>0.0.1</identity.backup.code.version>
+        <identity.backup.code.version>0.0.4</identity.backup.code.version>
         <maven.checkstyleplugin.excludes>**/gen/**/*</maven.checkstyleplugin.excludes>
         <commons-lang.wso2.version>2.6.0.wso2v1</commons-lang.wso2.version>
         <mavan.findbugsplugin.exclude.file>findbugs-exclude-filter.xml</mavan.findbugsplugin.exclude.file>
