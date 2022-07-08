@@ -19,11 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.backupcode.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.backupcode.v1.core.BackupCodeService;
 
-import org.wso2.carbon.identity.rest.api.user.backupcode.v1.dto.UserRequestDTO;
-
 import javax.ws.rs.core.Response;
-
-import static org.wso2.carbon.identity.api.user.backupcode.common.BackupCodeConstants.ErrorMessage.USER_ERROR_INVALID_ACTION_ID;
 
 /**
  * Implementation of MeApi Service.
@@ -34,28 +30,21 @@ public class MeApiServiceImpl extends MeApiService {
     BackupCodeService backupCodeService;
 
     @Override
-    public Response meBackupCodeDelete() {
+    public Response meBackupCodesDelete() {
 
         backupCodeService.deleteBackupCodes();
         return Response.ok().build();
     }
 
     @Override
-    public Response meBackupCodeGet() {
+    public Response meBackupCodesGet() {
 
         return Response.ok().entity(backupCodeService.getBackupCodes()).build();
     }
 
     @Override
-    public Response meBackupCodePost(UserRequestDTO request) {
+    public Response meBackupCodesPost() {
 
-        switch (request.getAction()) {
-            case INIT:
-                return Response.ok().entity(backupCodeService.initBackupCodes()).build();
-            case REFRESH:
-                return Response.ok().entity(backupCodeService.refreshBackupCodes()).build();
-            default:
-                throw backupCodeService.handleInvalidInput(USER_ERROR_INVALID_ACTION_ID);
-        }
+        return Response.ok().entity(backupCodeService.initBackupCodes()).build();
     }
 }

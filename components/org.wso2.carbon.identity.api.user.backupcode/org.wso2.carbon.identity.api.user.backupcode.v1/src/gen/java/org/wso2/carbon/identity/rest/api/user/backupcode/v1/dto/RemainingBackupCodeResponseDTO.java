@@ -16,46 +16,40 @@
 
 package org.wso2.carbon.identity.rest.api.user.backupcode.v1.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.*;
-import com.fasterxml.jackson.annotation.*;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 /**
- * Backup code user request.
- **/
-@ApiModel(description = "Backup code user request.")
-public class UserRequestDTO {
+ * Remaining backup code response.
+ * **/
+@ApiModel(description = "Remaining backup code response.")
+public class RemainingBackupCodeResponseDTO {
 
-    public enum ActionEnum {
-         INIT,  REFRESH, 
-    };
     @Valid 
-    @NotNull(message = "Property action cannot be null.") 
-    private ActionEnum action = null;
+    private Integer remainingBackupCodesCount = null;
 
     /**
-     * Backup code generation actions.
-     **/
-    @ApiModelProperty(required = true, value = "Backup code generation actions.")
-    @JsonProperty("action")
-    public ActionEnum getAction() {
-        return action;
+    * Remaining backup codes of the authenticated user.
+    **/
+    @ApiModelProperty(value = "Remaining backup codes of the authenticated user.")
+    @JsonProperty("remainingBackupCodesCount")
+    public Integer getRemainingBackupCodesCount() {
+        return remainingBackupCodesCount;
     }
-    public void setAction(ActionEnum action) {
-        this.action = action;
+    public void setRemainingBackupCodesCount(Integer remainingBackupCodesCount) {
+        this.remainingBackupCodesCount = remainingBackupCodesCount;
     }
 
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("class UserRequestDTO {\n");
+        sb.append("class RemainingBackupCodeResponseDTO {\n");
         
-        sb.append("    action: ").append(action).append("\n");
+        sb.append("    remainingBackupCodesCount: ").append(remainingBackupCodesCount).append("\n");
         
         sb.append("}\n");
         return sb.toString();

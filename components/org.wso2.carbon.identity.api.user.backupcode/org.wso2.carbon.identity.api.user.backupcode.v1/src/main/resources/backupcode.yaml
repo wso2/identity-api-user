@@ -4,16 +4,16 @@ swagger: '2.0'
 ######################################################
 info:
   description: |
-    This is the RESTful API for a user to manage backup codes in WSO2 Identity Server. Going forward this will be the API for user portal as well as external parties.
+    This is the RESTful API for a user to manage backup codes in WSO2 Identity Server.
   version: "v1"
   title: "WSO2 Identity Server - Backup Code API Definition"
   contact:
-    name: "WSO2"
-    url: "http://wso2.com/products/identity-server/"
-    email: "architecture@wso2.com"
+    name: "WSO2 Identity Server"
+    url: "https://wso2.com/identity-and-access-management"
+    email: "architecture@wso2.org"
   license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 
 ######################################################
 # The fixed parts of the URLs of the API
@@ -63,42 +63,24 @@ produces:
   - application/json
 paths:
   # Endpoint uses perform backup code operations.
-  /me/backup-code:
+  /me/backup-codes:
     post:
       description: |
-        This API is used to perform following actions.
-        * <b>INIT</b>- Generate Backup Codes for the authenticated user.
-        * <b>REFRESH</b> - Refresh Backup Codes of the authenticated user.
-
+        This API is used to generate backup codes.
+        
         <b>Permission required:</b>
             * none
         <b>Scope required:</b>
             * internal_login
       summary: |
-        Init, Refresh the backup codes
-      parameters:
-        -
-          name: request
-          in: body
-          description:  Actions supported by the API. Actions can be INIT or REFRESH.
-          required: true
-          schema:
-            $ref: '#/definitions/UserRequest'
+        Generate backup codes
       responses:
-        200:
-          description: Backup codes successfully refreshed
         201:
           description: Created
           schema:
             $ref: '#/definitions/BackupCodeResponse'
-        400:
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/Error'
         401:
           description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
         500:
           description: Server Error
           schema:
@@ -108,9 +90,9 @@ paths:
     get:
       tags:
         - me
-      summary: Retrieve backup codes of the authenticated user.
+      summary: Retrieve the count of remaining backup codes of the authenticated user.
       description: |
-        This API is used to retrieve backup codes of the authenticated user.
+        This API is used to retrieve the count of remaining backup codes of the authenticated user.
 
 
         <b>Permission required:</b>
@@ -121,11 +103,9 @@ paths:
         200:
           description: OK
           schema:
-            $ref: '#/definitions/BackupCodeResponse'
+            $ref: '#/definitions/RemainingBackupCodeResponse'
         401:
           description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
         500:
           description: Server Error
           schema:
@@ -143,12 +123,10 @@ paths:
         <b>Scope required:</b><br>
         * internal_login
       responses:
-        200:
-          description: Backup codes deleted successfully
+        204:
+          description: Backup codes deleted successfully.
         401:
           description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
         500:
           description: Server Error
           schema:
@@ -163,6 +141,7 @@ definitions:
     required:
       - code
       - message
+      - traceId
     properties:
       code:
         type: string
@@ -181,19 +160,6 @@ definitions:
         example: "Some Correlation for Error Instance"
         description: Error trace id.
   #-----------------------------------------------------
-  # The User Request object
-  #-----------------------------------------------------
-  UserRequest:
-    type: object
-    required: [action]
-    description: Backup code user request.
-    properties:
-      action:
-        type: string
-        example: INIT
-        enum: [INIT, REFRESH]
-        description: Backup code generation actions.
-  #-----------------------------------------------------
   # Backup code Response object
   #-----------------------------------------------------
   BackupCodeResponse:
@@ -206,6 +172,18 @@ definitions:
         items:
           type: string
           example: 123456
+  #-----------------------------------------------------
+  # Remaining backup code Response object
+  #-----------------------------------------------------
+  RemainingBackupCodeResponse:
+    type: object
+    description: Remaining backup code response.
+    properties:
+      remainingBackupCodesCount:
+        description: Remaining backup codes of the authenticated user.
+        type: integer
+        example: 4
+
 securityDefinitions:
   BasicAuth:
     type: basic

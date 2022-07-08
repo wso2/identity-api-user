@@ -16,18 +16,6 @@
 
 package org.wso2.carbon.identity.rest.api.user.backupcode.v1;
 
-import org.wso2.carbon.identity.rest.api.user.backupcode.v1.*;
-import org.wso2.carbon.identity.rest.api.user.backupcode.v1.dto.*;
-
-import org.wso2.carbon.identity.rest.api.user.backupcode.v1.dto.ErrorDTO;
-import org.wso2.carbon.identity.rest.api.user.backupcode.v1.dto.BackupCodeResponseDTO;
-import org.wso2.carbon.identity.rest.api.user.backupcode.v1.dto.UserRequestDTO;
-
-import java.util.List;
-
-import java.io.InputStream;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-
 import javax.ws.rs.core.Response;
 
 /**
@@ -40,21 +28,20 @@ public abstract class MeApiService {
      *
      * @return API response.
      */
-    public abstract Response meBackupCodeDelete();
+    public abstract Response meBackupCodesDelete();
 
     /**
      * Retrieve backup codes.
      *
      * @return API response.
      */
-    public abstract Response meBackupCodeGet();
+    public abstract Response meBackupCodesGet();
 
     /**
      * Generate/Refresh backup codes.
      *
-     * @param request User request object.
      * @return API response.
      */
-    public abstract Response meBackupCodePost(UserRequestDTO request);
+    public abstract Response meBackupCodesPost();
 
 }
