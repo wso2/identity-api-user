@@ -28,16 +28,15 @@ import org.wso2.carbon.identity.application.authenticator.backupcode.exception.B
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.rest.api.user.backupcode.v1.dto.BackupCodeResponseDTO;
+import org.wso2.carbon.identity.rest.api.user.backupcode.v1.dto.RemainingBackupCodeResponseDTO;
 import org.wso2.carbon.user.api.UserStoreException;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.backupcode.common.BackupCodeConstants.ErrorMessage.SERVER_ERROR_DELETING_BACKUP_CODES;
 import static org.wso2.carbon.identity.api.user.backupcode.common.BackupCodeConstants.ErrorMessage.SERVER_ERROR_INIT_BACKUP_CODES;
-import static org.wso2.carbon.identity.api.user.backupcode.common.BackupCodeConstants.ErrorMessage.SERVER_ERROR_REFRESH_BACKUP_CODES;
 import static org.wso2.carbon.identity.api.user.backupcode.common.BackupCodeConstants.ErrorMessage.SERVER_ERROR_RETRIEVE_BACKUP_CODES;
 import static org.wso2.carbon.identity.api.user.backupcode.common.BackupCodeConstants.ErrorMessage.USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH;
 import static org.wso2.carbon.identity.api.user.backupcode.common.BackupCodeConstants.ErrorMessage.USER_ERROR_UNAUTHORIZED_USER;
@@ -54,23 +53,21 @@ public class BackupCodeService {
      *
      * @return Backup Codes.
      */
-    public BackupCodeResponseDTO getBackupCodes() {
+    public RemainingBackupCodeResponseDTO getBackupCodes() {
 
         if (!isValidAuthenticationType()) {
             throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
         }
-        List<String> backupCodes;
-        User user = getUser();
+        RemainingBackupCodeResponseDTO remainingBackupCodeResponseDTO = new RemainingBackupCodeResponseDTO();
         try {
-            backupCodes = BackupCodeAPIHandler.getBackupCodes(user.toFullQualifiedUsername());
+            User user = getUser();
+            int remainingBackupCodesCount =
+                    BackupCodeAPIHandler.getRemainingBackupCodesCount(user.toFullQualifiedUsername());
+            remainingBackupCodeResponseDTO.setRemainingBackupCodesCount(remainingBackupCodesCount);
         } catch (BackupCodeException e) {
             throw handleException(e, SERVER_ERROR_RETRIEVE_BACKUP_CODES);
         }
-
-        BackupCodeResponseDTO backupCodeResponseDTO = new BackupCodeResponseDTO();
-        backupCodeResponseDTO.setBackupCodes(backupCodes);
-
-        return backupCodeResponseDTO;
+        return remainingBackupCodeResponseDTO;
     }
 
     /**
@@ -83,41 +80,16 @@ public class BackupCodeService {
         if (!isValidAuthenticationType()) {
             throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
         }
-
-        BackupCodeResponseDTO backupCodeResponseDTO = new BackupCodeResponseDTO();
-        User user = getUser();
         try {
-            Map<String, String> claims =
-                    BackupCodeAPIHandler.generateBackupCodes(user.toFullQualifiedUsername(), false);
-            List<String> backupCodes = BackupCodeAPIHandler.updateBackupCodes(claims, user.toFullQualifiedUsername());
+            BackupCodeResponseDTO backupCodeResponseDTO = new BackupCodeResponseDTO();
+            User user = getUser();
+            List<String> backupCodes =
+                    BackupCodeAPIHandler.generateBackupCodes(user.toFullQualifiedUsername());
             backupCodeResponseDTO.setBackupCodes(backupCodes);
             return backupCodeResponseDTO;
         } catch (BackupCodeException e) {
             throw handleException(e, SERVER_ERROR_INIT_BACKUP_CODES);
         }
-    }
-
-    /**
-     * Refreshes backup codes.
-     *
-     * @return Refreshed backup codes.
-     */
-    public BackupCodeResponseDTO refreshBackupCodes() {
-
-        if (!isValidAuthenticationType()) {
-            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
-        }
-
-        BackupCodeResponseDTO backupCodeResponseDTO = new BackupCodeResponseDTO();
-        User user = getUser();
-        try {
-            Map<String, String> claims = BackupCodeAPIHandler.generateBackupCodes(user.toFullQualifiedUsername(), true);
-            List<String> backupCodes = BackupCodeAPIHandler.updateBackupCodes(claims, user.toFullQualifiedUsername());
-            backupCodeResponseDTO.setBackupCodes(backupCodes);
-        } catch (BackupCodeException e) {
-            throw handleException(e, SERVER_ERROR_REFRESH_BACKUP_CODES);
-        }
-        return backupCodeResponseDTO;
     }
 
     /**
@@ -140,9 +112,8 @@ public class BackupCodeService {
         if (!isValidAuthenticationType()) {
             throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
         }
-
-        User user = getUser();
         try {
+            User user = getUser();
             BackupCodeAPIHandler.deleteBackupCodes(user.toFullQualifiedUsername());
         } catch (BackupCodeException ex) {
             throw handleException(ex, SERVER_ERROR_DELETING_BACKUP_CODES);

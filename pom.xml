@@ -28,7 +28,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>identity-api-user</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.7-SNAPSHOT</version>
+    <version>1.2.9-SNAPSHOT</version>
     <name>WSO2 Identity Server - User API Module</name>
     <description>
 
@@ -325,12 +325,13 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.1</version>
+                <version>${maven.compiler.plugin.version}</version>
                 <inherited>true</inherited>
                 <configuration>
                     <encoding>UTF-8</encoding>
                     <source>1.8</source>
                     <target>1.8</target>
+                    <parameters>true</parameters>
                 </configuration>
             </plugin>
             <plugin>
@@ -342,7 +343,7 @@
 
     <properties>
         <!--Maven Plugin Version-->
-        <maven.compiler.plugin.version>2.3.1</maven.compiler.plugin.version>
+        <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
         <maven.bundle.plugin.version>2.4.0</maven.bundle.plugin.version>
         <jackson-jaxrs-json-provider.version>2.13.2</jackson-jaxrs-json-provider.version>
         <jackson-databind.version>2.13.2.2</jackson-databind.version>
@@ -364,7 +365,7 @@
         <testng.version>6.9.10</testng.version>
         <fido2.version>5.1.17</fido2.version>
         <identity.totp.version>2.1.4</identity.totp.version>
-        <identity.backup.code.version>0.0.1</identity.backup.code.version>
+        <identity.backup.code.version>0.0.4</identity.backup.code.version>
         <maven.checkstyleplugin.excludes>**/gen/**/*</maven.checkstyleplugin.excludes>
         <commons-lang.wso2.version>2.6.0.wso2v1</commons-lang.wso2.version>
         <mavan.findbugsplugin.exclude.file>findbugs-exclude-filter.xml</mavan.findbugsplugin.exclude.file>
