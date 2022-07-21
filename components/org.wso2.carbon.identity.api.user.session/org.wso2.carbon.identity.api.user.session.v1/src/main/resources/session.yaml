@@ -218,6 +218,8 @@ paths:
       parameters:
         - $ref: '#/parameters/userIdPathParam'
         - $ref: '#/parameters/sessionIdPathParam'
+      produces:
+        - application/json
       responses:
         200:
           description: Successfully retrieved session information

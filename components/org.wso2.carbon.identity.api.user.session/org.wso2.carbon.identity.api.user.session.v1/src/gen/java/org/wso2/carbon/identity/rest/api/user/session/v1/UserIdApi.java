@@ -44,6 +44,7 @@ public class UserIdApi {
     @Valid
     @GET
     @Path("/sessions/{session-id}")
+    @Produces({"application/json"})
     @ApiOperation(value = "Retrieve a given active session of a given user",
             notes = "Retrieves information related to the active session identified by session-id of a user identified by the user-id. <br> <b>Permission required:</b> <br> * /permission/admin/manage/identity/authentication/session/view <br> <b>Scope required:</b> <br> * internal_session_view",
             response = SessionDTO.class)
