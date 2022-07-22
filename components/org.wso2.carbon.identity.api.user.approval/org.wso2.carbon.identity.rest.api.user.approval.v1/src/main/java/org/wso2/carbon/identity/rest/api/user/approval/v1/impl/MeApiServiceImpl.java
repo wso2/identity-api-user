@@ -16,8 +16,11 @@
 
 package org.wso2.carbon.identity.rest.api.user.approval.v1.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.MeApiService;
+import org.wso2.carbon.identity.rest.api.user.approval.v1.core.UserApprovalService;
 import org.wso2.carbon.identity.workflow.engine.ApprovalEventService;
 import org.wso2.carbon.identity.workflow.engine.dto.StateDTO;
 
@@ -29,25 +32,59 @@ import javax.ws.rs.core.Response;
  */
 public class MeApiServiceImpl extends MeApiService {
 
+    private ApprovalEventService approvalEventService;
+    private UserApprovalService userApprovalService;
+    private static boolean simpleWorkflow;
+    public static final String SIMPLE_WORKFLOW_ENGINE = "Workflow.SimpleWorkflow.Enable";
+    String enableSimpleWorkflowEngine = IdentityUtil.getProperty(SIMPLE_WORKFLOW_ENGINE);
+
+    public MeApiServiceImpl() {
+
+    }
+
     @Autowired
-    ApprovalEventService approvalEventService;
+    public MeApiServiceImpl(ApprovalEventService approvalEventService, UserApprovalService userApprovalService) {
+
+        super();
+        this.approvalEventService = approvalEventService;
+        this.userApprovalService = userApprovalService;
+    }
 
     @Override
     public Response getApprovalTaskInfo(String taskId) {
 
-        return Response.ok().entity(approvalEventService.getTaskData(taskId)).build();
+        if (StringUtils.isNotBlank(enableSimpleWorkflowEngine)) {
+            simpleWorkflow = Boolean.parseBoolean(enableSimpleWorkflowEngine);
+        }
+        if (simpleWorkflow == true) {
+            return Response.ok().entity(approvalEventService.getTaskData(taskId)).build();
+        }
+        return Response.ok().entity(userApprovalService.getTaskData(taskId)).build();
     }
 
     @Override
     public Response listApprovalTasksForLoggedInUser(Integer limit, Integer offset, List<String> status) {
 
-        return Response.ok().entity(approvalEventService.listTasks(limit, offset, status)).build();
+        if (StringUtils.isNotBlank(enableSimpleWorkflowEngine)) {
+            simpleWorkflow = Boolean.parseBoolean(enableSimpleWorkflowEngine);
+        }
+        if (simpleWorkflow == true) {
+            return Response.ok().entity(approvalEventService.listTasks(limit, offset, status)).build();
+        }
+        return Response.ok().entity(userApprovalService.listTasks(limit, offset, status)).build();
     }
 
     @Override
     public Response updateStateOfTask(String taskId, StateDTO nextState) {
 
-        approvalEventService.updateStatus(taskId, nextState );
+        if (StringUtils.isNotBlank(enableSimpleWorkflowEngine)) {
+            simpleWorkflow = Boolean.parseBoolean(enableSimpleWorkflowEngine);
+        }
+        if (simpleWorkflow == true) {
+            approvalEventService.updateStatus(taskId, nextState );
+            return Response.ok().build();
+        }
+        new UserApprovalService().updateStatus(taskId, nextState);
         return Response.ok().build();
     }
 }

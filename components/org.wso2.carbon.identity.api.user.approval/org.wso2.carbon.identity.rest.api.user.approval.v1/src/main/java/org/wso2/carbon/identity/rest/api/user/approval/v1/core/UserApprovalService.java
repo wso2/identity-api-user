@@ -41,9 +41,9 @@ import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.core.functions.TTaskSimpleQueryResultRowToExternal;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.core.functions.TaskModelToExternal;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.core.model.TaskModel;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskDataDTO;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskSummaryDTO;
+import org.wso2.carbon.identity.workflow.engine.dto.StateDTO;
 
 import java.util.Arrays;
 import java.util.List;
