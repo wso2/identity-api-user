@@ -34,9 +34,8 @@ public class MeApiServiceImpl extends MeApiService {
 
     private ApprovalEventService approvalEventService;
     private UserApprovalService userApprovalService;
-    private static boolean simpleWorkflow;
     public static final String SIMPLE_WORKFLOW_ENGINE = "Workflow.SimpleWorkflow.Enable";
-    String enableSimpleWorkflowEngine = IdentityUtil.getProperty(SIMPLE_WORKFLOW_ENGINE);
+    private static boolean enableSimpleWorkflowEngine = Boolean.parseBoolean(IdentityUtil.getProperty(SIMPLE_WORKFLOW_ENGINE));
 
     public MeApiServiceImpl() {
 
@@ -53,10 +52,7 @@ public class MeApiServiceImpl extends MeApiService {
     @Override
     public Response getApprovalTaskInfo(String taskId) {
 
-        if (StringUtils.isNotBlank(enableSimpleWorkflowEngine)) {
-            simpleWorkflow = Boolean.parseBoolean(enableSimpleWorkflowEngine);
-        }
-        if (simpleWorkflow == true) {
+        if (enableSimpleWorkflowEngine) {
             return Response.ok().entity(approvalEventService.getTaskData(taskId)).build();
         }
         return Response.ok().entity(userApprovalService.getTaskData(taskId)).build();
@@ -65,10 +61,7 @@ public class MeApiServiceImpl extends MeApiService {
     @Override
     public Response listApprovalTasksForLoggedInUser(Integer limit, Integer offset, List<String> status) {
 
-        if (StringUtils.isNotBlank(enableSimpleWorkflowEngine)) {
-            simpleWorkflow = Boolean.parseBoolean(enableSimpleWorkflowEngine);
-        }
-        if (simpleWorkflow == true) {
+        if (enableSimpleWorkflowEngine) {
             return Response.ok().entity(approvalEventService.listTasks(limit, offset, status)).build();
         }
         return Response.ok().entity(userApprovalService.listTasks(limit, offset, status)).build();
@@ -77,10 +70,7 @@ public class MeApiServiceImpl extends MeApiService {
     @Override
     public Response updateStateOfTask(String taskId, StateDTO nextState) {
 
-        if (StringUtils.isNotBlank(enableSimpleWorkflowEngine)) {
-            simpleWorkflow = Boolean.parseBoolean(enableSimpleWorkflowEngine);
-        }
-        if (simpleWorkflow == true) {
+        if (enableSimpleWorkflowEngine) {
             approvalEventService.updateStatus(taskId, nextState );
             return Response.ok().build();
         }
