@@ -23,10 +23,10 @@
         <property name="approvalEventService" ref="approvalEventServiceFactoryBean"/>
     </bean>
     <bean id="approvalEventServiceFactoryBean"
-          class="org.wso2.carbon.identity.api.user.approval.common.factory.OSGIServiceFactory"/>
-    <bean id="UserApprovalServiceHolderBean1" class="org.wso2.carbon.identity.api.user.approval.common.UserApprovalServiceHolder">
+          class="org.wso2.carbon.identity.api.user.approval.common.factory.OSGISimpleWorkflowEngineService"/>
+    <bean id="UserApprovalServiceBPELHolderBean" class="org.wso2.carbon.identity.api.user.approval.common.UserApprovalServiceHolder">
         <property name="taskOperationService" ref="taskOperationServiceFactoryBean"/>
     </bean>
     <bean id="taskOperationServiceFactoryBean"
-          class="org.wso2.carbon.identity.api.user.approval.common.factory.OSGIBpelService"/>
+          class="org.wso2.carbon.identity.api.user.approval.common.factory.OSGIServiceFactory"/>
 </beans>

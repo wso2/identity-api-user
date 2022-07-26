@@ -16,8 +16,8 @@
 
 package org.wso2.carbon.identity.rest.api.user.approval.v1.impl;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.core.UserApprovalService;
@@ -34,8 +34,8 @@ public class MeApiServiceImpl extends MeApiService {
 
     private ApprovalEventService approvalEventService;
     private UserApprovalService userApprovalService;
-    public static final String SIMPLE_WORKFLOW_ENGINE = "Workflow.SimpleWorkflow.Enable";
-    private static boolean enableSimpleWorkflowEngine = Boolean.parseBoolean(IdentityUtil.getProperty(SIMPLE_WORKFLOW_ENGINE));
+    private static boolean enableSimpleWorkflowEngine = Boolean.parseBoolean(IdentityUtil.getProperty(
+            ApprovalConstant.SIMPLE_WORKFLOW_ENGINE));
 
     public MeApiServiceImpl() {
 

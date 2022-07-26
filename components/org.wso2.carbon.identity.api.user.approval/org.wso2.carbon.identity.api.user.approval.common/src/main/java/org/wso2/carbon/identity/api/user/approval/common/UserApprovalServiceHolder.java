@@ -27,14 +27,24 @@ public class UserApprovalServiceHolder {
     private static TaskOperationService taskOperationService;
     private static ApprovalEventService approvalEventService;
 
+    /**
+     * Set TaskOperationService as OSGI service.
+     *
+     * @param taskOperationService taskOperationService.
+     */
     public static void setTaskOperationService(TaskOperationService taskOperationService) {
 
         UserApprovalServiceHolder.taskOperationService = taskOperationService;
     }
 
-    public static void setApprovalEventService(ApprovalEventService approvalEventService1) {
+    /**
+     * Set ApprovalEventService as OSGI service.
+     *
+     * @param approvalEventService approvalEventService.
+     */
+    public static void setApprovalEventService(ApprovalEventService approvalEventService) {
 
-        UserApprovalServiceHolder.approvalEventService = approvalEventService1;
+        UserApprovalServiceHolder.approvalEventService = approvalEventService;
     }
 
     /**
@@ -43,9 +53,15 @@ public class UserApprovalServiceHolder {
      * @return TaskOperationService
      */
     public static TaskOperationService getTaskOperationService() {
+
         return taskOperationService;
     }
 
+    /**
+     * Get ApprovalEventService osgi service.
+     *
+     * @return ApprovalEventService
+     */
     public static ApprovalEventService getApprovalEventService() {
 
         return approvalEventService;

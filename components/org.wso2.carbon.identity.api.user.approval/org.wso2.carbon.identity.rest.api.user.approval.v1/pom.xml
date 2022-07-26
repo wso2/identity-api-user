@@ -173,7 +173,6 @@
         <dependency>
             <groupId>org.wso2.carbon.identity.workflow.engine</groupId>
             <artifactId>workflow.engine</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

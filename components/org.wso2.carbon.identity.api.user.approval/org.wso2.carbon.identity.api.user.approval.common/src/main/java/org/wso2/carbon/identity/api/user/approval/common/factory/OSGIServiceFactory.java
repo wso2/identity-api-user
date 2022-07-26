@@ -18,15 +18,15 @@ package org.wso2.carbon.identity.api.user.approval.common.factory;
 
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.identity.workflow.engine.ApprovalEventService;
+import org.wso2.carbon.humantask.core.TaskOperationService;
 
 /**
  * Factory Beans serves as a factory for creating other beans within the IOC container. This factory bean is used to
  * instantiate the TaskOperationService type of object inside the container.
  */
-public class OSGIServiceFactory extends AbstractFactoryBean<ApprovalEventService> {
+public class OSGIServiceFactory extends AbstractFactoryBean<TaskOperationService> {
 
-    private ApprovalEventService approvalEventService;
+    private TaskOperationService taskOperationService;
 
     @Override
     public Class<?> getObjectType() {
@@ -34,17 +34,17 @@ public class OSGIServiceFactory extends AbstractFactoryBean<ApprovalEventService
     }
 
     @Override
-    protected ApprovalEventService createInstance() throws Exception {
+    protected TaskOperationService createInstance() throws RuntimeException {
 
-        if (this.approvalEventService == null) {
-            ApprovalEventService approvalEventService1 = (ApprovalEventService) PrivilegedCarbonContext.
-                    getThreadLocalCarbonContext().getOSGiService(ApprovalEventService.class, null);
-            if (approvalEventService1 != null) {
-                this.approvalEventService = approvalEventService1;
+        if (this.taskOperationService == null) {
+            TaskOperationService taskOperationService = (TaskOperationService) PrivilegedCarbonContext.
+                    getThreadLocalCarbonContext().getOSGiService(TaskOperationService.class, null);
+            if (taskOperationService != null) {
+                this.taskOperationService = taskOperationService;
             } else {
-                throw new Exception("Unable to retrieve ApprovalEvent service.");
+                throw new RuntimeException("Unable to retrieve TaskOperationService service.");
             }
         }
-        return this.approvalEventService;
+        return this.taskOperationService;
     }
 }
