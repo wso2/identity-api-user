@@ -314,7 +314,7 @@
             <dependency>
                 <groupId>org.wso2.carbon.identity.workflow.engine</groupId>
                 <artifactId>workflow.engine</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>${workflow.engine.version}</version>
             </dependency>
 
             <!-- Kernel Dependencies-->
@@ -445,6 +445,7 @@
         <maven.checkstyleplugin.excludes>**/gen/**/*</maven.checkstyleplugin.excludes>
         <commons-lang.wso2.version>2.6.0.wso2v1</commons-lang.wso2.version>
         <mavan.findbugsplugin.exclude.file>findbugs-exclude-filter.xml</mavan.findbugsplugin.exclude.file>
+        <workflow.engine.version>1.0-SNAPSHOT</workflow.engine.version>
     </properties>
 
     <modules>
