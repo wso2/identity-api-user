@@ -16,8 +16,6 @@
 
 package org.wso2.carbon.identity.rest.api.user.approval.v1.impl;
 
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
@@ -26,34 +24,33 @@ import org.wso2.carbon.identity.rest.api.user.approval.v1.core.UserApprovalServi
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskSummaryDTO;
 import org.wso2.carbon.identity.workflow.engine.SimpleWorkflowEngineApprovalService;
 import org.wso2.carbon.identity.workflow.engine.dto.StateDTO;
-import org.wso2.carbon.identity.workflow.engine.dto.TaskDataDTO;
 import org.wso2.carbon.identity.workflow.engine.internal.dao.WorkflowEventRequestDAO;
 import org.wso2.carbon.identity.workflow.engine.internal.dao.impl.WorkflowEventRequestDAOImpl;
-import org.wso2.carbon.identity.workflow.mgt.bean.Workflow;
-import org.wso2.carbon.identity.workflow.mgt.dao.WorkflowDAO;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.ws.rs.core.Response;
 
 /**
- * API service implementation of a logged in user's approval operations
+ * API service implementation of a logged-in user's approval operations
  */
 public class MeApiServiceImpl extends MeApiService {
 
     private SimpleWorkflowEngineApprovalService simpleWorkflowEngineApprovalService;
     private UserApprovalService userApprovalService;
-    private static boolean enableApprovalsFromSimpleWorkflowEngine = Boolean.parseBoolean(IdentityUtil.getProperty(ApprovalConstant.SIMPLE_WORKFLOW_ENGINE_APPROVALS));
-    private static boolean enableApprovalsFromBPEL = Boolean.parseBoolean(IdentityUtil.getProperty(ApprovalConstant.BPEL_ENGINE_APPROVALS));
+    private static boolean enableApprovalsFromSimpleWorkflowEngine = Boolean.parseBoolean(IdentityUtil.getProperty(
+            ApprovalConstant.SIMPLE_WORKFLOW_ENGINE_APPROVALS));
+    private static boolean enableApprovalsFromBPEL = Boolean.parseBoolean(IdentityUtil.getProperty(
+            ApprovalConstant.BPEL_ENGINE_APPROVALS));
 
     public MeApiServiceImpl() {
 
     }
 
     @Autowired
-    public MeApiServiceImpl(SimpleWorkflowEngineApprovalService simpleWorkflowEngineApprovalService, UserApprovalService userApprovalService) {
+    public MeApiServiceImpl(SimpleWorkflowEngineApprovalService simpleWorkflowEngineApprovalService,
+                            UserApprovalService userApprovalService) {
 
         super();
         this.simpleWorkflowEngineApprovalService = simpleWorkflowEngineApprovalService;
