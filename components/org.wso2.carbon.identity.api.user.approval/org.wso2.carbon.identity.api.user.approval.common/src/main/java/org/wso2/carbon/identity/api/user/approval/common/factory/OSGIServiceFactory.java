@@ -34,7 +34,7 @@ public class OSGIServiceFactory extends AbstractFactoryBean<TaskOperationService
     }
 
     @Override
-    protected TaskOperationService createInstance() throws Exception {
+    protected TaskOperationService createInstance() throws RuntimeException {
 
         if (this.taskOperationService == null) {
             TaskOperationService taskOperationService = (TaskOperationService) PrivilegedCarbonContext.
@@ -42,10 +42,9 @@ public class OSGIServiceFactory extends AbstractFactoryBean<TaskOperationService
             if (taskOperationService != null) {
                 this.taskOperationService = taskOperationService;
             } else {
-                throw new Exception("Unable to retrieve TaskOperationService service.");
+                throw new RuntimeException("Unable to retrieve TaskOperationService service.");
             }
         }
         return this.taskOperationService;
     }
-
 }

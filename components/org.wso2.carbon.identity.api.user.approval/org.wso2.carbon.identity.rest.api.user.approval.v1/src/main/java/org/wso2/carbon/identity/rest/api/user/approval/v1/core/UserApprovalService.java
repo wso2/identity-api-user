@@ -41,9 +41,9 @@ import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.core.functions.TTaskSimpleQueryResultRowToExternal;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.core.functions.TaskModelToExternal;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.core.model.TaskModel;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskDataDTO;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskSummaryDTO;
+import org.wso2.carbon.identity.workflow.engine.dto.StateDTO;
 
 import java.util.Arrays;
 import java.util.List;
@@ -60,8 +60,6 @@ import static org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant
 import static org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant.ErrorMessage.USER_ERROR_NON_EXISTING_TASK_ID;
 import static org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant.ErrorMessage.USER_ERROR_NOT_ACCEPTABLE_INPUT_FOR_NEXT_STATE;
 import static org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant.ErrorMessage.USER_ERROR_UNAUTHORIZED_USER;
-import static org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO.ActionEnum.APPROVE;
-import static org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO.ActionEnum.REJECT;
 
 /**
  * Call internal osgi services to perform user's approval task related operations
@@ -113,6 +111,7 @@ public class UserApprovalService {
 
     /**
      * Get details of a task identified by the taskId
+     *
      * @param taskId
      * @return
      */

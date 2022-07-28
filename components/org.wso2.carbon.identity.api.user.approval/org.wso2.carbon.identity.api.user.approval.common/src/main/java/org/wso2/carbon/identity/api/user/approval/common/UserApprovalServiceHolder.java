@@ -17,6 +17,7 @@
 package org.wso2.carbon.identity.api.user.approval.common;
 
 import org.wso2.carbon.humantask.core.TaskOperationService;
+import org.wso2.carbon.identity.workflow.engine.SimpleWorkflowEngineApprovalService;
 
 /**
  * Service holder class for user approvals.
@@ -24,9 +25,26 @@ import org.wso2.carbon.humantask.core.TaskOperationService;
 public class UserApprovalServiceHolder {
 
     private static TaskOperationService taskOperationService;
+    private static SimpleWorkflowEngineApprovalService simpleWorkflowEngineApprovalService;
 
+    /**
+     * Set TaskOperationService as OSGI service.
+     *
+     * @param taskOperationService taskOperationService.
+     */
     public static void setTaskOperationService(TaskOperationService taskOperationService) {
+
         UserApprovalServiceHolder.taskOperationService = taskOperationService;
+    }
+
+    /**
+     * Set ApprovalEventService as OSGI service.
+     *
+     * @param simpleWorkflowEngineApprovalService approvalEventService.
+     */
+    public static void setSimpleWorkflowEngineApprovalService(SimpleWorkflowEngineApprovalService simpleWorkflowEngineApprovalService) {
+
+        UserApprovalServiceHolder.simpleWorkflowEngineApprovalService = simpleWorkflowEngineApprovalService;
     }
 
     /**
@@ -35,7 +53,19 @@ public class UserApprovalServiceHolder {
      * @return TaskOperationService
      */
     public static TaskOperationService getTaskOperationService() {
+
         return taskOperationService;
     }
+
+    /**
+     * Get ApprovalEventService osgi service.
+     *
+     * @return ApprovalEventService
+     */
+    public static SimpleWorkflowEngineApprovalService getSimpleWorkflowEngineApprovalService() {
+
+        return simpleWorkflowEngineApprovalService;
+    }
+
 }
 
