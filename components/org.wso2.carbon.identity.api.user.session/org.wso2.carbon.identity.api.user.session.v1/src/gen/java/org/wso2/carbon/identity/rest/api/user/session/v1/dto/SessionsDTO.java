@@ -16,44 +16,45 @@
 
 package org.wso2.carbon.identity.rest.api.user.session.v1.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionDTO;
-import io.swagger.annotations.*;
-import com.fasterxml.jackson.annotation.*;
-
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 @ApiModel(description = "")
 public class SessionsDTO {
 
-    @Valid 
+    @Valid
     private String userId = null;
 
-    @Valid 
+    @Valid
     private List<SessionDTO> sessions = new ArrayList<SessionDTO>();
 
     /**
-    **/
+     *
+     **/
     @ApiModelProperty(value = "")
     @JsonProperty("userId")
     public String getUserId() {
         return userId;
     }
+
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
     /**
-    * List of active sessions.
-    **/
+     * List of active sessions.
+     **/
     @ApiModelProperty(value = "List of active sessions.")
     @JsonProperty("sessions")
     public List<SessionDTO> getSessions() {
         return sessions;
     }
+
     public void setSessions(List<SessionDTO> sessions) {
         this.sessions = sessions;
     }
@@ -63,10 +64,10 @@ public class SessionsDTO {
 
         StringBuilder sb = new StringBuilder();
         sb.append("class SessionsDTO {\n");
-        
+
         sb.append("    userId: ").append(userId).append("\n");
         sb.append("    sessions: ").append(sessions).append("\n");
-        
+
         sb.append("}\n");
         return sb.toString();
     }

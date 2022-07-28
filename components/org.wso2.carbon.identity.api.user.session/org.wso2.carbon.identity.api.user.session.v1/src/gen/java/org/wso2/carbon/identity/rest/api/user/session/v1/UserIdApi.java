@@ -16,99 +16,102 @@
 
 package org.wso2.carbon.identity.rest.api.user.session.v1;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.wso2.carbon.identity.rest.api.user.session.v1.dto.*;
-import org.wso2.carbon.identity.rest.api.user.session.v1.UserIdApiService;
-import org.wso2.carbon.identity.rest.api.user.session.v1.factories.UserIdApiServiceFactory;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionDTO;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionsDTO;
-import org.wso2.carbon.identity.rest.api.user.session.v1.dto.ErrorDTO;
-
-import java.util.List;
-
-import java.io.InputStream;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 
 import javax.validation.Valid;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.*;
 
 @Path("/{user-id}")
-@io.swagger.annotations.Api(value = "/{user-id}", description = "the {user-id} API")
-public class UserIdApi  {
+@Api(value = "/{user-id}", description = "the {user-id} API")
+public class UserIdApi {
 
     @Autowired
     private UserIdApiService delegate;
 
     @Valid
     @GET
+    @Path("/sessions/{session-id}")
+    @Produces({"application/json"})
+    @ApiOperation(value = "Retrieve a given active session of a given user",
+            notes = "Retrieves information related to the active session identified by session-id of a user identified by the user-id. <br> <b>Permission required:</b> <br> * /permission/admin/manage/identity/authentication/session/view <br> <b>Scope required:</b> <br> * internal_session_view",
+            response = SessionDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved session information"),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 403, message = "Resource Forbidden"),
+            @ApiResponse(code = 404, message = "Resource Not Found"),
+            @ApiResponse(code = 500, message = "Internal Server Error")})
+    public Response getSessionBySessionId(@ApiParam(value = "ID of the user.", required = true) @PathParam("user-id") String userId,
+                                          @ApiParam(value = "ID of the session.", required = true) @PathParam("session-id") String sessionId) {
+
+        return delegate.getSessionBySessionId(userId, sessionId);
+    }
+
+    @Valid
+    @GET
     @Path("/sessions")
-    @Produces({ "application/json" })
-    @io.swagger.annotations.ApiOperation(value = "Get active sessions",
+    @Produces({"application/json"})
+    @ApiOperation(value = "Retrieve active sessions of a given user",
             notes = "Retrieves information related to the active sessions of a user identified by the user-id. <br> <b>Permission required:</b> <br> * /permission/admin/manage/identity/authentication/session/view <br> <b>Scope required:</b> <br> * internal_session_view",
             response = SessionsDTO.class)
-    @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "Successfully retrieved session information."),
-        
-        @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid input request"),
-        
-        @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
-        
-        @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
-        
-        @io.swagger.annotations.ApiResponse(code = 404, message = "Resource Not Found"),
-        
-        @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved session information."),
+            @ApiResponse(code = 400, message = "Invalid input request"),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 403, message = "Resource Forbidden"),
+            @ApiResponse(code = 404, message = "Resource Not Found"),
+            @ApiResponse(code = 500, message = "Internal Server Error")})
+    public Response getSessionsByUserId(@ApiParam(value = "ID of the user.", required = true) @PathParam("user-id") String userId,
+                                        @ApiParam(value = "Maximum number of records to return.\n_This parameter is not supported yet._\n") @QueryParam("limit") Integer limit,
+                                        @ApiParam(value = "Number of records to skip for pagination.\n_This parameter is not supported yet._\n") @QueryParam("offset") Integer offset,
+                                        @ApiParam(value = "Condition to filter the retrieval of records.\n_This parameter is not supported yet._\n") @QueryParam("filter") String filter,
+                                        @ApiParam(value = "Define the order in which the retrieved records should be sorted.\n_This parameter is not supported yet._\n") @QueryParam("sort") String sort) {
 
-    public Response getSessionsByUserId(@ApiParam(value = "ID of the user.",required=true ) @PathParam("user-id")  String userId,
-    @ApiParam(value = "Maximum number of records to return.\n_This parameter is not supported yet._\n") @QueryParam("limit")  Integer limit,
-    @ApiParam(value = "Number of records to skip for pagination.\n_This parameter is not supported yet._\n") @QueryParam("offset")  Integer offset,
-    @ApiParam(value = "Condition to filter the retrival of records.\n_This parameter is not supported yet._\n") @QueryParam("filter")  String filter,
-    @ApiParam(value = "Define the order in which the retrieved records should be sorted.\n_This parameter is not supported yet._\n") @QueryParam("sort")  String sort) {
-
-        return delegate.getSessionsByUserId(userId,limit,offset,filter,sort);
+        return delegate.getSessionsByUserId(userId, limit, offset, filter, sort);
     }
 
     @Valid
     @DELETE
     @Path("/sessions/{session-id}")
-    @io.swagger.annotations.ApiOperation(value = "Terminate a session",
+    @ApiOperation(value = "Terminate a given session of a given user",
             notes = "Terminate a specific session of a user by the session-id. <br> <b>Permission required:</b> <br> * /permission/admin/manage/identity/authentication/session/delete <br> <b>Scope required:</b> <br> * internal_session_delete",
             response = void.class)
-    @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 204, message = "No Content"),
-        
-        @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid input request"),
-        
-        @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
-        
-        @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "No Content"),
+            @ApiResponse(code = 400, message = "Invalid input request"),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 500, message = "Internal Server Error")})
+    public Response terminateSessionBySessionId(@ApiParam(value = "ID of the user.", required = true) @PathParam("user-id") String userId,
+                                                @ApiParam(value = "ID of the session.", required = true) @PathParam("session-id") String sessionId) {
 
-    public Response terminateSessionBySessionId(@ApiParam(value = "ID of the user.",required=true ) @PathParam("user-id")  String userId,
-    @ApiParam(value = "ID of the session.",required=true ) @PathParam("session-id")  String sessionId) {
-
-        return delegate.terminateSessionBySessionId(userId,sessionId);
+        return delegate.terminateSessionBySessionId(userId, sessionId);
     }
 
     @Valid
     @DELETE
     @Path("/sessions")
-    @io.swagger.annotations.ApiOperation(value = "Terminate all sessions",
+    @ApiOperation(value = "Terminate all sessions of a given user",
             notes = "Delete all the sessions of a user identified by the user-id. <br> <b>Permission required:</b> <br> * /permission/admin/manage/identity/authentication/session/delete <br> <b>Scope required:</b> <br> * internal_session_delete",
             response = void.class)
-    @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 204, message = "No Content"),
-        
-        @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid input request"),
-        
-        @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
-        
-        @io.swagger.annotations.ApiResponse(code = 500, message = "Internal Server Error") })
-
-    public Response terminateSessionsByUserId(@ApiParam(value = "ID of the user.",required=true ) @PathParam("user-id")  String userId) {
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "No Content"),
+            @ApiResponse(code = 400, message = "Invalid input request"),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 500, message = "Internal Server Error")})
+    public Response terminateSessionsByUserId(@ApiParam(value = "ID of the user.", required = true) @PathParam("user-id") String userId) {
 
         return delegate.terminateSessionsByUserId(userId);
     }

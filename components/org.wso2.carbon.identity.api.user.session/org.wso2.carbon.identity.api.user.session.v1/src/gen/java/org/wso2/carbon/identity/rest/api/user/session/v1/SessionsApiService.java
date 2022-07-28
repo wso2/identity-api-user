@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2022, WSO2 LLC. (http://www.wso2.com).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,8 @@ package org.wso2.carbon.identity.rest.api.user.session.v1;
 
 import javax.ws.rs.core.Response;
 
-public abstract class MeApiService {
+public abstract class SessionsApiService {
 
-    public abstract Response getSessionsOfLoggedInUser(Integer limit, Integer offset, String filter, String sort);
-
-    public abstract Response terminateSessionByLoggedInUser(String sessionId);
-
-    public abstract Response terminateSessionsByLoggedInUser();
+    public abstract Response getSessions(String filter, Integer limit, Long since, Long until);
 
 }
