@@ -16,15 +16,26 @@
 
 package org.wso2.carbon.identity.rest.api.user.approval.v1.impl;
 
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.core.UserApprovalService;
-import org.wso2.carbon.identity.workflow.engine.ApprovalEventService;
+import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskSummaryDTO;
+import org.wso2.carbon.identity.workflow.engine.SimpleWorkflowEngineApprovalService;
 import org.wso2.carbon.identity.workflow.engine.dto.StateDTO;
+import org.wso2.carbon.identity.workflow.engine.dto.TaskDataDTO;
+import org.wso2.carbon.identity.workflow.engine.internal.dao.WorkflowEventRequestDAO;
+import org.wso2.carbon.identity.workflow.engine.internal.dao.impl.WorkflowEventRequestDAOImpl;
+import org.wso2.carbon.identity.workflow.mgt.bean.Workflow;
+import org.wso2.carbon.identity.workflow.mgt.dao.WorkflowDAO;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.ws.rs.core.Response;
 
 /**
@@ -32,28 +43,30 @@ import javax.ws.rs.core.Response;
  */
 public class MeApiServiceImpl extends MeApiService {
 
-    private ApprovalEventService approvalEventService;
+    private SimpleWorkflowEngineApprovalService simpleWorkflowEngineApprovalService;
     private UserApprovalService userApprovalService;
-    private static boolean enableSimpleWorkflowEngine = Boolean.parseBoolean(IdentityUtil.getProperty(
-            ApprovalConstant.SIMPLE_WORKFLOW_ENGINE));
+    private static boolean enableApprovalsFromSimpleWorkflowEngine = Boolean.parseBoolean(IdentityUtil.getProperty(ApprovalConstant.SIMPLE_WORKFLOW_ENGINE_APPROVALS));
+    private static boolean enableApprovalsFromBPEL = Boolean.parseBoolean(IdentityUtil.getProperty(ApprovalConstant.BPEL_ENGINE_APPROVALS));
 
     public MeApiServiceImpl() {
 
     }
 
     @Autowired
-    public MeApiServiceImpl(ApprovalEventService approvalEventService, UserApprovalService userApprovalService) {
+    public MeApiServiceImpl(SimpleWorkflowEngineApprovalService simpleWorkflowEngineApprovalService, UserApprovalService userApprovalService) {
 
         super();
-        this.approvalEventService = approvalEventService;
+        this.simpleWorkflowEngineApprovalService = simpleWorkflowEngineApprovalService;
         this.userApprovalService = userApprovalService;
     }
 
     @Override
     public Response getApprovalTaskInfo(String taskId) {
 
-        if (enableSimpleWorkflowEngine) {
-            return Response.ok().entity(approvalEventService.getTaskData(taskId)).build();
+        WorkflowEventRequestDAO workflowEventRequestDAO = new WorkflowEventRequestDAOImpl();
+        String taskDataDTO = workflowEventRequestDAO.getTask(taskId);
+        if (taskDataDTO != null) {
+            return Response.ok().entity(simpleWorkflowEngineApprovalService.getTaskData(taskId)).build();
         }
         return Response.ok().entity(userApprovalService.getTaskData(taskId)).build();
     }
@@ -61,17 +74,26 @@ public class MeApiServiceImpl extends MeApiService {
     @Override
     public Response listApprovalTasksForLoggedInUser(Integer limit, Integer offset, List<String> status) {
 
-        if (enableSimpleWorkflowEngine) {
-            return Response.ok().entity(approvalEventService.listTasks(limit, offset, status)).build();
+        if (enableApprovalsFromSimpleWorkflowEngine && !enableApprovalsFromBPEL) {
+            return Response.ok().entity(simpleWorkflowEngineApprovalService.listTasks(limit, offset, status)).build();
+        } else if (enableApprovalsFromBPEL && !enableApprovalsFromSimpleWorkflowEngine) {
+            return Response.ok().entity(userApprovalService.listTasks(limit, offset, status)).build();
         }
-        return Response.ok().entity(userApprovalService.listTasks(limit, offset, status)).build();
+        List<TaskSummaryDTO> BPELApprovalList = userApprovalService.listTasks(limit, offset, status);
+        List<org.wso2.carbon.identity.workflow.engine.dto.TaskSummaryDTO> simpleWorkflowEngineApprovalList =
+                simpleWorkflowEngineApprovalService.listTasks(limit, offset, status);
+        List<Object> allPendingList = Stream.concat(BPELApprovalList.stream(), simpleWorkflowEngineApprovalList.
+                stream()).collect(Collectors.toList());
+        return Response.ok().entity(allPendingList).build();
     }
 
     @Override
     public Response updateStateOfTask(String taskId, StateDTO nextState) {
 
-        if (enableSimpleWorkflowEngine) {
-            approvalEventService.updateStatus(taskId, nextState );
+        WorkflowEventRequestDAO workflowEventRequestDAO = new WorkflowEventRequestDAOImpl();
+        String taskDataDTO = workflowEventRequestDAO.getTask(taskId);
+        if (taskDataDTO != null) {
+            simpleWorkflowEngineApprovalService.updateStatus(taskId, nextState);
             return Response.ok().build();
         }
         new UserApprovalService().updateStatus(taskId, nextState);

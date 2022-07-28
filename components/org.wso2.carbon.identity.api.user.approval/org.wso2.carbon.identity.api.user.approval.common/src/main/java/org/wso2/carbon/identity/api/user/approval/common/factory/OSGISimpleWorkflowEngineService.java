@@ -20,15 +20,15 @@ package org.wso2.carbon.identity.api.user.approval.common.factory;
 
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.identity.workflow.engine.ApprovalEventService;
+import org.wso2.carbon.identity.workflow.engine.SimpleWorkflowEngineApprovalService;
 
 /**
  * Factory Beans serves as a factory for creating other beans within the IOC container. This factory bean is used to
  * instantiate the ApprovalEventService type of object inside the container.
  */
-public class OSGISimpleWorkflowEngineService extends AbstractFactoryBean<ApprovalEventService> {
+public class OSGISimpleWorkflowEngineService extends AbstractFactoryBean<SimpleWorkflowEngineApprovalService> {
 
-    private ApprovalEventService approvalEventService;
+    private SimpleWorkflowEngineApprovalService simpleWorkflowEngineApprovalService;
 
     @Override
     public Class<?> getObjectType() {
@@ -37,17 +37,17 @@ public class OSGISimpleWorkflowEngineService extends AbstractFactoryBean<Approva
     }
 
     @Override
-    protected ApprovalEventService createInstance() throws RuntimeException {
+    protected SimpleWorkflowEngineApprovalService createInstance() throws RuntimeException {
 
-        if (this.approvalEventService == null) {
-            ApprovalEventService approvalEventService = (ApprovalEventService) PrivilegedCarbonContext.
-                    getThreadLocalCarbonContext().getOSGiService(ApprovalEventService.class, null);
-            if (approvalEventService != null) {
-                this.approvalEventService = approvalEventService;
+        if (this.simpleWorkflowEngineApprovalService == null) {
+            SimpleWorkflowEngineApprovalService simpleWorkflowEngineApprovalService = (SimpleWorkflowEngineApprovalService) PrivilegedCarbonContext.
+                    getThreadLocalCarbonContext().getOSGiService(SimpleWorkflowEngineApprovalService.class, null);
+            if (simpleWorkflowEngineApprovalService != null) {
+                this.simpleWorkflowEngineApprovalService = simpleWorkflowEngineApprovalService;
             } else {
                 throw new RuntimeException("Unable to retrieve ApprovalEvent service.");
             }
         }
-        return this.approvalEventService;
+        return this.simpleWorkflowEngineApprovalService;
     }
 }

@@ -25,7 +25,8 @@ public class ApprovalConstant {
     public static final String USER_APPROVAL_TASK_PATH_COMPONENT = "/%s/approval-tasks";
     public static final String V1_API_PATH_COMPONENT = "/v1";
     public static final String ME_CONTEXT = "me";
-    public static final String SIMPLE_WORKFLOW_ENGINE = "Workflow.SimpleWorkflow.Enable";
+    public static final String SIMPLE_WORKFLOW_ENGINE_APPROVALS = "WorkflowEngines.SimpleWorkflowEngine.AllowApprovals";
+    public static final String BPEL_ENGINE_APPROVALS = "WorkflowEngines.BPELEngine.AllowApprovals";
 
     /**
      * Enum for user's pending approval related errors in the format of
