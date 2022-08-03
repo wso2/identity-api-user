@@ -66,6 +66,7 @@ paths:
             application/json:
               {
                 "userId": "81fae417-13f6-4db6-9501-7ce128608cb5",
+                "idpName": "LOCAL",
                 "sessions": [
                   {
                     "applications": [
@@ -289,6 +290,7 @@ paths:
                   {
                     "session": {
                       "userId": "00000001",
+                      "idpName": "LOCAL",
                       "applications": [
                         {
                           "id": "298c5fd8-01ac-4ada-bc10-1ce37f32140b",
@@ -313,6 +315,7 @@ paths:
                   {
                     "session": {
                       "userId": "00000001",
+                      "idpName": "LOCAL",
                       "applications": [
                         {
                           "id": "298c5fd8-01ac-4ada-bc10-1ce37f32140b",
@@ -405,6 +408,10 @@ definitions:
         type: string
         description: ID of the user of the session.
         example: '00000001'
+      idpName:
+        type: string
+        description: Identity provider name that the session authenticated.
+        example: 'LOCAL'
       applications:
         type: array
         description: List of applications in the session.
