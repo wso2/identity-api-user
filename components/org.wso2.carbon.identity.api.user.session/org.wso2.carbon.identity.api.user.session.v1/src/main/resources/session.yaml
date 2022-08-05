@@ -59,14 +59,16 @@ paths:
         - $ref: '#/parameters/sortQueryParam'
       responses:
         200:
-          description: Successfully retrieved session information
+          description: >
+            Successfully retrieved session information.
+            idpName will only be returned for federated authentication sessions.
           schema:
             $ref: '#/definitions/Sessions'
           examples:
             application/json:
               {
                 "userId": "81fae417-13f6-4db6-9501-7ce128608cb5",
-                "idpName": "LOCAL",
+                "idpName": "partner-wso2-is",
                 "sessions": [
                   {
                     "applications": [
@@ -170,7 +172,9 @@ paths:
         - application/json
       responses:
         200:
-          description: Successfully retrieved session information.
+          description: >
+            Successfully retrieved session information.
+            idpName will only be returned for federated authentication sessions.
           schema:
             $ref: '#/definitions/Sessions'
         400:
@@ -223,7 +227,9 @@ paths:
         - application/json
       responses:
         200:
-          description: Successfully retrieved session information
+          description: >
+            Successfully retrieved session information.
+            idpName will only be returned for federated authentication sessions.
           schema:
             $ref: '#/definitions/Session'
         401:
@@ -278,7 +284,9 @@ paths:
         - application/json
       responses:
         200:
-          description: Successfully retrieved session information.
+          description: >
+            Successfully retrieved session information.
+            idpName will only be returned for federated authentication sessions.
           schema:
             $ref: '#/definitions/SearchResponse'
           examples:
@@ -290,7 +298,7 @@ paths:
                   {
                     "session": {
                       "userId": "00000001",
-                      "idpName": "LOCAL",
+                      "idpName": "partner-wso2-is",
                       "applications": [
                         {
                           "id": "298c5fd8-01ac-4ada-bc10-1ce37f32140b",
@@ -315,7 +323,7 @@ paths:
                   {
                     "session": {
                       "userId": "00000001",
-                      "idpName": "LOCAL",
+                      "idpName": "partner-wso2-is",
                       "applications": [
                         {
                           "id": "298c5fd8-01ac-4ada-bc10-1ce37f32140b",
@@ -410,8 +418,9 @@ definitions:
         example: '00000001'
       idpName:
         type: string
-        description: Identity provider name that the session authenticated.
-        example: 'LOCAL'
+        description: >
+          Identity provider name that the session authenticated. Will only be returned for federated authentication sessions.
+        example: 'partner-wso2-is'
       applications:
         type: array
         description: List of applications in the session.
