@@ -31,7 +31,10 @@ public class SessionDTO {
     private String userId = null;
 
     @Valid
-    private List<ApplicationDTO> applications = new ArrayList<>();
+    private String idpName = null;
+
+    @Valid
+    private List<ApplicationDTO> applications = new ArrayList<ApplicationDTO>();
 
     @Valid
     private String userAgent = null;
@@ -59,6 +62,19 @@ public class SessionDTO {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    /**
+    * Identity provider name that the session authenticated.
+    **/
+    @ApiModelProperty(value = "Identity provider name that the session authenticated.")
+    @JsonProperty("idpName")
+    public String getIdpName() {
+        return idpName;
+    }
+
+    public void setIdpName(String idpName) {
+        this.idpName = idpName;
     }
 
     /**
@@ -146,6 +162,7 @@ public class SessionDTO {
         sb.append("class SessionDTO {\n");
 
         sb.append("    userId: ").append(userId).append("\n");
+        sb.append("    idpName: ").append(idpName).append("\n");
         sb.append("    applications: ").append(applications).append("\n");
         sb.append("    userAgent: ").append(userAgent).append("\n");
         sb.append("    ip: ").append(ip).append("\n");

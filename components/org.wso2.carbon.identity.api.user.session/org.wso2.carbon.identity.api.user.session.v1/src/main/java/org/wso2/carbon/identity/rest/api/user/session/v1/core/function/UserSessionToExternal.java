@@ -46,6 +46,7 @@ public class UserSessionToExternal implements Function<UserSession, SessionDTO> 
         session.setUserAgent(userSession.getUserAgent());
         session.setUserId(userSession.getUserId());
         session.setId(userSession.getSessionId());
+        session.setIdpName(userSession.getIdpName());
 
         return session;
     }
