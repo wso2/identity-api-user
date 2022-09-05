@@ -26,8 +26,8 @@ public class MFAConstants {
 
     public static final String AUTHENTICATED_WITH_BASIC_AUTH = "AuthenticatedWithBasicAuth";
 
-    public static final String BACKUP_CODE_AUTHENTICATOR = "Backup Code Authenticator";
-    public static final String TOTP_AUTHENTICATOR = "TOTP";
+    public static final String BACKUP_CODE_AUTHENTICATOR = "backup-code-authenticator";
+    public static final String TOTP_AUTHENTICATOR = "totp";
 
     /**
      * Enum for MFA related errors in the format of
