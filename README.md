@@ -4,7 +4,7 @@
 | :------------ |:------------- |:-------------
 | master      | [![Build Status](https://wso2.org/jenkins/job/platform-builds/job/identity-api-user/badge/icon)](https://wso2.org/jenkins/job/platform-builds/job/identity-api-user/) | [![Travis CI Status](https://travis-ci.org/wso2/identity-api-user.svg?branch=master)](https://travis-ci.org/wso2/identity-api-user?branch=master)|
 
-This repository contains modules related to the identity user related REST apis 
+This repository contains modules related to the identity user related REST apis. It can be compiled using JDK 8, JDK 11 or JDK 17.  
 
 ### Plugin to Generate the API Stubs
 
