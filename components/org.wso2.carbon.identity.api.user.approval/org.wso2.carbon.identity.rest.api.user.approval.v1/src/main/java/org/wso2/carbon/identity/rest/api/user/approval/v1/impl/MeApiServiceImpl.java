@@ -16,38 +16,33 @@
 
 package org.wso2.carbon.identity.rest.api.user.approval.v1.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.MeApiService;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.core.UserApprovalService;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO;
 
-import java.util.List;
 import javax.ws.rs.core.Response;
 
 /**
  * API service implementation of a logged in user's approval operations
  */
-public class MeApiServiceImpl extends MeApiService {
-
-    @Autowired
-    UserApprovalService userApprovalService;
+public class MeApiServiceImpl implements MeApiService {
 
     @Override
     public Response getApprovalTaskInfo(String taskId) {
 
-        return Response.ok().entity(userApprovalService.getTaskData(taskId)).build();
+        // do some magic!
+        return Response.status(Response.Status.GONE).build();
     }
 
     @Override
-    public Response listApprovalTasksForLoggedInUser(Integer limit, Integer offset, List<String> status) {
+    public Response listApprovalTasksForLoggedInUser() {
 
-        return Response.ok().entity(userApprovalService.listTasks(limit, offset, status)).build();
+        // do some magic!
+        return Response.status(Response.Status.GONE).build();
     }
 
     @Override
-    public Response updateStateOfTask(String taskId, StateDTO nextState) {
+    public Response updateStateOfTask(String taskId) {
 
-        userApprovalService.updateStatus(taskId, nextState);
-        return Response.ok().build();
+        // do some magic!
+        return Response.status(Response.Status.GONE).build();
     }
 }

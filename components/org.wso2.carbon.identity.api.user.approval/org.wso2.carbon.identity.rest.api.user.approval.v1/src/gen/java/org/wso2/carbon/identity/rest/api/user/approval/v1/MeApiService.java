@@ -16,24 +16,14 @@
 
 package org.wso2.carbon.identity.rest.api.user.approval.v1;
 
-import org.wso2.carbon.identity.rest.api.user.approval.v1.*;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.*;
-
-import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskDataDTO;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.ErrorDTO;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskSummaryDTO;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO;
-
-import java.util.List;
-
-import java.io.InputStream;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-
 import javax.ws.rs.core.Response;
 
-public abstract class MeApiService {
-    public abstract Response getApprovalTaskInfo(String taskId);
-    public abstract Response listApprovalTasksForLoggedInUser(Integer limit,Integer offset,List<String> status);
-    public abstract Response updateStateOfTask(String taskId,StateDTO nextState);
-}
 
+public interface MeApiService {
+
+      public Response getApprovalTaskInfo(String taskId);
+
+      public Response listApprovalTasksForLoggedInUser();
+
+      public Response updateStateOfTask(String taskId);
+}
