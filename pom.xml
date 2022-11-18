@@ -143,11 +143,6 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.business-process</groupId>
-                <artifactId>org.wso2.carbon.humantask</artifactId>
-                <version>${carbon.business-process.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.wso2.carbon.identity.framework</groupId>
                 <artifactId>org.wso2.carbon.identity.base</artifactId>
                 <version>${carbon.identity.framework.version}</version>
@@ -157,12 +152,6 @@
                 <groupId>org.wso2.carbon.identity.framework</groupId>
                 <artifactId>org.wso2.carbon.identity.core</artifactId>
                 <version>${carbon.identity.framework.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon.business-process</groupId>
-                <artifactId>org.wso2.carbon.humantask.skeleton</artifactId>
-                <version>${carbon.business-process.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -373,7 +362,6 @@
         <carbon.identity.framework.version>5.23.14</carbon.identity.framework.version>
         <carbon.identity.account.association.version>5.3.7</carbon.identity.account.association.version>
         <maven.findbugsplugin.version>3.0.5</maven.findbugsplugin.version>
-        <carbon.business-process.version>4.5.2</carbon.business-process.version>
         <identity.oauth.version>6.7.71</identity.oauth.version>
         <testng.version>6.9.10</testng.version>
         <fido2.version>5.1.17</fido2.version>

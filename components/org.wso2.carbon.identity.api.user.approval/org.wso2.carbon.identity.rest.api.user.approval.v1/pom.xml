@@ -139,11 +139,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.business-process</groupId>
-            <artifactId>org.wso2.carbon.humantask</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.wso2.carbon.identity.user.api</groupId>
             <artifactId>org.wso2.carbon.identity.api.user.common</artifactId>
             <scope>provided</scope>
@@ -158,11 +153,6 @@
         <dependency>
             <groupId>org.wso2.carbon.identity.framework</groupId>
             <artifactId>org.wso2.carbon.identity.base</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.business-process</groupId>
-            <artifactId>org.wso2.carbon.humantask.skeleton</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>
