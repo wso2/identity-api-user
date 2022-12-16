@@ -377,7 +377,7 @@
         <identity.oauth.version>6.7.71</identity.oauth.version>
         <testng.version>6.9.10</testng.version>
         <fido2.version>5.1.17</fido2.version>
-        <identity.totp.version>2.1.4</identity.totp.version>
+        <identity.totp.version>3.3.1</identity.totp.version>
         <identity.backup.code.version>0.0.4</identity.backup.code.version>
         <lombok.version>1.18.20</lombok.version>
         <maven.checkstyleplugin.excludes>**/gen/**/*</maven.checkstyleplugin.excludes>
