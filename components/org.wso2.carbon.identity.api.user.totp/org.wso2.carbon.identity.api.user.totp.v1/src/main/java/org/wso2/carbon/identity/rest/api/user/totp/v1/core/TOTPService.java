@@ -130,7 +130,8 @@ public class TOTPService {
         TOTPResponseDTO totpResponseDTO = new TOTPResponseDTO();
         User user = getUser();
         try {
-            Map<String, String> claims = TOTPKeyGenerator.generateClaims(user.toFullQualifiedUsername(), false);
+            Map<String, String> claims = TOTPKeyGenerator.
+                    generateClaimsWithVerifySecretKey(user.toFullQualifiedUsername(), false);
             totpResponseDTO.setQrCodeUrl(TOTPKeyGenerator.addTOTPClaimsAndRetrievingQRCodeURL(claims,
                     user.toFullQualifiedUsername()));
             return totpResponseDTO;
@@ -197,7 +198,8 @@ public class TOTPService {
         TOTPResponseDTO totpResponseDTO = new TOTPResponseDTO();
         User user = getUser();
         try {
-            Map<String, String> claims = TOTPKeyGenerator.generateClaims(user.toFullQualifiedUsername(), true);
+            Map<String, String> claims = TOTPKeyGenerator.
+                    generateClaimsWithVerifySecretKey(user.toFullQualifiedUsername(), true);
             totpResponseDTO.setQrCodeUrl(TOTPKeyGenerator.addTOTPClaimsAndRetrievingQRCodeURL(claims,
                     user.toFullQualifiedUsername()));
         } catch (TOTPException e) {
@@ -229,11 +231,11 @@ public class TOTPService {
                             .setKeyRepresentation(encoding);
             TOTPAuthenticatorCredentials totpAuthenticator =
                     new TOTPAuthenticatorCredentials(configBuilder.build());
-            String secretKey = getSecretKey().getSecret();
             if (log.isDebugEnabled()) {
                 log.debug("Validating TOTP verification code for the user: " + username);
             }
-            totpResponseDTO.setIsValid(totpAuthenticator.authorize(secretKey, verificationCode));
+            totpResponseDTO.setIsValid(totpAuthenticator.
+                    authorizeAndStoreSecret(verificationCode, username));
         } catch (AuthenticationFailedException e) {
             throw handleException(e, USER_ERROR_UNAUTHORIZED_USER);
         }
