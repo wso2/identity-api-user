@@ -33,7 +33,7 @@ public class UserRequestDTO  {
   
   
   public enum ActionEnum {
-     INIT,  REFRESH,  VALIDATE, 
+     INIT,  REFRESH,  VALIDATE, VIEW
   };
   @Valid @NotNull(message = "Property action cannot be null.") 
   private ActionEnum action = null;

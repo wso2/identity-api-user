@@ -141,6 +141,29 @@ public class TOTPService {
     }
 
     /**
+     * View existing TOTP Token for a given user.
+     *
+     * @return Encoded QR Code URL.
+     */
+    public TOTPResponseDTO viewTOTP() {
+
+        if (!isValidAuthenticationType()) {
+            throw handleError(Response.Status.FORBIDDEN, USER_ERROR_ACCESS_DENIED_FOR_BASIC_AUTH);
+        }
+
+        TOTPResponseDTO totpResponseDTO = new TOTPResponseDTO();
+        User user = getUser();
+        try {
+            Map<String, String> claims = TOTPKeyGenerator.generateClaims(user.toFullQualifiedUsername(), false);
+            totpResponseDTO.setQrCodeUrl(TOTPKeyGenerator.addTOTPClaimsAndRetrievingQRCodeURL(claims,
+                    user.toFullQualifiedUsername()));
+            return totpResponseDTO;
+        } catch (TOTPException e) {
+            throw handleException(e, SERVER_ERROR_GENERAL);
+        }
+    }
+
+    /**
      * Generate TOTP QR Code URL for a given user.
      *
      * @return Encoded QR Code URL.

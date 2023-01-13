@@ -53,6 +53,8 @@ public class MeApiServiceImpl extends MeApiService {
         switch (request.getAction()) {
             case INIT:
                 return Response.ok().entity(totpService.initTOTP()).build();
+            case VIEW:
+                return Response.ok().entity(totpService.viewTOTP()).build();
             case REFRESH:
                 return Response.ok().entity(totpService.refreshSecretKey()).build();
             case VALIDATE:
