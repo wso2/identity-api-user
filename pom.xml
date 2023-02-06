@@ -363,7 +363,7 @@
         <jackson-dataformat-xml.version>2.13.2</jackson-dataformat-xml.version>
         <cxf-bundle.version>3.5.0</cxf-bundle.version>
         <jackson.version>1.9.13</jackson.version>
-        <spring-web.version>5.3.19</spring-web.version>
+        <spring-web.version>5.3.25</spring-web.version>
         <swagger-jaxrs.version>1.6.2</swagger-jaxrs.version>
         <javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
         <maven.buildnumber.plugin.version>1.4</maven.buildnumber.plugin.version>
