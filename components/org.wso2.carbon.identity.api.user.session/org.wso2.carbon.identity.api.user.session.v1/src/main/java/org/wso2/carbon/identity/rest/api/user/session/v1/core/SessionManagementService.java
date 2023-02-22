@@ -227,10 +227,10 @@ public class SessionManagementService {
     /**
      * Terminate active sessions based on a filter criteria.
      *
-     * @param filter    the filter based on which the sessions to be terminated are selected (Mandatory)
-     * @param limit maximum number of sessions to be selected (Optional)
-     * @param since timestamp data value that points to the start of the range of data to be returned (Optional)
-     * @param until timestamp data value that points to the end of the range of data to be returned (Optional)
+     * @param filter The filter based on which the sessions to be terminated are selected (Mandatory).
+     * @param limit  Maximum number of sessions to be selected (Optional).
+     * @param since  Timestamp data value that points to the start of the range of data to be returned (Optional).
+     * @param until  Timestamp data value that points to the end of the range of data to be returned (Optional).
      */
     public void terminateFilteredSessions(String tenantDomain, String filter, Integer limit, Long since, Long until) {
 

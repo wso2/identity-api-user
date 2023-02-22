@@ -37,8 +37,9 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.CORRELATION_ID_MDC;
-import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.*;
+import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_INVALID_USERNAME;
 import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.INVALID_TENANT_DOMAIN;
+import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_SERVER_ERROR;
 
 /**
  * Common util class
@@ -146,10 +147,10 @@ public class Util {
     /**
      * Validate whether the given filter is not empty and tenantDomain is valid.
      *
-     * @param filter    filter to be applied for session termination
-     * @param tenantDomain  tenant domain of the requester
+     * @param filter        Filter to be applied for session termination.
+     * @param tenantDomain  Tenant domain of the requester.
      */
-    public static void  validateFilter(String filter, String tenantDomain) {
+    public static void validateFilter(String filter, String tenantDomain) {
 
         if (StringUtils.isEmpty(filter)) {
             throw new WebApplicationException("Filter is empty.");
