@@ -22,4 +22,14 @@ public abstract class SessionsApiService {
 
     public abstract Response getSessions(String filter, Integer limit, Long since, Long until);
 
+    /**
+     * Terminates sessions selected based on filter.
+     *
+     * @param filter    the filter based on which the sessions to be terminated are selected (Mandatory)
+     * @param limit maximum number of sessions to be selected (Optional)
+     * @param since timestamp data value that points to the start of the range of data to be returned (Optional)
+     * @param until timestamp data value that points to the end of the range of data to be returned (Optional)
+     * @return Response
+     */
+    public abstract Response terminateFilteredSessions(String filter, Integer limit, Long since, Long until);
 }

@@ -337,6 +337,35 @@ paths:
         500:
           $ref: '#/responses/ServerError'
 
+    delete:
+      tags:
+        - sysadmin
+      description: Terminates a number of sessions selected based on a provided filtering criteria. <br>
+        <b>Permission required:</b> <br>
+        * /permission/admin/manage/identity/authentication/session/delete <br>
+        <b>Scope required:</b> <br>
+        * internal_session_delete
+      summary: Terminates the sessions selected based on a filtering criteria
+      operationId: terminateFilteredSessions
+      parameters:
+        - $ref: '#/parameters/filterQueryParam'
+        - $ref: '#/parameters/limitQueryParam'
+        - $ref: '#/parameters/sinceQueryParam'
+        - $ref: '#/parameters/untilQueryParam'
+      produces:
+        - application/json
+      responses:
+        204:
+          $ref: '#/responses/NoContent'
+        400:
+          $ref: '#/responses/InvalidInput'
+        401:
+          $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
+        500:
+          $ref: '#/responses/ServerError'
+
 #-----------------------------------------------------
 # Descriptions of common responses
 #-----------------------------------------------------
