@@ -60,7 +60,7 @@ public class Constants {
                 "Server Encountered an error while retrieving the user."),
         INVALID_TENANT_DOMAIN(USER_MANAGEMENT_PREFIX.getPrefix() + "10002",
                 "Invalid tenant domain.",
-                "Server Encountered an error while retrieving tenantId for tenantDomain.");
+                "Server Encountered an error while retrieving tenantId for tenantDomain: %s.");
 
         private final String code;
         private final String message;

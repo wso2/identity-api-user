@@ -162,7 +162,7 @@ public class Util {
             throw new APIError(Response.Status.BAD_REQUEST, new ErrorResponse.Builder()
                     .withCode(INVALID_TENANT_DOMAIN.getCode())
                     .withMessage(INVALID_TENANT_DOMAIN.getMessage())
-                    .withDescription(INVALID_TENANT_DOMAIN.getDescription())
+                    .withDescription(String.format(INVALID_TENANT_DOMAIN.getDescription(), tenantDomain))
                     .build(log, e, "Error occurred while retrieving tenantId for tenantDomain: " + tenantDomain));
         }
     }
