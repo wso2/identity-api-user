@@ -261,6 +261,28 @@
                 <version>${testng.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.extension.identity.verification</groupId>
+                <artifactId>org.wso2.carbon.extension.identity.verification.provider</artifactId>
+                <version>${identity.verification.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.extension.identity.verification</groupId>
+                <artifactId>org.wso2.carbon.extension.identity.verification.mgt</artifactId>
+                <version>${identity.verification.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.user.api</groupId>
+                <artifactId>org.wso2.carbon.identity.api.user.idv.common</artifactId>
+                <version>${project.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
+                <artifactId>org.wso2.carbon.identity.core</artifactId>
+                <version>${carbon.identity.framework.version}</version>
+                <scope>provided</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -380,6 +402,7 @@
         <identity.totp.version>3.3.1</identity.totp.version>
         <identity.backup.code.version>0.0.4</identity.backup.code.version>
         <lombok.version>1.18.20</lombok.version>
+        <identity.verification.version>1.0.0</identity.verification.version>
         <maven.checkstyleplugin.excludes>**/gen/**/*</maven.checkstyleplugin.excludes>
         <commons-lang.wso2.version>2.6.0.wso2v1</commons-lang.wso2.version>
         <mavan.findbugsplugin.exclude.file>findbugs-exclude-filter.xml</mavan.findbugsplugin.exclude.file>
@@ -399,6 +422,7 @@
         <module>components/org.wso2.carbon.identity.api.user.functionality</module>
         <module>components/org.wso2.carbon.identity.api.user.backupcode</module>
         <module>components/org.wso2.carbon.identity.api.user.mfa</module>
+        <module>components/org.wso2.carbon.identity.api.user.idv</module>
     </modules>
 
 </project>
