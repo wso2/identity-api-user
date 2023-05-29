@@ -40,8 +40,8 @@ import io.swagger.annotations.*;
 
 import javax.validation.constraints.*;
 
-@Path("/")
-@Api(description = "The  API")
+@Path("/{user-id}")
+@Api(description = "The {user-id} API")
 
 public class DefaultApi  {
 
@@ -50,7 +50,7 @@ public class DefaultApi  {
 
     @Valid
     @POST
-    @Path("/{user-id}/idv/claims")
+    @Path("/idv/claims")
     @Consumes({ "application/json" })
     @Produces({ "application/json", "application/xml",  })
     @ApiOperation(value = "Add identity verification claim.", notes = "This API provides the capability to add verification claim data", response = List.class, responseContainer = "List", authorizations = {
@@ -74,7 +74,7 @@ public class DefaultApi  {
 
     @Valid
     @GET
-    @Path("/{user-id}/idv/claims/{claim-id}")
+    @Path("/idv/claims/{claim-id}")
     
     @Produces({ "application/json" })
     @ApiOperation(value = "Get identity verification claim", notes = "This API provides the capability to retrieve a identity verification claim of a user.", response = VerificationClaimResponse.class, responseContainer = "List", authorizations = {
@@ -98,7 +98,7 @@ public class DefaultApi  {
 
     @Valid
     @GET
-    @Path("/{user-id}/idv/claims")
+    @Path("/idv/claims")
     
     @Produces({ "application/json" })
     @ApiOperation(value = "Get the identity verification claims of a user", notes = "This API provides the capability to retrieve the verification details of a user", response = VerificationClaimResponse.class, responseContainer = "List", authorizations = {
@@ -122,7 +122,7 @@ public class DefaultApi  {
 
     @Valid
     @PUT
-    @Path("/{user-id}/idv/claims/{claim-id}")
+    @Path("/idv/claims/{claim-id}")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     @ApiOperation(value = "Update identity verification claim", notes = "This API provides the capability to update a identity verification claim of a user.", response = VerificationClaimResponse.class, authorizations = {
@@ -146,7 +146,7 @@ public class DefaultApi  {
 
     @Valid
     @PUT
-    @Path("/{user-id}/idv/claims")
+    @Path("/idv/claims")
     @Consumes({ "application/json" })
     @Produces({ "application/json", "application/xml",  })
     @ApiOperation(value = "Update identity verification claims of a user.", notes = "This API provides the capability to update verification claims of a user", response = List.class, responseContainer = "List", authorizations = {
@@ -170,7 +170,7 @@ public class DefaultApi  {
 
     @Valid
     @POST
-    @Path("/{user-id}/idv/verify")
+    @Path("/idv/verify")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     @ApiOperation(value = "Verify an Identity", notes = "This API provides the capability to verify a user with the configured verification required attributes", response = VerificationPostResponse.class, responseContainer = "List", authorizations = {
