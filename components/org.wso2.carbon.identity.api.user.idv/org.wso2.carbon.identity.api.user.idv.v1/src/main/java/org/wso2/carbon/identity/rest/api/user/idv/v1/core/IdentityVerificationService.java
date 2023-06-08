@@ -27,7 +27,6 @@ import org.wso2.carbon.extension.identity.verification.mgt.model.IdVClaim;
 import org.wso2.carbon.extension.identity.verification.mgt.model.IdVProperty;
 import org.wso2.carbon.extension.identity.verification.mgt.model.IdentityVerifierData;
 import org.wso2.carbon.extension.identity.verification.mgt.utils.IdentityVerificationConstants;
-import org.wso2.carbon.extension.identity.verification.provider.exception.IdVProviderMgtClientException;
 import org.wso2.carbon.identity.api.user.common.ContextLoader;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
@@ -352,10 +351,10 @@ public class IdentityVerificationService {
 
         ErrorResponse errorResponse;
         Response.Status status;
-        if (e instanceof IdVProviderMgtClientException || e instanceof IdentityVerificationClientException) {
+        if (e instanceof IdentityVerificationClientException) {
             status = Response.Status.BAD_REQUEST;
             errorResponse = getErrorBuilder(e, errorEnum, data)
-                    .build(log, e, buildErrorDescription(errorEnum.getDescription(), data));
+                    .build(log, buildErrorDescription(errorEnum.getDescription(), data));
         } else {
             status = Response.Status.INTERNAL_SERVER_ERROR;
             errorResponse = getErrorBuilder(e, errorEnum, data)
