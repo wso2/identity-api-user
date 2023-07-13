@@ -402,7 +402,7 @@
         <identity.totp.version>3.3.1</identity.totp.version>
         <identity.backup.code.version>0.0.4</identity.backup.code.version>
         <lombok.version>1.18.20</lombok.version>
-        <identity.verification.version>1.0.2</identity.verification.version>
+        <identity.verification.version>1.0.3</identity.verification.version>
         <maven.checkstyleplugin.excludes>**/gen/**/*</maven.checkstyleplugin.excludes>
         <commons-lang.wso2.version>2.6.0.wso2v1</commons-lang.wso2.version>
         <mavan.findbugsplugin.exclude.file>findbugs-exclude-filter.xml</mavan.findbugsplugin.exclude.file>
