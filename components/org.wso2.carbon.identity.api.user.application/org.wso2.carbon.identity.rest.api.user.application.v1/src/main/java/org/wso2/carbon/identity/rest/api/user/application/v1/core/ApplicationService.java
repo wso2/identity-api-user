@@ -29,11 +29,16 @@ import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.application.common.IdentityApplicationManagementException;
 import org.wso2.carbon.identity.application.common.model.ApplicationBasicInfo;
+import org.wso2.carbon.identity.base.IdentityException;
+import org.wso2.carbon.identity.core.model.ExpressionNode;
+import org.wso2.carbon.identity.core.model.FilterTreeBuilder;
+import org.wso2.carbon.identity.core.model.Node;
 import org.wso2.carbon.identity.rest.api.user.application.v1.core.function.ApplicationBasicInfoToApiModel;
 import org.wso2.carbon.identity.rest.api.user.application.v1.model.ApplicationListResponse;
 import org.wso2.carbon.identity.rest.api.user.application.v1.model.ApplicationResponse;
 import org.wso2.carbon.identity.rest.api.user.application.v1.model.Link;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -181,20 +186,22 @@ public class ApplicationService {
     private String buildFilter(String filter) {
 
         if (StringUtils.isNotBlank(filter)) {
-            String[] filterArgs = filter.split(" ");
-            if (filterArgs.length == 3) {
+            try {
+                FilterTreeBuilder filterTreeBuilder = new FilterTreeBuilder(filter);
+                Node rootNode = filterTreeBuilder.buildTree();
 
-                String filterAttribute = filterArgs[0];
-
-                if (isFilterableAttribute(filterAttribute)) {
-                    String operation = filterArgs[1];
-                    String attributeValue = filterArgs[2];
-                    return generateFilterStringForBackend(operation, attributeValue);
-                } else {
-                    throw buildError(ERROR_CODE_UNSUPPORTED_FILTER_ATTRIBUTE, Response.Status.BAD_REQUEST,
-                            filterAttribute);
+                if (!(rootNode instanceof ExpressionNode)) {
+                    throw buildError(ERROR_CODE_INVALID_FILTER_QUERY, Response.Status.BAD_REQUEST);
                 }
-            } else {
+
+                ExpressionNode expressionNode = (ExpressionNode) rootNode;
+                if (!isFilterableAttribute(expressionNode.getAttributeValue())) {
+                    throw buildError(ERROR_CODE_UNSUPPORTED_FILTER_ATTRIBUTE, Response.Status.BAD_REQUEST,
+                            expressionNode.getAttributeValue());
+                }
+
+                return generateFilterStringForBackend(expressionNode.getOperation(), expressionNode.getValue());
+            } catch (IOException | IdentityException e) {
                 throw buildError(ERROR_CODE_INVALID_FILTER_QUERY, Response.Status.BAD_REQUEST);
             }
         } else {
