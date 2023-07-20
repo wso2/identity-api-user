@@ -201,7 +201,7 @@ public class IdentityVerificationService {
         int tenantId = getTenantId();
         try {
             idVClaims = IdentityVerificationServiceHolder.getIdentityVerificationManager().
-                    getIdVClaims(userId, idvProviderId, tenantId);
+                    getIdVClaims(userId, idvProviderId, null, tenantId);
         } catch (IdentityVerificationException e) {
             if (IdentityVerificationConstants.ErrorMessage.ERROR_INVALID_USER_ID.getCode().equals(e.getErrorCode())) {
                 throw handleIdVException(e, Constants.ErrorMessage.ERROR_CODE_USER_ID_NOT_FOUND, userId);
