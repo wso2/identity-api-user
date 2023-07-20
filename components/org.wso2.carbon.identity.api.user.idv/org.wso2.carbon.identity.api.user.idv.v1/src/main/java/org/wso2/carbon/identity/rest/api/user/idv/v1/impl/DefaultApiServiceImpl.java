@@ -30,6 +30,8 @@ import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerifyRequest;
 import java.util.List;
 import javax.ws.rs.core.Response;
 
+import static org.wso2.carbon.identity.api.user.common.ContextLoader.getUserIdFromContext;
+
 /**
  * This class implements the DefaultApiServiceImpl interface.
  */
@@ -42,7 +44,7 @@ public class DefaultApiServiceImpl implements DefaultApiService {
     public Response addIdVClaim(String userId, List<VerificationClaimRequest> verificationClaimRequest) {
 
         List<VerificationClaimResponse> idvAddClaimResponse =
-                identityVerificationService.addIdVClaims(userId, verificationClaimRequest);
+                identityVerificationService.addIdVClaims(getUserIdFromContext(), verificationClaimRequest);
         return Response.ok().entity(idvAddClaimResponse).build();
     }
 
