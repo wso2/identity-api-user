@@ -67,6 +67,11 @@
                 <version>${javax.ws.rs-api.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.wso2.orbit.javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${version.org.wso2.orbit.javax.xml.bind}</version>
+            </dependency>
+            <dependency>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-jaxrs</artifactId>
                 <version>${swagger-jaxrs.version}</version>
@@ -193,6 +198,12 @@
                 <artifactId>org.wso2.carbon.identity.oauth.common</artifactId>
                 <version>${identity.oauth.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.organization.management.core</groupId>
+                <artifactId>org.wso2.carbon.identity.organization.management.service</artifactId>
+                <version>${identity.org.mgt.core.version}</version>
+                <scope>provided</scope>
+            </dependency>
 
             <dependency>
                 <groupId>org.wso2.carbon.extension.identity.authenticator.outbound.totp</groupId>
@@ -253,6 +264,18 @@
                 <version>${carbon.kernel.version}</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.core</artifactId>
+                <version>${carbon.kernel.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.utils</artifactId>
+                <version>${carbon.kernel.version}</version>
+                <scope>provided</scope>
+            </dependency>
 
             <!-- Test Dependencies -->
             <dependency>
@@ -274,6 +297,12 @@
             <dependency>
                 <groupId>org.wso2.carbon.identity.user.api</groupId>
                 <artifactId>org.wso2.carbon.identity.api.user.idv.common</artifactId>
+                <version>${project.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.user.api</groupId>
+                <artifactId>org.wso2.carbon.identity.api.user.organization.common</artifactId>
                 <version>${project.version}</version>
                 <scope>provided</scope>
             </dependency>
@@ -388,6 +417,7 @@
         <spring-web.version>5.3.25</spring-web.version>
         <swagger-jaxrs.version>1.6.2</swagger-jaxrs.version>
         <javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
+        <version.org.wso2.orbit.javax.xml.bind>2.3.1.wso2v1</version.org.wso2.orbit.javax.xml.bind>
         <maven.buildnumber.plugin.version>1.4</maven.buildnumber.plugin.version>
         <org.apache.felix.annotations.version>1.2.4</org.apache.felix.annotations.version>
         <carbon.kernel.version>4.9.0</carbon.kernel.version>
@@ -397,6 +427,7 @@
         <maven.findbugsplugin.version>3.0.5</maven.findbugsplugin.version>
         <carbon.business-process.version>4.5.2</carbon.business-process.version>
         <identity.oauth.version>6.7.71</identity.oauth.version>
+        <identity.org.mgt.core.version>1.0.50</identity.org.mgt.core.version>
         <testng.version>6.9.10</testng.version>
         <fido2.version>5.1.17</fido2.version>
         <identity.totp.version>3.3.1</identity.totp.version>
@@ -423,6 +454,7 @@
         <module>components/org.wso2.carbon.identity.api.user.backupcode</module>
         <module>components/org.wso2.carbon.identity.api.user.mfa</module>
         <module>components/org.wso2.carbon.identity.api.user.idv</module>
+        <module>components/org.wso2.carbon.identity.api.user.organization</module>
     </modules>
 
 </project>
