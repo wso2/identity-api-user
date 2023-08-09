@@ -31,7 +31,7 @@ public class UserOrganizationServiceHolder {
     private static OrganizationManager organizationManagementService;
 
     /**
-     * Method to get the organization user resident resolver osgi service.
+     * Method to get the organization user resident resolver OSGi service.
      *
      * @return OrganizationUserResidentResolverService.
      */
@@ -41,7 +41,7 @@ public class UserOrganizationServiceHolder {
     }
 
     /**
-     * Set OrganizationUserResidentResolverService osgi service.
+     * Set OrganizationUserResidentResolverService OSGi service.
      *
      * @param organizationUserResidentResolverService OrganizationUserResidentResolverService.
      */
