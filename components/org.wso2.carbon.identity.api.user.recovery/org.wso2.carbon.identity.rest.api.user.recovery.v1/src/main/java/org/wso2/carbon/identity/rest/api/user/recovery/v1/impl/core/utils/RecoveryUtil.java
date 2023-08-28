@@ -555,6 +555,10 @@ public class RecoveryUtil {
         clientErrorMap.put(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_NO_VERIFIED_CHANNELS_FOR_USER.getCode(),
                 REQUEST_NOT_FOUND_ERROR_CATEGORY);
 
+        // API disabled error.
+        clientErrorMap.put(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_API_DISABLED.getCode(),
+                REQUEST_NOT_FOUND_ERROR_CATEGORY);
+
         // Invalid recovery codes errors.
         clientErrorMap.put(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_INVALID_RECOVERY_CODE.getCode(),
                 REQUEST_NOT_ACCEPTABLE_ERROR_CATEGORY);
