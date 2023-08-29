@@ -64,14 +64,14 @@ public class AccountRecoveryType  {
     }
 
     /**
-     **/
+    **/
     public AccountRecoveryType flowConfirmationCode(String flowConfirmationCode) {
 
         this.flowConfirmationCode = flowConfirmationCode;
         return this;
     }
-
-    @ApiModelProperty(value = "")
+    
+    @ApiModelProperty(example = "1234-1234-1234-1234", value = "")
     @JsonProperty("flowConfirmationCode")
     @Valid
     public String getFlowConfirmationCode() {
@@ -125,6 +125,8 @@ public class AccountRecoveryType  {
         this.links.add(linksItem);
         return this;
     }
+
+    
 
     @Override
     public boolean equals(java.lang.Object o) {

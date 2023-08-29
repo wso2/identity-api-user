@@ -51,11 +51,12 @@ public class ConfirmRequest  {
         this.confirmationCode = confirmationCode;
         return this;
     }
-
-    @ApiModelProperty(example = "1234-2ws34-12345", value = "Confirmation code of the recovery flow")
+    
+    @ApiModelProperty(example = "1234-2ws34-12345", required = true, value = "Confirmation code of the recovery flow")
     @JsonProperty("confirmationCode")
     @Valid
     @NotNull(message = "Property confirmationCode cannot be null.")
+
     public String getConfirmationCode() {
         return confirmationCode;
     }
@@ -64,21 +65,21 @@ public class ConfirmRequest  {
     }
 
     /**
-     * OTP sent to the user
-     **/
+    * OTP sent to the user
+    **/
     public ConfirmRequest otp(String otp) {
 
         this.otp = otp;
         return this;
     }
-
-    @ApiModelProperty(example = "abc123", value = "OTP sent to the user")
+    
+    @ApiModelProperty(example = "wi8Ivm", value = "OTP sent to the user")
     @JsonProperty("otp")
     @Valid
     public String getOtp() {
         return otp;
     }
-    public void seOtp(String otp) {
+    public void setOtp(String otp) {
         this.otp = otp;
     }
 

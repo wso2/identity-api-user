@@ -53,10 +53,11 @@ public class ResetRequest  {
         return this;
     }
     
-    @ApiModelProperty(value = "resetCode given by the confim API")
+    @ApiModelProperty(required = true, value = "resetCode given by the confim API")
     @JsonProperty("resetCode")
     @Valid
     @NotNull(message = "Property resetCode cannot be null.")
+
     public String getResetCode() {
         return resetCode;
     }
@@ -65,18 +66,19 @@ public class ResetRequest  {
     }
 
     /**
-     * Confirmation code of the recovery flow
-     **/
+    * Confirmation code of the recovery flow
+    **/
     public ResetRequest flowConfirmationCode(String flowConfirmationCode) {
 
         this.flowConfirmationCode = flowConfirmationCode;
         return this;
     }
-
-    @ApiModelProperty(example = "1234-2ws34-12345", value = "Confirmation code of the recovery flow")
+    
+    @ApiModelProperty(required = true, value = "Confirmation code of the recovery flow")
     @JsonProperty("flowConfirmationCode")
     @Valid
     @NotNull(message = "Property flowConfirmationCode cannot be null.")
+
     public String getFlowConfirmationCode() {
         return flowConfirmationCode;
     }
@@ -93,9 +95,11 @@ public class ResetRequest  {
         return this;
     }
     
-    @ApiModelProperty(value = "New password given by the user")
+    @ApiModelProperty(required = true, value = "New password given by the user")
     @JsonProperty("password")
     @Valid
+    @NotNull(message = "Property password cannot be null.")
+
     public String getPassword() {
         return password;
     }
@@ -129,6 +133,8 @@ public class ResetRequest  {
         this.properties.add(propertiesItem);
         return this;
     }
+
+    
 
     @Override
     public boolean equals(java.lang.Object o) {

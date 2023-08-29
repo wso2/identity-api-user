@@ -83,15 +83,15 @@ public class PasswordRecoveryExternalNotifyResponse  {
     }
 
     /**
-     * Recovery flow confirmation code
-     **/
+    * Recovery flow confirmation code
+    **/
     public PasswordRecoveryExternalNotifyResponse flowConfirmationCode(String flowConfirmationCode) {
 
         this.flowConfirmationCode = flowConfirmationCode;
         return this;
     }
-
-    @ApiModelProperty(example = "1234-1234-1234-1234", value = "Flow confirmation code of the recovery flow")
+    
+    @ApiModelProperty(example = "1234-1234-1234-1234", value = "Recovery flow confirmation code")
     @JsonProperty("flowConfirmationCode")
     @Valid
     public String getFlowConfirmationCode() {
@@ -184,6 +184,8 @@ public class PasswordRecoveryExternalNotifyResponse  {
         this.links.add(linksItem);
         return this;
     }
+
+    
 
     @Override
     public boolean equals(java.lang.Object o) {

@@ -23,6 +23,7 @@ import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.*;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import java.io.InputStream;
+import java.util.List;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.AccountRecoveryType;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.ConfirmRequest;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.ErrorResponse;
