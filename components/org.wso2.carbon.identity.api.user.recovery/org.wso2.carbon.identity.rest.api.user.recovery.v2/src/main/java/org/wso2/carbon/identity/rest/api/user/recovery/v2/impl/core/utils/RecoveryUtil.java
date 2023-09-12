@@ -111,7 +111,7 @@ public class RecoveryUtil {
      */
     public static List<RecoveryChannel> buildRecoveryChannelInformation(NotificationChannelDTO[] channels) {
 
-        List<RecoveryChannel> recoveryChannelDTOS = new ArrayList<>();
+        List<RecoveryChannel> recoveryChannelDTOs = new ArrayList<>();
         if (channels != null) {
             // Create a response object and add the details to each object.
             for (NotificationChannelDTO channel : channels) {
@@ -122,10 +122,10 @@ public class RecoveryUtil {
                 if (StringUtils.isNotEmpty(channel.getValue())) {
                     recoveryChannel.setPreferred(channel.isPreferred());
                 }
-                recoveryChannelDTOS.add(recoveryChannel);
+                recoveryChannelDTOs.add(recoveryChannel);
             }
         }
-        return recoveryChannelDTOS;
+        return recoveryChannelDTOs;
     }
 
     /**
@@ -147,12 +147,12 @@ public class RecoveryUtil {
     /**
      * Handle client errors with specific http codes.
      *
-     * @param className Class name
-     * @param scenario  Recovery scenario
-     * @param code      Recovery code
-     * @param exception IdentityRecoveryClientException
+     * @param className Class name.
+     * @param scenario  Recovery scenario.
+     * @param code      Recovery code.
+     * @param exception IdentityRecoveryClientException.
      * @return WebApplicationException (NOTE: Returns null when the client error is for no user available or for
-     * multiple users available
+     * multiple users available.
      */
     public static WebApplicationException handleClientExceptions(String className, String tenantDomain, String scenario,
                                                                  String code, String correlationId,
@@ -211,12 +211,12 @@ public class RecoveryUtil {
     /**
      * Logs the error, builds a internalServerErrorException with specified details and throws it.
      *
-     * @param className     Class name
-     * @param message       Error message
-     * @param code          Error code
-     * @param correlationId Correlation Id
-     * @param throwable     Error
-     * @return WebApplicationException
+     * @param className     Class name.
+     * @param message       Error message.
+     * @param code          Error code.
+     * @param correlationId Correlation Id.
+     * @param throwable     Error.
+     * @return WebApplicationException.
      */
     public static WebApplicationException buildInternalServerErrorResponse(String className, String message,
                                                                            String code, String correlationId,
@@ -236,11 +236,11 @@ public class RecoveryUtil {
     /**
      * Build API call information.
      *
-     * @param type   Type of the API call
-     * @param rel    API relation
-     * @param apiUrl Url of the API
-     * @param data   Additional data
-     * @return APICall {@link APICall} which encapsulates the API name and the url
+     * @param type   Type of the API call.
+     * @param rel    API relation.
+     * @param apiUrl Url of the API.
+     * @param data   Additional data.
+     * @return APICall {@link APICall} which encapsulates the API name and the url.
      */
     public static APICall buildApiCall(String type, String rel, String apiUrl, String data) {
 
@@ -252,25 +252,6 @@ public class RecoveryUtil {
         apiCall.setRel(rel);
         apiCall.setHref(apiUrl);
         return apiCall;
-    }
-
-    /**
-     * @deprecated This was deprecated because the requirement is to get the absolute and relative URIs by using the
-     * {@link ServiceURLBuilder} methods.
-     * @since 1.1.6
-     *
-     * Please use {@link #buildURIForBody(String, String, String)} method to build URIs for body.
-     *
-     * Build the relative url.
-     * @param tenantDomain Tenant Domain
-     * @param endpoint     API endpoint
-     * @return Url
-     */
-    public static String buildUri(String tenantDomain, String endpoint, String baseUrl) {
-
-        String tenantQualifiedRelativePath =
-                String.format(TENANT_CONTEXT_PATH_COMPONENT, tenantDomain) + baseUrl;
-        return tenantQualifiedRelativePath + endpoint;
     }
 
     /**
@@ -468,7 +449,7 @@ public class RecoveryUtil {
         ErrorResponse errorResponse = buildErrorResponse(Constants.STATUS_CONFLICT_MESSAGE_DEFAULT, code,
                 description, correlationId);
         if (StringUtils.isNotBlank(className)) {
-            description = String.format("CorrelationIc: %s : %s : %s - %s", correlationId, LOG_MESSAGE_PREFIX,
+            description = String.format("CorrelationId: %s : %s : %s - %s", correlationId, LOG_MESSAGE_PREFIX,
                     className, description);
         }
         log.error(description);

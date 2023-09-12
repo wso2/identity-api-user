@@ -61,7 +61,7 @@ import javax.ws.rs.core.Response;
  */
 public class PasswordRecoveryService {
 
-    private static final Log log = LogFactory.getLog(PasswordRecoveryService.class.getName());
+    private static final Log LOG = LogFactory.getLog(PasswordRecoveryService.class.getName());
 
     /**
      * Initiate Password Recovery from POST.
@@ -81,9 +81,9 @@ public class PasswordRecoveryService {
                             RecoveryUtil.buildPropertiesMap(initRequest.getProperties()));
             // If RecoveryChannelInfoDTO is null throw not found error.
             if (recoveryInformationDTO == null) {
-                if (log.isDebugEnabled()) {
+                if (LOG.isDebugEnabled()) {
                     String message = "No recovery information for password recovery request";
-                    log.debug(message);
+                    LOG.debug(message);
                 }
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
@@ -115,10 +115,10 @@ public class PasswordRecoveryService {
                     .notify(recoveryId, channelId, tenantDomain,
                             RecoveryUtil.buildPropertiesMap(recoveryRequest.getProperties()));
             if (passwordRecoverDTO == null) {
-                if (log.isDebugEnabled()) {
+                if (LOG.isDebugEnabled()) {
                     String message = String
                             .format("No password recovery data object for recovery code : %s", recoveryId);
-                    log.debug(message);
+                    LOG.debug(message);
                 }
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
@@ -202,8 +202,8 @@ public class PasswordRecoveryService {
                     UserAccountRecoveryServiceDataHolder.getPasswordRecoveryManager()
                             .resend(tenantDomain, resendCode, properties);
             if (resendConfirmationDTO == null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("No ResendConfirmationDTO data for resend code :" + resendCode);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("No ResendConfirmationDTO data for resend code :" + resendCode);
                 }
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
