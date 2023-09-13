@@ -25,6 +25,37 @@ tags:
     description: Operations for the authenticated user
 
 paths:
+  /:
+    get:
+      tags:
+        - me
+      description:
+        Retrieve authorized organizations which matches the defined search criteria, if any.
+      summary:
+        This API is used to search and retrieve child organizations which are authorized for the user.
+      parameters:
+        - $ref: '#/components/parameters/filterQueryParam'
+        - $ref: '#/components/parameters/limitQueryParam'
+        - $ref: '#/components/parameters/afterQueryParam'
+        - $ref: '#/components/parameters/beforeQueryParam'
+        - $ref: '#/components/parameters/recursiveQueryParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
   /root:
     get:
       tags:
@@ -88,6 +119,50 @@ paths:
           $ref: '#/components/responses/ServerError'
 
 components:
+  parameters:
+    filterQueryParam:
+      in: query
+      name: filter
+      required: false
+      description:
+        Condition to filter the retrieval of records.
+      schema:
+        type: string
+    limitQueryParam:
+      in: query
+      name: limit
+      required: false
+      description:
+        Maximum number of records to be returned. (Should be greater than 0)
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+    beforeQueryParam:
+      in: query
+      name: before
+      required: false
+      description:
+        Points to the previous range of data that can be retrieved.
+      schema:
+        type: string
+    afterQueryParam:
+      in: query
+      name: after
+      required: false
+      description:
+        Points to the next range of data to be returned.
+      schema:
+        type: string
+    recursiveQueryParam:
+      in: query
+      name: recursive
+      required: false
+      description:
+        Determines whether a recursive search should happen.
+      schema:
+        type: boolean
+        default: false
   schemas:
     RootOrganizationResponse:
       type: object
@@ -101,6 +176,60 @@ components:
         name:
           type: string
           example: 'ABC Builders'
+
+    OrganizationsResponse:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+          example:
+            [
+              {
+                "href": "/o/10084a8d-113f-4211-a0d5-efe36b082211/api/users/v1/me/organizations?limit=10&filter=name+co+der&next=MjAyMS0xMi0yMSAwNToxODozMS4wMDQzNDg=",
+                "rel": "next",
+              },  {
+              "href": "/o/10084a8d-113f-4211-a0d5-efe36b082211/api/users/v1/me/organizations?limit=10&filter=name+co+der&before=MjAyMS0xMi0yMSAwNToxODozMS4wMDQzNDg=",
+              "rel": "previous",
+            }
+            ]
+        organizations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Organization'
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+          format: uri
+          description: Endpoint that will return the next or previous page of data.
+        rel:
+          type: string
+          description: Describes whether the provided link is to access the next or previous page of data.
+      readOnly: true
+    Organization:
+      type: object
+      required:
+        - id
+        - name
+        - status
+        - ref
+      properties:
+        id:
+          type: string
+          example: 'b4526d91-a8bf-43d2-8b14-c548cf73065b'
+        name:
+          type: string
+          example: 'ABC Builders'
+        status:
+          type: string
+          enum: [ ACTIVE, DISABLED ]
+          example: ACTIVE
+        ref:
+          type: string
+          example: 'o/10084a8d-113f-4211-a0d5-efe36b082211/api/server/v1/organizations/b4526d91-a8bf-43d2-8b14-c548cf73065b'
 
     BasicOrganizationObject:
       type: object
@@ -147,6 +276,12 @@ components:
   # Descriptions of error responses.
   #--------------------------------------------------------
   responses:
+    BadRequest:
+      description: Invalid input in the request.
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/Error'
     NotFound:
       description: Resource is not found.
       content:
@@ -159,6 +294,12 @@ components:
       description: Access forbidden.
     ServerError:
       description: Internal server error.
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotImplemented:
+      description: Not Implemented.
       content:
         'application/json':
           schema:
