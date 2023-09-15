@@ -74,11 +74,9 @@ public class ResetRequest  {
         return this;
     }
     
-    @ApiModelProperty(required = true, value = "Confirmation code of the recovery flow")
+    @ApiModelProperty(value = "Confirmation code of the recovery flow")
     @JsonProperty("flowConfirmationCode")
     @Valid
-    @NotNull(message = "Property flowConfirmationCode cannot be null.")
-
     public String getFlowConfirmationCode() {
         return flowConfirmationCode;
     }

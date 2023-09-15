@@ -924,7 +924,6 @@ components:
       description: Object to reset the password of a user
       required:
         - resetCode
-        - flowConfirmationCode
         - password
       properties:
         resetCode:
