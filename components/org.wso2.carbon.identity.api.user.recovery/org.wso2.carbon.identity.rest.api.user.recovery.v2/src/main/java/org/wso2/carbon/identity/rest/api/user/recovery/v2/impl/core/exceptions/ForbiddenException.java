@@ -20,7 +20,6 @@ package org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.exceptions;
 
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.Constants;
-//import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.ErrorResponse;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;

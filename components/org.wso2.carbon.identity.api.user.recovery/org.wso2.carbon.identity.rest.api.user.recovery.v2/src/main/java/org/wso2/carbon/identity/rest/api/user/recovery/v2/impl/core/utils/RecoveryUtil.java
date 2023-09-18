@@ -73,8 +73,8 @@ public class RecoveryUtil {
     /**
      * Converts a list of UserClaim in to a UserClaim array.
      *
-     * @param userClaimsList UserClaims List
-     * @return Map of user claims
+     * @param userClaimsList UserClaims List.
+     * @return Map of user claims.
      */
     public static HashMap<String, String> buildUserClaimsMap(List<UserClaim> userClaimsList) {
 
@@ -88,8 +88,8 @@ public class RecoveryUtil {
     /**
      * Convert the list of Properties in to an array.
      *
-     * @param propertyList List of {@link Property} objects
-     * @return Map of properties
+     * @param propertyList List of {@link Property} objects.
+     * @return Map of properties.
      */
     public static HashMap<String, String> buildPropertiesMap(List<Property> propertyList) {
 
@@ -106,8 +106,8 @@ public class RecoveryUtil {
     /**
      * Build the channel response object list.
      *
-     * @param channels Available notification channels list as objects of {@link NotificationChannelDTO}
-     * @return List of RecoveryChannels {@link RecoveryChannel}
+     * @param channels Available notification channels list as objects of {@link NotificationChannelDTO}.
+     * @return List of RecoveryChannels {@link RecoveryChannel}.
      */
     public static List<RecoveryChannel> buildRecoveryChannelInformation(NotificationChannelDTO[] channels) {
 
@@ -131,10 +131,10 @@ public class RecoveryUtil {
     /**
      * Handle client errors with specific http codes.
      *
-     * @param scenario  Recovery scenario
-     * @param exception IdentityRecoveryClientException
+     * @param scenario  Recovery scenario.
+     * @param exception IdentityRecoveryClientException.
      * @return WebApplicationException (NOTE: Returns null when the client error is for no user available or for
-     * multiple users available
+     * multiple users available.
      */
     public static WebApplicationException handleClientExceptions(String tenantDomain,
                                                                  String scenario, String correlationId,
@@ -252,6 +252,23 @@ public class RecoveryUtil {
     }
 
     /**
+     * Builds API error to be thrown.
+     *
+     * @param e Identity Recovery Exception.
+     * @param errorCode Error code.
+     * @param errorMessage Error message.
+     * @param errorDescription Error description.
+     * @param status HTTP status.
+     * @return APIError object which contains the error description.
+     */
+    public static APIError handleException(IdentityRecoveryException e, String errorCode, String errorMessage,
+                                           String errorDescription, Response.Status status) {
+
+        ErrorResponse errorResponse = buildErrorResponse(e, errorCode, errorMessage, errorDescription);
+        return new APIError(status, errorResponse);
+    }
+
+    /**
      * Builds the API context on whether the tenant qualified url is enabled or not. In tenant qualified mode the
      * ServiceURLBuilder appends the tenant domain to the URI as a path param automatically. But
      * in non tenant qualified mode we need to append the tenant domain to the path manually.
@@ -271,17 +288,14 @@ public class RecoveryUtil {
     }
 
     /**
-     * Returns a new InternalServerErrorException.
+     * Builds error response.
      *
-     * @return A new InternalServerErrorException with default details as a response
+     * @param e Identity Recovery Exception.
+     * @param errorCode Error code.
+     * @param errorMessage Error message.
+     * @param errorDescription Error description.
+     * @return ErrorResponse.
      */
-    public static APIError handleException(IdentityRecoveryException e, String errorCode, String errorMessage,
-                                           String errorDescription, Response.Status status) {
-
-        ErrorResponse errorResponse = buildErrorResponse(e, errorCode, errorMessage, errorDescription);
-        return new APIError(status, errorResponse);
-    }
-
     private static ErrorResponse buildErrorResponse(IdentityRecoveryException e, String errorCode, String errorMessage,
                                                     String errorDescription) {
 
@@ -290,22 +304,31 @@ public class RecoveryUtil {
         return errorResponse;
     }
 
-    private static ErrorResponse.Builder getErrorBuilder(String errorCode, String errorMsg, String errorDescription) {
+    /**
+     * Get ErrorResponse Builder
+     *
+     * @param errorCode Error code.
+     * @param errorMessage Error message.
+     * @param errorDescription Error description.
+     * @return ErrorResponse.Builder.
+     */
+    private static ErrorResponse.Builder getErrorBuilder(String errorCode, String errorMessage,
+                                                         String errorDescription) {
 
         return new ErrorResponse.Builder().withCode(errorCode)
-                .withMessage(errorMsg)
+                .withMessage(errorMessage)
                 .withDescription(errorDescription);
     }
 
     /**
      * Returns a new PreconditionFailedException.
      *
-     * @param tenantDomain  Tenant domain
-     * @param description   Description of the exception
-     * @param code          Error code
-     * @param resetCode     Reset code given to the user by confirmation API
-     * @param correlationId Correlation Id
-     * @return A new PreconditionFailedException with the specified details as a response
+     * @param tenantDomain  Tenant domain.
+     * @param description   Description of the exception.
+     * @param code          Error code.
+     * @param resetCode     Reset code given to the user by confirmation API.
+     * @param correlationId Correlation Id.
+     * @return A new PreconditionFailedException with the specified details as a response.
      */
     private static PreconditionFailedException buildRetryPasswordResetObject(String tenantDomain, String description,
                                                                              String code, String resetCode,
@@ -327,13 +350,13 @@ public class RecoveryUtil {
     /**
      * Build the RetryErrorResponse for not valid password scenario.
      *
-     * @param message           Error message
-     * @param description       Error description
-     * @param code              Error code
-     * @param resetCode         Password reset code
-     * @param correlationId     Trace Id
-     * @param apiCallsArrayList Available APIs
-     * @return RetryErrorResponse
+     * @param message           Error message.
+     * @param description       Error description.
+     * @param code              Error code.
+     * @param resetCode         Password reset code.
+     * @param correlationId     Trace Id.
+     * @param apiCallsArrayList Available APIs.
+     * @return RetryErrorResponse.
      */
     private static RetryErrorResponse buildRetryErrorResponse(String message, String description, String code,
                                                               String resetCode, String correlationId,
@@ -352,11 +375,10 @@ public class RecoveryUtil {
     /**
      * Returns a new NotAcceptableException.
      *
-     * @param className     Class name
-     * @param description   Description of the exception
-     * @param code          Error code
-     * @param correlationId Correlation Id
-     * @return A new NotAcceptableException with the specified details as a response
+     * @param e             IdentityRecoveryException.
+     * @param code          Error code.
+     * @param description   Description of the exception.
+     * @return A new NotAcceptableException with the specified details as a response.
      */
     private static NotAcceptableException buildRequestNotAcceptableResponseObject(IdentityRecoveryException e,
                                                                                   String code, String description) {
@@ -369,11 +391,10 @@ public class RecoveryUtil {
     /**
      * Returns a new NotAcceptableException.
      *
-     * @param className     Class name
-     * @param description   Description of the exception
-     * @param code          Error code
-     * @param correlationId Correlation Id
-     * @return A new NotAcceptableException with the specified details as a response
+     * @param e             IdentityRecoveryException.
+     * @param code          Error code.
+     * @param description   Description of the exception.
+     * @return A new NotAcceptableException with the specified details as a response.
      */
     private static NotFoundException buildRequestNotFoundResponseObject(IdentityRecoveryException e, String code,
                                                                         String description) {
@@ -386,10 +407,9 @@ public class RecoveryUtil {
     /**
      * Returns a new ConflictException.
      *
-     * @param className     Classname
+     * @param e             IdentityRecoveryException.
      * @param description   Description of the exception
      * @param code          Error code
-     * @param correlationId CorrelationId
      * @return A new ConflictException with the specified details as a response
      */
     private static ConflictException buildConflictRequestResponseObject(IdentityRecoveryException e, String description,
@@ -403,11 +423,10 @@ public class RecoveryUtil {
     /**
      * Returns a new ForbiddenException.
      *
-     * @param className     Class name
-     * @param description   Description of the exception
-     * @param code          Error code
-     * @param correlationId CorrelationId
-     * @return A new ForbiddenException with the specified details as a response
+     * @param e             IdentityRecoveryException.
+     * @param description   Description of the exception.
+     * @param code          Error code.
+     * @return A new ForbiddenException with the specified details as a response.
      */
     private static ForbiddenException buildForbiddenRequestResponseObject(IdentityRecoveryException e,
                                                                           String description, String code) {
@@ -422,8 +441,8 @@ public class RecoveryUtil {
      * (Eg: USR-20045)
      *
      * @param exceptionErrorCode Existing error code.
-     * @param scenario           Operation scenario
-     * @return New error code with the scenario prepended
+     * @param scenario           Operation scenario.
+     * @return New error code with the scenario prepended.
      */
     private static String prependOperationScenarioToErrorCode(String exceptionErrorCode, String scenario) {
 
@@ -442,7 +461,7 @@ public class RecoveryUtil {
     /**
      * Generate the map which categorizes the exceptions for different http error groups.
      *
-     * @return Grouped client error map
+     * @return Grouped client error map.
      */
     private static HashMap<String, String> generateClientErrorMap() {
 
