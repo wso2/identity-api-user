@@ -166,8 +166,8 @@ public class UsernameRecoveryService {
         // Build next API calls.
         ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
         apiCallsArrayList.add(RecoveryUtil
-                .buildApiCall(Constants.APICall.RECOVER_USERNAME_API.getType(), Constants.RelationStates.NEXT_REL,
-                        RecoveryUtil.buildURIForBody(tenantDomain, Constants.APICall.RECOVER_USERNAME_API.getApiUrl(),
+                .buildApiCall(APICalls.RECOVER_USERNAME_API.getType(), Constants.RelationStates.NEXT_REL,
+                        RecoveryUtil.buildURIForBody(tenantDomain, APICalls.RECOVER_USERNAME_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
         // Build recovery type information.
         AccountRecoveryType accountRecoveryType = new AccountRecoveryType();

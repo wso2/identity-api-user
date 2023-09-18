@@ -32,6 +32,7 @@ import org.wso2.carbon.identity.recovery.IdentityRecoveryClientException;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryConstants;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryException;
 import org.wso2.carbon.identity.recovery.dto.NotificationChannelDTO;
+import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.APICalls;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.Constants;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.exceptions.ConflictException;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.exceptions.ForbiddenException;
@@ -337,8 +338,8 @@ public class RecoveryUtil {
         // Build next API calls.
         ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
         apiCallsArrayList.add(RecoveryUtil
-                .buildApiCall(Constants.APICall.RESET_PASSWORD_API.getType(), Constants.RelationStates.NEXT_REL,
-                        buildURIForBody(tenantDomain, Constants.APICall.RESET_PASSWORD_API.getApiUrl(),
+                .buildApiCall(APICalls.RESET_PASSWORD_API.getType(), Constants.RelationStates.NEXT_REL,
+                        buildURIForBody(tenantDomain, APICalls.RESET_PASSWORD_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
         RetryErrorResponse retryErrorResponse = buildRetryErrorResponse(
                 Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, code, description, resetCode, correlationId,

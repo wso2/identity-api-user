@@ -234,14 +234,14 @@ public class PasswordRecoveryService {
 
         ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
         // Add confirm API call information.
-        apiCallsArrayList.add(RecoveryUtil.buildApiCall(Constants.APICall.CONFIRM_PASSWORD_RECOVERY_API.getType(),
+        apiCallsArrayList.add(RecoveryUtil.buildApiCall(APICalls.CONFIRM_PASSWORD_RECOVERY_API.getType(),
                 Constants.RelationStates.NEXT_REL, RecoveryUtil
-                        .buildURIForBody(tenantDomain, Constants.APICall.CONFIRM_PASSWORD_RECOVERY_API.getApiUrl(),
+                        .buildURIForBody(tenantDomain, APICalls.CONFIRM_PASSWORD_RECOVERY_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
         // Add resend confirmation code API call information.
-        apiCallsArrayList.add(RecoveryUtil.buildApiCall(Constants.APICall.RESEND_CONFIRMATION_API.getType(),
+        apiCallsArrayList.add(RecoveryUtil.buildApiCall(APICalls.RESEND_CONFIRMATION_API.getType(),
                 Constants.RelationStates.RESEND_REL, RecoveryUtil
-                        .buildURIForBody(tenantDomain, Constants.APICall.RESEND_CONFIRMATION_API.getApiUrl(),
+                        .buildURIForBody(tenantDomain, APICalls.RESEND_CONFIRMATION_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
         if (NotificationChannels.EXTERNAL_CHANNEL.getChannelType()
                 .equals(resendConfirmationDTO.getNotificationChannel())) {
@@ -299,8 +299,8 @@ public class PasswordRecoveryService {
         // Build next API calls list.
         ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
         apiCallsArrayList.add(RecoveryUtil
-                .buildApiCall(Constants.APICall.RESET_PASSWORD_API.getType(), Constants.RelationStates.NEXT_REL,
-                        RecoveryUtil.buildURIForBody(tenantDomain, Constants.APICall.RESET_PASSWORD_API.getApiUrl(),
+                .buildApiCall(APICalls.RESET_PASSWORD_API.getType(), Constants.RelationStates.NEXT_REL,
+                        RecoveryUtil.buildURIForBody(tenantDomain, APICalls.RESET_PASSWORD_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
         ResetCodeResponse resetCodeResponseDTO = new ResetCodeResponse();
         resetCodeResponseDTO.setResetCode(passwordResetCodeDTO.getPasswordResetCode());
@@ -321,14 +321,14 @@ public class PasswordRecoveryService {
 
         // Build next API calls.
         ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
-        apiCallsArrayList.add(RecoveryUtil.buildApiCall(Constants.APICall.CONFIRM_PASSWORD_RECOVERY_API.getType(),
+        apiCallsArrayList.add(RecoveryUtil.buildApiCall(APICalls.CONFIRM_PASSWORD_RECOVERY_API.getType(),
                 Constants.RelationStates.NEXT_REL, RecoveryUtil
-                        .buildURIForBody(tenantDomain, Constants.APICall.CONFIRM_PASSWORD_RECOVERY_API.getApiUrl(),
+                        .buildURIForBody(tenantDomain, APICalls.CONFIRM_PASSWORD_RECOVERY_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
         // Add resend confirmation code API call information.
-        apiCallsArrayList.add(RecoveryUtil.buildApiCall(Constants.APICall.RESEND_CONFIRMATION_API.getType(),
+        apiCallsArrayList.add(RecoveryUtil.buildApiCall(APICalls.RESEND_CONFIRMATION_API.getType(),
                 Constants.RelationStates.RESEND_REL, RecoveryUtil
-                        .buildURIForBody(tenantDomain, Constants.APICall.RESEND_CONFIRMATION_API.getApiUrl(),
+                        .buildURIForBody(tenantDomain, APICalls.RESEND_CONFIRMATION_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
         if (NotificationChannels.EXTERNAL_CHANNEL.getChannelType().equals(notificationChannel)) {
             return Response.ok()
@@ -438,9 +438,9 @@ public class PasswordRecoveryService {
             String recoveryFlowId = recoveryInformationDTO.getRecoveryFlowId();
             // Build next API calls list.
             ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
-            apiCallsArrayList.add(RecoveryUtil.buildApiCall(Constants.APICall.RECOVER_PASSWORD_API.getType(),
+            apiCallsArrayList.add(RecoveryUtil.buildApiCall(APICalls.RECOVER_PASSWORD_API.getType(),
                     Constants.RelationStates.NEXT_REL, RecoveryUtil
-                            .buildURIForBody(tenantDomain, Constants.APICall.RECOVER_PASSWORD_API.getApiUrl(),
+                            .buildURIForBody(tenantDomain, APICalls.RECOVER_PASSWORD_API.getApiUrl(),
                                     Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
             RecoveryChannelInformation recoveryChannelInformation = buildRecoveryChannelInformation(
                     recoveryInformationDTO);
@@ -453,9 +453,9 @@ public class PasswordRecoveryService {
             // Build next API calls list.
             ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
             apiCallsArrayList.add(RecoveryUtil
-                    .buildApiCall(Constants.APICall.RECOVER_WITH_SECURITY_QUESTIONS_API.getType(),
+                    .buildApiCall(APICalls.RECOVER_WITH_SECURITY_QUESTIONS_API.getType(),
                             Constants.RelationStates.NEXT_REL, RecoveryUtil.buildURIForBody(tenantDomain,
-                                    Constants.APICall.RECOVER_WITH_SECURITY_QUESTIONS_API.getApiUrl(),
+                                    APICalls.RECOVER_WITH_SECURITY_QUESTIONS_API.getApiUrl(),
                                     Constants.CHALLENGE_QUESTIONS_ENDPOINT_BASEPATH),
                             recoveryInformationDTO.getUsername()));
             // Build recovery information for recover with security questions.
