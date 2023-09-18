@@ -72,6 +72,9 @@ public class PasswordRecoveryService {
      */
     public Response initiatePasswordRecovery(InitRequest initRequest) {
 
+        if (initRequest == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         Map<String, String> userClaims = RecoveryUtil.buildUserClaimsMap(initRequest.getClaims());
         try {
@@ -79,14 +82,6 @@ public class PasswordRecoveryService {
             RecoveryInformationDTO recoveryInformationDTO =
                     UserAccountRecoveryServiceDataHolder.getPasswordRecoveryManager().initiate(userClaims, tenantDomain,
                             RecoveryUtil.buildPropertiesMap(initRequest.getProperties()));
-            // If RecoveryChannelInfoDTO is null throw not found error.
-            if (recoveryInformationDTO == null) {
-                if (LOG.isDebugEnabled()) {
-                    String message = "No recovery information for password recovery request";
-                    LOG.debug(message);
-                }
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-            }
             return Response.ok().entity(buildPasswordRecoveryInitResponse(tenantDomain, recoveryInformationDTO))
                     .build();
         } catch (IdentityRecoveryClientException e) {
@@ -108,6 +103,9 @@ public class PasswordRecoveryService {
      */
     public Response recoverPassword(RecoveryRequest recoveryRequest) {
 
+        if (recoveryRequest == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         String recoveryId = recoveryRequest.getRecoveryCode();
         String channelId = recoveryRequest.getChannelId();
@@ -143,6 +141,9 @@ public class PasswordRecoveryService {
      */
     public Response confirmRecovery(ConfirmRequest confirmRequest) {
 
+        if (confirmRequest == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         try {
             PasswordResetCodeDTO passwordResetCodeDTO =
@@ -169,6 +170,9 @@ public class PasswordRecoveryService {
      */
     public Response resetPassword(ResetRequest resetRequest) {
 
+        if (resetRequest == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         char[] password = resetRequest.getPassword().toCharArray();
         try {
@@ -198,6 +202,9 @@ public class PasswordRecoveryService {
      */
     public Response resendConfirmation(ResendConfirmationRequest resendConfirmationRequest) {
 
+        if (resendConfirmationRequest == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         String resendCode = resendConfirmationRequest.getResendCode();
         Map<String, String> properties = RecoveryUtil.buildPropertiesMap(resendConfirmationRequest.getProperties());
