@@ -23,23 +23,23 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.wso2.carbon.identity.api.user.common.error.APIError;
+import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.core.ServiceURLBuilder;
 import org.wso2.carbon.identity.core.URLBuilderException;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryClientException;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryConstants;
+import org.wso2.carbon.identity.recovery.IdentityRecoveryException;
 import org.wso2.carbon.identity.recovery.dto.NotificationChannelDTO;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.Constants;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.exceptions.ConflictException;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.exceptions.ForbiddenException;
-import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.exceptions.InternalServerErrorException;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.exceptions.NotAcceptableException;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.exceptions.NotFoundException;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.exceptions.PreconditionFailedException;
 
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.APICall;
-import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.ErrorResponse;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.Property;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.RecoveryChannel;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.RetryErrorResponse;
@@ -131,36 +131,33 @@ public class RecoveryUtil {
     /**
      * Handle client errors with specific http codes.
      *
-     * @param className Class name
      * @param scenario  Recovery scenario
      * @param exception IdentityRecoveryClientException
      * @return WebApplicationException (NOTE: Returns null when the client error is for no user available or for
      * multiple users available
      */
-    public static WebApplicationException handleClientExceptions(String className, String tenantDomain,
+    public static WebApplicationException handleClientExceptions(String tenantDomain,
                                                                  String scenario, String correlationId,
                                                                  IdentityRecoveryClientException exception) {
 
-        return handleClientExceptions(className, tenantDomain, scenario, StringUtils.EMPTY, correlationId, exception);
+        return handleClientExceptions(tenantDomain, scenario, StringUtils.EMPTY, correlationId, exception);
     }
 
     /**
      * Handle client errors with specific http codes.
      *
-     * @param className Class name.
      * @param scenario  Recovery scenario.
      * @param code      Recovery code.
      * @param exception IdentityRecoveryClientException.
      * @return WebApplicationException (NOTE: Returns null when the client error is for no user available or for
      * multiple users available.
      */
-    public static WebApplicationException handleClientExceptions(String className, String tenantDomain, String scenario,
+    public static WebApplicationException handleClientExceptions(String tenantDomain, String scenario,
                                                                  String code, String correlationId,
                                                                  IdentityRecoveryClientException exception) {
 
         if (StringUtils.isEmpty(exception.getErrorCode())) {
-            return buildConflictRequestResponseObject(className, exception.getMessage(), exception.getErrorCode(),
-                    correlationId);
+            return buildConflictRequestResponseObject(exception, exception.getMessage(), exception.getErrorCode());
         }
         String errorCode = prependOperationScenarioToErrorCode(exception.getErrorCode(), scenario);
 
@@ -170,8 +167,7 @@ public class RecoveryUtil {
             // Throw errors according to exception category.
             switch (errorCategory) {
                 case FORBIDDEN_ERROR_CATEGORY:
-                    return buildForbiddenRequestResponseObject(className, exception.getMessage(), errorCode,
-                            correlationId);
+                    return buildForbiddenRequestResponseObject(exception, exception.getMessage(), errorCode);
                 case CONFLICT_REQUEST_ERROR_CATEGORY:
                     if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_MULTIPLE_MATCHING_USERS.getCode()
                             .equals(errorCode)) {
@@ -181,8 +177,8 @@ public class RecoveryUtil {
                             return new WebApplicationException(Response.accepted().build());
                         }
                     }
-                    return buildConflictRequestResponseObject(className, exception.getMessage(),
-                            exception.getErrorCode(), correlationId);
+                    return buildConflictRequestResponseObject(exception, exception.getMessage(),
+                            exception.getErrorCode());
                 case REQUEST_NOT_FOUND_ERROR_CATEGORY:
                     if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_NO_USER_FOUND.getCode().equals(errorCode)) {
                         // If user notify is not enabled, throw a accepted response.
@@ -191,46 +187,18 @@ public class RecoveryUtil {
                             return new WebApplicationException(Response.accepted().build());
                         }
                     }
-                    return buildRequestNotFoundResponseObject(className, exception.getMessage(), errorCode,
-                            correlationId);
+                    return buildRequestNotFoundResponseObject(exception, errorCode, exception.getMessage());
                 case REQUEST_NOT_ACCEPTABLE_ERROR_CATEGORY:
-                    return buildRequestNotAcceptableResponseObject(className, exception.getMessage(), errorCode,
-                            correlationId);
+                    return buildRequestNotAcceptableResponseObject(exception, errorCode, exception.getMessage());
                 case RETRY_ERROR_CATEGORY:
-                    return buildRetryPasswordResetObject(className, tenantDomain, exception.getMessage(), errorCode,
+                    return buildRetryPasswordResetObject(tenantDomain, exception.getMessage(), errorCode,
                             code, correlationId);
                 default:
-                    return buildConflictRequestResponseObject(className, exception.getMessage(), errorCode,
-                            correlationId);
+                    return buildConflictRequestResponseObject(exception, exception.getMessage(), errorCode);
             }
         } else {
-            return buildConflictRequestResponseObject(className, exception.getMessage(), errorCode, correlationId);
+            return buildConflictRequestResponseObject(exception, exception.getMessage(), errorCode);
         }
-    }
-
-    /**
-     * Logs the error, builds a internalServerErrorException with specified details and throws it.
-     *
-     * @param className     Class name.
-     * @param message       Error message.
-     * @param code          Error code.
-     * @param correlationId Correlation Id.
-     * @param throwable     Error.
-     * @return WebApplicationException.
-     */
-    public static WebApplicationException buildInternalServerErrorResponse(String className, String message,
-                                                                           String code, String correlationId,
-                                                                           Throwable throwable) {
-
-        if (StringUtils.isNotBlank(className)) {
-            message = String.format("%s : %s - %s", LOG_MESSAGE_PREFIX, className, message);
-        }
-        if (throwable == null) {
-            log.error(message);
-        } else {
-            log.error(message, throwable);
-        }
-        return buildInternalServerError(code, correlationId);
     }
 
     /**
@@ -270,7 +238,7 @@ public class RecoveryUtil {
             url = ServiceURLBuilder.create().addPath(context).build().getRelativePublicURL();
         } catch (URLBuilderException e) {
             String errorDescription = "Server encountered an error while building URL for response body.";
-            org.wso2.carbon.identity.api.user.common.error.ErrorResponse errorResponse =
+            ErrorResponse errorResponse =
                     new org.wso2.carbon.identity.api.user.common.error.ErrorResponse.Builder()
                     .withCode(UNEXPECTED_SERVER_ERROR.getCode())
                     .withMessage("Error while building response.")
@@ -305,41 +273,33 @@ public class RecoveryUtil {
     /**
      * Returns a new InternalServerErrorException.
      *
-     * @param code          Code
-     * @param correlationId Correlation Id
      * @return A new InternalServerErrorException with default details as a response
      */
-    private static InternalServerErrorException buildInternalServerError(String code, String correlationId) {
+    public static APIError handleException(IdentityRecoveryException e, String errorCode, String errorMessage,
+                                           String errorDescription, Response.Status status) {
 
-        ErrorResponse errorResponse = buildErrorResponse(Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT, code,
-                Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT, correlationId);
-        return new InternalServerErrorException(errorResponse);
+        ErrorResponse errorResponse = buildErrorResponse(e, errorCode, errorMessage, errorDescription);
+        return new APIError(status, errorResponse);
     }
 
-    /**
-     * Returns a generic error response.
-     *
-     * @param code          Error code
-     * @param message       Specifies the error message
-     * @param description   Error description
-     * @param correlationId CorrelationID
-     * @return A generic error with the specified details
-     */
-    private static ErrorResponse buildErrorResponse(String message, String code, String description,
-                                                       String correlationId) {
+    private static ErrorResponse buildErrorResponse(IdentityRecoveryException e, String errorCode, String errorMessage,
+                                                    String errorDescription) {
 
-        ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setCode(code);
-        errorResponse.setMessage(message);
-        errorResponse.setDescription(description);
-        errorResponse.setTraceId(correlationId);
+        ErrorResponse errorResponse = getErrorBuilder(errorCode, errorMessage, errorDescription).build(log, e,
+                errorMessage);
         return errorResponse;
+    }
+
+    private static ErrorResponse.Builder getErrorBuilder(String errorCode, String errorMsg, String errorDescription) {
+
+        return new ErrorResponse.Builder().withCode(errorCode)
+                .withMessage(errorMsg)
+                .withDescription(errorDescription);
     }
 
     /**
      * Returns a new PreconditionFailedException.
      *
-     * @param className     Class name
      * @param tenantDomain  Tenant domain
      * @param description   Description of the exception
      * @param code          Error code
@@ -347,9 +307,9 @@ public class RecoveryUtil {
      * @param correlationId Correlation Id
      * @return A new PreconditionFailedException with the specified details as a response
      */
-    private static PreconditionFailedException buildRetryPasswordResetObject(String className, String tenantDomain,
-                                                                             String description, String code,
-                                                                             String resetCode, String correlationId) {
+    private static PreconditionFailedException buildRetryPasswordResetObject(String tenantDomain, String description,
+                                                                             String code, String resetCode,
+                                                                             String correlationId) {
 
         // Build next API calls.
         ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
@@ -360,9 +320,6 @@ public class RecoveryUtil {
         RetryErrorResponse retryErrorResponse = buildRetryErrorResponse(
                 Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, code, description, resetCode, correlationId,
                 apiCallsArrayList);
-        if (StringUtils.isNotBlank(className)) {
-            description = String.format("%s : %s - %s", LOG_MESSAGE_PREFIX, className, description);
-        }
         log.error(description);
         return new PreconditionFailedException(retryErrorResponse);
     }
@@ -401,15 +358,11 @@ public class RecoveryUtil {
      * @param correlationId Correlation Id
      * @return A new NotAcceptableException with the specified details as a response
      */
-    private static NotAcceptableException buildRequestNotAcceptableResponseObject(String className, String description,
-                                                                                  String code, String correlationId) {
+    private static NotAcceptableException buildRequestNotAcceptableResponseObject(IdentityRecoveryException e,
+                                                                                  String code, String description) {
 
-        ErrorResponse errorResponse = buildErrorResponse(Constants.STATUS_METHOD_NOT_ACCEPTED_MESSAGE_DEFAULT, code,
-                description, correlationId);
-        if (StringUtils.isNotBlank(className)) {
-            description = String.format("%s : %s - %s", LOG_MESSAGE_PREFIX, className, description);
-        }
-        log.error(description);
+      ErrorResponse errorResponse = buildErrorResponse(e, code, Constants.STATUS_METHOD_NOT_ACCEPTED_MESSAGE_DEFAULT,
+                description);
         return new NotAcceptableException(errorResponse);
     }
 
@@ -422,15 +375,11 @@ public class RecoveryUtil {
      * @param correlationId Correlation Id
      * @return A new NotAcceptableException with the specified details as a response
      */
-    private static NotFoundException buildRequestNotFoundResponseObject(String className, String description,
-                                                                        String code, String correlationId) {
+    private static NotFoundException buildRequestNotFoundResponseObject(IdentityRecoveryException e, String code,
+                                                                        String description) {
 
-        ErrorResponse errorResponse = buildErrorResponse(Constants.STATUS_NOT_FOUND_MESSAGE_DEFAULT, code,
-                description, correlationId);
-        if (StringUtils.isNotBlank(className)) {
-            description = String.format("%s : %s - %s", LOG_MESSAGE_PREFIX, className, description);
-        }
-        log.error(description);
+        ErrorResponse errorResponse = buildErrorResponse(e, code, Constants.STATUS_NOT_FOUND_MESSAGE_DEFAULT,
+                description);
         return new NotFoundException(errorResponse);
     }
 
@@ -443,16 +392,11 @@ public class RecoveryUtil {
      * @param correlationId CorrelationId
      * @return A new ConflictException with the specified details as a response
      */
-    private static ConflictException buildConflictRequestResponseObject(String className, String description,
-                                                                        String code, String correlationId) {
+    private static ConflictException buildConflictRequestResponseObject(IdentityRecoveryException e, String description,
+                                                                        String code) {
 
-        ErrorResponse errorResponse = buildErrorResponse(Constants.STATUS_CONFLICT_MESSAGE_DEFAULT, code,
-                description, correlationId);
-        if (StringUtils.isNotBlank(className)) {
-            description = String.format("CorrelationId: %s : %s : %s - %s", correlationId, LOG_MESSAGE_PREFIX,
-                    className, description);
-        }
-        log.error(description);
+     ErrorResponse errorResponse = buildErrorResponse(e, code, Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
+                description);
         return new ConflictException(errorResponse);
     }
 
@@ -465,15 +409,11 @@ public class RecoveryUtil {
      * @param correlationId CorrelationId
      * @return A new ForbiddenException with the specified details as a response
      */
-    private static ForbiddenException buildForbiddenRequestResponseObject(String className, String description,
-                                                                          String code, String correlationId) {
+    private static ForbiddenException buildForbiddenRequestResponseObject(IdentityRecoveryException e,
+                                                                          String description, String code) {
 
-        ErrorResponse errorResponse = buildErrorResponse(Constants.STATUS_FORBIDDEN_MESSAGE_DEFAULT, code,
-                description, correlationId);
-        if (StringUtils.isNotBlank(className)) {
-            description = String.format("%s : %s - %s", LOG_MESSAGE_PREFIX, className, description);
-        }
-        log.error(description);
+      ErrorResponse errorResponse = buildErrorResponse(e, code, Constants.STATUS_FORBIDDEN_MESSAGE_DEFAULT,
+                description);
         return new ForbiddenException(errorResponse);
     }
 

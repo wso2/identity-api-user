@@ -19,7 +19,7 @@
 package org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.exceptions;
 
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.Constants;
-import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.ErrorResponse;
+//import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.ErrorResponse;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.RetryErrorResponse;
 
 import javax.ws.rs.WebApplicationException;
@@ -40,12 +40,12 @@ public class PreconditionFailedException extends WebApplicationException {
      *
      * @param errorResponse ErrorResponse{@link ErrorResponse} object holding the error code and the message
      */
-    public PreconditionFailedException(ErrorResponse errorResponse) {
-
-        super(Response.status(Response.Status.PRECONDITION_FAILED).entity(errorResponse)
-                .header(Constants.HEADER_CONTENT_TYPE, Constants.DEFAULT_RESPONSE_CONTENT_TYPE).build());
-        message = errorResponse.getDescription();
-    }
+//    public PreconditionFailedException(ErrorResponse errorResponse) {
+//
+//        super(Response.status(Response.Status.PRECONDITION_FAILED).entity(errorResponse)
+//                .header(Constants.HEADER_CONTENT_TYPE, Constants.DEFAULT_RESPONSE_CONTENT_TYPE).build());
+//        message = errorResponse.getDescription();
+//    }
 
     /**
      * Constructs a new exception from the RetryErrorDTO{@link RetryErrorResponse} object.

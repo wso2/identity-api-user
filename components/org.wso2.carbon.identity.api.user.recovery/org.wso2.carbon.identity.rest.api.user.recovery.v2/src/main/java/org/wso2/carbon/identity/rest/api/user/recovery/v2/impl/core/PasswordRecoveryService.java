@@ -90,11 +90,12 @@ public class PasswordRecoveryService {
             return Response.ok().entity(buildPasswordRecoveryInitResponse(tenantDomain, recoveryInformationDTO))
                     .build();
         } catch (IdentityRecoveryClientException e) {
-            throw RecoveryUtil.handleClientExceptions(PasswordRecoveryService.class.getName(), tenantDomain,
+            throw RecoveryUtil.handleClientExceptions(tenantDomain,
                     IdentityRecoveryConstants.PASSWORD_RECOVERY_SCENARIO, Util.getCorrelation(), e);
         } catch (IdentityRecoveryException e) {
-            throw RecoveryUtil.buildInternalServerErrorResponse(PasswordRecoveryService.class.getName(),
-                    Constants.SERVER_ERROR, e.getErrorCode(), Util.getCorrelation(), e);
+            throw RecoveryUtil.handleException(e, e.getErrorCode(),
+                    Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
+                    Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT, Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -125,11 +126,12 @@ public class PasswordRecoveryService {
             return buildPasswordRecoveryResponse(tenantDomain, passwordRecoverDTO.getNotificationChannel(),
                     passwordRecoverDTO);
         } catch (IdentityRecoveryClientException e) {
-            throw RecoveryUtil.handleClientExceptions(PasswordRecoveryService.class.getName(), tenantDomain,
+            throw RecoveryUtil.handleClientExceptions(tenantDomain,
                     IdentityRecoveryConstants.PASSWORD_RECOVERY_SCENARIO, Util.getCorrelation(), e);
         } catch (IdentityRecoveryException e) {
-            throw RecoveryUtil.buildInternalServerErrorResponse(PasswordRecoveryService.class.getName(),
-                    Constants.SERVER_ERROR, e.getErrorCode(), Util.getCorrelation(), e);
+            throw RecoveryUtil.handleException(e, e.getErrorCode(),
+                    Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
+                    Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT, Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -149,11 +151,12 @@ public class PasswordRecoveryService {
                                     RecoveryUtil.buildPropertiesMap(confirmRequest.getProperties()));
             return Response.ok().entity(buildResetCodeResponse(tenantDomain, passwordResetCodeDTO)).build();
         } catch (IdentityRecoveryClientException e) {
-            throw RecoveryUtil.handleClientExceptions(PasswordRecoveryService.class.getName(), tenantDomain,
+            throw RecoveryUtil.handleClientExceptions(tenantDomain,
                     IdentityRecoveryConstants.PASSWORD_RECOVERY_SCENARIO, Util.getCorrelation(), e);
         } catch (IdentityRecoveryException e) {
-            throw RecoveryUtil.buildInternalServerErrorResponse(PasswordRecoveryService.class.getName(),
-                    Constants.SERVER_ERROR, e.getErrorCode(), Util.getCorrelation(), e);
+            throw RecoveryUtil.handleException(e, e.getErrorCode(),
+                    Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
+                    Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT, Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -176,12 +179,13 @@ public class PasswordRecoveryService {
             return Response.ok().entity(buildPasswordResetResponse(successfulPasswordResetDTO)).build();
         } catch (IdentityRecoveryClientException e) {
             // Send the reset code again for a retry attempt.
-            throw RecoveryUtil.handleClientExceptions(PasswordRecoveryService.class.getName(), tenantDomain,
+            throw RecoveryUtil.handleClientExceptions(tenantDomain,
                     IdentityRecoveryConstants.PASSWORD_RECOVERY_SCENARIO, resetRequest.getResetCode(),
                     Util.getCorrelation(), e);
         } catch (IdentityRecoveryException e) {
-            throw RecoveryUtil.buildInternalServerErrorResponse(PasswordRecoveryService.class.getName(),
-                    Constants.SERVER_ERROR, e.getErrorCode(), Util.getCorrelation(), e);
+            throw RecoveryUtil.handleException(e, e.getErrorCode(),
+                    Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
+                    Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT, Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -209,11 +213,12 @@ public class PasswordRecoveryService {
             }
             return buildResendConfirmationResponse(tenantDomain, resendConfirmationDTO);
         } catch (IdentityRecoveryClientException e) {
-            throw RecoveryUtil.handleClientExceptions(PasswordRecoveryService.class.getName(), tenantDomain,
+            throw RecoveryUtil.handleClientExceptions(tenantDomain,
                     IdentityRecoveryConstants.PASSWORD_RECOVERY_SCENARIO, Util.getCorrelation(), e);
         } catch (IdentityRecoveryException e) {
-            throw RecoveryUtil.buildInternalServerErrorResponse(PasswordRecoveryService.class.getName(),
-                    Constants.SERVER_ERROR, e.getErrorCode(), Util.getCorrelation(), e);
+            throw RecoveryUtil.handleException(e, e.getErrorCode(),
+                    Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
+                    Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT, Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 

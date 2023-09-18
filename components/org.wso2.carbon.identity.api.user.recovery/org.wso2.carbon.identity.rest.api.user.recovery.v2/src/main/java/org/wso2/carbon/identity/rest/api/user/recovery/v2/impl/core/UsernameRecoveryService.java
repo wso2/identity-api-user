@@ -81,12 +81,12 @@ public class UsernameRecoveryService {
             return Response.ok().entity(buildUsernameRecoveryInitResponse(recoveryInformationDTO, tenantDomain))
                     .build();
         } catch (IdentityRecoveryClientException e) {
-            throw RecoveryUtil
-                    .handleClientExceptions(UsernameRecoveryService.class.getName(), tenantDomain,
-                            IdentityRecoveryConstants.USER_NAME_RECOVERY, Util.getCorrelation(), e);
+            throw RecoveryUtil.handleClientExceptions(tenantDomain, IdentityRecoveryConstants.USER_NAME_RECOVERY,
+                    Util.getCorrelation(), e);
         } catch (IdentityRecoveryException e) {
-            throw RecoveryUtil.buildInternalServerErrorResponse(UsernameRecoveryService.class.getName(),
-                    Constants.SERVER_ERROR, e.getErrorCode(), Util.getCorrelation(), e);
+            throw RecoveryUtil.handleException(e, e.getErrorCode(),
+                    Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
+                    Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT, Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -115,12 +115,12 @@ public class UsernameRecoveryService {
             }
             return buildUsernameRecoveryResponse(usernameRecoverDTO.getNotificationChannel(), usernameRecoverDTO);
         } catch (IdentityRecoveryClientException e) {
-            throw RecoveryUtil
-                    .handleClientExceptions(UsernameRecoveryService.class.getName(), tenantDomain,
-                            IdentityRecoveryConstants.USER_NAME_RECOVERY, StringUtils.EMPTY, Util.getCorrelation(), e);
+            throw RecoveryUtil.handleClientExceptions(tenantDomain, IdentityRecoveryConstants.USER_NAME_RECOVERY,
+                    StringUtils.EMPTY, Util.getCorrelation(), e);
         } catch (IdentityRecoveryException e) {
-            throw RecoveryUtil.buildInternalServerErrorResponse(UsernameRecoveryService.class.getName(),
-                    Constants.SERVER_ERROR, e.getErrorCode(), Util.getCorrelation(), e);
+            throw RecoveryUtil.handleException(e, e.getErrorCode(),
+                    Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
+                    Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT, Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 
