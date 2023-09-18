@@ -19,14 +19,23 @@
 package org.wso2.carbon.identity.rest.api.user.organization.v1.util;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.identity.api.user.common.error.APIError;
+import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants;
+import org.wso2.carbon.identity.organization.management.service.exception.OrganizationManagementClientException;
 import org.wso2.carbon.identity.organization.management.service.exception.OrganizationManagementException;
 import org.wso2.carbon.identity.rest.api.user.organization.v1.model.Error;
+
+import javax.ws.rs.core.Response;
 
 /**
  * This class provides util functions to the user organization management endpoint.
  */
 public class Util {
+
+    private static final Log LOG = LogFactory.getLog(Util.class);
 
     /**
      * Returns a generic error object.
@@ -61,5 +70,60 @@ public class Util {
         error.setMessage(exception.getMessage());
         error.setDescription(exception.getDescription());
         return error;
+    }
+
+    /**
+     * Handle organization management exceptions.
+     *
+     * @param e The organization management exception.
+     * @return APIError object.
+     */
+    public static APIError handleOrganizationManagementException(OrganizationManagementException e) {
+
+        if (e instanceof OrganizationManagementClientException) {
+            ErrorResponse errorResponse = getErrorBuilder(e).build(LOG, e.getDescription());
+            return new APIError(Response.Status.BAD_REQUEST, errorResponse);
+        }
+        ErrorResponse errorResponse = getErrorBuilder(e).build(LOG, e, e.getDescription());
+        return new APIError(Response.Status.INTERNAL_SERVER_ERROR, errorResponse);
+    }
+
+    /**
+     * Handle errors.
+     *
+     * @param status The response status.
+     * @param error  The error message enum.
+     * @return APIError object.
+     */
+    public static APIError handleError(Response.Status status,
+                                       OrganizationManagementConstants.ErrorMessages error) {
+
+        ErrorResponse errorResponse = getErrorBuilder(error).build();
+        return new APIError(status, errorResponse);
+    }
+
+    private static ErrorResponse.Builder getErrorBuilder(OrganizationManagementException e) {
+
+        return new ErrorResponse.Builder().withCode(e.getErrorCode()).withMessage(e.getMessage())
+                .withDescription(e.getDescription());
+    }
+
+    private static ErrorResponse.Builder getErrorBuilder(OrganizationManagementConstants.ErrorMessages errorEnum,
+                                                         String... data) {
+
+        return new ErrorResponse.Builder().withCode(errorEnum.getCode()).withMessage(errorEnum.getMessage())
+                .withDescription(buildErrorDescription(errorEnum, data));
+    }
+
+    private static String buildErrorDescription(OrganizationManagementConstants.ErrorMessages errorEnum,
+                                                String... data) {
+
+        String errorDescription;
+        if (ArrayUtils.isNotEmpty(data)) {
+            errorDescription = String.format(errorEnum.getDescription(), data);
+        } else {
+            errorDescription = errorEnum.getDescription();
+        }
+        return errorDescription;
     }
 }
