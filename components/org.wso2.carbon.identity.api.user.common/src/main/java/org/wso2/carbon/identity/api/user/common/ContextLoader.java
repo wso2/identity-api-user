@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.base.MultitenantConstants;
+import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
@@ -28,12 +29,16 @@ import org.wso2.carbon.identity.core.ServiceURLBuilder;
 import org.wso2.carbon.identity.core.URLBuilderException;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
+import org.wso2.carbon.user.api.UserRealm;
+import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.UserStoreConfigConstants;
+import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 
 import java.net.URI;
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_INVALID_USERNAME;
+import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_SERVER_ERROR;
 import static org.wso2.carbon.identity.api.user.common.Constants.TENANT_CONTEXT_PATH_COMPONENT;
 import static org.wso2.carbon.identity.api.user.common.Constants.TENANT_NAME_FROM_CONTEXT;
 import static org.wso2.carbon.identity.api.user.common.Constants.USER_API_PATH_COMPONENT;
@@ -249,5 +254,32 @@ public class ContextLoader {
 
         Response.Status status = Response.Status.INTERNAL_SERVER_ERROR;
         return new APIError(status, errorResponse);
+    }
+
+
+    /**
+     * Retrieves authenticated username from carbon context.
+     *
+     * @return username of the authenticated user.
+     */
+    public static String getUserIdFromContext() {
+
+        try {
+            UserRealm userRealm = CarbonContext.getThreadLocalCarbonContext().getUserRealm();
+            AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) userRealm.getUserStoreManager();
+
+            if (userStoreManager == null) {
+                throw new APIError(Response.Status.INTERNAL_SERVER_ERROR,
+                        new ErrorResponse.Builder().withDescription("Error occured while resolving the user.")
+                                .withCode(ERROR_CODE_SERVER_ERROR.getCode())
+                                .withMessage(ERROR_CODE_SERVER_ERROR.getMessage()).build());
+            }
+            return userStoreManager.getUserIDFromUserName(getUsernameFromContext());
+        } catch (UserStoreException e) {
+            throw new APIError(Response.Status.INTERNAL_SERVER_ERROR,
+                    new ErrorResponse.Builder().withDescription("Error occured while resolving the user.")
+                            .withCode(ERROR_CODE_SERVER_ERROR.getCode())
+                            .withMessage(ERROR_CODE_SERVER_ERROR.getMessage()).build());
+        }
     }
 }
