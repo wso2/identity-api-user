@@ -34,10 +34,6 @@ import org.wso2.carbon.identity.recovery.IdentityRecoveryException;
 import org.wso2.carbon.identity.recovery.dto.NotificationChannelDTO;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.APICalls;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.Constants;
-import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.exceptions.ConflictException;
-import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.exceptions.ForbiddenException;
-import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.exceptions.NotAcceptableException;
-import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.exceptions.NotFoundException;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.exceptions.PreconditionFailedException;
 
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.APICall;
@@ -159,7 +155,8 @@ public class RecoveryUtil {
                                                                 String correlationId) {
 
         if (StringUtils.isEmpty(exception.getErrorCode())) {
-            return buildConflictRequestResponseObject(exception, exception.getMessage(), exception.getErrorCode());
+            return handleException(exception, exception.getErrorCode(), Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
+                    exception.getMessage(), Response.Status.CONFLICT);
         }
         String errorCode = prependOperationScenarioToErrorCode(exception.getErrorCode(), scenario);
 
@@ -169,7 +166,8 @@ public class RecoveryUtil {
             // Throw errors according to exception category.
             switch (errorCategory) {
                 case FORBIDDEN_ERROR_CATEGORY:
-                    return buildForbiddenRequestResponseObject(exception, exception.getMessage(), errorCode);
+                    return handleException(exception, errorCode, Constants.STATUS_FORBIDDEN_MESSAGE_DEFAULT,
+                            exception.getMessage(), Response.Status.FORBIDDEN);
                 case CONFLICT_REQUEST_ERROR_CATEGORY:
                     if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_MULTIPLE_MATCHING_USERS.getCode()
                             .equals(errorCode)) {
@@ -179,8 +177,8 @@ public class RecoveryUtil {
                             return new WebApplicationException(Response.accepted().build());
                         }
                     }
-                    return buildConflictRequestResponseObject(exception, exception.getMessage(),
-                            exception.getErrorCode());
+                    return handleException(exception, errorCode, Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
+                            exception.getMessage(), Response.Status.CONFLICT);
                 case REQUEST_NOT_FOUND_ERROR_CATEGORY:
                     if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_NO_USER_FOUND.getCode().equals(errorCode)) {
                         // If user notify is not enabled, throw a accepted response.
@@ -189,17 +187,21 @@ public class RecoveryUtil {
                             return new WebApplicationException(Response.accepted().build());
                         }
                     }
-                    return buildRequestNotFoundResponseObject(exception, errorCode, exception.getMessage());
+                    return handleException(exception, errorCode, Constants.STATUS_NOT_FOUND_MESSAGE_DEFAULT,
+                        exception.getMessage(), Response.Status.NOT_FOUND);
                 case REQUEST_NOT_ACCEPTABLE_ERROR_CATEGORY:
-                    return buildRequestNotAcceptableResponseObject(exception, errorCode, exception.getMessage());
+                    return handleException(exception, errorCode, Constants.STATUS_METHOD_NOT_ACCEPTED_MESSAGE_DEFAULT,
+                        exception.getMessage(), Response.Status.NOT_ACCEPTABLE);
                 case RETRY_ERROR_CATEGORY:
                     return buildRetryPasswordResetObject(tenantDomain, exception.getMessage(), errorCode,
                             code, correlationId);
                 default:
-                    return buildConflictRequestResponseObject(exception, exception.getMessage(), errorCode);
+                    return handleException(exception, errorCode, Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
+                            exception.getMessage(), Response.Status.CONFLICT);
             }
         } else {
-            return buildConflictRequestResponseObject(exception, exception.getMessage(), errorCode);
+            return handleException(exception, errorCode, Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
+                    exception.getMessage(), Response.Status.CONFLICT);
         }
     }
 
@@ -372,70 +374,6 @@ public class RecoveryUtil {
         retryErrorResponse.setTraceId(correlationId);
         retryErrorResponse.setLinks(apiCallsArrayList);
         return retryErrorResponse;
-    }
-
-    /**
-     * Returns a new NotAcceptableException.
-     *
-     * @param e             IdentityRecoveryException.
-     * @param code          Error code.
-     * @param description   Description of the exception.
-     * @return A new NotAcceptableException with the specified details as a response.
-     */
-    private static NotAcceptableException buildRequestNotAcceptableResponseObject(IdentityRecoveryException e,
-                                                                                  String code, String description) {
-
-      ErrorResponse errorResponse = buildErrorResponse(e, code, Constants.STATUS_METHOD_NOT_ACCEPTED_MESSAGE_DEFAULT,
-                description);
-        return new NotAcceptableException(errorResponse);
-    }
-
-    /**
-     * Returns a new NotAcceptableException.
-     *
-     * @param e             IdentityRecoveryException.
-     * @param code          Error code.
-     * @param description   Description of the exception.
-     * @return A new NotAcceptableException with the specified details as a response.
-     */
-    private static NotFoundException buildRequestNotFoundResponseObject(IdentityRecoveryException e, String code,
-                                                                        String description) {
-
-        ErrorResponse errorResponse = buildErrorResponse(e, code, Constants.STATUS_NOT_FOUND_MESSAGE_DEFAULT,
-                description);
-        return new NotFoundException(errorResponse);
-    }
-
-    /**
-     * Returns a new ConflictException.
-     *
-     * @param e             IdentityRecoveryException.
-     * @param description   Description of the exception
-     * @param code          Error code
-     * @return A new ConflictException with the specified details as a response
-     */
-    private static ConflictException buildConflictRequestResponseObject(IdentityRecoveryException e, String description,
-                                                                        String code) {
-
-     ErrorResponse errorResponse = buildErrorResponse(e, code, Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
-                description);
-        return new ConflictException(errorResponse);
-    }
-
-    /**
-     * Returns a new ForbiddenException.
-     *
-     * @param e             IdentityRecoveryException.
-     * @param description   Description of the exception.
-     * @param code          Error code.
-     * @return A new ForbiddenException with the specified details as a response.
-     */
-    private static ForbiddenException buildForbiddenRequestResponseObject(IdentityRecoveryException e,
-                                                                          String description, String code) {
-
-      ErrorResponse errorResponse = buildErrorResponse(e, code, Constants.STATUS_FORBIDDEN_MESSAGE_DEFAULT,
-                description);
-        return new ForbiddenException(errorResponse);
     }
 
     /**
