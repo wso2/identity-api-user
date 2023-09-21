@@ -49,6 +49,7 @@ import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.UserClaim;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
@@ -69,7 +70,7 @@ public class RecoveryUtil {
     private static final String RETRY_ERROR_CATEGORY = "RETRY_ERROR_CATEGORY";
 
     // Map with the error codes categorized in to different error groups.
-    private static final HashMap<String, String> clientErrorMap = generateClientErrorMap();
+    private static final Map<String, String> clientErrorMap = generateClientErrorMap();
 
     /**
      * Converts a list of UserClaim in to a UserClaim array.
@@ -77,9 +78,9 @@ public class RecoveryUtil {
      * @param userClaimsList UserClaims List.
      * @return Map of user claims.
      */
-    public static HashMap<String, String> buildUserClaimsMap(List<UserClaim> userClaimsList) {
+    public static Map<String, String> buildUserClaimsMap(List<UserClaim> userClaimsList) {
 
-        HashMap<String, String> userClaims = new HashMap<>();
+        Map<String, String> userClaims = new HashMap<>();
         for (UserClaim userClaimModel : userClaimsList) {
             userClaims.put(userClaimModel.getUri(), userClaimModel.getValue());
         }
@@ -92,9 +93,9 @@ public class RecoveryUtil {
      * @param propertyList List of {@link Property} objects.
      * @return Map of properties.
      */
-    public static HashMap<String, String> buildPropertiesMap(List<Property> propertyList) {
+    public static Map<String, String> buildPropertiesMap(List<Property> propertyList) {
 
-        HashMap<String, String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         if (propertyList == null) {
             return properties;
         }
@@ -137,11 +138,11 @@ public class RecoveryUtil {
      * @return WebApplicationException (NOTE: Returns null when the client error is for no user available or for
      * multiple users available.
      */
-    public static WebApplicationException handleClientExceptions(String tenantDomain,
-                                                                 String scenario, String correlationId,
-                                                                 IdentityRecoveryClientException exception) {
+    public static WebApplicationException handleClientException(IdentityRecoveryClientException exception,
+                                                                String tenantDomain, String scenario,
+                                                                String correlationId) {
 
-        return handleClientExceptions(tenantDomain, scenario, StringUtils.EMPTY, correlationId, exception);
+        return handleClientException(exception, tenantDomain, scenario, StringUtils.EMPTY, correlationId);
     }
 
     /**
@@ -153,9 +154,9 @@ public class RecoveryUtil {
      * @return WebApplicationException (NOTE: Returns null when the client error is for no user available or for
      * multiple users available.
      */
-    public static WebApplicationException handleClientExceptions(String tenantDomain, String scenario,
-                                                                 String code, String correlationId,
-                                                                 IdentityRecoveryClientException exception) {
+    public static WebApplicationException handleClientException(IdentityRecoveryClientException exception,
+                                                                String tenantDomain, String scenario, String code,
+                                                                String correlationId) {
 
         if (StringUtils.isEmpty(exception.getErrorCode())) {
             return buildConflictRequestResponseObject(exception, exception.getMessage(), exception.getErrorCode());
@@ -464,9 +465,9 @@ public class RecoveryUtil {
      *
      * @return Grouped client error map.
      */
-    private static HashMap<String, String> generateClientErrorMap() {
+    private static Map<String, String> generateClientErrorMap() {
 
-        HashMap<String, String> clientErrorMap = new HashMap<>();
+        Map<String, String> clientErrorMap = new HashMap<>();
 
         // Errors for not enabling account recovery, user account locked, user account disabled.
         clientErrorMap

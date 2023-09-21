@@ -81,8 +81,8 @@ public class UsernameRecoveryService {
             return Response.ok().entity(buildUsernameRecoveryInitResponse(recoveryInformationDTO, tenantDomain))
                     .build();
         } catch (IdentityRecoveryClientException e) {
-            throw RecoveryUtil.handleClientExceptions(tenantDomain, IdentityRecoveryConstants.USER_NAME_RECOVERY,
-                    Util.getCorrelation(), e);
+            throw RecoveryUtil.handleClientException(e, tenantDomain, IdentityRecoveryConstants.USER_NAME_RECOVERY,
+                    Util.getCorrelation());
         } catch (IdentityRecoveryException e) {
             throw RecoveryUtil.handleException(e, e.getErrorCode(),
                     Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
@@ -115,8 +115,8 @@ public class UsernameRecoveryService {
             }
             return buildUsernameRecoveryResponse(usernameRecoverDTO.getNotificationChannel(), usernameRecoverDTO);
         } catch (IdentityRecoveryClientException e) {
-            throw RecoveryUtil.handleClientExceptions(tenantDomain, IdentityRecoveryConstants.USER_NAME_RECOVERY,
-                    StringUtils.EMPTY, Util.getCorrelation(), e);
+            throw RecoveryUtil.handleClientException(e, tenantDomain, IdentityRecoveryConstants.USER_NAME_RECOVERY,
+                    StringUtils.EMPTY, Util.getCorrelation());
         } catch (IdentityRecoveryException e) {
             throw RecoveryUtil.handleException(e, e.getErrorCode(),
                     Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
