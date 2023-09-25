@@ -82,7 +82,7 @@ public class UsernameRecoveryService {
                     .build();
         } catch (IdentityRecoveryClientException e) {
             if (StringUtils.isEmpty(e.getErrorCode())) {
-                throw RecoveryUtil.handleException(e, e.getErrorCode(), Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
+                throw RecoveryUtil.handleException(e.getErrorCode(), Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
                         e.getMessage(), Response.Status.CONFLICT);
             }
             String errorCode = RecoveryUtil.prependOperationScenarioToErrorCode(e.getErrorCode(),
@@ -91,7 +91,7 @@ public class UsernameRecoveryService {
                     e.getErrorCode()) || IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_DISABLED_ACCOUNT.getCode().
                     equals(e.getErrorCode()) || IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_LOCKED_ACCOUNT.
                     getCode().equals(e.getErrorCode())) {
-                throw RecoveryUtil.handleException(e, errorCode, Constants.STATUS_FORBIDDEN_MESSAGE_DEFAULT,
+                throw RecoveryUtil.handleException(errorCode, Constants.STATUS_FORBIDDEN_MESSAGE_DEFAULT,
                         e.getMessage(), Response.Status.FORBIDDEN);
             } else if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_MULTIPLE_MATCHING_USERS.getCode().equals(
                     e.getErrorCode())) {
@@ -100,7 +100,7 @@ public class UsernameRecoveryService {
                         .getProperty(IdentityRecoveryConstants.ConnectorConfig.NOTIFY_USER_EXISTENCE))) {
                     throw new WebApplicationException(Response.accepted().build());
                 }
-                throw RecoveryUtil.handleException(e, errorCode, Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
+                throw RecoveryUtil.handleException(errorCode, Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
                         e.getMessage(), Response.Status.CONFLICT);
             } else if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_NO_USER_FOUND.getCode().equals(
                     e.getErrorCode())) {
@@ -109,18 +109,18 @@ public class UsernameRecoveryService {
                         .getProperty(IdentityRecoveryConstants.ConnectorConfig.NOTIFY_USER_EXISTENCE))) {
                     throw new WebApplicationException(Response.accepted().build());
                 }
-                throw RecoveryUtil.handleException(e, errorCode, Constants.STATUS_NOT_FOUND_MESSAGE_DEFAULT,
+                throw RecoveryUtil.handleException(errorCode, Constants.STATUS_NOT_FOUND_MESSAGE_DEFAULT,
                         e.getMessage(), Response.Status.NOT_FOUND);
             } else if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_NO_VERIFIED_CHANNELS_FOR_USER.
                     getCode().equals(e.getErrorCode())) {
-                throw RecoveryUtil.handleException(e, errorCode, Constants.STATUS_NOT_FOUND_MESSAGE_DEFAULT,
+                throw RecoveryUtil.handleException(errorCode, Constants.STATUS_NOT_FOUND_MESSAGE_DEFAULT,
                         e.getMessage(), Response.Status.NOT_FOUND);
             } else {
-                throw RecoveryUtil.handleException(e, errorCode, Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
+                throw RecoveryUtil.handleException(errorCode, Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
                         e.getMessage(), Response.Status.CONFLICT);
             }
         } catch (IdentityRecoveryException e) {
-            throw RecoveryUtil.handleException(e, e.getErrorCode(),
+            throw RecoveryUtil.handleInternalServerError(e, e.getErrorCode(),
                     Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
                     Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT, Response.Status.INTERNAL_SERVER_ERROR);
         }
@@ -152,30 +152,30 @@ public class UsernameRecoveryService {
             return buildUsernameRecoveryResponse(usernameRecoverDTO.getNotificationChannel(), usernameRecoverDTO);
         } catch (IdentityRecoveryClientException e) {
             if (StringUtils.isEmpty(e.getErrorCode())) {
-                throw RecoveryUtil.handleException(e, e.getErrorCode(), Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
+                throw RecoveryUtil.handleException(e.getErrorCode(), Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
                         e.getMessage(), Response.Status.CONFLICT);
             }
             String errorCode = RecoveryUtil.prependOperationScenarioToErrorCode(e.getErrorCode(),
                     IdentityRecoveryConstants.USER_NAME_RECOVERY);
             if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_USERNAME_RECOVERY_NOT_ENABLED.getCode().equals(
                     e.getErrorCode())) {
-                throw RecoveryUtil.handleException(e, errorCode, Constants.STATUS_FORBIDDEN_MESSAGE_DEFAULT,
+                throw RecoveryUtil.handleException(errorCode, Constants.STATUS_FORBIDDEN_MESSAGE_DEFAULT,
                         e.getMessage(), Response.Status.FORBIDDEN);
             } else if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_NO_ACCOUNT_RECOVERY_DATA.getCode().equals(
                     e.getErrorCode())) {
-                throw RecoveryUtil.handleException(e, errorCode, Constants.STATUS_NOT_FOUND_MESSAGE_DEFAULT,
+                throw RecoveryUtil.handleException(errorCode, Constants.STATUS_NOT_FOUND_MESSAGE_DEFAULT,
                         e.getMessage(), Response.Status.NOT_FOUND);
             } else if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_INVALID_RECOVERY_CODE.getCode().equals(
                     e.getErrorCode()) || IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_EXPIRED_RECOVERY_CODE.
                     getCode().equals(e.getErrorCode())) {
-                throw RecoveryUtil.handleException(e, errorCode, Constants.STATUS_METHOD_NOT_ACCEPTED_MESSAGE_DEFAULT,
+                throw RecoveryUtil.handleException(errorCode, Constants.STATUS_METHOD_NOT_ACCEPTED_MESSAGE_DEFAULT,
                         e.getMessage(), Response.Status.NOT_ACCEPTABLE);
             } else {
-                throw RecoveryUtil.handleException(e, errorCode, Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
+                throw RecoveryUtil.handleException(errorCode, Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
                         e.getMessage(), Response.Status.CONFLICT);
             }
         } catch (IdentityRecoveryException e) {
-            throw RecoveryUtil.handleException(e, e.getErrorCode(),
+            throw RecoveryUtil.handleInternalServerError(e, e.getErrorCode(),
                     Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
                     Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT, Response.Status.INTERNAL_SERVER_ERROR);
         }

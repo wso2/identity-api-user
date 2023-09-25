@@ -167,6 +167,22 @@ public class RecoveryUtil {
     /**
      * Builds API error to be thrown.
      *
+     * @param errorCode Error code.
+     * @param errorMessage Error message.
+     * @param errorDescription Error description.
+     * @param status HTTP status.
+     * @return APIError object which contains the error description.
+     */
+    public static APIError handleException(String errorCode, String errorMessage, String errorDescription,
+                                           Response.Status status) {
+
+        ErrorResponse errorResponse = buildErrorResponse(errorCode, errorMessage, errorDescription);
+        return new APIError(status, errorResponse);
+    }
+
+    /**
+     * Builds API error to be thrown for server errors.
+     *
      * @param e Identity Recovery Exception.
      * @param errorCode Error code.
      * @param errorMessage Error message.
@@ -174,10 +190,10 @@ public class RecoveryUtil {
      * @param status HTTP status.
      * @return APIError object which contains the error description.
      */
-    public static APIError handleException(IdentityRecoveryException e, String errorCode, String errorMessage,
+    public static APIError handleInternalServerError(IdentityRecoveryException e, String errorCode, String errorMessage,
                                            String errorDescription, Response.Status status) {
 
-        ErrorResponse errorResponse = buildErrorResponse(e, errorCode, errorMessage, errorDescription);
+        ErrorResponse errorResponse = buildServerErrorResponse(e, errorCode, errorMessage, errorDescription);
         return new APIError(status, errorResponse);
     }
 
@@ -204,7 +220,10 @@ public class RecoveryUtil {
         RetryErrorResponse retryErrorResponse = buildRetryErrorResponse(
                 Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, code, description, resetCode, correlationId,
                 apiCallsArrayList);
-        log.error(description);
+        //log.error(description);
+        if (log.isDebugEnabled()) {
+            log.debug(description);
+        }
         return new PreconditionFailedException(retryErrorResponse);
     }
 
@@ -252,14 +271,29 @@ public class RecoveryUtil {
     /**
      * Builds error response.
      *
+     * @param errorCode Error code.
+     * @param errorMessage Error message.
+     * @param errorDescription Error description.
+     * @return ErrorResponse.
+     */
+    private static ErrorResponse buildErrorResponse(String errorCode, String errorMessage, String errorDescription) {
+
+        ErrorResponse errorResponse = getErrorBuilder(errorCode, errorMessage, errorDescription).build(log,
+                errorMessage);
+        return errorResponse;
+    }
+
+    /**
+     * Builds server error response.
+     *
      * @param e Identity Recovery Exception.
      * @param errorCode Error code.
      * @param errorMessage Error message.
      * @param errorDescription Error description.
      * @return ErrorResponse.
      */
-    private static ErrorResponse buildErrorResponse(IdentityRecoveryException e, String errorCode, String errorMessage,
-                                                    String errorDescription) {
+    private static ErrorResponse buildServerErrorResponse(IdentityRecoveryException e, String errorCode,
+                                                          String errorMessage, String errorDescription) {
 
         ErrorResponse errorResponse = getErrorBuilder(errorCode, errorMessage, errorDescription).build(log, e,
                 errorMessage);
