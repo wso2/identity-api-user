@@ -27,8 +27,6 @@ import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.core.ServiceURLBuilder;
 import org.wso2.carbon.identity.core.URLBuilderException;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
-import org.wso2.carbon.identity.core.util.IdentityUtil;
-import org.wso2.carbon.identity.recovery.IdentityRecoveryClientException;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryConstants;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryException;
 import org.wso2.carbon.identity.recovery.dto.NotificationChannelDTO;
@@ -46,7 +44,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.TENANT_CONTEXT_PATH_COMPONENT;
@@ -58,15 +55,6 @@ import static org.wso2.carbon.identity.application.common.util.IdentityApplicati
 public class RecoveryUtil {
 
     private static final Log log = LogFactory.getLog(RecoveryUtil.class);
-    private static final String LOG_MESSAGE_PREFIX = "INITIATOR";
-    private static final String FORBIDDEN_ERROR_CATEGORY = "FORBIDDEN_ERROR_CATEGORY";
-    private static final String CONFLICT_REQUEST_ERROR_CATEGORY = "CONFLICT_REQUEST_ERROR_CATEGORY";
-    private static final String REQUEST_NOT_FOUND_ERROR_CATEGORY = "REQUEST_NOT_FOUND_ERROR_CATEGORY";
-    private static final String REQUEST_NOT_ACCEPTABLE_ERROR_CATEGORY = "REQUEST_NOT_ACCEPTABLE_ERROR_CATEGORY";
-    private static final String RETRY_ERROR_CATEGORY = "RETRY_ERROR_CATEGORY";
-
-    // Map with the error codes categorized in to different error groups.
-    private static final Map<String, String> clientErrorMap = generateClientErrorMap();
 
     /**
      * Converts a list of UserClaim in to a UserClaim array.
@@ -124,85 +112,6 @@ public class RecoveryUtil {
             }
         }
         return recoveryChannelDTOs;
-    }
-
-    /**
-     * Handle client errors with specific http codes.
-     *
-     * @param scenario  Recovery scenario.
-     * @param exception IdentityRecoveryClientException.
-     * @return WebApplicationException (NOTE: Returns null when the client error is for no user available or for
-     * multiple users available.
-     */
-    public static WebApplicationException handleClientException(IdentityRecoveryClientException exception,
-                                                                String tenantDomain, String scenario,
-                                                                String correlationId) {
-
-        return handleClientException(exception, tenantDomain, scenario, StringUtils.EMPTY, correlationId);
-    }
-
-    /**
-     * Handle client errors with specific http codes.
-     *
-     * @param scenario  Recovery scenario.
-     * @param code      Recovery code.
-     * @param exception IdentityRecoveryClientException.
-     * @return WebApplicationException (NOTE: Returns null when the client error is for no user available or for
-     * multiple users available.
-     */
-    public static WebApplicationException handleClientException(IdentityRecoveryClientException exception,
-                                                                String tenantDomain, String scenario, String code,
-                                                                String correlationId) {
-
-        if (StringUtils.isEmpty(exception.getErrorCode())) {
-            return handleException(exception, exception.getErrorCode(), Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
-                    exception.getMessage(), Response.Status.CONFLICT);
-        }
-        String errorCode = prependOperationScenarioToErrorCode(exception.getErrorCode(), scenario);
-
-        if (clientErrorMap.containsKey(errorCode)) {
-            String errorCategory = clientErrorMap.get(errorCode);
-
-            // Throw errors according to exception category.
-            switch (errorCategory) {
-                case FORBIDDEN_ERROR_CATEGORY:
-                    return handleException(exception, errorCode, Constants.STATUS_FORBIDDEN_MESSAGE_DEFAULT,
-                            exception.getMessage(), Response.Status.FORBIDDEN);
-                case CONFLICT_REQUEST_ERROR_CATEGORY:
-                    if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_MULTIPLE_MATCHING_USERS.getCode()
-                            .equals(errorCode)) {
-                        // If user notify is not enabled, throw a accepted response.
-                        if (!Boolean.parseBoolean(IdentityUtil
-                                .getProperty(IdentityRecoveryConstants.ConnectorConfig.NOTIFY_USER_EXISTENCE))) {
-                            return new WebApplicationException(Response.accepted().build());
-                        }
-                    }
-                    return handleException(exception, errorCode, Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
-                            exception.getMessage(), Response.Status.CONFLICT);
-                case REQUEST_NOT_FOUND_ERROR_CATEGORY:
-                    if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_NO_USER_FOUND.getCode().equals(errorCode)) {
-                        // If user notify is not enabled, throw a accepted response.
-                        if (!Boolean.parseBoolean(IdentityUtil
-                                .getProperty(IdentityRecoveryConstants.ConnectorConfig.NOTIFY_USER_EXISTENCE))) {
-                            return new WebApplicationException(Response.accepted().build());
-                        }
-                    }
-                    return handleException(exception, errorCode, Constants.STATUS_NOT_FOUND_MESSAGE_DEFAULT,
-                        exception.getMessage(), Response.Status.NOT_FOUND);
-                case REQUEST_NOT_ACCEPTABLE_ERROR_CATEGORY:
-                    return handleException(exception, errorCode, Constants.STATUS_METHOD_NOT_ACCEPTED_MESSAGE_DEFAULT,
-                        exception.getMessage(), Response.Status.NOT_ACCEPTABLE);
-                case RETRY_ERROR_CATEGORY:
-                    return buildRetryPasswordResetObject(tenantDomain, exception.getMessage(), errorCode,
-                            code, correlationId);
-                default:
-                    return handleException(exception, errorCode, Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
-                            exception.getMessage(), Response.Status.CONFLICT);
-            }
-        } else {
-            return handleException(exception, errorCode, Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
-                    exception.getMessage(), Response.Status.CONFLICT);
-        }
     }
 
     /**
@@ -273,6 +182,55 @@ public class RecoveryUtil {
     }
 
     /**
+     * Returns a new PreconditionFailedException.
+     *
+     * @param tenantDomain  Tenant domain.
+     * @param description   Description of the exception.
+     * @param code          Error code.
+     * @param resetCode     Reset code given to the user by confirmation API.
+     * @param correlationId Correlation Id.
+     * @return A new PreconditionFailedException with the specified details as a response.
+     */
+    public static PreconditionFailedException buildRetryPasswordResetObject(String tenantDomain, String description,
+                                                                            String code, String resetCode,
+                                                                            String correlationId) {
+
+        // Build next API calls.
+        ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
+        apiCallsArrayList.add(RecoveryUtil
+                .buildApiCall(APICalls.RESET_PASSWORD_API.getType(), Constants.RelationStates.NEXT_REL,
+                        buildURIForBody(tenantDomain, APICalls.RESET_PASSWORD_API.getApiUrl(),
+                                Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
+        RetryErrorResponse retryErrorResponse = buildRetryErrorResponse(
+                Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, code, description, resetCode, correlationId,
+                apiCallsArrayList);
+        log.error(description);
+        return new PreconditionFailedException(retryErrorResponse);
+    }
+
+    /**
+     * Prepend the operation scenario to the existing exception error code.
+     * (Eg: USR-20045)
+     *
+     * @param exceptionErrorCode Existing error code.
+     * @param scenario           Operation scenario.
+     * @return New error code with the scenario prepended.
+     */
+    public static String prependOperationScenarioToErrorCode(String exceptionErrorCode, String scenario) {
+
+        if (StringUtils.isNotEmpty(exceptionErrorCode)) {
+            if (exceptionErrorCode.contains(IdentityRecoveryConstants.EXCEPTION_SCENARIO_SEPARATOR)) {
+                return exceptionErrorCode;
+            }
+            if (StringUtils.isNotEmpty(scenario)) {
+                exceptionErrorCode =
+                        scenario + IdentityRecoveryConstants.EXCEPTION_SCENARIO_SEPARATOR + exceptionErrorCode;
+            }
+        }
+        return exceptionErrorCode;
+    }
+
+    /**
      * Builds the API context on whether the tenant qualified url is enabled or not. In tenant qualified mode the
      * ServiceURLBuilder appends the tenant domain to the URI as a path param automatically. But
      * in non tenant qualified mode we need to append the tenant domain to the path manually.
@@ -325,33 +283,6 @@ public class RecoveryUtil {
     }
 
     /**
-     * Returns a new PreconditionFailedException.
-     *
-     * @param tenantDomain  Tenant domain.
-     * @param description   Description of the exception.
-     * @param code          Error code.
-     * @param resetCode     Reset code given to the user by confirmation API.
-     * @param correlationId Correlation Id.
-     * @return A new PreconditionFailedException with the specified details as a response.
-     */
-    private static PreconditionFailedException buildRetryPasswordResetObject(String tenantDomain, String description,
-                                                                             String code, String resetCode,
-                                                                             String correlationId) {
-
-        // Build next API calls.
-        ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
-        apiCallsArrayList.add(RecoveryUtil
-                .buildApiCall(APICalls.RESET_PASSWORD_API.getType(), Constants.RelationStates.NEXT_REL,
-                        buildURIForBody(tenantDomain, APICalls.RESET_PASSWORD_API.getApiUrl(),
-                                Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
-        RetryErrorResponse retryErrorResponse = buildRetryErrorResponse(
-                Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, code, description, resetCode, correlationId,
-                apiCallsArrayList);
-        log.error(description);
-        return new PreconditionFailedException(retryErrorResponse);
-    }
-
-    /**
      * Build the RetryErrorResponse for not valid password scenario.
      *
      * @param message           Error message.
@@ -374,83 +305,5 @@ public class RecoveryUtil {
         retryErrorResponse.setTraceId(correlationId);
         retryErrorResponse.setLinks(apiCallsArrayList);
         return retryErrorResponse;
-    }
-
-    /**
-     * Prepend the operation scenario to the existing exception error code.
-     * (Eg: USR-20045)
-     *
-     * @param exceptionErrorCode Existing error code.
-     * @param scenario           Operation scenario.
-     * @return New error code with the scenario prepended.
-     */
-    private static String prependOperationScenarioToErrorCode(String exceptionErrorCode, String scenario) {
-
-        if (StringUtils.isNotEmpty(exceptionErrorCode)) {
-            if (exceptionErrorCode.contains(IdentityRecoveryConstants.EXCEPTION_SCENARIO_SEPARATOR)) {
-                return exceptionErrorCode;
-            }
-            if (StringUtils.isNotEmpty(scenario)) {
-                exceptionErrorCode =
-                        scenario + IdentityRecoveryConstants.EXCEPTION_SCENARIO_SEPARATOR + exceptionErrorCode;
-            }
-        }
-        return exceptionErrorCode;
-    }
-
-    /**
-     * Generate the map which categorizes the exceptions for different http error groups.
-     *
-     * @return Grouped client error map.
-     */
-    private static Map<String, String> generateClientErrorMap() {
-
-        Map<String, String> clientErrorMap = new HashMap<>();
-
-        // Errors for not enabling account recovery, user account locked, user account disabled.
-        clientErrorMap
-                .put(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_PASSWORD_RECOVERY_WITH_NOTIFICATIONS_NOT_ENABLED
-                        .getCode(), FORBIDDEN_ERROR_CATEGORY);
-        clientErrorMap.put(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_USERNAME_RECOVERY_NOT_ENABLED.getCode(),
-                FORBIDDEN_ERROR_CATEGORY);
-        clientErrorMap.put(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_DISABLED_ACCOUNT.getCode(),
-                FORBIDDEN_ERROR_CATEGORY);
-        clientErrorMap.put(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_LOCKED_ACCOUNT.getCode(),
-                FORBIDDEN_ERROR_CATEGORY);
-        clientErrorMap.put(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_PASSWORD_RECOVERY_NOT_ENABLED.getCode(),
-                FORBIDDEN_ERROR_CATEGORY);
-
-        // Tenant miss match error.
-        clientErrorMap.put(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_USER_TENANT_DOMAIN_MISS_MATCH_WITH_CONTEXT
-                .getCode(), CONFLICT_REQUEST_ERROR_CATEGORY);
-
-        // Multiples users found error.
-        clientErrorMap.put(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_MULTIPLE_MATCHING_USERS.getCode(),
-                CONFLICT_REQUEST_ERROR_CATEGORY);
-
-        // No user found error.
-        clientErrorMap.put(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_NO_USER_FOUND.getCode(),
-                REQUEST_NOT_FOUND_ERROR_CATEGORY);
-
-        // No recovery code found and no verified channels found errors.
-        clientErrorMap.put(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_NO_ACCOUNT_RECOVERY_DATA.getCode(),
-                REQUEST_NOT_FOUND_ERROR_CATEGORY);
-        clientErrorMap.put(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_NO_VERIFIED_CHANNELS_FOR_USER.getCode(),
-                REQUEST_NOT_FOUND_ERROR_CATEGORY);
-
-        // Invalid recovery codes errors.
-        clientErrorMap.put(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_INVALID_RECOVERY_CODE.getCode(),
-                REQUEST_NOT_ACCEPTABLE_ERROR_CATEGORY);
-        clientErrorMap.put(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_INVALID_RESEND_CODE.getCode(),
-                REQUEST_NOT_ACCEPTABLE_ERROR_CATEGORY);
-        clientErrorMap.put(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_EXPIRED_RECOVERY_CODE.getCode(),
-                REQUEST_NOT_ACCEPTABLE_ERROR_CATEGORY);
-
-        // Password reset password history violation errors and password policy violation errors.
-        clientErrorMap.put(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_PASSWORD_HISTORY_VIOLATION.getCode(),
-                RETRY_ERROR_CATEGORY);
-        clientErrorMap.put(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_PASSWORD_POLICY_VIOLATION.getCode(),
-                RETRY_ERROR_CATEGORY);
-        return clientErrorMap;
     }
 }
