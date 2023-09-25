@@ -72,18 +72,18 @@ public class UsernameRecoveryService {
                             RecoveryUtil.buildPropertiesMap(initRequest.getProperties()));
             if (recoveryInformationDTO == null) {
                 // If RecoveryChannelInfoDTO is null throw not found error.
-                if (log.isDebugEnabled()) {
-                    String message = "No recovery information username recovery request";
-                    log.debug(message);
-                }
+                String message = "No recovery information username recovery request";
+                log.debug(message);
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
             return Response.ok().entity(buildUsernameRecoveryInitResponse(recoveryInformationDTO, tenantDomain))
                     .build();
         } catch (IdentityRecoveryClientException e) {
             if (StringUtils.isEmpty(e.getErrorCode())) {
-                throw RecoveryUtil.handleException(e.getErrorCode(), Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
-                        e.getMessage(), Response.Status.CONFLICT);
+                throw RecoveryUtil.handleInternalServerError(e, e.getErrorCode(),
+                        Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
+                        Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT,
+                        Response.Status.INTERNAL_SERVER_ERROR);
             }
             String errorCode = RecoveryUtil.prependOperationScenarioToErrorCode(e.getErrorCode(),
                     IdentityRecoveryConstants.USER_NAME_RECOVERY);
@@ -152,8 +152,10 @@ public class UsernameRecoveryService {
             return buildUsernameRecoveryResponse(usernameRecoverDTO.getNotificationChannel(), usernameRecoverDTO);
         } catch (IdentityRecoveryClientException e) {
             if (StringUtils.isEmpty(e.getErrorCode())) {
-                throw RecoveryUtil.handleException(e.getErrorCode(), Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
-                        e.getMessage(), Response.Status.CONFLICT);
+                throw RecoveryUtil.handleInternalServerError(e, e.getErrorCode(),
+                        Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
+                        Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT,
+                        Response.Status.INTERNAL_SERVER_ERROR);
             }
             String errorCode = RecoveryUtil.prependOperationScenarioToErrorCode(e.getErrorCode(),
                     IdentityRecoveryConstants.USER_NAME_RECOVERY);

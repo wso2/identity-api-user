@@ -54,7 +54,7 @@ import static org.wso2.carbon.identity.application.common.util.IdentityApplicati
  */
 public class RecoveryUtil {
 
-    private static final Log log = LogFactory.getLog(RecoveryUtil.class);
+    private static final Log LOG = LogFactory.getLog(RecoveryUtil.class);
 
     /**
      * Converts a list of UserClaim in to a UserClaim array.
@@ -156,7 +156,7 @@ public class RecoveryUtil {
                     .withCode(UNEXPECTED_SERVER_ERROR.getCode())
                     .withMessage("Error while building response.")
                     .withDescription(errorDescription)
-                    .build(log, e, errorDescription);
+                    .build(LOG, e, errorDescription);
 
             Response.Status status = Response.Status.INTERNAL_SERVER_ERROR;
             throw new APIError(status, errorResponse);
@@ -220,9 +220,7 @@ public class RecoveryUtil {
         RetryErrorResponse retryErrorResponse = buildRetryErrorResponse(
                 Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, code, description, resetCode, correlationId,
                 apiCallsArrayList);
-        if (log.isDebugEnabled()) {
-            log.debug(description);
-        }
+        LOG.debug(description);
         return new PreconditionFailedException(retryErrorResponse);
     }
 
@@ -277,9 +275,7 @@ public class RecoveryUtil {
      */
     private static ErrorResponse buildErrorResponse(String errorCode, String errorMessage, String errorDescription) {
 
-        ErrorResponse errorResponse = getErrorBuilder(errorCode, errorMessage, errorDescription).build(log,
-                errorMessage);
-        return errorResponse;
+        return getErrorBuilder(errorCode, errorMessage, errorDescription).build(LOG, errorMessage);
     }
 
     /**
@@ -294,9 +290,7 @@ public class RecoveryUtil {
     private static ErrorResponse buildServerErrorResponse(IdentityRecoveryException e, String errorCode,
                                                           String errorMessage, String errorDescription) {
 
-        ErrorResponse errorResponse = getErrorBuilder(errorCode, errorMessage, errorDescription).build(log, e,
-                errorMessage);
-        return errorResponse;
+        return getErrorBuilder(errorCode, errorMessage, errorDescription).build(LOG, e, errorMessage);
     }
 
     /**

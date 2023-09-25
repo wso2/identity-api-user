@@ -89,8 +89,10 @@ public class PasswordRecoveryService {
                     .build();
         } catch (IdentityRecoveryClientException e) {
             if (StringUtils.isEmpty(e.getErrorCode())) {
-                throw RecoveryUtil.handleException(e.getErrorCode(), Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
-                        e.getMessage(), Response.Status.CONFLICT);
+                throw RecoveryUtil.handleInternalServerError(e, e.getErrorCode(),
+                        Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
+                        Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT,
+                        Response.Status.INTERNAL_SERVER_ERROR);
             }
             String errorCode = RecoveryUtil.prependOperationScenarioToErrorCode(e.getErrorCode(),
                     IdentityRecoveryConstants.PASSWORD_RECOVERY_SCENARIO);
@@ -164,8 +166,10 @@ public class PasswordRecoveryService {
                     passwordRecoverDTO);
         } catch (IdentityRecoveryClientException e) {
             if (StringUtils.isEmpty(e.getErrorCode())) {
-                throw RecoveryUtil.handleException(e.getErrorCode(), Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
-                        e.getMessage(), Response.Status.CONFLICT);
+                throw RecoveryUtil.handleInternalServerError(e, e.getErrorCode(),
+                        Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
+                        Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT,
+                        Response.Status.INTERNAL_SERVER_ERROR);
             }
             String errorCode = RecoveryUtil.prependOperationScenarioToErrorCode(e.getErrorCode(),
                     IdentityRecoveryConstants.PASSWORD_RECOVERY_SCENARIO);
@@ -215,8 +219,10 @@ public class PasswordRecoveryService {
             return Response.ok().entity(buildResetCodeResponse(tenantDomain, passwordResetCodeDTO)).build();
         } catch (IdentityRecoveryClientException e) {
             if (StringUtils.isEmpty(e.getErrorCode())) {
-                throw RecoveryUtil.handleException(e.getErrorCode(), Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
-                        e.getMessage(), Response.Status.CONFLICT);
+                throw RecoveryUtil.handleInternalServerError(e, e.getErrorCode(),
+                        Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
+                        Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT,
+                        Response.Status.INTERNAL_SERVER_ERROR);
             }
             String errorCode = RecoveryUtil.prependOperationScenarioToErrorCode(e.getErrorCode(),
                     IdentityRecoveryConstants.PASSWORD_RECOVERY_SCENARIO);
@@ -266,8 +272,10 @@ public class PasswordRecoveryService {
             return Response.ok().entity(buildPasswordResetResponse(successfulPasswordResetDTO)).build();
         } catch (IdentityRecoveryClientException e) {
             if (StringUtils.isEmpty(e.getErrorCode())) {
-                throw RecoveryUtil.handleException(e.getErrorCode(), Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
-                        e.getMessage(), Response.Status.CONFLICT);
+                throw RecoveryUtil.handleInternalServerError(e, e.getErrorCode(),
+                        Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
+                        Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT,
+                        Response.Status.INTERNAL_SERVER_ERROR);
             }
             String errorCode = RecoveryUtil.prependOperationScenarioToErrorCode(e.getErrorCode(),
                     IdentityRecoveryConstants.PASSWORD_RECOVERY_SCENARIO);
@@ -329,8 +337,10 @@ public class PasswordRecoveryService {
             return buildResendConfirmationResponse(tenantDomain, resendConfirmationDTO);
         } catch (IdentityRecoveryClientException e) {
             if (StringUtils.isEmpty(e.getErrorCode())) {
-                throw RecoveryUtil.handleException(e.getErrorCode(), Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
-                        e.getMessage(), Response.Status.CONFLICT);
+                throw RecoveryUtil.handleInternalServerError(e, e.getErrorCode(),
+                        Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
+                        Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT,
+                        Response.Status.INTERNAL_SERVER_ERROR);
             }
             String errorCode = RecoveryUtil.prependOperationScenarioToErrorCode(e.getErrorCode(),
                     IdentityRecoveryConstants.PASSWORD_RECOVERY_SCENARIO);
