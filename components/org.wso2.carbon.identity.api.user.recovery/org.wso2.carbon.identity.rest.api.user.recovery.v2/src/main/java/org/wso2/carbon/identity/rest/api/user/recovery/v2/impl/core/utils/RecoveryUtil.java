@@ -220,7 +220,6 @@ public class RecoveryUtil {
         RetryErrorResponse retryErrorResponse = buildRetryErrorResponse(
                 Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, code, description, resetCode, correlationId,
                 apiCallsArrayList);
-        //log.error(description);
         if (log.isDebugEnabled()) {
             log.debug(description);
         }
