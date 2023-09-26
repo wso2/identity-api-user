@@ -27,6 +27,8 @@ import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.core.ServiceURLBuilder;
 import org.wso2.carbon.identity.core.URLBuilderException;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
+import org.wso2.carbon.identity.core.util.IdentityUtil;
+import org.wso2.carbon.identity.recovery.IdentityRecoveryClientException;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryConstants;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryException;
 import org.wso2.carbon.identity.recovery.dto.NotificationChannelDTO;
@@ -44,6 +46,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.TENANT_CONTEXT_PATH_COMPONENT;
@@ -165,6 +168,99 @@ public class RecoveryUtil {
     }
 
     /**
+     * Handle errors with specific http codes.
+     *
+     * @param e             Identity Recovery Exception.
+     * @param tenantDomain  Tenant domain.
+     * @param scenario      Recovery scenario.
+     * @param correlationId Correlation Id.
+     * @return WebApplicationException (NOTE: Returns null when the client error is for no user available or for
+     * multiple users available.
+     */
+    public static WebApplicationException handleIdentityRecoveryException(IdentityRecoveryException e,
+                                                                          String tenantDomain, String scenario,
+                                                                          String correlationId) {
+
+        return handleIdentityRecoveryException(e, tenantDomain, scenario, StringUtils.EMPTY, correlationId);
+    }
+
+    /**
+     * Handle errors with specific http codes.
+     *
+     * @param e Identity    Recovery Exception.
+     * @param scenario      Recovery scenario.
+     * @param tenantDomain  Tenant domain.
+     * @param code          Recovery code.
+     * @param correlationId Correlation Id.
+     * @return WebApplicationException (NOTE: Returns null when the client error is for no user available or for
+     * multiple users available.
+     */
+    public static WebApplicationException handleIdentityRecoveryException(IdentityRecoveryException e,
+                                                                          String tenantDomain, String scenario,
+                                                                          String code, String correlationId) {
+
+        String errorCode = prependOperationScenarioToErrorCode(e.getErrorCode(), scenario);
+        String errorDescription = e.getMessage();
+        String serverErrorDescription = Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT;
+        String errorMessage = Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT;
+        Response.Status status = Response.Status.INTERNAL_SERVER_ERROR;
+
+        if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_PASSWORD_RECOVERY_WITH_NOTIFICATIONS_NOT_ENABLED.
+                getCode().equals(e.getErrorCode()) || IdentityRecoveryConstants.ErrorMessages.
+                ERROR_CODE_USERNAME_RECOVERY_NOT_ENABLED.getCode().equals(e.getErrorCode()) ||
+                IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_DISABLED_ACCOUNT.getCode().equals(e.getErrorCode())
+                || IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_LOCKED_ACCOUNT.getCode().equals(e.getErrorCode())
+                || IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_PASSWORD_RECOVERY_NOT_ENABLED.getCode().equals(
+                        e.getErrorCode())) {
+            errorMessage = Constants.STATUS_FORBIDDEN_MESSAGE_DEFAULT;
+            status = Response.Status.FORBIDDEN;
+        } else if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_USER_TENANT_DOMAIN_MISS_MATCH_WITH_CONTEXT.
+                getCode().equals(e.getErrorCode())) {
+            errorMessage = Constants.STATUS_CONFLICT_MESSAGE_DEFAULT;
+            status = Response.Status.CONFLICT;
+        } else if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_MULTIPLE_MATCHING_USERS.getCode().equals(
+                e.getErrorCode())) {
+            // If user notify is not enabled, throw an accepted response.
+            if (!Boolean.parseBoolean(IdentityUtil
+                    .getProperty(IdentityRecoveryConstants.ConnectorConfig.NOTIFY_USER_EXISTENCE))) {
+                return new WebApplicationException(Response.accepted().build());
+            }
+            errorMessage = Constants.STATUS_CONFLICT_MESSAGE_DEFAULT;
+            status = Response.Status.CONFLICT;
+        } else if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_NO_USER_FOUND.getCode().equals(e.
+                getErrorCode())) {
+            // If user notify is not enabled, throw an accepted response.
+            if (!Boolean.parseBoolean(IdentityUtil
+                    .getProperty(IdentityRecoveryConstants.ConnectorConfig.NOTIFY_USER_EXISTENCE))) {
+                return new WebApplicationException(Response.accepted().build());
+            }
+            errorMessage = Constants.STATUS_NOT_FOUND_MESSAGE_DEFAULT;
+            status = Response.Status.NOT_FOUND;
+        } else if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_NO_ACCOUNT_RECOVERY_DATA.getCode().equals(
+                e.getErrorCode()) || IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_NO_VERIFIED_CHANNELS_FOR_USER.
+                getCode().equals(e.getErrorCode())) {
+            errorMessage = Constants.STATUS_NOT_FOUND_MESSAGE_DEFAULT;
+            status = Response.Status.NOT_FOUND;
+        } else if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_INVALID_RECOVERY_CODE.getCode().equals(
+                e.getErrorCode()) || IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_INVALID_RESEND_CODE.getCode().
+                equals(e.getErrorCode()) || IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_EXPIRED_RECOVERY_CODE.
+                getCode().equals(e.getErrorCode())) {
+            errorMessage = Constants.STATUS_METHOD_NOT_ACCEPTED_MESSAGE_DEFAULT;
+            status = Response.Status.NOT_ACCEPTABLE;
+        } else if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_PASSWORD_HISTORY_VIOLATION.getCode().equals(
+                e.getErrorCode()) || IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_PASSWORD_POLICY_VIOLATION.
+                getCode().equals(e.getErrorCode())) {
+            return RecoveryUtil.buildRetryPasswordResetObject(tenantDomain, errorDescription, errorCode, code,
+                    correlationId);
+        }
+
+        if (e instanceof IdentityRecoveryClientException) {
+            return buildClientError(errorCode, errorMessage, errorDescription, status);
+        }
+        return buildServerError(e, e.getErrorCode(), errorMessage, serverErrorDescription, status);
+    }
+
+    /**
      * Builds API error to be thrown.
      *
      * @param errorCode Error code.
@@ -173,7 +269,7 @@ public class RecoveryUtil {
      * @param status HTTP status.
      * @return APIError object which contains the error description.
      */
-    public static APIError handleException(String errorCode, String errorMessage, String errorDescription,
+    private static APIError buildClientError(String errorCode, String errorMessage, String errorDescription,
                                            Response.Status status) {
 
         ErrorResponse errorResponse = buildErrorResponse(errorCode, errorMessage, errorDescription);
@@ -190,60 +286,11 @@ public class RecoveryUtil {
      * @param status HTTP status.
      * @return APIError object which contains the error description.
      */
-    public static APIError handleInternalServerError(IdentityRecoveryException e, String errorCode, String errorMessage,
-                                           String errorDescription, Response.Status status) {
+    private static APIError buildServerError(IdentityRecoveryException e, String errorCode, String errorMessage,
+                                                     String errorDescription, Response.Status status) {
 
         ErrorResponse errorResponse = buildServerErrorResponse(e, errorCode, errorMessage, errorDescription);
         return new APIError(status, errorResponse);
-    }
-
-    /**
-     * Returns a new PreconditionFailedException.
-     *
-     * @param tenantDomain  Tenant domain.
-     * @param description   Description of the exception.
-     * @param code          Error code.
-     * @param resetCode     Reset code given to the user by confirmation API.
-     * @param correlationId Correlation Id.
-     * @return A new PreconditionFailedException with the specified details as a response.
-     */
-    public static PreconditionFailedException buildRetryPasswordResetObject(String tenantDomain, String description,
-                                                                            String code, String resetCode,
-                                                                            String correlationId) {
-
-        // Build next API calls.
-        ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
-        apiCallsArrayList.add(RecoveryUtil
-                .buildApiCall(APICalls.RESET_PASSWORD_API.getType(), Constants.RelationStates.NEXT_REL,
-                        buildURIForBody(tenantDomain, APICalls.RESET_PASSWORD_API.getApiUrl(),
-                                Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
-        RetryErrorResponse retryErrorResponse = buildRetryErrorResponse(
-                Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, code, description, resetCode, correlationId,
-                apiCallsArrayList);
-        LOG.debug(description);
-        return new PreconditionFailedException(retryErrorResponse);
-    }
-
-    /**
-     * Prepend the operation scenario to the existing exception error code.
-     * (Eg: USR-20045)
-     *
-     * @param exceptionErrorCode Existing error code.
-     * @param scenario           Operation scenario.
-     * @return New error code with the scenario prepended.
-     */
-    public static String prependOperationScenarioToErrorCode(String exceptionErrorCode, String scenario) {
-
-        if (StringUtils.isNotEmpty(exceptionErrorCode)) {
-            if (exceptionErrorCode.contains(IdentityRecoveryConstants.EXCEPTION_SCENARIO_SEPARATOR)) {
-                return exceptionErrorCode;
-            }
-            if (StringUtils.isNotEmpty(scenario)) {
-                exceptionErrorCode =
-                        scenario + IdentityRecoveryConstants.EXCEPTION_SCENARIO_SEPARATOR + exceptionErrorCode;
-            }
-        }
-        return exceptionErrorCode;
     }
 
     /**
@@ -332,5 +379,54 @@ public class RecoveryUtil {
         retryErrorResponse.setTraceId(correlationId);
         retryErrorResponse.setLinks(apiCallsArrayList);
         return retryErrorResponse;
+    }
+
+    /**
+     * Returns a new PreconditionFailedException.
+     *
+     * @param tenantDomain  Tenant domain.
+     * @param description   Description of the exception.
+     * @param code          Error code.
+     * @param resetCode     Reset code given to the user by confirmation API.
+     * @param correlationId Correlation Id.
+     * @return A new PreconditionFailedException with the specified details as a response.
+     */
+    private static PreconditionFailedException buildRetryPasswordResetObject(String tenantDomain, String description,
+                                                                             String code, String resetCode,
+                                                                             String correlationId) {
+
+        // Build next API calls.
+        ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
+        apiCallsArrayList.add(RecoveryUtil
+                .buildApiCall(APICalls.RESET_PASSWORD_API.getType(), Constants.RelationStates.NEXT_REL,
+                        buildURIForBody(tenantDomain, APICalls.RESET_PASSWORD_API.getApiUrl(),
+                                Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
+        RetryErrorResponse retryErrorResponse = buildRetryErrorResponse(
+                Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, code, description, resetCode, correlationId,
+                apiCallsArrayList);
+        LOG.debug(description);
+        return new PreconditionFailedException(retryErrorResponse);
+    }
+
+    /**
+     * Prepend the operation scenario to the existing exception error code.
+     * (Eg: USR-20045)
+     *
+     * @param exceptionErrorCode Existing error code.
+     * @param scenario           Operation scenario.
+     * @return New error code with the scenario prepended.
+     */
+    private static String prependOperationScenarioToErrorCode(String exceptionErrorCode, String scenario) {
+
+        if (StringUtils.isNotEmpty(exceptionErrorCode)) {
+            if (exceptionErrorCode.contains(IdentityRecoveryConstants.EXCEPTION_SCENARIO_SEPARATOR)) {
+                return exceptionErrorCode;
+            }
+            if (StringUtils.isNotEmpty(scenario)) {
+                exceptionErrorCode =
+                        scenario + IdentityRecoveryConstants.EXCEPTION_SCENARIO_SEPARATOR + exceptionErrorCode;
+            }
+        }
+        return exceptionErrorCode;
     }
 }

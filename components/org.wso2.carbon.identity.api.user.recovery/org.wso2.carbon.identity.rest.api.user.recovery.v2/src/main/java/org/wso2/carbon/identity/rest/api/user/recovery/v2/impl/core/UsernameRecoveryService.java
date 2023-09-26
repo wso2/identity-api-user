@@ -18,15 +18,13 @@
 
 package org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.wso2.carbon.context.PrivilegedCarbonContext;
+import org.wso2.carbon.identity.api.user.common.Util;
 import org.wso2.carbon.identity.api.user.recovery.commons.UserAccountRecoveryServiceDataHolder;
-import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.governance.service.notification.NotificationChannels;
-import org.wso2.carbon.identity.recovery.IdentityRecoveryClientException;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryConstants;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryException;
 import org.wso2.carbon.identity.recovery.dto.RecoveryChannelInfoDTO;
@@ -45,7 +43,6 @@ import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.UsernameRecovery
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 /**
@@ -78,51 +75,9 @@ public class UsernameRecoveryService {
             }
             return Response.ok().entity(buildUsernameRecoveryInitResponse(recoveryInformationDTO, tenantDomain))
                     .build();
-        } catch (IdentityRecoveryClientException e) {
-            if (StringUtils.isEmpty(e.getErrorCode())) {
-                throw RecoveryUtil.handleInternalServerError(e, e.getErrorCode(),
-                        Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
-                        Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT,
-                        Response.Status.INTERNAL_SERVER_ERROR);
-            }
-            String errorCode = RecoveryUtil.prependOperationScenarioToErrorCode(e.getErrorCode(),
-                    IdentityRecoveryConstants.USER_NAME_RECOVERY);
-            if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_USERNAME_RECOVERY_NOT_ENABLED.getCode().equals(
-                    e.getErrorCode()) || IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_DISABLED_ACCOUNT.getCode().
-                    equals(e.getErrorCode()) || IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_LOCKED_ACCOUNT.
-                    getCode().equals(e.getErrorCode())) {
-                throw RecoveryUtil.handleException(errorCode, Constants.STATUS_FORBIDDEN_MESSAGE_DEFAULT,
-                        e.getMessage(), Response.Status.FORBIDDEN);
-            } else if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_MULTIPLE_MATCHING_USERS.getCode().equals(
-                    e.getErrorCode())) {
-                // If user notify is not enabled, throw a accepted response.
-                if (!Boolean.parseBoolean(IdentityUtil
-                        .getProperty(IdentityRecoveryConstants.ConnectorConfig.NOTIFY_USER_EXISTENCE))) {
-                    throw new WebApplicationException(Response.accepted().build());
-                }
-                throw RecoveryUtil.handleException(errorCode, Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
-                        e.getMessage(), Response.Status.CONFLICT);
-            } else if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_NO_USER_FOUND.getCode().equals(
-                    e.getErrorCode())) {
-                // If user notify is not enabled, throw a accepted response.
-                if (!Boolean.parseBoolean(IdentityUtil
-                        .getProperty(IdentityRecoveryConstants.ConnectorConfig.NOTIFY_USER_EXISTENCE))) {
-                    throw new WebApplicationException(Response.accepted().build());
-                }
-                throw RecoveryUtil.handleException(errorCode, Constants.STATUS_NOT_FOUND_MESSAGE_DEFAULT,
-                        e.getMessage(), Response.Status.NOT_FOUND);
-            } else if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_NO_VERIFIED_CHANNELS_FOR_USER.
-                    getCode().equals(e.getErrorCode())) {
-                throw RecoveryUtil.handleException(errorCode, Constants.STATUS_NOT_FOUND_MESSAGE_DEFAULT,
-                        e.getMessage(), Response.Status.NOT_FOUND);
-            } else {
-                throw RecoveryUtil.handleException(errorCode, Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
-                        e.getMessage(), Response.Status.CONFLICT);
-            }
         } catch (IdentityRecoveryException e) {
-            throw RecoveryUtil.handleInternalServerError(e, e.getErrorCode(),
-                    Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
-                    Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT, Response.Status.INTERNAL_SERVER_ERROR);
+            throw RecoveryUtil.handleIdentityRecoveryException(e, tenantDomain,
+                    IdentityRecoveryConstants.USER_NAME_RECOVERY, Util.getCorrelation());
         }
     }
 
@@ -150,36 +105,9 @@ public class UsernameRecoveryService {
                 return Response.status(Response.Status.OK).build();
             }
             return buildUsernameRecoveryResponse(usernameRecoverDTO.getNotificationChannel(), usernameRecoverDTO);
-        } catch (IdentityRecoveryClientException e) {
-            if (StringUtils.isEmpty(e.getErrorCode())) {
-                throw RecoveryUtil.handleInternalServerError(e, e.getErrorCode(),
-                        Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
-                        Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT,
-                        Response.Status.INTERNAL_SERVER_ERROR);
-            }
-            String errorCode = RecoveryUtil.prependOperationScenarioToErrorCode(e.getErrorCode(),
-                    IdentityRecoveryConstants.USER_NAME_RECOVERY);
-            if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_USERNAME_RECOVERY_NOT_ENABLED.getCode().equals(
-                    e.getErrorCode())) {
-                throw RecoveryUtil.handleException(errorCode, Constants.STATUS_FORBIDDEN_MESSAGE_DEFAULT,
-                        e.getMessage(), Response.Status.FORBIDDEN);
-            } else if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_NO_ACCOUNT_RECOVERY_DATA.getCode().equals(
-                    e.getErrorCode())) {
-                throw RecoveryUtil.handleException(errorCode, Constants.STATUS_NOT_FOUND_MESSAGE_DEFAULT,
-                        e.getMessage(), Response.Status.NOT_FOUND);
-            } else if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_INVALID_RECOVERY_CODE.getCode().equals(
-                    e.getErrorCode()) || IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_EXPIRED_RECOVERY_CODE.
-                    getCode().equals(e.getErrorCode())) {
-                throw RecoveryUtil.handleException(errorCode, Constants.STATUS_METHOD_NOT_ACCEPTED_MESSAGE_DEFAULT,
-                        e.getMessage(), Response.Status.NOT_ACCEPTABLE);
-            } else {
-                throw RecoveryUtil.handleException(errorCode, Constants.STATUS_CONFLICT_MESSAGE_DEFAULT,
-                        e.getMessage(), Response.Status.CONFLICT);
-            }
         } catch (IdentityRecoveryException e) {
-            throw RecoveryUtil.handleInternalServerError(e, e.getErrorCode(),
-                    Constants.STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT,
-                    Constants.STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT, Response.Status.INTERNAL_SERVER_ERROR);
+            throw RecoveryUtil.handleIdentityRecoveryException(e, tenantDomain,
+                    IdentityRecoveryConstants.USER_NAME_RECOVERY, Util.getCorrelation());
         }
     }
 
