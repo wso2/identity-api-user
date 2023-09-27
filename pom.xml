@@ -421,7 +421,7 @@
         <maven.buildnumber.plugin.version>1.4</maven.buildnumber.plugin.version>
         <org.apache.felix.annotations.version>1.2.4</org.apache.felix.annotations.version>
         <carbon.kernel.version>4.9.0</carbon.kernel.version>
-        <identity.governance.version>1.4.28</identity.governance.version>
+        <identity.governance.version>1.8.71</identity.governance.version>
         <carbon.identity.framework.version>5.25.90</carbon.identity.framework.version>
         <carbon.identity.account.association.version>5.3.7</carbon.identity.account.association.version>
         <maven.findbugsplugin.version>3.0.5</maven.findbugsplugin.version>
