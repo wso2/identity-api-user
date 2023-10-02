@@ -244,7 +244,11 @@ public class RecoveryUtil {
         } else if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_INVALID_RECOVERY_CODE.getCode().equals(
                 e.getErrorCode()) || IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_INVALID_RESEND_CODE.getCode().
                 equals(e.getErrorCode()) || IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_EXPIRED_RECOVERY_CODE.
-                getCode().equals(e.getErrorCode())) {
+                getCode().equals(e.getErrorCode()) || IdentityRecoveryConstants.ErrorMessages.
+                ERROR_CODE_INVALID_RECOVERY_FLOW_ID.getCode().equals(e.getErrorCode()) || IdentityRecoveryConstants.
+                ErrorMessages.ERROR_CODE_EXPIRED_RECOVERY_FLOW_ID.getCode().equals(e.getErrorCode()) ||
+                IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_NO_RECOVERY_FLOW_DATA.getCode().equals(
+                        e.getErrorCode())) {
             errorMessage = Constants.STATUS_METHOD_NOT_ACCEPTED_MESSAGE_DEFAULT;
             status = Response.Status.NOT_ACCEPTABLE;
         } else if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_PASSWORD_HISTORY_VIOLATION.getCode().equals(
