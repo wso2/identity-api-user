@@ -148,7 +148,7 @@ public class MFAService {
 
     private String getTenantDomain() {
 
-        return ContextLoader.getTenantDomainFromContext();
+        return IdentityTenantUtil.resolveTenantDomain();
     }
 
     /**

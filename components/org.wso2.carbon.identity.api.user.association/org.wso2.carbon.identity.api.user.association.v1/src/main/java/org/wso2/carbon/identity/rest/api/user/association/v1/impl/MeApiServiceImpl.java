@@ -2,9 +2,9 @@ package org.wso2.carbon.identity.rest.api.user.association.v1.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.identity.api.user.common.ContextLoader;
 import org.wso2.carbon.identity.api.user.common.function.UniqueIdToUser;
 import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.rest.api.user.association.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.association.v1.core.UserAssociationService;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationUserRequestDTO;
@@ -86,7 +86,7 @@ public class MeApiServiceImpl extends MeApiService {
     private String getFullyQualifiedUserName(String userId) {
 
         User user = new UniqueIdToUser().apply(UserAssociationServiceHolder.getRealmService(), userId,
-                ContextLoader.getTenantDomainFromContext());
+                IdentityTenantUtil.resolveTenantDomain());
         return user.toFullQualifiedUsername();
     }
 

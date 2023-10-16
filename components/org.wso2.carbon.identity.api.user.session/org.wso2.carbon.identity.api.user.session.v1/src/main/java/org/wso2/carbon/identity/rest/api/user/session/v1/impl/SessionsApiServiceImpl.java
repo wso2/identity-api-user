@@ -17,7 +17,7 @@
 package org.wso2.carbon.identity.rest.api.user.session.v1.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.wso2.carbon.identity.api.user.common.ContextLoader;
+import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.rest.api.user.session.v1.SessionsApiService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.core.SessionManagementService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SearchResponseDTO;
@@ -35,7 +35,7 @@ public class SessionsApiServiceImpl extends SessionsApiService {
     @Override
     public Response getSessions(String filter, Integer limit, Long since, Long until) {
 
-        SearchResponseDTO responseDTO = sessionManagementService.getSessions(ContextLoader.getTenantDomainFromContext(),
+        SearchResponseDTO responseDTO = sessionManagementService.getSessions(IdentityTenantUtil.resolveTenantDomain(),
                 filter, limit, since, until);
 
         return Response.ok().entity(responseDTO).build();

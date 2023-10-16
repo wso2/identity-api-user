@@ -33,6 +33,7 @@ import org.wso2.carbon.identity.base.IdentityException;
 import org.wso2.carbon.identity.core.model.ExpressionNode;
 import org.wso2.carbon.identity.core.model.FilterTreeBuilder;
 import org.wso2.carbon.identity.core.model.Node;
+import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.rest.api.user.application.v1.core.function.ApplicationBasicInfoToApiModel;
 import org.wso2.carbon.identity.rest.api.user.application.v1.model.ApplicationListResponse;
 import org.wso2.carbon.identity.rest.api.user.application.v1.model.ApplicationResponse;
@@ -71,7 +72,7 @@ public class ApplicationService {
 
         try {
 
-            String tenantDomain = ContextLoader.getTenantDomainFromContext();
+            String tenantDomain = IdentityTenantUtil.resolveTenantDomain();
             ApplicationBasicInfo applicationBasicInfo = ApplicationServiceHolder.getDiscoverableApplicationManager()
                     .getDiscoverableApplicationBasicInfoByResourceId(applicationId, tenantDomain);
             if (applicationBasicInfo == null) {
@@ -104,7 +105,7 @@ public class ApplicationService {
 
         handleNotImplementedCapabilities(attributes, sortOrder, sortBy);
 
-        String tenantDomain = ContextLoader.getTenantDomainFromContext();
+        String tenantDomain = IdentityTenantUtil.resolveTenantDomain();
         String filterFormatted = buildFilter(filter);
         try {
             List<ApplicationBasicInfo> applicationBasicInfos = ApplicationServiceHolder

@@ -79,7 +79,7 @@ public class ContextLoader {
      */
     public static User getUserFromContext() {
 
-        return getUser(getTenantDomainFromContext(), getUsernameFromContext());
+        return getUser(IdentityTenantUtil.resolveTenantDomain(), getUsernameFromContext());
     }
 
 
@@ -166,7 +166,8 @@ public class ContextLoader {
     public static URI buildURI(String endpoint) {
 
         String tenantQualifiedRelativePath =
-                String.format(TENANT_CONTEXT_PATH_COMPONENT, getTenantDomainFromContext()) + USER_API_PATH_COMPONENT;
+                String.format(TENANT_CONTEXT_PATH_COMPONENT, IdentityTenantUtil.resolveTenantDomain()) +
+                        USER_API_PATH_COMPONENT;
         String url = tenantQualifiedRelativePath + endpoint;
         return URI.create(url);
     }
@@ -228,7 +229,7 @@ public class ContextLoader {
         if (IdentityTenantUtil.isTenantQualifiedUrlsEnabled()) {
             context = USER_API_PATH_COMPONENT + endpoint;
         } else {
-            context = String.format(TENANT_CONTEXT_PATH_COMPONENT, getTenantDomainFromContext()) +
+            context = String.format(TENANT_CONTEXT_PATH_COMPONENT, IdentityTenantUtil.resolveTenantDomain()) +
                     USER_API_PATH_COMPONENT + endpoint;
         }
         return context;

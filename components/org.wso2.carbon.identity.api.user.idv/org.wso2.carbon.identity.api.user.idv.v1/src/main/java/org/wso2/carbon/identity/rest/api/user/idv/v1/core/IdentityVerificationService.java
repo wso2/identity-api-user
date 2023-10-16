@@ -27,7 +27,6 @@ import org.wso2.carbon.extension.identity.verification.mgt.model.IdVClaim;
 import org.wso2.carbon.extension.identity.verification.mgt.model.IdVProperty;
 import org.wso2.carbon.extension.identity.verification.mgt.model.IdentityVerifierData;
 import org.wso2.carbon.extension.identity.verification.mgt.utils.IdentityVerificationConstants;
-import org.wso2.carbon.identity.api.user.common.ContextLoader;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.api.user.idv.common.Constants;
@@ -415,7 +414,7 @@ public class IdentityVerificationService {
 
     private int getTenantId() {
 
-        String tenantDomain = ContextLoader.getTenantDomainFromContext();
+        String tenantDomain = IdentityTenantUtil.resolveTenantDomain();
         if (StringUtils.isBlank(tenantDomain)) {
             throw handleException(
                     Response.Status.INTERNAL_SERVER_ERROR,
