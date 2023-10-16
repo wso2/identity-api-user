@@ -18,9 +18,9 @@ package org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.identity.api.user.common.ContextLoader;
 import org.wso2.carbon.identity.api.user.common.function.UniqueIdToUser;
 import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.UserIdApiService;
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.core.AuthorizedAppsService;
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v1.dto.AuthorizedAppDTO;
@@ -74,6 +74,6 @@ public class UserIdApiServiceImpl extends UserIdApiService {
 
     private User getUser(String userId) {
 
-        return new UniqueIdToUser().apply(realmService, userId, ContextLoader.getTenantDomainFromContext());
+        return new UniqueIdToUser().apply(realmService, userId, IdentityTenantUtil.resolveTenantDomain());
     }
 }

@@ -23,7 +23,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.identity.api.user.common.ContextLoader;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.api.user.common.function.UserToUniqueId;
@@ -234,7 +233,7 @@ public class AuthorizedAppsService {
      */
     public void deleteIssuedTokensByAppId(String applicationId) {
 
-        String tenantDomain = ContextLoader.getTenantDomainFromContext();
+        String tenantDomain = IdentityTenantUtil.resolveTenantDomain();
         ServiceProvider application = getServiceProvider(applicationId, tenantDomain);
 
         // Extract the inbound authentication request config for the given inbound type.

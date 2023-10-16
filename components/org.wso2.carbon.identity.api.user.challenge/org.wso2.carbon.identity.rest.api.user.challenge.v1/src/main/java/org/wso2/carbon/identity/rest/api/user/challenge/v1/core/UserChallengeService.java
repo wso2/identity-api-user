@@ -21,10 +21,10 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.user.challenge.common.ChallengeQuestionServiceHolder;
 import org.wso2.carbon.identity.api.user.challenge.common.Constant;
 import org.wso2.carbon.identity.api.user.common.Constants;
-import org.wso2.carbon.identity.api.user.common.ContextLoader;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryClientException;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryException;
 import org.wso2.carbon.identity.recovery.model.ChallengeQuestion;
@@ -65,7 +65,7 @@ public class UserChallengeService {
 
         try {
             return buildChallengesDTO(ChallengeQuestionServiceHolder.getChallengeQuestionManager()
-                    .getAllChallengeQuestionsForUser(ContextLoader.getTenantDomainFromContext(), user), offset, limit);
+                    .getAllChallengeQuestionsForUser(IdentityTenantUtil.resolveTenantDomain(), user), offset, limit);
         } catch (IdentityRecoveryException e) {
             throw handleIdentityRecoveryException(e,
                     Constant.ErrorMessage.ERROR_CODE_ERROR_RETRIEVING_CHALLENGES_FOR_USER);

@@ -23,9 +23,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.identity.api.user.common.ContextLoader;
 import org.wso2.carbon.identity.api.user.common.Util;
 import org.wso2.carbon.identity.api.user.session.common.util.SessionManagementServiceHolder;
+import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.rest.api.user.session.v1.UserIdApiService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.core.SessionManagementService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionDTO;
@@ -52,7 +52,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
     public Response getSessionBySessionId(String userId, String sessionId) {
 
         Util.validateUserId(SessionManagementServiceHolder.getRealmService(), userId,
-                ContextLoader.getTenantDomainFromContext());
+                IdentityTenantUtil.resolveTenantDomain());
 
         Optional<SessionDTO> session = sessionManagementService.getSessionBySessionId(userId, sessionId);
         if (session.isPresent()) {
@@ -66,7 +66,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
     public Response getSessionsByUserId(String userId, Integer limit, Integer offset, String filter, String sort) {
 
         Util.validateUserId(SessionManagementServiceHolder.getRealmService(), userId,
-                ContextLoader.getTenantDomainFromContext());
+                IdentityTenantUtil.resolveTenantDomain());
 
         SessionsDTO sessionsOfUser = sessionManagementService.getSessionsByUserId(userId, limit, offset, filter, sort);
         if (sessionsOfUser == null || sessionsOfUser.getSessions().isEmpty()) {
@@ -80,7 +80,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
     public Response terminateSessionBySessionId(String userId, String sessionId) {
 
         Util.validateUserId(SessionManagementServiceHolder.getRealmService(), userId,
-                ContextLoader.getTenantDomainFromContext());
+                IdentityTenantUtil.resolveTenantDomain());
         sessionManagementService.terminateSessionBySessionId(userId, sessionId);
         return Response.noContent().build();
     }
@@ -112,7 +112,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
             }
 
             Util.validateUserId(SessionManagementServiceHolder.getRealmService(), userId,
-                    ContextLoader.getTenantDomainFromContext());
+                    IdentityTenantUtil.resolveTenantDomain());
             sessionManagementService.terminateSessionsByUserId(userId);
             return Response.noContent().build();
         } catch (UserStoreException e) {
