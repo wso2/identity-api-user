@@ -52,7 +52,6 @@ import javax.ws.rs.core.Response;
 import static org.wso2.carbon.identity.api.user.common.Constants.USER_API_PATH_COMPONENT;
 import static org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants.ErrorMessages.ERROR_CODE_ERROR_BUILDING_PAGINATED_RESPONSE_URL;
 import static org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants.ErrorMessages.ERROR_CODE_USER_ROOT_ORGANIZATION_NOT_FOUND;
-import static org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants.SUPER_ORG_ID;
 import static org.wso2.carbon.identity.organization.management.service.util.Utils.buildURIForBody;
 import static org.wso2.carbon.identity.organization.management.service.util.Utils.getOrganizationId;
 import static org.wso2.carbon.identity.rest.api.user.organization.v1.Constants.ASC_SORT_ORDER;
@@ -77,10 +76,7 @@ public class UserOrganizationService {
     public RootOrganizationResponse getUserOrganizationRoot() {
 
         String userId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserId();
-        String accessedOrgId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getOrganizationId();
-        if (StringUtils.isBlank(accessedOrgId)) {
-            accessedOrgId = SUPER_ORG_ID;
-        }
+        String accessedOrgId = getOrganizationId();
         try {
             String rootOrgId = getOrganizationUserResidentResolverService()
                     .resolveResidentOrganization(userId, accessedOrgId)
@@ -102,10 +98,7 @@ public class UserOrganizationService {
     public List<BasicOrganizationObject> getUserOrganizationHierarchyUptoResidentOrganization() {
 
         String userId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserId();
-        String accessedOrgId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getOrganizationId();
-        if (StringUtils.isBlank(accessedOrgId)) {
-            accessedOrgId = SUPER_ORG_ID;
-        }
+        String accessedOrgId = getOrganizationId();
         try {
             List<BasicOrganizationObject> rootDescendantsOrganizationResponseList = new ArrayList<>();
             List<BasicOrganization> basicOrganizationList = getOrganizationUserResidentResolverService()
