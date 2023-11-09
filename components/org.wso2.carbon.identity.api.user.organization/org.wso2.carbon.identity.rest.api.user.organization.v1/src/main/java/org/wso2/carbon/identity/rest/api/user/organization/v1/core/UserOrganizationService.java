@@ -52,7 +52,6 @@ import javax.ws.rs.core.Response;
 import static org.wso2.carbon.identity.api.user.common.Constants.USER_API_PATH_COMPONENT;
 import static org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants.ErrorMessages.ERROR_CODE_ERROR_BUILDING_PAGINATED_RESPONSE_URL;
 import static org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants.ErrorMessages.ERROR_CODE_USER_ROOT_ORGANIZATION_NOT_FOUND;
-import static org.wso2.carbon.identity.organization.management.service.util.Utils.buildURIForBody;
 import static org.wso2.carbon.identity.organization.management.service.util.Utils.getOrganizationId;
 import static org.wso2.carbon.identity.rest.api.user.organization.v1.Constants.ASC_SORT_ORDER;
 import static org.wso2.carbon.identity.rest.api.user.organization.v1.Constants.DESC_SORT_ORDER;
@@ -60,6 +59,7 @@ import static org.wso2.carbon.identity.rest.api.user.organization.v1.Constants.O
 import static org.wso2.carbon.identity.rest.api.user.organization.v1.util.Util.getError;
 import static org.wso2.carbon.identity.rest.api.user.organization.v1.util.Util.handleError;
 import static org.wso2.carbon.identity.rest.api.user.organization.v1.util.Util.handleOrganizationManagementException;
+import static org.wso2.carbon.identity.rest.api.user.organization.v1.util.Util.organizationGetURL;
 
 /**
  * Call internal OSGi services to perform user organization management related operations.
@@ -238,7 +238,7 @@ public class UserOrganizationService {
                 organizationDTO.setId(organization.getId());
                 organizationDTO.setName(organization.getName());
                 organizationDTO.setStatus(Organization.StatusEnum.valueOf(organization.getStatus()));
-                organizationDTO.setRef(buildURIForBody(organization.getId()));
+                organizationDTO.setRef(organizationGetURL(organization.getId()).toString());
                 organizationDTOs.add(organizationDTO);
             }
             organizationsResponse.setOrganizations(organizationDTOs);
