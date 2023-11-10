@@ -142,7 +142,7 @@ public class Util {
      */
     public static URI buildOrganizationURL(String organizationId) {
 
-        return buildURIForBody(V1_API_PATH_COMPONENT + PATH_SEPARATOR + ORGANIZATION_PATH +
+        return buildURIForBody(PATH_SEPARATOR + V1_API_PATH_COMPONENT + PATH_SEPARATOR + ORGANIZATION_PATH +
                 PATH_SEPARATOR + organizationId, true);
     }
 }

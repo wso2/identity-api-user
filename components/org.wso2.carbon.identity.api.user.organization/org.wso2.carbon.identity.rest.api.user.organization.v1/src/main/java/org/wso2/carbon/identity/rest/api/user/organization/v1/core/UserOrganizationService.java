@@ -56,10 +56,10 @@ import static org.wso2.carbon.identity.organization.management.service.util.Util
 import static org.wso2.carbon.identity.rest.api.user.organization.v1.Constants.ASC_SORT_ORDER;
 import static org.wso2.carbon.identity.rest.api.user.organization.v1.Constants.DESC_SORT_ORDER;
 import static org.wso2.carbon.identity.rest.api.user.organization.v1.Constants.ORGANIZATIONS_ME_ENDPOINT;
+import static org.wso2.carbon.identity.rest.api.user.organization.v1.util.Util.buildOrganizationURL;
 import static org.wso2.carbon.identity.rest.api.user.organization.v1.util.Util.getError;
 import static org.wso2.carbon.identity.rest.api.user.organization.v1.util.Util.handleError;
 import static org.wso2.carbon.identity.rest.api.user.organization.v1.util.Util.handleOrganizationManagementException;
-import static org.wso2.carbon.identity.rest.api.user.organization.v1.util.Util.buildOrganizationURL;
 
 /**
  * Call internal OSGi services to perform user organization management related operations.
