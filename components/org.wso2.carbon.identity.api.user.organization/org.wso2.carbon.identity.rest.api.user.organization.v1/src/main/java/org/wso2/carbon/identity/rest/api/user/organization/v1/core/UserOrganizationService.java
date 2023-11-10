@@ -59,7 +59,7 @@ import static org.wso2.carbon.identity.rest.api.user.organization.v1.Constants.O
 import static org.wso2.carbon.identity.rest.api.user.organization.v1.util.Util.getError;
 import static org.wso2.carbon.identity.rest.api.user.organization.v1.util.Util.handleError;
 import static org.wso2.carbon.identity.rest.api.user.organization.v1.util.Util.handleOrganizationManagementException;
-import static org.wso2.carbon.identity.rest.api.user.organization.v1.util.Util.organizationGetURL;
+import static org.wso2.carbon.identity.rest.api.user.organization.v1.util.Util.buildOrganizationURL;
 
 /**
  * Call internal OSGi services to perform user organization management related operations.
@@ -238,7 +238,7 @@ public class UserOrganizationService {
                 organizationDTO.setId(organization.getId());
                 organizationDTO.setName(organization.getName());
                 organizationDTO.setStatus(Organization.StatusEnum.valueOf(organization.getStatus()));
-                organizationDTO.setRef(organizationGetURL(organization.getId()).toString());
+                organizationDTO.setRef(buildOrganizationURL(organization.getId()).toString());
                 organizationDTOs.add(organizationDTO);
             }
             organizationsResponse.setOrganizations(organizationDTOs);

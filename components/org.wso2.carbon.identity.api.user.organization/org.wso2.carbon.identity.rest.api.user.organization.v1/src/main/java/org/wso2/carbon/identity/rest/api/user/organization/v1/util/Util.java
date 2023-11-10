@@ -19,16 +19,10 @@
 package org.wso2.carbon.identity.rest.api.user.organization.v1.util;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
-import org.wso2.carbon.identity.core.ServiceURLBuilder;
-import org.wso2.carbon.identity.core.URLBuilderException;
-import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
-import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants;
 import org.wso2.carbon.identity.organization.management.service.exception.OrganizationManagementClientException;
 import org.wso2.carbon.identity.organization.management.service.exception.OrganizationManagementException;
@@ -38,13 +32,9 @@ import java.net.URI;
 
 import javax.ws.rs.core.Response;
 
-import static org.wso2.carbon.identity.api.user.common.Constants.ORGANIZATION_CONTEXT_PATH_COMPONENT;
-import static org.wso2.carbon.identity.api.user.common.Constants.TENANT_CONTEXT_PATH_COMPONENT;
-import static org.wso2.carbon.identity.api.user.common.Constants.USER_API_PATH_COMPONENT;
-import static org.wso2.carbon.identity.application.common.util.IdentityApplicationConstants.Error.UNEXPECTED_SERVER_ERROR;
+import static org.wso2.carbon.identity.api.user.common.ContextLoader.buildURIForBody;
 import static org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants.ORGANIZATION_PATH;
 import static org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants.PATH_SEPARATOR;
-import static org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants.SERVER_API_PATH_COMPONENT;
 import static org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants.V1_API_PATH_COMPONENT;
 
 /**
@@ -150,57 +140,9 @@ public class Util {
      * @param organizationId The unique identifier of the organization.
      * @return URI
      */
-    public static URI organizationGetURL(String organizationId) {
+    public static URI buildOrganizationURL(String organizationId) {
 
         return buildURIForBody(V1_API_PATH_COMPONENT + PATH_SEPARATOR + ORGANIZATION_PATH +
-                PATH_SEPARATOR + organizationId);
-    }
-
-    private static URI buildURIForBody(String endpoint) {
-
-        String url;
-        String context = getContext(endpoint);
-
-        try {
-            url = ServiceURLBuilder.create().addPath(context).build().getRelativePublicURL();
-        } catch (URLBuilderException e) {
-            String errorDescription = "Server encountered an error while building URL for response body.";
-            throw buildInternalServerError(e, errorDescription);
-        }
-        return URI.create(url);
-    }
-
-    private static String getContext(String endpoint) {
-
-        String context;
-        String organizationId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getOrganizationId();
-        if (IdentityTenantUtil.isTenantQualifiedUrlsEnabled()) {
-            context = SERVER_API_PATH_COMPONENT + endpoint;
-            if (StringUtils.isNotEmpty(organizationId)) {
-                String tenantDomain = (String) IdentityUtil.threadLocalProperties.get()
-                        .get(OrganizationManagementConstants.ROOT_TENANT_DOMAIN);
-                context = String.format(TENANT_CONTEXT_PATH_COMPONENT, tenantDomain) +
-                        ORGANIZATION_CONTEXT_PATH_COMPONENT + context;
-            }
-        } else {
-            context = String.format(TENANT_CONTEXT_PATH_COMPONENT, IdentityTenantUtil.resolveTenantDomain()) +
-                    USER_API_PATH_COMPONENT + endpoint;
-        }
-        return context;
-    }
-
-    private static APIError buildInternalServerError(Exception e, String errorDescription) {
-
-        String errorCode = UNEXPECTED_SERVER_ERROR.getCode();
-        String errorMessage = "Error while building response.";
-
-        ErrorResponse errorResponse = new ErrorResponse.Builder().
-                withCode(errorCode)
-                .withMessage(errorMessage)
-                .withDescription(errorDescription)
-                .build(LOG, e, errorDescription);
-
-        Response.Status status = Response.Status.INTERNAL_SERVER_ERROR;
-        return new APIError(status, errorResponse);
+                PATH_SEPARATOR + organizationId, true);
     }
 }

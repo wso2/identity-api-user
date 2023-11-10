@@ -41,6 +41,7 @@ import javax.ws.rs.core.Response;
 import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_INVALID_USERNAME;
 import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_SERVER_ERROR;
 import static org.wso2.carbon.identity.api.user.common.Constants.ORGANIZATION_CONTEXT_PATH_COMPONENT;
+import static org.wso2.carbon.identity.api.user.common.Constants.SERVER_API_PATH_COMPONENT;
 import static org.wso2.carbon.identity.api.user.common.Constants.TENANT_CONTEXT_PATH_COMPONENT;
 import static org.wso2.carbon.identity.api.user.common.Constants.TENANT_NAME_FROM_CONTEXT;
 import static org.wso2.carbon.identity.api.user.common.Constants.USER_API_PATH_COMPONENT;
@@ -184,8 +185,13 @@ public class ContextLoader {
      */
     public static URI buildURIForBody(String endpoint) {
 
+        return buildURIForBody(endpoint, false);
+    }
+
+    public static URI buildURIForBody(String endpoint, boolean isServerResource) {
+
         String url;
-        String context = getContext(endpoint);
+        String context = getContext(endpoint, isServerResource);
 
         try {
             url = ServiceURLBuilder.create().addPath(context).build().getRelativePublicURL();
@@ -207,7 +213,7 @@ public class ContextLoader {
     public static URI buildURIForHeader(String endpoint) {
 
         URI loc;
-        String context = getContext(endpoint);
+        String context = getContext(endpoint, false);
 
         try {
             String url = ServiceURLBuilder.create().addPath(context).build().getAbsolutePublicURL();
@@ -225,14 +231,19 @@ public class ContextLoader {
      * in non tenant qualified mode we need to append the tenant domain to the path manually.
      *
      * @param endpoint Relative endpoint path.
+     * @param isServerResource Is service URL builds for server resource.
      * @return Context of the API.
      */
-    private static String getContext(String endpoint) {
+    private static String getContext(String endpoint, boolean isServerResource) {
 
         String context;
         String organizationId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getOrganizationId();
         if (IdentityTenantUtil.isTenantQualifiedUrlsEnabled()) {
-            context = USER_API_PATH_COMPONENT + endpoint;
+            if (isServerResource) {
+                context = SERVER_API_PATH_COMPONENT + endpoint;
+            } else {
+                context = USER_API_PATH_COMPONENT + endpoint;
+            }
             if (StringUtils.isNotEmpty(organizationId)) {
                 String tenantDomain = (String) IdentityUtil.threadLocalProperties.get()
                         .get(OrganizationManagementConstants.ROOT_TENANT_DOMAIN);
