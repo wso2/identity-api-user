@@ -28,7 +28,14 @@ import org.wso2.carbon.identity.organization.management.service.exception.Organi
 import org.wso2.carbon.identity.organization.management.service.exception.OrganizationManagementException;
 import org.wso2.carbon.identity.rest.api.user.organization.v1.model.Error;
 
+import java.net.URI;
+
 import javax.ws.rs.core.Response;
+
+import static org.wso2.carbon.identity.api.user.common.ContextLoader.buildURIForBody;
+import static org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants.ORGANIZATION_PATH;
+import static org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants.PATH_SEPARATOR;
+import static org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants.V1_API_PATH_COMPONENT;
 
 /**
  * This class provides util functions to the user organization management endpoint.
@@ -125,5 +132,17 @@ public class Util {
             errorDescription = errorEnum.getDescription();
         }
         return errorDescription;
+    }
+
+    /**
+     * The relative URL to get the organization.
+     *
+     * @param organizationId The unique identifier of the organization.
+     * @return URI
+     */
+    public static URI buildOrganizationURL(String organizationId) {
+
+        return buildURIForBody(PATH_SEPARATOR + V1_API_PATH_COMPONENT + PATH_SEPARATOR + ORGANIZATION_PATH +
+                PATH_SEPARATOR + organizationId, true);
     }
 }
