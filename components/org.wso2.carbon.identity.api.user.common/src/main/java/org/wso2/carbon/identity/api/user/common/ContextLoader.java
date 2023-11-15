@@ -29,7 +29,6 @@ import org.wso2.carbon.identity.core.ServiceURLBuilder;
 import org.wso2.carbon.identity.core.URLBuilderException;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
-import org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.UserStoreConfigConstants;
@@ -40,7 +39,6 @@ import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_INVALID_USERNAME;
 import static org.wso2.carbon.identity.api.user.common.Constants.ErrorMessage.ERROR_CODE_SERVER_ERROR;
-import static org.wso2.carbon.identity.api.user.common.Constants.ORGANIZATION_CONTEXT_PATH_COMPONENT;
 import static org.wso2.carbon.identity.api.user.common.Constants.SERVER_API_PATH_COMPONENT;
 import static org.wso2.carbon.identity.api.user.common.Constants.TENANT_CONTEXT_PATH_COMPONENT;
 import static org.wso2.carbon.identity.api.user.common.Constants.TENANT_NAME_FROM_CONTEXT;
@@ -237,18 +235,11 @@ public class ContextLoader {
     private static String getContext(String endpoint, boolean isServerResource) {
 
         String context;
-        String organizationId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getOrganizationId();
         if (IdentityTenantUtil.isTenantQualifiedUrlsEnabled()) {
             if (isServerResource) {
                 context = SERVER_API_PATH_COMPONENT + endpoint;
             } else {
                 context = USER_API_PATH_COMPONENT + endpoint;
-            }
-            if (StringUtils.isNotEmpty(organizationId)) {
-                String tenantDomain = (String) IdentityUtil.threadLocalProperties.get()
-                        .get(OrganizationManagementConstants.ROOT_TENANT_DOMAIN);
-                context = String.format(TENANT_CONTEXT_PATH_COMPONENT, tenantDomain) +
-                        ORGANIZATION_CONTEXT_PATH_COMPONENT + context;
             }
         } else {
             context = String.format(TENANT_CONTEXT_PATH_COMPONENT, IdentityTenantUtil.resolveTenantDomain()) +

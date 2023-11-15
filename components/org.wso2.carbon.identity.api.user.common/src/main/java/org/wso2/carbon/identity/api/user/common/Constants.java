@@ -27,7 +27,6 @@ public class Constants {
     public static final String ERROR_CODE_DELIMITER = "-";
     public static final String CORRELATION_ID_MDC = "Correlation-ID";
     public static final String TENANT_CONTEXT_PATH_COMPONENT = "/t/%s";
-    public static final String ORGANIZATION_CONTEXT_PATH_COMPONENT = "/o";
     public static final String USER_API_PATH_COMPONENT = "/api/users";
     public static final String SERVER_API_PATH_COMPONENT = "/api/server";
 
