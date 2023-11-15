@@ -21,6 +21,7 @@ package org.wso2.carbon.identity.rest.api.user.session.v1.core;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.api.user.common.function.UserToUniqueId;
@@ -368,6 +369,11 @@ public class SessionManagementService {
 
     private String getFederatedUserIdFromUser(User user) {
 
+        String userResidentOrg = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserResidentOrganizationId();
+        // The organization SSO user's ID is correctly set in the carbon context.
+        if (StringUtils.isNotEmpty(userResidentOrg)) {
+            return PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserId();
+        }
         if (!IdentityUtil.threadLocalProperties.get().containsKey(IDP_NAME)) {
             if (log.isDebugEnabled()) {
                 log.debug("Idp name cannot be found in thread local.");
