@@ -437,8 +437,14 @@ public class PasswordRecoveryService {
                                                                   RecoveryInformationDTO recoveryInformationDTO) {
 
         AccountRecoveryType accountRecoveryType = null;
+
+        if (recoveryInformationDTO == null) {
+            return accountRecoveryType;
+        }
+
         boolean isNotificationBasedRecoveryEnabled = recoveryInformationDTO.isNotificationBasedRecoveryEnabled();
         boolean isQuestionBasedRecoveryAllowedForUser = recoveryInformationDTO.isQuestionBasedRecoveryAllowedForUser();
+
         if (isNotificationBasedRecoveryEnabled) {
             // Build next API calls list.
             ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
