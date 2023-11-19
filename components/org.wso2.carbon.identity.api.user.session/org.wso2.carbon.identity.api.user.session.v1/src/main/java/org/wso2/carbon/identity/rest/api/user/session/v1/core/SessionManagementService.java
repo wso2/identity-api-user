@@ -21,6 +21,7 @@ package org.wso2.carbon.identity.rest.api.user.session.v1.core;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.api.user.common.function.UserToUniqueId;
@@ -53,6 +54,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.ERROR_CODE_DELIMITER;
@@ -92,7 +94,7 @@ public class SessionManagementService {
     public SessionsDTO getSessionsBySessionId(User user, Integer limit, Integer offset, String filter, String sort) {
 
         String userId;
-        if (isFederatedUser()) {
+        if (isFederatedUser() && !isOrganizationSsoUser()) {
             userId = getFederatedUserIdFromUser(user);
         } else {
             userId = getUserIdFromUser(user);
@@ -398,6 +400,12 @@ public class SessionManagementService {
 
         return IdentityUtil.threadLocalProperties.get().containsKey(IS_FEDERATED_USER) &&
                 (boolean) IdentityUtil.threadLocalProperties.get().get(IS_FEDERATED_USER);
+    }
+
+    private boolean isOrganizationSsoUser() {
+
+        return isFederatedUser() && StringUtils.isNotEmpty(PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                .getUserResidentOrganizationId());
     }
 
     /**
