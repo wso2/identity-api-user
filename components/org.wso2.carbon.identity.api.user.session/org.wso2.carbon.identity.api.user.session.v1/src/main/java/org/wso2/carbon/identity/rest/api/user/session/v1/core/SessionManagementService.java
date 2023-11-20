@@ -21,6 +21,7 @@ package org.wso2.carbon.identity.rest.api.user.session.v1.core;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.api.user.common.function.UserToUniqueId;
@@ -53,6 +54,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.ERROR_CODE_DELIMITER;
@@ -93,7 +95,14 @@ public class SessionManagementService {
 
         String userId;
         if (isFederatedUser()) {
-            userId = getFederatedUserIdFromUser(user);
+            boolean isOrganizationSSOUser = StringUtils.isNotEmpty(PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                    .getUserResidentOrganizationId());
+            // For organization SSO users, user ID resolve same as for a local user.
+            if (isOrganizationSSOUser) {
+                userId = getUserIdFromUser(user);
+            } else {
+                userId = getFederatedUserIdFromUser(user);
+            }
         } else {
             userId = getUserIdFromUser(user);
         }
