@@ -94,11 +94,15 @@ public class SessionManagementService {
     public SessionsDTO getSessionsBySessionId(User user, Integer limit, Integer offset, String filter, String sort) {
 
         String userId;
-        /* For organization SSO users, the user information is properly set. Hence, the user ID resolving logic for
-         local user can be used. */
-        if (isFederatedUser() && !StringUtils.isNotEmpty(PrivilegedCarbonContext.getThreadLocalCarbonContext()
-                .getUserResidentOrganizationId())) {
-            userId = getFederatedUserIdFromUser(user);
+        if (isFederatedUser()) {
+            boolean isOrganizationSSOUser = StringUtils.isNotEmpty(PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                    .getUserResidentOrganizationId());
+            // For organization SSO users, user ID resolve same as for a local user.
+            if (isOrganizationSSOUser) {
+                userId = getUserIdFromUser(user);
+            } else {
+                userId = getFederatedUserIdFromUser(user);
+            }
         } else {
             userId = getUserIdFromUser(user);
         }
