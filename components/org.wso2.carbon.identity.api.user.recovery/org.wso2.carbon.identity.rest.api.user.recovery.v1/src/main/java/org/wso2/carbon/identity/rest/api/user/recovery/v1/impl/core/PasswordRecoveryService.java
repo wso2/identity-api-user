@@ -79,7 +79,6 @@ public class PasswordRecoveryService {
 
             boolean isNotificationBasedRecoveryEnabled = isNotificationBasedRecoveryEnabled(tenantDomain);
             boolean isQuestionBasedRecoveryAllowedForUser = isQuestionBasedRecoveryEnabled(tenantDomain);
-            RecoveryInformationDTO recoveryInformationDTO = null;
             ArrayList<AccountRecoveryType> accountRecoveryTypes = new ArrayList<>();
             List<Object> passwordRecoveryManagerList = PrivilegedCarbonContext
                     .getThreadLocalCarbonContext().getOSGiServices(PasswordRecoveryManager.class, null);
@@ -94,10 +93,12 @@ public class PasswordRecoveryService {
             }
 
             for (Object passwordRecoveryManager : passwordRecoveryManagerList) {
-                recoveryInformationDTO = ((PasswordRecoveryManager) passwordRecoveryManager).initiate(userClaims,
-                        tenantDomain, RecoveryUtil.buildPropertiesMap(initRequest.getProperties()));
-                Optional.ofNullable(buildPasswordRecoveryInitResponse(tenantDomain, recoveryInformationDTO))
-                        .ifPresent(accountRecoveryTypes::add);
+                RecoveryInformationDTO recoveryInformationDTO = ((PasswordRecoveryManager) passwordRecoveryManager)
+                        .initiate(userClaims, tenantDomain,
+                                RecoveryUtil.buildPropertiesMap(initRequest.getProperties()));
+                Optional<AccountRecoveryType> recoveryType =
+                        buildPasswordRecoveryInitResponse(tenantDomain, recoveryInformationDTO);
+                recoveryType.ifPresent(accountRecoveryTypes::add);
             }
 
             if (accountRecoveryTypes.isEmpty()) {
@@ -433,15 +434,14 @@ public class PasswordRecoveryService {
     * @param recoveryInformationDTO RecoveryInformationDTO which wraps the password recovery information
     * @return AccountRecoveryType object with recovery options available for the user.
      */
-    private AccountRecoveryType buildPasswordRecoveryInitResponse(String tenantDomain,
-                                                                  RecoveryInformationDTO recoveryInformationDTO) {
-
-        AccountRecoveryType accountRecoveryType = null;
+    private Optional<AccountRecoveryType> buildPasswordRecoveryInitResponse(String tenantDomain,
+                                                               RecoveryInformationDTO recoveryInformationDTO) {
 
         if (recoveryInformationDTO == null) {
-            return accountRecoveryType;
+            return Optional.empty();
         }
 
+        AccountRecoveryType accountRecoveryType = null;
         boolean isNotificationBasedRecoveryEnabled = recoveryInformationDTO.isNotificationBasedRecoveryEnabled();
         boolean isQuestionBasedRecoveryAllowedForUser = recoveryInformationDTO.isQuestionBasedRecoveryAllowedForUser();
 
@@ -471,7 +471,7 @@ public class PasswordRecoveryService {
             accountRecoveryType = buildAccountRecoveryType(
                     Constants.RECOVER_WITH_CHALLENGE_QUESTIONS, null, apiCallsArrayList);
         }
-        return accountRecoveryType;
+        return Optional.ofNullable(accountRecoveryType);
     }
 
     /*
