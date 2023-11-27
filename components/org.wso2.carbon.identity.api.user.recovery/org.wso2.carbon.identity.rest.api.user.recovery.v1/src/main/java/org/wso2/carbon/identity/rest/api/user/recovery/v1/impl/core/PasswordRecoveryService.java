@@ -24,12 +24,15 @@ import org.wso2.carbon.identity.governance.service.notification.NotificationChan
 import org.wso2.carbon.identity.recovery.IdentityRecoveryClientException;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryConstants;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryException;
+import org.wso2.carbon.identity.recovery.IdentityRecoveryServerException;
 import org.wso2.carbon.identity.recovery.dto.PasswordRecoverDTO;
 import org.wso2.carbon.identity.recovery.dto.PasswordResetCodeDTO;
 import org.wso2.carbon.identity.recovery.dto.RecoveryChannelInfoDTO;
 import org.wso2.carbon.identity.recovery.dto.RecoveryInformationDTO;
 import org.wso2.carbon.identity.recovery.dto.ResendConfirmationDTO;
 import org.wso2.carbon.identity.recovery.dto.SuccessfulPasswordResetDTO;
+import org.wso2.carbon.identity.recovery.services.password.PasswordRecoveryManager;
+import org.wso2.carbon.identity.recovery.util.Utils;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core.utils.RecoveryUtil;
 
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.APICall;
@@ -51,6 +54,7 @@ import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ResetRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.ws.rs.core.Response;
 
 /**
@@ -72,20 +76,37 @@ public class PasswordRecoveryService {
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         Map<String, String> userClaims = RecoveryUtil.buildUserClaimsMap(initRequest.getClaims());
         try {
-            // Get password recovery notification information.
-            RecoveryInformationDTO recoveryInformationDTO =
-                    UserAccountRecoveryServiceDataHolder.getPasswordRecoveryManager().initiate(userClaims, tenantDomain,
-                            RecoveryUtil.buildPropertiesMap(initRequest.getProperties()));
-            // If RecoveryChannelInfoDTO is null throw not found error.
-            if (recoveryInformationDTO == null) {
+
+            boolean isNotificationBasedRecoveryEnabled = isNotificationBasedRecoveryEnabled(tenantDomain);
+            boolean isQuestionBasedRecoveryAllowedForUser = isQuestionBasedRecoveryEnabled(tenantDomain);
+            ArrayList<AccountRecoveryType> accountRecoveryTypes = new ArrayList<>();
+            List<Object> passwordRecoveryManagerList = PrivilegedCarbonContext
+                    .getThreadLocalCarbonContext().getOSGiServices(PasswordRecoveryManager.class, null);
+
+            if (!isNotificationBasedRecoveryEnabled && !isQuestionBasedRecoveryAllowedForUser) {
                 if (log.isDebugEnabled()) {
-                    String message = "No recovery information for password recovery request";
-                    log.debug(message);
+                    log.debug("User password recovery is not enabled for the tenant: " + tenantDomain);
                 }
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+                throw Utils.handleClientException(
+                        IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_PASSWORD_RECOVERY_NOT_ENABLED,
+                        null);
             }
-            return Response.ok().entity(buildPasswordRecoveryInitResponse(tenantDomain, recoveryInformationDTO))
-                    .build();
+
+            for (Object passwordRecoveryManager : passwordRecoveryManagerList) {
+                RecoveryInformationDTO recoveryInformationDTO = ((PasswordRecoveryManager) passwordRecoveryManager)
+                        .initiate(userClaims, tenantDomain,
+                                RecoveryUtil.buildPropertiesMap(initRequest.getProperties()));
+                Optional<AccountRecoveryType> recoveryType =
+                        buildPasswordRecoveryInitResponse(tenantDomain, recoveryInformationDTO);
+                recoveryType.ifPresent(accountRecoveryTypes::add);
+            }
+
+            if (accountRecoveryTypes.isEmpty()) {
+                log.debug("No recovery information for password recovery request");
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+
+            return Response.ok().entity(accountRecoveryTypes).build();
         } catch (IdentityRecoveryClientException e) {
             throw RecoveryUtil.handleClientExceptions(PasswordRecoveryService.class.getName(), tenantDomain,
                     IdentityRecoveryConstants.PASSWORD_RECOVERY_SCENARIO, Util.getCorrelation(), e);
@@ -407,19 +428,23 @@ public class PasswordRecoveryService {
         return recoveryChannelInformation;
     }
 
-    /**
-     * Build a list of account recovery options available for a successful password recovery.
-     *
-     * @param tenantDomain           Tenant domain
-     * @param recoveryInformationDTO RecoveryInformationDTO which wraps the password recovery information
-     * @return List of {@link AccountRecoveryType}
+    /*
+    * Return AccountRecoveryType object with recovery options available for the user.
+    * @param tenantDomain Tenant domain
+    * @param recoveryInformationDTO RecoveryInformationDTO which wraps the password recovery information
+    * @return AccountRecoveryType object with recovery options available for the user.
      */
-    private List<AccountRecoveryType> buildPasswordRecoveryInitResponse(String tenantDomain,
-                                                                        RecoveryInformationDTO recoveryInformationDTO) {
+    private Optional<AccountRecoveryType> buildPasswordRecoveryInitResponse(String tenantDomain,
+                                                               RecoveryInformationDTO recoveryInformationDTO) {
 
-        ArrayList<AccountRecoveryType> accountRecoveryTypes = new ArrayList<>();
+        if (recoveryInformationDTO == null) {
+            return Optional.empty();
+        }
+
+        AccountRecoveryType accountRecoveryType = null;
         boolean isNotificationBasedRecoveryEnabled = recoveryInformationDTO.isNotificationBasedRecoveryEnabled();
         boolean isQuestionBasedRecoveryAllowedForUser = recoveryInformationDTO.isQuestionBasedRecoveryAllowedForUser();
+
         if (isNotificationBasedRecoveryEnabled) {
             // Build next API calls list.
             ArrayList<APICall> apiCallsArrayList = new ArrayList<>();
@@ -430,9 +455,8 @@ public class PasswordRecoveryService {
             RecoveryChannelInformation recoveryChannelInformation = buildRecoveryChannelInformation(
                     recoveryInformationDTO);
             // Build recovery information for recover with notifications.
-            AccountRecoveryType accountRecoveryType = buildAccountRecoveryType(
+            accountRecoveryType = buildAccountRecoveryType(
                     Constants.RECOVERY_WITH_NOTIFICATIONS, recoveryChannelInformation, apiCallsArrayList);
-            accountRecoveryTypes.add(accountRecoveryType);
         }
         if (isQuestionBasedRecoveryAllowedForUser) {
             // Build next API calls list.
@@ -444,10 +468,51 @@ public class PasswordRecoveryService {
                                     Constants.CHALLENGE_QUESTIONS_ENDPOINT_BASEPATH),
                             recoveryInformationDTO.getUsername()));
             // Build recovery information for recover with security questions.
-            AccountRecoveryType accountRecoveryType = buildAccountRecoveryType(
+            accountRecoveryType = buildAccountRecoveryType(
                     Constants.RECOVER_WITH_CHALLENGE_QUESTIONS, null, apiCallsArrayList);
-            accountRecoveryTypes.add(accountRecoveryType);
         }
-        return accountRecoveryTypes;
+        return Optional.ofNullable(accountRecoveryType);
+    }
+
+    /*
+     * Check whether the challenge question based recovery is enabled.
+     * @param tenantDomain Tenant domain
+     * @return true if challenge question based recovery is enabled.
+     */
+    private boolean isQuestionBasedRecoveryEnabled(String tenantDomain) throws IdentityRecoveryServerException {
+
+        // Check whether the challenge question based recovery is enabled.
+        try {
+            return Boolean.parseBoolean(
+                    Utils.getRecoveryConfigs(IdentityRecoveryConstants.ConnectorConfig.QUESTION_BASED_PW_RECOVERY,
+                            tenantDomain));
+        } catch (IdentityRecoveryServerException e) {
+            // Prepend scenario to the thrown exception.
+            String errorCode = Utils
+                    .prependOperationScenarioToErrorCode(IdentityRecoveryConstants.PASSWORD_RECOVERY_SCENARIO,
+                            e.getErrorCode());
+            throw Utils.handleServerException(errorCode, e.getMessage(), null);
+        }
+    }
+
+    /*
+     * Check whether the notification based recovery is enabled.
+     * @param tenantDomain Tenant domain
+     * @return true if notification based recovery is enabled.
+     */
+    private boolean isNotificationBasedRecoveryEnabled(String tenantDomain) throws IdentityRecoveryServerException {
+
+        // Check whether the challenge question based recovery is enabled.
+        try {
+            return Boolean.parseBoolean(
+                    Utils.getRecoveryConfigs(IdentityRecoveryConstants.ConnectorConfig.NOTIFICATION_BASED_PW_RECOVERY,
+                            tenantDomain));
+        } catch (IdentityRecoveryServerException e) {
+            // Prepend scenario to the thrown exception.
+            String errorCode = Utils
+                    .prependOperationScenarioToErrorCode(IdentityRecoveryConstants.PASSWORD_RECOVERY_SCENARIO,
+                            e.getErrorCode());
+            throw Utils.handleServerException(errorCode, e.getMessage(), null);
+        }
     }
 }
