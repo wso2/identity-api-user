@@ -31,7 +31,6 @@ import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryClientException;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryConstants;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryException;
-import org.wso2.carbon.identity.user.onboard.core.service.exception.UserOnboardServiceException;
 import org.wso2.carbon.identity.user.onboard.core.service.model.Configuration;
 
 import java.util.Arrays;
@@ -65,7 +64,6 @@ public class OfflineInviteLinkService {
      *
      * @param invitationRequest Invitation request.
      * @return password reset URL.
-     * @throws UserOnboardServiceException
      */
     public String generatePasswordURL(InvitationRequest invitationRequest) {
 
