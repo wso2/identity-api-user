@@ -90,20 +90,6 @@ public class OfflineInviteLinkService {
         return new Configuration(invitationRequest.getUsername(), invitationRequest.getUserstore(), tenantDomain);
     }
 
-    private APIError handleException(Constants.ErrorMessages errorEnum, String... data) {
-
-        Response.Status status;
-        ErrorResponse errorResponse;
-        if (isNotFoundScenario(errorEnum.getCode())) {
-            status = Response.Status.NOT_FOUND;
-        } else {
-            status = Response.Status.INTERNAL_SERVER_ERROR;
-        }
-        errorResponse = getErrorBuilder(errorEnum)
-                .build(LOG, buildErrorDescription(errorEnum.getDescription(), data), true);
-        return new APIError(status, errorResponse);
-    }
-
     private APIError handleException(IdentityRecoveryException exception, Constants.ErrorMessages errorEnum,
                                      String... data) {
 
