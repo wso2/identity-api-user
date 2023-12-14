@@ -178,6 +178,11 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
+                <artifactId>org.wso2.carbon.identity.event</artifactId>
+                <version>${carbon.identity.framework.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.wso2.carbon.identity.inbound.auth.oauth2</groupId>
                 <artifactId>org.wso2.carbon.identity.oauth</artifactId>
                 <version>${identity.oauth.version}</version>
@@ -265,6 +270,18 @@
                 <version>${carbon.kernel.version}</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.user.api</artifactId>
+                <version>${carbon.kernel.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.core.services</artifactId>
+                <version>${carbon.kernel.version}</version>
+                <scope>provided</scope>
+            </dependency>
 
             <!-- Test Dependencies -->
             <dependency>
@@ -300,6 +317,21 @@
                 <artifactId>org.wso2.carbon.identity.core</artifactId>
                 <version>${carbon.identity.framework.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.config.mapper</groupId>
+                <artifactId>config-mapper</artifactId>
+                <version>${config.mapper.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.user.api</groupId>
+                <artifactId>org.wso2.carbon.identity.api.user.onboard.common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.governance</groupId>
+                <artifactId>org.wso2.carbon.identity.user.onboard.core.service</artifactId>
+                <version>${identity.governance.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -410,8 +442,9 @@
         <maven.buildnumber.plugin.version>1.4</maven.buildnumber.plugin.version>
         <org.apache.felix.annotations.version>1.2.4</org.apache.felix.annotations.version>
         <carbon.kernel.version>4.9.17</carbon.kernel.version>
-        <identity.governance.version>1.8.73</identity.governance.version>
+        <identity.governance.version>1.8.98</identity.governance.version>
         <carbon.identity.framework.version>5.25.380</carbon.identity.framework.version>
+        <carbon.identity.framework.version.range>[5.14.67, 6.0.0]</carbon.identity.framework.version.range>
         <carbon.identity.account.association.version>5.3.7</carbon.identity.account.association.version>
         <maven.findbugsplugin.version>3.0.5</maven.findbugsplugin.version>
         <identity.oauth.version>6.7.71</identity.oauth.version>
@@ -425,6 +458,7 @@
         <maven.checkstyleplugin.excludes>**/gen/**/*</maven.checkstyleplugin.excludes>
         <commons-lang.wso2.version>2.6.0.wso2v1</commons-lang.wso2.version>
         <mavan.findbugsplugin.exclude.file>findbugs-exclude-filter.xml</mavan.findbugsplugin.exclude.file>
+        <config.mapper.version>1.0.13</config.mapper.version>
     </properties>
 
     <modules>
@@ -441,6 +475,7 @@
         <module>components/org.wso2.carbon.identity.api.user.mfa</module>
         <module>components/org.wso2.carbon.identity.api.user.idv</module>
         <module>components/org.wso2.carbon.identity.api.user.organization</module>
+        <module>components/org.wso2.carbon.identity.api.user.onboard</module>
     </modules>
 
 </project>

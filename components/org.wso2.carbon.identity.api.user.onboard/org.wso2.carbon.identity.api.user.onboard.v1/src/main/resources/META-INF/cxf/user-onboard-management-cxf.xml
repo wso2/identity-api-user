@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean class="org.wso2.carbon.identity.api.user.onboard.v1.impl.OfflineInviteLinkApiServiceImpl" />
+    <bean class="org.wso2.carbon.identity.api.user.onboard.v1.service.OfflineInviteLinkService" />
+
+    <bean   id="userOnboardCoreServiceFactoryBean"
+            class="org.wso2.carbon.identity.api.user.onboard.common.factory.OSGIServiceFactory" />
+    <bean id="userOnboardCoreServiceDataHolder"
+          class="org.wso2.carbon.identity.api.user.onboard.common.UserOnboardServiceDataHolder" >
+        <property name="userOnboardCoreService" ref="userOnboardCoreServiceFactoryBean"/>
+    </bean>
+</beans>

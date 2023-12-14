@@ -1,0 +1,98 @@
+openapi: 3.0.0
+info:
+  version: v1
+  title:  WSO2 Identity Server - Offline User Onboard Management API
+  description: >-
+    This document specifies a **RESTFullAPI** for **offline user onboard management** in
+    **WSO2 Identity Server**.
+  contact:
+    name: WSO2 Identity Server
+    url: 'https://wso2.com/identity-and-access-management'
+    email: architecture@wso2.org
+paths:
+  '/offline-invite-link':
+    post:
+      tags:
+        - Temporary Link
+      summary: Generates a random link that can be used to set a new password
+      description: 'Generates a random and secured one time link that can be used to set a new password for specified user'
+      operationId: generateLink
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvitationRequest'
+        description: This represents the invitation request.
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            text/plain:
+              schema:
+                type: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+servers:
+  - url: 'https://{server-url}/api/users/v1'
+    variables:
+      server-url:
+        default: 'localhost:9443'
+security:
+  - OAuth2: []
+  - BasicAuth: []
+components:
+  schemas:
+    InvitationRequest:
+      type: object
+      required:
+        - username
+        - userstore
+      properties:
+        username:
+          type: string
+          example: "JohnDoe123"
+        userstore:
+          type: string
+          example: "PRIMARY"
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "Some_error_code"
+        message:
+          type: string
+          example: "Some error message."
+        description:
+          type: string
+          example: "Some error description."
+        traceId:
+          type: string
+          example: "Some Correlation for Error Instance"
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: 'https://localhost:9443/oauth2/authorize'
+          tokenUrl: 'http://localhost:9763/oauth2/token'
+          scopes: {}
