@@ -319,6 +319,12 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
+                <artifactId>org.wso2.carbon.identity.application.mgt</artifactId>
+                <version>${carbon.identity.framework.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.wso2.config.mapper</groupId>
                 <artifactId>config-mapper</artifactId>
                 <version>${config.mapper.version}</version>
@@ -448,7 +454,7 @@
         <carbon.identity.account.association.version>5.3.7</carbon.identity.account.association.version>
         <maven.findbugsplugin.version>3.0.5</maven.findbugsplugin.version>
         <identity.oauth.version>6.7.71</identity.oauth.version>
-        <identity.org.mgt.core.version>1.0.85</identity.org.mgt.core.version>
+        <identity.org.mgt.core.version>1.0.97</identity.org.mgt.core.version>
         <testng.version>6.9.10</testng.version>
         <fido2.version>5.1.17</fido2.version>
         <identity.totp.version>3.3.1</identity.totp.version>

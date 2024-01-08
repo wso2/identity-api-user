@@ -44,5 +44,10 @@
             <artifactId>org.wso2.carbon.identity.organization.management.service</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity.framework</groupId>
+            <artifactId>org.wso2.carbon.identity.application.mgt</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>
