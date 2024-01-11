@@ -56,7 +56,7 @@ import static org.wso2.carbon.identity.api.user.totp.common.TOTPConstants.ErrorM
 import static org.wso2.carbon.identity.api.user.totp.common.TOTPConstants.ErrorMessage.USER_ERROR_UNAUTHORIZED_USER;
 
 /**
- * Service class for TOTP API
+ * Service class for TOTP API.
  */
 public class TOTPService {
 
@@ -88,17 +88,26 @@ public class TOTPService {
             if (userRealm != null) {
                 Map<String, String> userClaimValues = userRealm.getUserStoreManager().
                         getUserClaimValues(tenantAwareUsername,
-                                new String[] { TOTPAuthenticatorConstants.SECRET_KEY_CLAIM_URL }, null);
+                                new String[] {
+                                        TOTPAuthenticatorConstants.SECRET_KEY_CLAIM_URL,
+                                        TOTPAuthenticatorConstants.VERIFY_SECRET_KEY_CLAIM_URL
+                                }, null);
                 secretKey = userClaimValues.get(TOTPAuthenticatorConstants.SECRET_KEY_CLAIM_URL);
                 if (StringUtils.isEmpty(secretKey)) {
-                    TOTPAuthenticatorKey key = TOTPKeyGenerator.generateKey(user.getTenantDomain());
-                    secretKey = key.getKey();
+                    String verifySecretKey =
+                            userClaimValues.get(TOTPAuthenticatorConstants.VERIFY_SECRET_KEY_CLAIM_URL);
+                    if (StringUtils.isEmpty(verifySecretKey)) {
+                        TOTPAuthenticatorKey key = TOTPKeyGenerator.generateKey(user.getTenantDomain());
+                        secretKey = key.getKey();
 
-                    encoding = TOTPUtil.getEncodingMethod(user.getTenantDomain());
+                        encoding = TOTPUtil.getEncodingMethod(user.getTenantDomain());
 
-                    claims.put(TOTPAuthenticatorConstants.SECRET_KEY_CLAIM_URL, TOTPUtil.encrypt(secretKey));
-                    claims.put(TOTPAuthenticatorConstants.ENCODING_CLAIM_URL, encoding);
-                    TOTPKeyGenerator.addTOTPClaimsAndRetrievingQRCodeURL(claims, user.toFullQualifiedUsername());
+                        claims.put(TOTPAuthenticatorConstants.VERIFY_SECRET_KEY_CLAIM_URL, TOTPUtil.encrypt(secretKey));
+                        claims.put(TOTPAuthenticatorConstants.ENCODING_CLAIM_URL, encoding);
+                        TOTPKeyGenerator.addTOTPClaimsAndRetrievingQRCodeURL(claims, user.toFullQualifiedUsername());
+                    } else {
+                        secretKey = TOTPUtil.decrypt(verifySecretKey);
+                    }
                 } else {
                     secretKey = TOTPUtil.decrypt(secretKey);
                 }
@@ -276,7 +285,7 @@ public class TOTPService {
     }
 
     /**
-     * Handle invalid input
+     * Handle invalid input.
      *
      * @param errorEnum
      * @param data
@@ -288,7 +297,7 @@ public class TOTPService {
     }
 
     /**
-     * Handle Exceptions
+     * Handle Exceptions.
      *
      * @param e
      * @param errorEnum
@@ -317,7 +326,7 @@ public class TOTPService {
     }
 
     /**
-     * Handle User errors
+     * Handle User errors.
      *
      * @param status
      * @param error
@@ -329,7 +338,7 @@ public class TOTPService {
     }
 
     /**
-     * Get ErrorResponse Builder for Error enum
+     * Get ErrorResponse Builder for Error enum.
      *
      * @param errorEnum
      * @return
