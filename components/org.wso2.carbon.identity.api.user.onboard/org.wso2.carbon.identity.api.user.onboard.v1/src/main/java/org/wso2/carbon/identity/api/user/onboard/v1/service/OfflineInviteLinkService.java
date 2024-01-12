@@ -28,7 +28,6 @@ import org.wso2.carbon.identity.api.user.onboard.common.error.APIError;
 import org.wso2.carbon.identity.api.user.onboard.common.error.ErrorResponse;
 import org.wso2.carbon.identity.api.user.onboard.common.util.Constants;
 import org.wso2.carbon.identity.api.user.onboard.v1.model.InvitationRequest;
-import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryClientException;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryConstants;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryException;
