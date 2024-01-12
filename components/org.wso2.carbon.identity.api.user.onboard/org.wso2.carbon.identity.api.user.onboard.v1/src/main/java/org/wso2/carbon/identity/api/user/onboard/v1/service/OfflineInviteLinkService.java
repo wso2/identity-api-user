@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.onboard.common.error.APIError;
 import org.wso2.carbon.identity.api.user.onboard.common.error.ErrorResponse;
 import org.wso2.carbon.identity.api.user.onboard.common.util.Constants;
@@ -67,7 +68,7 @@ public class OfflineInviteLinkService {
      */
     public String generatePasswordURL(InvitationRequest invitationRequest) {
 
-        String tenantDomain = getTenantDomainFromAuthUser();
+        String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         Configuration configuration = prepareConfigObject(invitationRequest, tenantDomain);
         try {
             return getUserOnboardCoreService().generatePasswordResetLink(configuration);
@@ -75,15 +76,6 @@ public class OfflineInviteLinkService {
             throw handleException(e, Constants.ErrorMessages.ERROR_UNABLE_TO_GENERATE_INVITE_LINK,
                     invitationRequest.getUsername());
         }
-    }
-
-    private String getTenantDomainFromAuthUser() {
-
-        String tenantDomain = null;
-        if (IdentityUtil.threadLocalProperties.get().get(AUTH_USER_TENANT_DOMAIN) != null) {
-            tenantDomain = (String) IdentityUtil.threadLocalProperties.get().get(AUTH_USER_TENANT_DOMAIN);
-        }
-        return tenantDomain;
     }
 
     private Configuration prepareConfigObject(InvitationRequest invitationRequest, String tenantDomain) {
