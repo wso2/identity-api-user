@@ -31,5 +31,5 @@ import javax.ws.rs.core.Response;
 
 public interface MeApiService {
 
-      public Response rootGet(String filter, Integer limit, String after, String before, Boolean recursive);
+      public Response rootGet(String filter, Integer limit, String after, String before, Boolean recursive, String authorizedAppName);
 }

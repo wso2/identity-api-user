@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.api.user.organization.common;
 
+import org.wso2.carbon.identity.application.mgt.ApplicationManagementService;
 import org.wso2.carbon.identity.organization.management.service.OrganizationManager;
 import org.wso2.carbon.identity.organization.management.service.OrganizationUserResidentResolverService;
 
@@ -29,6 +30,7 @@ public class UserOrganizationServiceHolder {
     private static OrganizationUserResidentResolverService organizationUserResidentResolverService;
 
     private static OrganizationManager organizationManagementService;
+    private static ApplicationManagementService applicationManagementService;
 
     /**
      * Method to get the organization user resident resolver OSGi service.
@@ -70,5 +72,26 @@ public class UserOrganizationServiceHolder {
             OrganizationManager organizationManagementService) {
 
         UserOrganizationServiceHolder.organizationManagementService = organizationManagementService;
+    }
+
+    /**
+     * Get application management service.
+     *
+     * @return Application management service.
+     */
+    public static ApplicationManagementService getApplicationManagementService() {
+
+        return applicationManagementService;
+    }
+
+    /**
+     * Set application management OSGi service.
+     *
+     * @param applicationManagementService Application management service.
+     */
+    public static void setApplicationManagementService(
+            ApplicationManagementService applicationManagementService) {
+
+        UserOrganizationServiceHolder.applicationManagementService = applicationManagementService;
     }
 }

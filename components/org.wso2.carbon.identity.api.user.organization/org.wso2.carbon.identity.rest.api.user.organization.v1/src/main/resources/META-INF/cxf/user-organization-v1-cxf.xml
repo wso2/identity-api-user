@@ -27,9 +27,12 @@
           class="org.wso2.carbon.identity.api.user.organization.common.factory.OrganizationUserResidentResolverOSGIServiceFactory"/>
     <bean id="OrganizationMgtServiceFactoryBean"
           class="org.wso2.carbon.identity.api.user.organization.common.factory.OrganizationManagementOSGIServiceFactory"/>
+    <bean id="ApplicationManagementServiceFactoryBean"
+          class="org.wso2.carbon.identity.api.user.organization.common.factory.ApplicationManagementOSGIServiceFactory"/>
     <bean id="UserOrganizationManagementServiceHolderBean"
           class="org.wso2.carbon.identity.api.user.organization.common.UserOrganizationServiceHolder">
         <property name="organizationUserResidentResolverService" ref="OrganizationUserResidentResolverServiceFactoryBean"/>
         <property name="organizationManagementService" ref="OrganizationMgtServiceFactoryBean"/>
+        <property name="applicationManagementService" ref="ApplicationManagementServiceFactoryBean"/>
     </bean>
 </beans>

@@ -33,9 +33,10 @@ public class MeApiServiceImpl implements MeApiService {
     UserOrganizationService userOrganizationService;
 
     @Override
-    public Response rootGet(String filter, Integer limit, String after, String before, Boolean recursive) {
+    public Response rootGet(String filter, Integer limit, String after, String before, Boolean recursive,
+                            String authorizedAppName) {
 
         return Response.ok(userOrganizationService.getAuthorizedOrganizations(filter, limit, after, before,
-                recursive)).build();
+                recursive, authorizedAppName)).build();
     }
 }

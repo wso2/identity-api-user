@@ -24,11 +24,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.organization.common.UserOrganizationServiceHolder;
+import org.wso2.carbon.identity.application.common.IdentityApplicationManagementException;
+import org.wso2.carbon.identity.application.common.model.ApplicationBasicInfo;
+import org.wso2.carbon.identity.application.mgt.ApplicationManagementService;
 import org.wso2.carbon.identity.core.ServiceURLBuilder;
 import org.wso2.carbon.identity.core.URLBuilderException;
+import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.organization.management.service.OrganizationManager;
 import org.wso2.carbon.identity.organization.management.service.OrganizationUserResidentResolverService;
+import org.wso2.carbon.identity.organization.management.service.exception.OrganizationManagementClientException;
 import org.wso2.carbon.identity.organization.management.service.exception.OrganizationManagementException;
 import org.wso2.carbon.identity.organization.management.service.model.BasicOrganization;
 import org.wso2.carbon.identity.rest.api.user.organization.v1.exceptions.UserOrganizationManagementEndpointException;
@@ -51,6 +56,7 @@ import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.USER_API_PATH_COMPONENT;
 import static org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants.ErrorMessages.ERROR_CODE_ERROR_BUILDING_PAGINATED_RESPONSE_URL;
+import static org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants.ErrorMessages.ERROR_CODE_INVALID_APPLICATION;
 import static org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants.ErrorMessages.ERROR_CODE_USER_ROOT_ORGANIZATION_NOT_FOUND;
 import static org.wso2.carbon.identity.organization.management.service.util.Utils.getOrganizationId;
 import static org.wso2.carbon.identity.rest.api.user.organization.v1.Constants.ASC_SORT_ORDER;
@@ -128,14 +134,18 @@ public class UserOrganizationService {
      * @return The root descendants organizations of the authenticated user.
      */
     public OrganizationsResponse getAuthorizedOrganizations(String filter, Integer limit, String after, String before,
-                                                            Boolean recursive) {
+                                                            Boolean recursive, String applicationName) {
 
         try {
             limit = validateLimit(limit);
             String sortOrder = StringUtils.isNotBlank(before) ? ASC_SORT_ORDER : DESC_SORT_ORDER;
+            String applicationAudience = null;
+            if (applicationName != null) {
+                applicationAudience = getApplicationAudience(applicationName);
+            }
             List<BasicOrganization> authorizedOrganizations = getOrganizationManagementService()
                     .getUserAuthorizedOrganizations(limit + 1, after, before, sortOrder, filter,
-                            Boolean.TRUE.equals(recursive));
+                            Boolean.TRUE.equals(recursive), applicationAudience);
             return getAuthorizedOrganizationsResponse(limit, after, before, filter,
                     authorizedOrganizations, Boolean.TRUE.equals(recursive));
         } catch (OrganizationManagementException e) {
@@ -160,6 +170,11 @@ public class UserOrganizationService {
     private OrganizationManager getOrganizationManagementService() {
 
         return UserOrganizationServiceHolder.getOrganizationManagementService();
+    }
+
+    private ApplicationManagementService getApplicationManagementService() {
+
+        return UserOrganizationServiceHolder.getApplicationManagementService();
     }
 
     private int validateLimit(Integer limit) {
@@ -263,5 +278,22 @@ public class UserOrganizationService {
         return StringUtils.isNotBlank(organizationId) ?
                 String.format("/o/%s", organizationId) + USER_API_PATH_COMPONENT + endpoint :
                 USER_API_PATH_COMPONENT + endpoint;
+    }
+
+    private String getApplicationAudience(String applicationName) throws OrganizationManagementException {
+
+        try {
+            ApplicationBasicInfo applicationBasicInfo =
+                    getApplicationManagementService().getApplicationBasicInfoByName(applicationName,
+                            IdentityTenantUtil.resolveTenantDomain());
+            if (applicationBasicInfo != null) {
+                return applicationBasicInfo.getApplicationResourceId();
+            }
+            throw new OrganizationManagementClientException(ERROR_CODE_INVALID_APPLICATION.getMessage(),
+                    String.format(ERROR_CODE_INVALID_APPLICATION.getDescription(), applicationName),
+                    ERROR_CODE_INVALID_APPLICATION.getCode());
+        } catch (IdentityApplicationManagementException e) {
+            throw new OrganizationManagementException(e.getMessage(), e.getErrorCode(), e);
+        }
     }
 }

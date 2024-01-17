@@ -39,6 +39,7 @@ paths:
         - $ref: '#/components/parameters/afterQueryParam'
         - $ref: '#/components/parameters/beforeQueryParam'
         - $ref: '#/components/parameters/recursiveQueryParam'
+        - $ref: '#/components/parameters/authorizedAppNameQueryParam'
       responses:
         '200':
           description: Successful response
@@ -163,6 +164,14 @@ components:
       schema:
         type: boolean
         default: false
+    authorizedAppNameQueryParam:
+        in: query
+        name: authorizedAppName
+        required: false
+        description:
+          Retrieves the organizations that are authorized for the user through the role bound to the application.
+        schema:
+            type: string
   schemas:
     RootOrganizationResponse:
       type: object
