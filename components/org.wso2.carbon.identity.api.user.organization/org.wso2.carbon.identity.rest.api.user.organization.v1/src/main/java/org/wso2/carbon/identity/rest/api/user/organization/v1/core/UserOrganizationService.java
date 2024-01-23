@@ -58,6 +58,7 @@ import static org.wso2.carbon.identity.api.user.common.Constants.USER_API_PATH_C
 import static org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants.ErrorMessages.ERROR_CODE_ERROR_BUILDING_PAGINATED_RESPONSE_URL;
 import static org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants.ErrorMessages.ERROR_CODE_INVALID_APPLICATION;
 import static org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants.ErrorMessages.ERROR_CODE_USER_ROOT_ORGANIZATION_NOT_FOUND;
+import static org.wso2.carbon.identity.organization.management.service.constant.OrganizationManagementConstants.ROOT_TENANT_DOMAIN;
 import static org.wso2.carbon.identity.organization.management.service.util.Utils.getOrganizationId;
 import static org.wso2.carbon.identity.rest.api.user.organization.v1.Constants.ASC_SORT_ORDER;
 import static org.wso2.carbon.identity.rest.api.user.organization.v1.Constants.DESC_SORT_ORDER;
@@ -283,9 +284,12 @@ public class UserOrganizationService {
     private String getApplicationAudience(String applicationName) throws OrganizationManagementException {
 
         try {
+            String tenantDomain = (String) IdentityUtil.threadLocalProperties.get().get(ROOT_TENANT_DOMAIN);
+            if (StringUtils.isBlank(tenantDomain)) {
+                tenantDomain = IdentityTenantUtil.resolveTenantDomain();
+            }
             ApplicationBasicInfo applicationBasicInfo =
-                    getApplicationManagementService().getApplicationBasicInfoByName(applicationName,
-                            IdentityTenantUtil.resolveTenantDomain());
+                    getApplicationManagementService().getApplicationBasicInfoByName(applicationName, tenantDomain);
             if (applicationBasicInfo != null) {
                 return applicationBasicInfo.getApplicationResourceId();
             }
