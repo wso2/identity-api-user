@@ -112,7 +112,7 @@ public class ErrorResponse extends ErrorDTO {
             if (!Utils.isCorrelationIDPresent()) {
                 errorMsg = String.format("correlationID: %s | " + errorMsg, error.getRef());
             }
-            if (isClientException && log.isDebugEnabled()) {
+            if (isClientException) {
                 if (log.isDebugEnabled()) {
                     log.debug(errorMsg, e);
                 }
@@ -138,8 +138,10 @@ public class ErrorResponse extends ErrorDTO {
             if (!Utils.isCorrelationIDPresent()) {
                 errorMsg = String.format("correlationID: %s | " + errorMsg, error.getRef());
             }
-            if (isClientException && log.isDebugEnabled()) {
-                log.debug(errorMsg);
+            if (isClientException) {
+                if (log.isDebugEnabled()) {
+                    log.debug(errorMsg);
+                }
             } else {
                 log.error(errorMsg);
             }
