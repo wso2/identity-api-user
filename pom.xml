@@ -390,6 +390,31 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>findbugs-maven-plugin</artifactId>
+                    <version>${maven.findbugsplugin.version}</version>
+                    <configuration>
+                        <effort>Max</effort>
+                        <threshold>Low</threshold>
+                        <xmlOutput>true</xmlOutput>
+                        <findbugsXmlOutputDirectory>${project.build.directory}/findbugs</findbugsXmlOutputDirectory>
+                        <!--Exclude sources-->
+                        <excludeFilterFile>${mavan.findbugsplugin.exclude.file}</excludeFilterFile>
+                        <plugins>
+                            <plugin>
+                                <groupId>com.h3xstream.findsecbugs</groupId>
+                                <artifactId>findsecbugs-plugin</artifactId>
+                                <version>${findsecbugs-plugin.version}</version>
+                            </plugin>
+                        </plugins>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>analyze-compile</id>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -453,6 +478,7 @@
         <carbon.identity.framework.version.range>[5.14.67, 6.0.0]</carbon.identity.framework.version.range>
         <carbon.identity.account.association.version>5.3.7</carbon.identity.account.association.version>
         <maven.findbugsplugin.version>3.0.5</maven.findbugsplugin.version>
+        <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
         <identity.oauth.version>6.7.71</identity.oauth.version>
         <identity.org.mgt.core.version>1.0.97</identity.org.mgt.core.version>
         <testng.version>6.9.10</testng.version>
