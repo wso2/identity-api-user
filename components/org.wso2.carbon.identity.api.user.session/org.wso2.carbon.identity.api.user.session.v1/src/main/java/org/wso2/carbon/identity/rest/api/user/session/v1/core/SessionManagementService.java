@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2019-2024, WSO2 LLC. (http://www.wso2.com).
  *
- * WSO2 Inc. licenses this file to you under the Apache License,
+ * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
@@ -94,15 +94,8 @@ public class SessionManagementService {
     public SessionsDTO getSessionsBySessionId(User user, Integer limit, Integer offset, String filter, String sort) {
 
         String userId;
-        if (isFederatedUser()) {
-            boolean isOrganizationSSOUser = StringUtils.isNotEmpty(PrivilegedCarbonContext.getThreadLocalCarbonContext()
-                    .getUserResidentOrganizationId());
-            // For organization SSO users, user ID resolve same as for a local user.
-            if (isOrganizationSSOUser) {
-                userId = getUserIdFromUser(user);
-            } else {
-                userId = getFederatedUserIdFromUser(user);
-            }
+        if (isFederatedUser() && !isOrganizationUser()) {
+            userId = getFederatedUserIdFromUser(user);
         } else {
             userId = getUserIdFromUser(user);
         }
@@ -118,7 +111,7 @@ public class SessionManagementService {
     public void terminateSessionBySessionId(User user, String sessionId) {
 
         String userId;
-        if (isFederatedUser()) {
+        if (isFederatedUser() && !isOrganizationUser()) {
             userId = getFederatedUserIdFromUser(user);
         } else {
             userId = getUserIdFromUser(user);
@@ -531,5 +524,11 @@ public class SessionManagementService {
                         String.format(ERROR_CODE_INVALID_DATA.getDescription(), message));
             }
         }
+    }
+
+    private boolean isOrganizationUser() {
+
+        return StringUtils.isNotEmpty(PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                .getUserResidentOrganizationId());
     }
 }
