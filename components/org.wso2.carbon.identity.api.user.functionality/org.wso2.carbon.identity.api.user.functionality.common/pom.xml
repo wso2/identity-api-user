@@ -38,5 +38,10 @@
             <artifactId>org.wso2.carbon.identity.user.functionality.mgt</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco.version}</version>
+        </dependency>
     </dependencies>
 </project>
