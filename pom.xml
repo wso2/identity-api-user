@@ -464,7 +464,7 @@
         <jackson-jaxrs-json-provider.version>2.16.1</jackson-jaxrs-json-provider.version>
         <jackson-databind.version>2.16.1</jackson-databind.version>
         <jackson-dataformat-xml.version>2.16.1</jackson-dataformat-xml.version>
-        <cxf-bundle.version>3.5.0</cxf-bundle.version>
+        <cxf-bundle.version>3.5.9</cxf-bundle.version>
         <jackson.version>1.9.13</jackson.version>
         <spring-web.version>5.3.25</spring-web.version>
         <swagger-jaxrs.version>1.6.2</swagger-jaxrs.version>
