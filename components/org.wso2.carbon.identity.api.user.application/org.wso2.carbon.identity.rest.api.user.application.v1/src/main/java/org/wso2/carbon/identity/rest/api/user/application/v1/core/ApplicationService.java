@@ -133,10 +133,8 @@ public class ApplicationService {
                 return ApplicationServiceHolder.getOrgApplicationManager().getDiscoverableApplicationBasicInfo(
                         limit, offset, filter, sortOrder, sortBy, tenantDomain);
             }
-
             return ApplicationServiceHolder.getDiscoverableApplicationManager().getDiscoverableApplicationBasicInfo(
                     limit, offset, filter, sortOrder, sortBy, tenantDomain);
-
         } catch (OrganizationManagementException e) {
             throw new IdentityApplicationManagementException(e.getMessage(), e);
         }
@@ -150,10 +148,8 @@ public class ApplicationService {
                 return ApplicationServiceHolder.getOrgApplicationManager()
                         .getCountOfDiscoverableApplications(filter, tenantDomain);
             }
-
             return ApplicationServiceHolder.getDiscoverableApplicationManager()
                     .getCountOfDiscoverableApplications(filter, tenantDomain);
-
         } catch (OrganizationManagementException e) {
             throw new IdentityApplicationManagementException(e.getMessage(), e);
         }
