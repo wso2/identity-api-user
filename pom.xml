@@ -296,6 +296,11 @@
                 <version>${identity.verification.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.wso2.carbon.identity.organization.management</groupId>
+                <artifactId>org.wso2.carbon.identity.organization.management.application</artifactId>
+                <version>${identity.organization.management.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.wso2.carbon.extension.identity.verification</groupId>
                 <artifactId>org.wso2.carbon.extension.identity.verification.mgt</artifactId>
                 <version>${identity.verification.version}</version>
@@ -491,6 +496,7 @@
         <commons-lang.wso2.version>2.6.0.wso2v1</commons-lang.wso2.version>
         <mavan.findbugsplugin.exclude.file>findbugs-exclude-filter.xml</mavan.findbugsplugin.exclude.file>
         <config.mapper.version>1.0.13</config.mapper.version>
+        <identity.organization.management.version>1.4.45</identity.organization.management.version>
     </properties>
 
     <modules>

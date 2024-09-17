@@ -180,5 +180,10 @@
             <artifactId>org.wso2.carbon.identity.core</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity.organization.management.core</groupId>
+            <artifactId>org.wso2.carbon.identity.organization.management.service</artifactId>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>
