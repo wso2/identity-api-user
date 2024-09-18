@@ -34,6 +34,8 @@ import org.wso2.carbon.identity.core.model.ExpressionNode;
 import org.wso2.carbon.identity.core.model.FilterTreeBuilder;
 import org.wso2.carbon.identity.core.model.Node;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
+import org.wso2.carbon.identity.organization.management.service.exception.OrganizationManagementException;
+import org.wso2.carbon.identity.organization.management.service.util.OrganizationManagementUtil;
 import org.wso2.carbon.identity.rest.api.user.application.v1.core.function.ApplicationBasicInfoToApiModel;
 import org.wso2.carbon.identity.rest.api.user.application.v1.model.ApplicationListResponse;
 import org.wso2.carbon.identity.rest.api.user.application.v1.model.ApplicationResponse;
@@ -108,11 +110,9 @@ public class ApplicationService {
         String tenantDomain = IdentityTenantUtil.resolveTenantDomain();
         String filterFormatted = buildFilter(filter);
         try {
-            List<ApplicationBasicInfo> applicationBasicInfos = ApplicationServiceHolder
-                    .getDiscoverableApplicationManager().getDiscoverableApplicationBasicInfo(limit, offset,
-                            filterFormatted, sortOrder, sortBy, tenantDomain);
-            int totalApps = ApplicationServiceHolder.getDiscoverableApplicationManager()
-                    .getCountOfDiscoverableApplications(filterFormatted, tenantDomain);
+            List<ApplicationBasicInfo> applicationBasicInfos = getDiscoverableApplicationBasicInfo(limit, offset,
+                    filterFormatted, sortOrder, sortBy, tenantDomain);
+            int totalApps = getCountOfDiscoverableApplications(filterFormatted, tenantDomain);
             return buildApplicationListResponse(limit, offset, totalApps, applicationBasicInfos);
 
         } catch (IdentityApplicationManagementException e) {
@@ -120,6 +120,38 @@ public class ApplicationService {
                     ApplicationServiceConstants.ErrorMessage.ERROR_CODE_ERROR_RETRIEVING_APPLICATIONS;
             Response.Status status = Response.Status.INTERNAL_SERVER_ERROR;
             throw handleException(e, errorEnum, status);
+        }
+    }
+
+    private List<ApplicationBasicInfo> getDiscoverableApplicationBasicInfo(int limit, int offset, String filter,
+                                                                           String sortOrder, String sortBy,
+                                                                           String tenantDomain)
+            throws IdentityApplicationManagementException {
+
+        try {
+            if (OrganizationManagementUtil.isOrganization(tenantDomain)) {
+                return ApplicationServiceHolder.getOrgApplicationManager().getDiscoverableSharedApplicationBasicInfo(
+                        limit, offset, filter, sortOrder, sortBy, tenantDomain);
+            }
+            return ApplicationServiceHolder.getDiscoverableApplicationManager().getDiscoverableApplicationBasicInfo(
+                    limit, offset, filter, sortOrder, sortBy, tenantDomain);
+        } catch (OrganizationManagementException e) {
+            throw new IdentityApplicationManagementException(e.getMessage(), e);
+        }
+    }
+
+    private int getCountOfDiscoverableApplications(String filter, String tenantDomain)
+            throws IdentityApplicationManagementException {
+
+        try {
+            if (OrganizationManagementUtil.isOrganization(tenantDomain)) {
+                return ApplicationServiceHolder.getOrgApplicationManager()
+                        .getCountOfDiscoverableSharedApplications(filter, tenantDomain);
+            }
+            return ApplicationServiceHolder.getDiscoverableApplicationManager()
+                    .getCountOfDiscoverableApplications(filter, tenantDomain);
+        } catch (OrganizationManagementException e) {
+            throw new IdentityApplicationManagementException(e.getMessage(), e);
         }
     }
 
