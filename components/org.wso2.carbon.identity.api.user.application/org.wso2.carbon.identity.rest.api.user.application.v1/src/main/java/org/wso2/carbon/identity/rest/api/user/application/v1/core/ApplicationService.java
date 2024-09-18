@@ -130,7 +130,7 @@ public class ApplicationService {
 
         try {
             if (OrganizationManagementUtil.isOrganization(tenantDomain)) {
-                return ApplicationServiceHolder.getOrgApplicationManager().getDiscoverableApplicationBasicInfo(
+                return ApplicationServiceHolder.getOrgApplicationManager().getDiscoverableSharedApplicationBasicInfo(
                         limit, offset, filter, sortOrder, sortBy, tenantDomain);
             }
             return ApplicationServiceHolder.getDiscoverableApplicationManager().getDiscoverableApplicationBasicInfo(
@@ -146,7 +146,7 @@ public class ApplicationService {
         try {
             if (OrganizationManagementUtil.isOrganization(tenantDomain)) {
                 return ApplicationServiceHolder.getOrgApplicationManager()
-                        .getCountOfDiscoverableApplications(filter, tenantDomain);
+                        .getCountOfDiscoverableSharedApplications(filter, tenantDomain);
             }
             return ApplicationServiceHolder.getDiscoverableApplicationManager()
                     .getCountOfDiscoverableApplications(filter, tenantDomain);
