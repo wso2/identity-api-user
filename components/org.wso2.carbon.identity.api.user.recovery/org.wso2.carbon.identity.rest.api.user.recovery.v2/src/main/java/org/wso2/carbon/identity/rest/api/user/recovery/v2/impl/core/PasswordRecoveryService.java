@@ -32,6 +32,8 @@ import org.wso2.carbon.identity.recovery.dto.RecoveryChannelInfoDTO;
 import org.wso2.carbon.identity.recovery.dto.RecoveryInformationDTO;
 import org.wso2.carbon.identity.recovery.dto.ResendConfirmationDTO;
 import org.wso2.carbon.identity.recovery.dto.SuccessfulPasswordResetDTO;
+import org.wso2.carbon.identity.recovery.internal.service.impl.password.PasswordRecoveryManagerImpl;
+import org.wso2.carbon.identity.recovery.services.password.PasswordRecoveryManager;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.utils.RecoveryUtil;
 
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.APICall;
@@ -77,10 +79,29 @@ public class PasswordRecoveryService {
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         Map<String, String> userClaims = RecoveryUtil.buildUserClaimsMap(initRequest.getClaims());
         try {
-            // Get password recovery notification information.
-            RecoveryInformationDTO recoveryInformationDTO =
-                    UserAccountRecoveryServiceDataHolder.getPasswordRecoveryManager().initiate(userClaims, tenantDomain,
-                            RecoveryUtil.buildPropertiesMap(initRequest.getProperties()));
+            // Retrieve all the password recovery managers.
+            List<PasswordRecoveryManager> passwordRecoveryManagers =
+                    UserAccountRecoveryServiceDataHolder.getPasswordRecoveryManagers();
+            RecoveryInformationDTO tempDTO = null;
+            RecoveryInformationDTO recoveryInformationDTO = null;
+            boolean isQuestionBasedRecoveryEnabled = false;
+            boolean isQuestionBasedRecoveryAllowedForUser = false;
+            for (PasswordRecoveryManager manager: passwordRecoveryManagers) {
+                tempDTO = manager.initiate(userClaims, tenantDomain,
+                                RecoveryUtil.buildPropertiesMap(initRequest.getProperties()));
+                if (!(manager instanceof PasswordRecoveryManagerImpl)) {
+                    // Get the challenge question based password recovery configurations.
+                    isQuestionBasedRecoveryEnabled = tempDTO.isQuestionBasedRecoveryEnabled();
+                    isQuestionBasedRecoveryAllowedForUser = tempDTO.isQuestionBasedRecoveryAllowedForUser();
+                } else {
+                    // Get the configurations for notification password recovery manager.
+                    recoveryInformationDTO = tempDTO;
+                }
+            }
+            if (recoveryInformationDTO != null) {
+                recoveryInformationDTO.setQuestionBasedRecoveryEnabled(isQuestionBasedRecoveryEnabled);
+                recoveryInformationDTO.setQuestionBasedRecoveryAllowedForUser(isQuestionBasedRecoveryAllowedForUser);
+            }
             return Response.ok().entity(buildPasswordRecoveryInitResponse(tenantDomain, recoveryInformationDTO))
                     .build();
         } catch (IdentityRecoveryException e) {

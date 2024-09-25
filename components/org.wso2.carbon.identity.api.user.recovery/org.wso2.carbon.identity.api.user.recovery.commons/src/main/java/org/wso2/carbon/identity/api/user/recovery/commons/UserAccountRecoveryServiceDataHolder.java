@@ -15,8 +15,11 @@
  */
 package org.wso2.carbon.identity.api.user.recovery.commons;
 
+import org.wso2.carbon.identity.recovery.internal.service.impl.password.PasswordRecoveryManagerImpl;
 import org.wso2.carbon.identity.recovery.services.password.PasswordRecoveryManager;
 import org.wso2.carbon.identity.recovery.services.username.UsernameRecoveryManager;
+
+import java.util.List;
 
 /**
  * Service holder class for user account recovery.
@@ -24,7 +27,7 @@ import org.wso2.carbon.identity.recovery.services.username.UsernameRecoveryManag
 public class UserAccountRecoveryServiceDataHolder {
 
     private static UsernameRecoveryManager usernameRecoveryManager;
-    private static PasswordRecoveryManager passwordRecoveryManager;
+    private static List<PasswordRecoveryManager> passwordRecoveryManager;
 
     /**
      * Get UsernameRecoveryManager instance.
@@ -53,6 +56,22 @@ public class UserAccountRecoveryServiceDataHolder {
      */
     public static PasswordRecoveryManager getPasswordRecoveryManager() {
 
+        // Return the default notification based passwordRecoveryManager.
+        for (PasswordRecoveryManager manager : passwordRecoveryManager) {
+            if (manager instanceof PasswordRecoveryManagerImpl) {
+                return manager;
+            }
+        }
+        return UserAccountRecoveryServiceDataHolder.passwordRecoveryManager.get(0);
+    }
+
+    /**
+     * Get all PasswordRecoveryManager instances.
+     *
+     * @return List of PasswordRecoveryManager.
+     */
+    public static List<PasswordRecoveryManager> getPasswordRecoveryManagers() {
+
         return UserAccountRecoveryServiceDataHolder.passwordRecoveryManager;
     }
 
@@ -62,7 +81,7 @@ public class UserAccountRecoveryServiceDataHolder {
      * @param passwordRecoveryManager PasswordRecoveryManager
      */
     public static void setPasswordRecoveryManager(
-            PasswordRecoveryManager passwordRecoveryManager) {
+            List<PasswordRecoveryManager> passwordRecoveryManager) {
 
         UserAccountRecoveryServiceDataHolder.passwordRecoveryManager = passwordRecoveryManager;
     }

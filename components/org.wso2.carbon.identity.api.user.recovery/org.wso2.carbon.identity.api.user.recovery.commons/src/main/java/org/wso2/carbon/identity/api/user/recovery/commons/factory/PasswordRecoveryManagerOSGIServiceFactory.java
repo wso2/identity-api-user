@@ -19,12 +19,15 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.recovery.services.password.PasswordRecoveryManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This factory bean is used to instantiate PasswordRecoveryManager type object inside the container.
  */
-public class PasswordRecoveryManagerOSGIServiceFactory extends AbstractFactoryBean<PasswordRecoveryManager> {
+public class PasswordRecoveryManagerOSGIServiceFactory extends AbstractFactoryBean<List<PasswordRecoveryManager>> {
 
-    private PasswordRecoveryManager passwordRecoveryManager;
+    private List<PasswordRecoveryManager> passwordRecoveryManager;
 
     @Override
     public Class<?> getObjectType() {
@@ -33,13 +36,20 @@ public class PasswordRecoveryManagerOSGIServiceFactory extends AbstractFactoryBe
     }
 
     @Override
-    protected PasswordRecoveryManager createInstance() throws Exception {
+    protected List<PasswordRecoveryManager> createInstance() throws Exception {
 
         if (this.passwordRecoveryManager == null) {
-            PasswordRecoveryManager passwordRecoveryManager = (PasswordRecoveryManager) PrivilegedCarbonContext
-                    .getThreadLocalCarbonContext().getOSGiService(PasswordRecoveryManager.class, null);
-            if (passwordRecoveryManager != null) {
-                this.passwordRecoveryManager = passwordRecoveryManager;
+            List<Object> passwordRecoveryManagerList = PrivilegedCarbonContext
+                    .getThreadLocalCarbonContext().getOSGiServices(PasswordRecoveryManager.class, null);
+
+            List<PasswordRecoveryManager> managers = new ArrayList<>();
+            for (Object manager : passwordRecoveryManagerList) {
+                if (manager instanceof PasswordRecoveryManager) {
+                    managers.add((PasswordRecoveryManager) manager);
+                }
+            }
+            if (!managers.isEmpty()) {
+                this.passwordRecoveryManager = managers;
             } else {
                 throw new Exception("Unable to retrieve PasswordRecoveryManager service.");
             }
