@@ -91,6 +91,8 @@ public class PasswordRecoveryService {
                                 RecoveryUtil.buildPropertiesMap(initRequest.getProperties()));
                 if (!(manager instanceof PasswordRecoveryManagerImpl)) {
                     // Get the challenge question based password recovery configurations.
+                    LOG.debug("Considering PasswordRecoveryManager to be ChallengeQuestionPasswordRecoveryManager " +
+                            "and retrieving question-based recovery configurations.");
                     isQuestionBasedRecoveryEnabled = tempDTO.isQuestionBasedRecoveryEnabled();
                     isQuestionBasedRecoveryAllowedForUser = tempDTO.isQuestionBasedRecoveryAllowedForUser();
                 } else {
