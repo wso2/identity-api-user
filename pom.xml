@@ -481,7 +481,7 @@
         <identity.governance.version>1.8.98</identity.governance.version>
         <carbon.identity.framework.version>5.25.380</carbon.identity.framework.version>
         <carbon.identity.framework.version.range>[5.14.67, 6.0.0]</carbon.identity.framework.version.range>
-        <carbon.identity.account.association.version>5.3.7</carbon.identity.account.association.version>
+        <carbon.identity.account.association.version>5.5.10</carbon.identity.account.association.version>
         <maven.findbugsplugin.version>3.0.5</maven.findbugsplugin.version>
         <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
         <identity.oauth.version>6.7.71</identity.oauth.version>
@@ -496,7 +496,7 @@
         <commons-lang.wso2.version>2.6.0.wso2v1</commons-lang.wso2.version>
         <mavan.findbugsplugin.exclude.file>findbugs-exclude-filter.xml</mavan.findbugsplugin.exclude.file>
         <config.mapper.version>1.0.13</config.mapper.version>
-        <identity.organization.management.version>1.4.47</identity.organization.management.version>
+        <identity.organization.management.version>1.4.48</identity.organization.management.version>
     </properties>
 
     <modules>
