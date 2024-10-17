@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2023-2024, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -23,7 +23,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.identity.api.user.organization.common.UserOrganizationServiceHolder;
 import org.wso2.carbon.identity.application.common.IdentityApplicationManagementException;
 import org.wso2.carbon.identity.application.common.model.ApplicationBasicInfo;
 import org.wso2.carbon.identity.application.mgt.ApplicationManagementService;
@@ -73,7 +72,20 @@ import static org.wso2.carbon.identity.rest.api.user.organization.v1.util.Util.h
  */
 public class UserOrganizationService {
 
+    private final OrganizationUserResidentResolverService organizationUserResidentResolverService;
+    private final OrganizationManager organizationManagementService;
+    private final ApplicationManagementService applicationManagementService;
+
     private static final Log LOG = LogFactory.getLog(UserOrganizationService.class);
+
+    public UserOrganizationService (OrganizationUserResidentResolverService organizationUserResidentResolverService,
+                                    OrganizationManager organizationManagementService,
+                                    ApplicationManagementService applicationManagementService) {
+
+        this.organizationUserResidentResolverService = organizationUserResidentResolverService;
+        this.organizationManagementService = organizationManagementService;
+        this.applicationManagementService = applicationManagementService;
+    }
 
     /**
      * Retrieves the root organization visible to the user in the organization hierarchy.
@@ -165,17 +177,17 @@ public class UserOrganizationService {
 
     private OrganizationUserResidentResolverService getOrganizationUserResidentResolverService() {
 
-        return UserOrganizationServiceHolder.getOrganizationUserResidentResolverService();
+        return organizationUserResidentResolverService;
     }
 
     private OrganizationManager getOrganizationManagementService() {
 
-        return UserOrganizationServiceHolder.getOrganizationManagementService();
+        return organizationManagementService;
     }
 
     private ApplicationManagementService getApplicationManagementService() {
 
-        return UserOrganizationServiceHolder.getApplicationManagementService();
+        return applicationManagementService;
     }
 
     private int validateLimit(Integer limit) {

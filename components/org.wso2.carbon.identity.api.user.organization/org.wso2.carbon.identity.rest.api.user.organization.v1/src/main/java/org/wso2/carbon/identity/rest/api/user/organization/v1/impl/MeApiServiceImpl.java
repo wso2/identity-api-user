@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2023-2024, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -18,9 +18,9 @@
 
 package org.wso2.carbon.identity.rest.api.user.organization.v1.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.organization.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.organization.v1.core.UserOrganizationService;
+import org.wso2.carbon.identity.rest.api.user.organization.v1.factories.UserOrganizationServiceFactory;
 
 import javax.ws.rs.core.Response;
 
@@ -29,8 +29,15 @@ import javax.ws.rs.core.Response;
  */
 public class MeApiServiceImpl implements MeApiService {
 
-    @Autowired
-    UserOrganizationService userOrganizationService;
+    private final UserOrganizationService userOrganizationService;
+
+    public MeApiServiceImpl() {
+        try {
+            this.userOrganizationService = UserOrganizationServiceFactory.getUserOrganizationService();
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurred while initiating UserOrganizationService.", e);
+        }
+    }
 
     @Override
     public Response rootGet(String filter, Integer limit, String after, String before, Boolean recursive,

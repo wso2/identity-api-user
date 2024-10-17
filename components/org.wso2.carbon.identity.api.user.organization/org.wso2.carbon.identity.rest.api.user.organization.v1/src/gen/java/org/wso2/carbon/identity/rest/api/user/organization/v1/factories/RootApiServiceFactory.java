@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2023-2024, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -23,10 +23,10 @@ import org.wso2.carbon.identity.rest.api.user.organization.v1.impl.RootApiServic
 
 public class RootApiServiceFactory {
 
-   private final static RootApiService service = new RootApiServiceImpl();
+   private final static RootApiService SERVICE = new RootApiServiceImpl();
 
    public static RootApiService getRootApi()
    {
-      return service;
+      return SERVICE;
    }
 }
