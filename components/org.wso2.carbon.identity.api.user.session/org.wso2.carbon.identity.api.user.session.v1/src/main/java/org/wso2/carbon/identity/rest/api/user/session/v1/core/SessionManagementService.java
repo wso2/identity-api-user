@@ -26,7 +26,7 @@ import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.api.user.common.function.UserToUniqueId;
 import org.wso2.carbon.identity.api.user.session.common.constant.SessionManagementConstants;
-import org.wso2.carbon.identity.api.user.session.common.util.SessionManagementServiceHolder;
+import org.wso2.carbon.identity.application.authentication.framework.UserSessionManagementService;
 import org.wso2.carbon.identity.application.authentication.framework.exception.UserSessionException;
 import org.wso2.carbon.identity.application.authentication.framework.exception.session.mgt.SessionManagementClientException;
 import org.wso2.carbon.identity.application.authentication.framework.exception.session.mgt.SessionManagementException;
@@ -45,6 +45,7 @@ import org.wso2.carbon.identity.rest.api.user.session.v1.core.function.UserSessi
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SearchResponseDTO;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionDTO;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionsDTO;
+import org.wso2.carbon.user.core.service.RealmService;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -74,12 +75,22 @@ import static org.wso2.carbon.identity.application.authentication.framework.util
  */
 public class SessionManagementService {
 
+    private final UserSessionManagementService userSessionManagementService;
+    private final RealmService realmService;
+
     private static final String FEDERATED_USER_DOMAIN = "FEDERATED";
     private static final String IS_FEDERATED_USER = "isFederatedUser";
     private static final String IDP_NAME = "idpName";
     private static final Log log = LogFactory.getLog(SessionManagementService.class);
     private static final String SESSIONS_SEARCH_ENDPOINT = "/v1/sessions";
     private static final Integer SESSIONS_SEARCH_DEFAULT_LIMIT = 20;
+
+    public SessionManagementService(UserSessionManagementService userSessionManagementService,
+                                    RealmService realmService) {
+
+        this.userSessionManagementService = userSessionManagementService;
+        this.realmService = realmService;
+    }
 
     /**
      * Get all the active sessions of a given user.
@@ -154,8 +165,7 @@ public class SessionManagementService {
         try {
             if (!StringUtils.isBlank(userId)) {
                 sessions = new SessionsDTO();
-                sessionsForUser = SessionManagementServiceHolder.getUserSessionManagementService()
-                        .getSessionsByUserId(userId);
+                sessionsForUser = userSessionManagementService.getSessionsByUserId(userId);
                 sessions.setUserId(userId);
                 sessions.setSessions(buildSessionDTOs(sessionsForUser));
             }
@@ -184,8 +194,7 @@ public class SessionManagementService {
                 String message = "Session ID is not provided to perform session management tasks.";
                 throw new SessionManagementClientException(ERROR_CODE_INVALID_SESSION, message);
             }
-            return SessionManagementServiceHolder.getUserSessionManagementService()
-                    .getSessionBySessionId(userId, sessionId)
+            return userSessionManagementService.getSessionBySessionId(userId, sessionId)
                     .map(new UserSessionToExternal());
         } catch (SessionManagementException e) {
             throw handleSessionManagementException(e);
@@ -212,8 +221,8 @@ public class SessionManagementService {
             String sortOrder = since != null ? SessionMgtConstants.ASC : SessionMgtConstants.DESC;
             SearchResponseDTO response = new SearchResponseDTO();
 
-            List<UserSession> results = SessionManagementServiceHolder.getUserSessionManagementService()
-                    .getSessions(tenantDomain, filterNodes, limit + 1, sortOrder);
+            List<UserSession> results =
+                    userSessionManagementService.getSessions(tenantDomain, filterNodes, limit + 1, sortOrder);
 
             if (!results.isEmpty()) {
                 boolean hasMoreItems = results.size() > limit;
@@ -260,8 +269,7 @@ public class SessionManagementService {
 
         try {
             if (userId != null && sessionId != null) {
-                SessionManagementServiceHolder.getUserSessionManagementService().terminateSessionBySessionId(userId,
-                        sessionId);
+                userSessionManagementService.terminateSessionBySessionId(userId, sessionId);
             } else {
                 throw handleForbiddenAction();
             }
@@ -283,7 +291,7 @@ public class SessionManagementService {
 
         try {
             if (userId != null) {
-                SessionManagementServiceHolder.getUserSessionManagementService().terminateSessionsByUserId(userId);
+                userSessionManagementService.terminateSessionsByUserId(userId);
             }
         } catch (SessionManagementException e) {
             throw handleSessionManagementException(e);
@@ -365,7 +373,7 @@ public class SessionManagementService {
 
     private String getUserIdFromUser(User user) {
 
-        return new UserToUniqueId().apply(SessionManagementServiceHolder.getRealmService(), user);
+        return new UserToUniqueId().apply(realmService, user);
     }
 
     private String getFederatedUserIdFromUser(User user) {
