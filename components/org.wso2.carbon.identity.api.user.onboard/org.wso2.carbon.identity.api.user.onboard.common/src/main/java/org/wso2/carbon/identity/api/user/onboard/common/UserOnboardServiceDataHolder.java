@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2023-2024, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -18,25 +18,31 @@
 
 package org.wso2.carbon.identity.api.user.onboard.common;
 
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.user.onboard.core.service.UserOnboardCoreService;
 
 /**
  * Service holder class for User onboard service.
- *
- * Note: This date holder is populated through Spring Factory beans. Hence there is no setter references visible. Please
- * check the cxf xml related to the user rest service inside META-INF/cxf folder for setter references.
  */
 public class UserOnboardServiceDataHolder {
 
-    private static UserOnboardCoreService userOnboardCoreService;
+    private UserOnboardServiceDataHolder() {
 
-    public static UserOnboardCoreService getUserOnboardCoreService() {
-
-        return userOnboardCoreService;
     }
 
-    public static void setUserOnboardCoreService(UserOnboardCoreService userOnboardCoreService) {
+    private static class UserOnboardCoreServiceHolder {
 
-        UserOnboardServiceDataHolder.userOnboardCoreService = userOnboardCoreService;
+        static final UserOnboardCoreService SERVICE = (UserOnboardCoreService) PrivilegedCarbonContext
+                .getThreadLocalCarbonContext().getOSGiService(UserOnboardCoreService.class, null);
+    }
+
+    /**
+     * Get UserOnboardCoreService OSGi service.
+     *
+     * @return UserOnboardCoreService
+     */
+    public static UserOnboardCoreService getUserOnboardCoreService() {
+
+        return UserOnboardCoreServiceHolder.SERVICE;
     }
 }
