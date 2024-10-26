@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2019-2024, WSO2 LLC. (http://www.wso2.com).
  *
- * WSO2 Inc. licenses this file to you under the Apache License,
+ * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,10 +18,10 @@
 
 package org.wso2.carbon.identity.rest.api.user.session.v1.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.session.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.core.SessionManagementService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionsDTO;
+import org.wso2.carbon.identity.rest.api.user.session.v1.factories.SessionManagementServiceFactory;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -33,8 +33,16 @@ import static org.wso2.carbon.identity.api.user.common.ContextLoader.getUserFrom
  */
 public class MeApiServiceImpl extends MeApiService {
 
-    @Autowired
-    private SessionManagementService sessionManagementService;
+    private final SessionManagementService sessionManagementService;
+
+    public MeApiServiceImpl() {
+
+        try {
+            this.sessionManagementService = SessionManagementServiceFactory.getSessionManagementService();
+        } catch (IllegalStateException e) {
+            throw new RuntimeException("Error occurred while initiating the SessionManagementService.", e);
+        }
+    }
 
     @Override
     public Response getSessionsOfLoggedInUser(Integer limit, Integer offset, String filter, String sort) {
