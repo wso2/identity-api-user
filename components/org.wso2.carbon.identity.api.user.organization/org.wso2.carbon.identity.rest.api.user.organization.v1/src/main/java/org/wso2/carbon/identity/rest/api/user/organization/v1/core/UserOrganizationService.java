@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2023-2024, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -23,7 +23,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.identity.api.user.organization.common.UserOrganizationServiceHolder;
 import org.wso2.carbon.identity.application.common.IdentityApplicationManagementException;
 import org.wso2.carbon.identity.application.common.model.ApplicationBasicInfo;
 import org.wso2.carbon.identity.application.mgt.ApplicationManagementService;
@@ -73,7 +72,20 @@ import static org.wso2.carbon.identity.rest.api.user.organization.v1.util.Util.h
  */
 public class UserOrganizationService {
 
+    private final OrganizationUserResidentResolverService organizationUserResidentResolverService;
+    private final OrganizationManager organizationManagementService;
+    private final ApplicationManagementService applicationManagementService;
+
     private static final Log LOG = LogFactory.getLog(UserOrganizationService.class);
+
+    public UserOrganizationService(OrganizationUserResidentResolverService organizationUserResidentResolverService,
+                                   OrganizationManager organizationManagementService,
+                                   ApplicationManagementService applicationManagementService) {
+
+        this.organizationUserResidentResolverService = organizationUserResidentResolverService;
+        this.organizationManagementService = organizationManagementService;
+        this.applicationManagementService = applicationManagementService;
+    }
 
     /**
      * Retrieves the root organization visible to the user in the organization hierarchy.
@@ -85,7 +97,7 @@ public class UserOrganizationService {
         String userId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserId();
         String accessedOrgId = getOrganizationId();
         try {
-            String rootOrgId = getOrganizationUserResidentResolverService()
+            String rootOrgId = organizationUserResidentResolverService
                     .resolveResidentOrganization(userId, accessedOrgId)
                     .orElseThrow(() -> new UserOrganizationManagementEndpointException(Response.Status.NOT_FOUND,
                             getError(ERROR_CODE_USER_ROOT_ORGANIZATION_NOT_FOUND, userId)));
@@ -108,7 +120,7 @@ public class UserOrganizationService {
         String accessedOrgId = getOrganizationId();
         try {
             List<BasicOrganizationObject> rootDescendantsOrganizationResponseList = new ArrayList<>();
-            List<BasicOrganization> basicOrganizationList = getOrganizationUserResidentResolverService()
+            List<BasicOrganization> basicOrganizationList = organizationUserResidentResolverService
                     .getHierarchyUptoResidentOrganization(userId, accessedOrgId);
             for (BasicOrganization basicOrganization : basicOrganizationList) {
                 BasicOrganizationObject basicOrganizationObject = new BasicOrganizationObject();
@@ -144,7 +156,7 @@ public class UserOrganizationService {
             if (applicationName != null) {
                 applicationAudience = getApplicationAudience(applicationName);
             }
-            List<BasicOrganization> authorizedOrganizations = getOrganizationManagementService()
+            List<BasicOrganization> authorizedOrganizations = organizationManagementService
                     .getUserAuthorizedOrganizations(limit + 1, after, before, sortOrder, filter,
                             Boolean.TRUE.equals(recursive), applicationAudience);
             return getAuthorizedOrganizationsResponse(limit, after, before, filter,
@@ -159,23 +171,8 @@ public class UserOrganizationService {
 
         RootOrganizationResponse rootOrganizationResponse = new RootOrganizationResponse();
         rootOrganizationResponse.setId(rootOrgId);
-        rootOrganizationResponse.setName(getOrganizationManagementService().getOrganizationNameById(rootOrgId));
+        rootOrganizationResponse.setName(organizationManagementService.getOrganizationNameById(rootOrgId));
         return rootOrganizationResponse;
-    }
-
-    private OrganizationUserResidentResolverService getOrganizationUserResidentResolverService() {
-
-        return UserOrganizationServiceHolder.getOrganizationUserResidentResolverService();
-    }
-
-    private OrganizationManager getOrganizationManagementService() {
-
-        return UserOrganizationServiceHolder.getOrganizationManagementService();
-    }
-
-    private ApplicationManagementService getApplicationManagementService() {
-
-        return UserOrganizationServiceHolder.getApplicationManagementService();
     }
 
     private int validateLimit(Integer limit) {
@@ -288,8 +285,8 @@ public class UserOrganizationService {
             if (StringUtils.isBlank(tenantDomain)) {
                 tenantDomain = IdentityTenantUtil.resolveTenantDomain();
             }
-            ApplicationBasicInfo applicationBasicInfo =
-                    getApplicationManagementService().getApplicationBasicInfoByName(applicationName, tenantDomain);
+            ApplicationBasicInfo applicationBasicInfo = applicationManagementService
+                    .getApplicationBasicInfoByName(applicationName, tenantDomain);
             if (applicationBasicInfo != null) {
                 return applicationBasicInfo.getApplicationResourceId();
             }
