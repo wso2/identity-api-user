@@ -147,6 +147,33 @@ public class UserIdApi  {
     }
 
     @Valid
+    @POST
+    @Path("/federated-associations")
+    @Consumes({ "application/json" })
+    @Produces({ "application/json" })
+    @io.swagger.annotations.ApiOperation(value = "Create federated user association\n",
+            notes = "This API is used to create federated user associations. <br>\n <b>Permission required:</b>\n * /permission/admin/manage/identity/user/association/create\n <b>Scope required:</b>\n * internal_user_association_create",
+            response = void.class)
+    @io.swagger.annotations.ApiResponses(value = {
+            @io.swagger.annotations.ApiResponse(code = 201, message = "Successfully created"),
+
+            @io.swagger.annotations.ApiResponse(code = 400, message = "Bad Request"),
+
+            @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),
+
+            @io.swagger.annotations.ApiResponse(code = 403, message = "Resource Forbidden"),
+
+            @io.swagger.annotations.ApiResponse(code = 409, message = "Conflict"),
+
+            @io.swagger.annotations.ApiResponse(code = 500, message = "Server Error") })
+
+    public Response userIdFederatedAssociationsPost(@ApiParam(value = "",required=true ) @PathParam("user-id")  String userId,
+                                       @ApiParam(value = "User details to be associated." ,required=true ) @Valid FederatedAssociationRequestDTO association) {
+
+        return delegate.userIdFederatedAssociationsPost(userId, association);
+    }
+
+    @Valid
     @DELETE
     @Path("/federated-associations/{id}")
     @Consumes({ "application/json" })

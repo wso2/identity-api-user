@@ -418,6 +418,49 @@ paths:
             $ref: '#/definitions/Error'
       tags:
         - admin
+    post:
+      summary: Create federated user association
+      description: |
+        This API is used to create federated user associations. <br>
+          <b>Permission required:</b>
+              * /permission/admin/manage/identity/user/association/create
+          <b>Scope required:</b>
+              * internal_user_association_create
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          description: user id
+          type: string
+        - name: association
+          in: body
+          description: User details to be associated.
+          required: true
+          schema:
+            $ref: '#/definitions/FederatedAssociationRequest'
+      responses:
+        201:
+          description: Successfully created
+          schema:
+            $ref: '#/definitions/FederatedAssociation'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: Resource Forbidden
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Server Error
+          schema:
+            $ref: '#/definitions/Error'
+      tags:
+        - admin
 
   /{user-id}/federated-associations/{id}:
     delete:
@@ -519,6 +562,20 @@ definitions:
       federatedUserId:
         type: string
         example: john@google.com
+  #-----------------------------------------------------
+  # The Federated Association Request  object
+  #-----------------------------------------------------
+  FederatedAssociationRequest:
+    type: object
+    properties:
+      idp:
+        type: string
+        example: exampleIdP
+        description: Name of the IdP
+      federatedUserId:
+        type: string
+        example: john@example.com
+        description: User identifier in the federated IdP
   #-----------------------------------------------------
   # The Federated Identity Provider Response object
   #-----------------------------------------------------
