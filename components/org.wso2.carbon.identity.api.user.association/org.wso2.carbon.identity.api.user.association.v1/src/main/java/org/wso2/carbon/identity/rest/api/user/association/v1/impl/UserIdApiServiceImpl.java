@@ -6,6 +6,7 @@ import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.rest.api.user.association.v1.UserIdApiService;
 import org.wso2.carbon.identity.rest.api.user.association.v1.core.UserAssociationService;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.FederatedAssociationRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.util.UserAssociationServiceHolder;
 
 import javax.ws.rs.core.Response;
@@ -48,6 +49,14 @@ public class UserIdApiServiceImpl extends UserIdApiService {
     public Response userIdFederatedAssociationsDelete(String userId) {
 
         userAssociationService.deleteFederatedUserAccountAssociation(getUser(userId));
+        return Response.noContent().build();
+    }
+
+    @Override
+    public Response userIdFederatedAssociationsPost(String userId,
+                                                    FederatedAssociationRequestDTO federatedAssociation) {
+
+        userAssociationService.addFederatedUserAccountAssociation(getUser(userId), federatedAssociation);
         return Response.noContent().build();
     }
 
