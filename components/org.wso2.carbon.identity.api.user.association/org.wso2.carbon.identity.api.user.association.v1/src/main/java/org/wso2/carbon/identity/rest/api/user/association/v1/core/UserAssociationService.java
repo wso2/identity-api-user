@@ -24,6 +24,7 @@ import org.wso2.carbon.identity.api.user.common.function.UserToUniqueId;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationUserRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.FederatedAssociationDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.FederatedAssociationRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.IdpDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.UserDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.util.UserAssociationServiceHolder;
@@ -136,6 +137,18 @@ public class UserAssociationService {
             UserAssociationServiceHolder.getFederatedAssociationManager().deleteFederatedAssociation(getUser(userId));
         } catch (FederatedAssociationManagerException e) {
             throw handleFederatedAssociationManagerException(e, "Error while deleting federated user association: "
+                    + userId);
+        }
+    }
+
+    public void addFederatedUserAccountAssociation(String userId,
+                                                   FederatedAssociationRequestDTO federatedAssociationDTO) {
+
+        try {
+            UserAssociationServiceHolder.getFederatedAssociationManager().createFederatedAssociation(getUser(userId),
+                    federatedAssociationDTO.getIdp(), federatedAssociationDTO.getFederatedUserId());
+        } catch (FederatedAssociationManagerException e) {
+            throw handleFederatedAssociationManagerException(e, "Error while adding federated user association: "
                     + userId);
         }
     }
