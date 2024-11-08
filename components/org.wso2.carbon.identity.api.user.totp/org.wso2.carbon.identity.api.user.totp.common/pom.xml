@@ -123,6 +123,12 @@
             <groupId>org.wso2.carbon.extension.identity.authenticator.outbound.totp</groupId>
             <artifactId>org.wso2.carbon.extension.identity.authenticator.totp.connector</artifactId>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-collections</groupId>
+                    <artifactId>commons-collections</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
