@@ -198,6 +198,12 @@
                 <version>${identity.org.mgt.core.version}</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.notification.push</groupId>
+                <artifactId>org.wso2.carbon.identity.notification.push.device.handler</artifactId>
+                <version>${identity.notification.push.version}</version>
+                <scope>provided</scope>
+            </dependency>
 
             <dependency>
                 <groupId>org.wso2.carbon.extension.identity.authenticator.outbound.totp</groupId>
@@ -230,6 +236,12 @@
             <dependency>
                 <groupId>org.wso2.carbon.identity.user.api</groupId>
                 <artifactId>org.wso2.carbon.identity.api.user.recovery.commons</artifactId>
+                <scope>provided</scope>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.user.api</groupId>
+                <artifactId>org.wso2.carbon.identity.api.user.push.common</artifactId>
                 <scope>provided</scope>
                 <version>${project.version}</version>
             </dependency>
@@ -486,6 +498,8 @@
         <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
         <identity.oauth.version>7.0.169</identity.oauth.version>
         <identity.org.mgt.core.version>1.1.17</identity.org.mgt.core.version>
+        <identity.notification.push.version>1.0.0-SNAPSHOT</identity.notification.push.version>
+        <identity.notification.push.version.range>[1.0.0, 2.0.0)</identity.notification.push.version.range>
         <testng.version>6.9.10</testng.version>
         <fido2.version>5.4.7</fido2.version>
         <identity.totp.version>3.3.1</identity.totp.version>
@@ -514,6 +528,7 @@
         <module>components/org.wso2.carbon.identity.api.user.idv</module>
         <module>components/org.wso2.carbon.identity.api.user.organization</module>
         <module>components/org.wso2.carbon.identity.api.user.onboard</module>
+        <module>components/org.wso2.carbon.identity.api.user.push</module>
     </modules>
 
 </project>
