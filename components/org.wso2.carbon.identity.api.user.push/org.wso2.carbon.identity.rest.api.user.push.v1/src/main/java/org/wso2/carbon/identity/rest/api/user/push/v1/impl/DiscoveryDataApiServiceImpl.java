@@ -21,7 +21,6 @@ package org.wso2.carbon.identity.rest.api.user.push.v1.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.push.v1.DiscoveryDataApiService;
 import org.wso2.carbon.identity.rest.api.user.push.v1.core.PushDeviceManagementService;
-import org.wso2.carbon.identity.rest.api.user.push.v1.model.DiscoveryDataDTO;
 
 import javax.ws.rs.core.Response;
 
@@ -36,7 +35,7 @@ public class DiscoveryDataApiServiceImpl implements DiscoveryDataApiService {
     @Override
     public Response getRegistrationDiscoveryData() {
 
-        DiscoveryDataDTO responseDTO = pushDeviceManagementService.getRegistrationDiscoveryData();
+        String responseDTO = pushDeviceManagementService.getRegistrationDiscoveryData();
         return Response.ok().entity(responseDTO).build();
     }
 }

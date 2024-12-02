@@ -1,5 +1,7 @@
 package org.wso2.carbon.identity.rest.api.user.push.v1.core;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,7 +32,7 @@ public class PushDeviceManagementService {
      *
      * @return Registration discovery data.
      */
-    public DiscoveryDataDTO getRegistrationDiscoveryData() {
+    public String getRegistrationDiscoveryData() {
 
         User user = ContextLoader.getUserFromContext();
         String username = user.toFullQualifiedUsername();
@@ -38,7 +40,9 @@ public class PushDeviceManagementService {
         try {
             RegistrationDiscoveryData data = PushDeviceManagerServiceDataHolder.getDeviceHandlerService()
                     .getRegistrationDiscoveryData(username, tenantDomain);
-            return buildDiscoveryDataDTO(data);
+            DiscoveryDataDTO discoveryDataDTO = buildDiscoveryDataDTO(data);
+            Gson gson = new GsonBuilder().create();
+            return gson.toJson(discoveryDataDTO);
         } catch (PushDeviceHandlerException e) {
             throw handlePushDeviceHandlerException(e);
         }
@@ -90,16 +94,17 @@ public class PushDeviceManagementService {
     private DiscoveryDataDTO buildDiscoveryDataDTO(RegistrationDiscoveryData data) {
 
         DiscoveryDataDTO discoveryDataDTO = new DiscoveryDataDTO();
-        discoveryDataDTO.setDid(data.getDeviceId());
-        discoveryDataDTO.setUn(data.getUsername());
-        discoveryDataDTO.setTd(data.getTenantDomain());
-        if (StringUtils.isNotBlank(data.getOrganizationName())) {
-            discoveryDataDTO.setTd(data.getOrganizationName());
+        discoveryDataDTO.setDeviceId(data.getDeviceId());
+        discoveryDataDTO.setUsername(data.getUsername());
+        discoveryDataDTO.setHost(data.getHost());
+        discoveryDataDTO.setTenantDomain(data.getTenantDomain());
+        discoveryDataDTO.setTenantPath(data.getTenantPath());
+        if (StringUtils.isNotBlank(data.getOrganizationId())) {
+            discoveryDataDTO.setOrganizationId(data.getOrganizationId());
+            discoveryDataDTO.setOrganizationName(data.getOrganizationName());
+            discoveryDataDTO.setOrganizationPath(data.getOrganizationPath());
         }
-        discoveryDataDTO.setChg(data.getChallenge());
-        discoveryDataDTO.setRe(data.getRegistrationEndpoint());
-        discoveryDataDTO.setAe(data.getAuthenticationEndpoint());
-        discoveryDataDTO.setRde(data.getRemoveDeviceEndpoint());
+        discoveryDataDTO.setChallenge(data.getChallenge());
         return discoveryDataDTO;
     }
 

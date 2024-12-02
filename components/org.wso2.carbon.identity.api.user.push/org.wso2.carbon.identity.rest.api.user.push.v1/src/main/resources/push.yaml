@@ -183,34 +183,39 @@ components:
       type: object
       description: Device registration information
       properties:
-        did:
+        deviceId:
           description: Device ID
           type: string
           example: b03f90c9-6723-48f6-863b-a35f1ac77f57
-        un:
+        username:
           description: Username
           type: string
           example: admin
-        td:
-          description: Tenant domain or Organization
+        host:
+          description: Host
+          type: string
+          example: https://localhost:9443
+        tenantDomain:
+          description: Tenant domain
           type: string
           example: carbon.super
-        ae:
-          description: Authentication endpoint
+        tenantPath:
+          description: Tenanted path
           type: string
-          format: url
-          example: https://localhost:9443/push-auth/authenticate
-        re:
-          description: Registration endpoint
+          example: /t/carbon.super
+        organizationId:
+          description: Organization ID
           type: string
-          format: url
-          example: https://localhost:9443/api/users/v1/me/push/devices
-        rde:
-          description: Remove device endpoint
+          example: b03f90c9-6723-48f6-863b-a35f1ac77f57
+        organizationName:
+          description: Organization name
           type: string
-          format: url
-          example: https://localhost:9443/api/users/v1/me/push/devices/deviceId/remove
-        chg:
+          example: sampleOrg
+        organizationPath:
+          description: Organization path
+          type: string
+          example: /o/sampleOrg
+        challenge:
           description: Challenge
           type: string
           example: b03f90c9-6723-48f6-863b-a35f1ac77f57

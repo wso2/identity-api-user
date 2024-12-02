@@ -35,145 +35,185 @@ import javax.xml.bind.annotation.*;
 @ApiModel(description = "Device registration information")
 public class DiscoveryDataDTO  {
   
-    private String did;
-    private String un;
-    private String td;
-    private String ae;
-    private String re;
-    private String rde;
-    private String chg;
+    private String deviceId;
+    private String username;
+    private String host;
+    private String tenantDomain;
+    private String tenantPath;
+    private String organizationId;
+    private String organizationName;
+    private String organizationPath;
+    private String challenge;
 
     /**
     * Device ID
     **/
-    public DiscoveryDataDTO did(String did) {
+    public DiscoveryDataDTO deviceId(String deviceId) {
 
-        this.did = did;
+        this.deviceId = deviceId;
         return this;
     }
     
     @ApiModelProperty(example = "b03f90c9-6723-48f6-863b-a35f1ac77f57", value = "Device ID")
-    @JsonProperty("did")
+    @JsonProperty("deviceId")
     @Valid
-    public String getDid() {
-        return did;
+    public String getDeviceId() {
+        return deviceId;
     }
-    public void setDid(String did) {
-        this.did = did;
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     /**
     * Username
     **/
-    public DiscoveryDataDTO un(String un) {
+    public DiscoveryDataDTO username(String username) {
 
-        this.un = un;
+        this.username = username;
         return this;
     }
     
     @ApiModelProperty(example = "admin", value = "Username")
-    @JsonProperty("un")
+    @JsonProperty("username")
     @Valid
-    public String getUn() {
-        return un;
+    public String getUsername() {
+        return username;
     }
-    public void setUn(String un) {
-        this.un = un;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /**
-    * Tenant domain or Organization
+    * Host
     **/
-    public DiscoveryDataDTO td(String td) {
+    public DiscoveryDataDTO host(String host) {
 
-        this.td = td;
+        this.host = host;
         return this;
     }
     
-    @ApiModelProperty(example = "carbon.super", value = "Tenant domain or Organization")
-    @JsonProperty("td")
+    @ApiModelProperty(example = "https://localhost:9443", value = "Host")
+    @JsonProperty("host")
     @Valid
-    public String getTd() {
-        return td;
+    public String getHost() {
+        return host;
     }
-    public void setTd(String td) {
-        this.td = td;
+    public void setHost(String host) {
+        this.host = host;
     }
 
     /**
-    * Authentication endpoint
+    * Tenant domain
     **/
-    public DiscoveryDataDTO ae(String ae) {
+    public DiscoveryDataDTO tenantDomain(String tenantDomain) {
 
-        this.ae = ae;
+        this.tenantDomain = tenantDomain;
         return this;
     }
     
-    @ApiModelProperty(example = "https://localhost:9443/push-auth/authenticate", value = "Authentication endpoint")
-    @JsonProperty("ae")
+    @ApiModelProperty(example = "carbon.super", value = "Tenant domain")
+    @JsonProperty("tenantDomain")
     @Valid
-    public String getAe() {
-        return ae;
+    public String getTenantDomain() {
+        return tenantDomain;
     }
-    public void setAe(String ae) {
-        this.ae = ae;
+    public void setTenantDomain(String tenantDomain) {
+        this.tenantDomain = tenantDomain;
     }
 
     /**
-    * Registration endpoint
+    * Tenanted path
     **/
-    public DiscoveryDataDTO re(String re) {
+    public DiscoveryDataDTO tenantPath(String tenantPath) {
 
-        this.re = re;
+        this.tenantPath = tenantPath;
         return this;
     }
     
-    @ApiModelProperty(example = "https://localhost:9443/api/users/v1/me/push/devices", value = "Registration endpoint")
-    @JsonProperty("re")
+    @ApiModelProperty(example = "/t/carbon.super", value = "Tenanted path")
+    @JsonProperty("tenantPath")
     @Valid
-    public String getRe() {
-        return re;
+    public String getTenantPath() {
+        return tenantPath;
     }
-    public void setRe(String re) {
-        this.re = re;
+    public void setTenantPath(String tenantPath) {
+        this.tenantPath = tenantPath;
     }
 
     /**
-    * Remove device endpoint
+    * Organization ID
     **/
-    public DiscoveryDataDTO rde(String rde) {
+    public DiscoveryDataDTO organizationId(String organizationId) {
 
-        this.rde = rde;
+        this.organizationId = organizationId;
         return this;
     }
     
-    @ApiModelProperty(example = "https://localhost:9443/api/users/v1/me/push/devices/deviceId/remove", value = "Remove device endpoint")
-    @JsonProperty("rde")
+    @ApiModelProperty(example = "b03f90c9-6723-48f6-863b-a35f1ac77f57", value = "Organization ID")
+    @JsonProperty("organizationId")
     @Valid
-    public String getRde() {
-        return rde;
+    public String getOrganizationId() {
+        return organizationId;
     }
-    public void setRde(String rde) {
-        this.rde = rde;
+    public void setOrganizationId(String organizationId) {
+        this.organizationId = organizationId;
+    }
+
+    /**
+    * Organization name
+    **/
+    public DiscoveryDataDTO organizationName(String organizationName) {
+
+        this.organizationName = organizationName;
+        return this;
+    }
+    
+    @ApiModelProperty(example = "sampleOrg", value = "Organization name")
+    @JsonProperty("organizationName")
+    @Valid
+    public String getOrganizationName() {
+        return organizationName;
+    }
+    public void setOrganizationName(String organizationName) {
+        this.organizationName = organizationName;
+    }
+
+    /**
+    * Organization path
+    **/
+    public DiscoveryDataDTO organizationPath(String organizationPath) {
+
+        this.organizationPath = organizationPath;
+        return this;
+    }
+    
+    @ApiModelProperty(example = "/o/sampleOrg", value = "Organization path")
+    @JsonProperty("organizationPath")
+    @Valid
+    public String getOrganizationPath() {
+        return organizationPath;
+    }
+    public void setOrganizationPath(String organizationPath) {
+        this.organizationPath = organizationPath;
     }
 
     /**
     * Challenge
     **/
-    public DiscoveryDataDTO chg(String chg) {
+    public DiscoveryDataDTO challenge(String challenge) {
 
-        this.chg = chg;
+        this.challenge = challenge;
         return this;
     }
     
     @ApiModelProperty(example = "b03f90c9-6723-48f6-863b-a35f1ac77f57", value = "Challenge")
-    @JsonProperty("chg")
+    @JsonProperty("challenge")
     @Valid
-    public String getChg() {
-        return chg;
+    public String getChallenge() {
+        return challenge;
     }
-    public void setChg(String chg) {
-        this.chg = chg;
+    public void setChallenge(String challenge) {
+        this.challenge = challenge;
     }
 
 
@@ -188,18 +228,20 @@ public class DiscoveryDataDTO  {
             return false;
         }
         DiscoveryDataDTO discoveryDataDTO = (DiscoveryDataDTO) o;
-        return Objects.equals(this.did, discoveryDataDTO.did) &&
-            Objects.equals(this.un, discoveryDataDTO.un) &&
-            Objects.equals(this.td, discoveryDataDTO.td) &&
-            Objects.equals(this.ae, discoveryDataDTO.ae) &&
-            Objects.equals(this.re, discoveryDataDTO.re) &&
-            Objects.equals(this.rde, discoveryDataDTO.rde) &&
-            Objects.equals(this.chg, discoveryDataDTO.chg);
+        return Objects.equals(this.deviceId, discoveryDataDTO.deviceId) &&
+            Objects.equals(this.username, discoveryDataDTO.username) &&
+            Objects.equals(this.host, discoveryDataDTO.host) &&
+            Objects.equals(this.tenantDomain, discoveryDataDTO.tenantDomain) &&
+            Objects.equals(this.tenantPath, discoveryDataDTO.tenantPath) &&
+            Objects.equals(this.organizationId, discoveryDataDTO.organizationId) &&
+            Objects.equals(this.organizationName, discoveryDataDTO.organizationName) &&
+            Objects.equals(this.organizationPath, discoveryDataDTO.organizationPath) &&
+            Objects.equals(this.challenge, discoveryDataDTO.challenge);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(did, un, td, ae, re, rde, chg);
+        return Objects.hash(deviceId, username, host, tenantDomain, tenantPath, organizationId, organizationName, organizationPath, challenge);
     }
 
     @Override
@@ -208,13 +250,15 @@ public class DiscoveryDataDTO  {
         StringBuilder sb = new StringBuilder();
         sb.append("class DiscoveryDataDTO {\n");
         
-        sb.append("    did: ").append(toIndentedString(did)).append("\n");
-        sb.append("    un: ").append(toIndentedString(un)).append("\n");
-        sb.append("    td: ").append(toIndentedString(td)).append("\n");
-        sb.append("    ae: ").append(toIndentedString(ae)).append("\n");
-        sb.append("    re: ").append(toIndentedString(re)).append("\n");
-        sb.append("    rde: ").append(toIndentedString(rde)).append("\n");
-        sb.append("    chg: ").append(toIndentedString(chg)).append("\n");
+        sb.append("    deviceId: ").append(toIndentedString(deviceId)).append("\n");
+        sb.append("    username: ").append(toIndentedString(username)).append("\n");
+        sb.append("    host: ").append(toIndentedString(host)).append("\n");
+        sb.append("    tenantDomain: ").append(toIndentedString(tenantDomain)).append("\n");
+        sb.append("    tenantPath: ").append(toIndentedString(tenantPath)).append("\n");
+        sb.append("    organizationId: ").append(toIndentedString(organizationId)).append("\n");
+        sb.append("    organizationName: ").append(toIndentedString(organizationName)).append("\n");
+        sb.append("    organizationPath: ").append(toIndentedString(organizationPath)).append("\n");
+        sb.append("    challenge: ").append(toIndentedString(challenge)).append("\n");
         sb.append("}");
         return sb.toString();
     }
