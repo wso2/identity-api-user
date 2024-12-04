@@ -38,6 +38,7 @@ public class Constants {
     public static final String STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT = "Precondition Failed";
     public static final String STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT =
             "The server encountered an internal error. Please contact administrator.";
+    public static final String STATUS_BAD_REQUEST_DEFAULT = "Bad Request";
 
     // Recovery type.
     public static final String RECOVERY_WITH_NOTIFICATIONS = "recoverWithNotifications";
