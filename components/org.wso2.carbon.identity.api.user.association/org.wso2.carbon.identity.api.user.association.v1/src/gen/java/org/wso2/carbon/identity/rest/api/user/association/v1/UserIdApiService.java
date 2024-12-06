@@ -40,6 +40,8 @@ public abstract class UserIdApiService {
 
     public abstract Response userIdFederatedAssociationsGet(String userId);
 
+    public abstract Response userIdFederatedAssociationsPost(String userId, FederatedAssociationRequestDTO federatedAssociation);
+
     public abstract Response userIdFederatedAssociationsIdDelete(String userId, String id);
 
 }

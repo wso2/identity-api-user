@@ -520,6 +520,18 @@ definitions:
         type: string
         example: john@google.com
   #-----------------------------------------------------
+  # The Federated Association Request  object
+  #-----------------------------------------------------
+  FederatedAssociationRequest:
+    type: object
+    properties:
+      idp:
+        type: string
+        example: eeqweisfhkdfikaefcqwesfceqwqas
+      federatedUserId:
+        type: string
+        example: john@google.com
+  #-----------------------------------------------------
   # The Federated Identity Provider Response object
   #-----------------------------------------------------
   Idp:
