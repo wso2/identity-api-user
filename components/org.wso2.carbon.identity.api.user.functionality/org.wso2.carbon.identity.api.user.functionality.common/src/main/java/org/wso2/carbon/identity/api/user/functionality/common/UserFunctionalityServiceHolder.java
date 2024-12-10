@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2020-2024, WSO2 LLC. (http://www.wso2.com).
  *
- * WSO2 Inc. licenses this file to you under the Apache License,
+ * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.api.user.functionality.common;
 
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.user.functionality.mgt.UserFunctionalityManager;
 import org.wso2.carbon.user.core.service.RealmService;
 
@@ -26,8 +27,21 @@ import org.wso2.carbon.user.core.service.RealmService;
  */
 public class UserFunctionalityServiceHolder {
 
-    private static UserFunctionalityManager userFunctionalityManager;
-    private static RealmService realmService;
+    private UserFunctionalityServiceHolder() {
+
+    }
+
+    private static class UserFunctionalityManagerServiceHolder {
+
+        static final UserFunctionalityManager SERVICE = (UserFunctionalityManager) PrivilegedCarbonContext
+                .getThreadLocalCarbonContext().getOSGiService(UserFunctionalityManager.class, null);
+    }
+
+    private static class RealmServiceHolder {
+
+        static final RealmService SERVICE = (RealmService) PrivilegedCarbonContext
+                .getThreadLocalCarbonContext().getOSGiService(RealmService.class, null);
+    }
 
     /**
      * Get UserFunctionalityManager osgi service.
@@ -36,26 +50,16 @@ public class UserFunctionalityServiceHolder {
      */
     public static UserFunctionalityManager getuserFunctionalityManager() {
 
-        return userFunctionalityManager;
+        return UserFunctionalityManagerServiceHolder.SERVICE;
     }
 
     /**
-     * Set UserFunctionalityManager osgi service.
+     * Get RealmService osgi service.
      *
-     * @param userFunctionalityManager UserFunctionalityManager
+     * @return RealmService
      */
-    public static void setUserFunctionalityManager(UserFunctionalityManager userFunctionalityManager) {
-
-        UserFunctionalityServiceHolder.userFunctionalityManager = userFunctionalityManager;
-    }
-
     public static RealmService getRealmService() {
 
-        return realmService;
-    }
-
-    public static void setRealmService(RealmService realmService) {
-
-        UserFunctionalityServiceHolder.realmService = realmService;
+        return RealmServiceHolder.SERVICE;
     }
 }
