@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2023-2024, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -31,6 +31,7 @@ import org.wso2.carbon.identity.api.user.onboard.v1.model.InvitationRequest;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryClientException;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryConstants;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryException;
+import org.wso2.carbon.identity.user.onboard.core.service.UserOnboardCoreService;
 import org.wso2.carbon.identity.user.onboard.core.service.model.Configuration;
 
 import java.util.Arrays;
@@ -38,12 +39,12 @@ import java.util.List;
 
 import javax.ws.rs.core.Response;
 
-import static org.wso2.carbon.identity.api.user.onboard.common.UserOnboardServiceDataHolder.getUserOnboardCoreService;
-
 /**
  * This class provides the implementation of the OfflineInviteLinkService.
  */
 public class OfflineInviteLinkService {
+
+    private final UserOnboardCoreService userOnboardCoreService;
 
     public static final String AUTH_USER_TENANT_DOMAIN = "authUserTenantDomain";
 
@@ -59,6 +60,11 @@ public class OfflineInviteLinkService {
 
     );
 
+    public OfflineInviteLinkService(UserOnboardCoreService userOnboardCoreService) {
+
+        this.userOnboardCoreService = userOnboardCoreService;
+    }
+
     /**
      * This method generates the password reset URL.
      *
@@ -70,7 +76,7 @@ public class OfflineInviteLinkService {
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         Configuration configuration = prepareConfigObject(invitationRequest, tenantDomain);
         try {
-            return getUserOnboardCoreService().generatePasswordResetLink(configuration);
+            return userOnboardCoreService.generatePasswordResetLink(configuration);
         } catch (IdentityRecoveryException e) {
             throw handleException(e, Constants.ErrorMessages.ERROR_UNABLE_TO_GENERATE_INVITE_LINK,
                     invitationRequest.getUsername());
