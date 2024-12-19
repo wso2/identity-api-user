@@ -25,10 +25,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import java.io.InputStream;
 import java.util.List;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.Error;
-import java.util.List;
-import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerificationClaimRequest;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerificationClaimResponse;
-import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerificationClaimUpdateRequest;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerificationPostResponse;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerifyRequest;
 import javax.ws.rs.core.Response;
@@ -36,15 +33,9 @@ import javax.ws.rs.core.Response;
 
 public interface MeApiService {
 
-      public Response meAddIdVClaim(List<VerificationClaimRequest> verificationClaimRequest);
-
       public Response meGetIdVClaim(String claimId);
 
       public Response meGetIdVClaims(String idVProviderId);
-
-      public Response meUpdateIdVClaim(String claimId, VerificationClaimUpdateRequest verificationClaimUpdateRequest);
-
-      public Response meUpdateIdVClaims(List<VerificationClaimRequest> verificationClaimRequest);
 
       public Response meVerifyIdentity(VerifyRequest verifyRequest);
 }

@@ -25,10 +25,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.Error;
-import java.util.List;
-import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerificationClaimRequest;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerificationClaimResponse;
-import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerificationClaimUpdateRequest;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerificationPostResponse;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerifyRequest;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.MeApiService;
@@ -47,30 +44,6 @@ public class MeApi  {
 
     @Autowired
     private MeApiService delegate;
-
-    @Valid
-    @POST
-    @Path("/idv/claims")
-    @Consumes({ "application/json" })
-    @Produces({ "application/json", "application/xml",  })
-    @ApiOperation(value = "Add identity verification claim.", notes = "This API provides the capability to add verification claim data", response = List.class, responseContainer = "List", authorizations = {
-        @Authorization(value = "BasicAuth"),
-        @Authorization(value = "OAuth2", scopes = {
-            
-        })
-    }, tags={ "Me - Identity Verification", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 201, message = "Successful response", response = VerificationClaimResponse.class, responseContainer = "List"),
-        @ApiResponse(code = 400, message = "Bad Request", response = Error.class),
-        @ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
-        @ApiResponse(code = 403, message = "Forbidden", response = Void.class),
-        @ApiResponse(code = 409, message = "Conflict", response = Error.class),
-        @ApiResponse(code = 500, message = "Server Error", response = Error.class)
-    })
-    public Response meAddIdVClaim(@ApiParam(value = "This represents the identity provider to be created." ,required=true) @Valid List<VerificationClaimRequest> verificationClaimRequest) {
-
-        return delegate.meAddIdVClaim(verificationClaimRequest );
-    }
 
     @Valid
     @GET
@@ -118,54 +91,6 @@ public class MeApi  {
     public Response meGetIdVClaims(    @Valid@ApiParam(value = "Id of the identity verification provider. ")  @QueryParam("idVProviderId") String idVProviderId) {
 
         return delegate.meGetIdVClaims(idVProviderId );
-    }
-
-    @Valid
-    @PUT
-    @Path("/idv/claims/{claim-id}")
-    @Consumes({ "application/json" })
-    @Produces({ "application/json" })
-    @ApiOperation(value = "Update identity verification claim", notes = "This API provides the capability to update a identity verification claim of a user.", response = VerificationClaimResponse.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
-        @Authorization(value = "OAuth2", scopes = {
-            
-        })
-    }, tags={ "Me - Identity Verification", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Successful response", response = VerificationClaimResponse.class),
-        @ApiResponse(code = 400, message = "Bad Request", response = Error.class),
-        @ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
-        @ApiResponse(code = 403, message = "Forbidden", response = Void.class),
-        @ApiResponse(code = 404, message = "Not Found", response = Error.class),
-        @ApiResponse(code = 500, message = "Server Error", response = Error.class)
-    })
-    public Response meUpdateIdVClaim(@ApiParam(value = "Claim that needs to retrieve verification metadata",required=true) @PathParam("claim-id") String claimId, @ApiParam(value = "" ,required=true) @Valid VerificationClaimUpdateRequest verificationClaimUpdateRequest) {
-
-        return delegate.meUpdateIdVClaim(claimId,  verificationClaimUpdateRequest );
-    }
-
-    @Valid
-    @PUT
-    @Path("/idv/claims")
-    @Consumes({ "application/json" })
-    @Produces({ "application/json", "application/xml",  })
-    @ApiOperation(value = "Update identity verification claims.", notes = "This API provides the capability to update verification claims of a user", response = List.class, responseContainer = "List", authorizations = {
-        @Authorization(value = "BasicAuth"),
-        @Authorization(value = "OAuth2", scopes = {
-            
-        })
-    }, tags={ "Me - Identity Verification", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 201, message = "Successful response", response = VerificationClaimResponse.class, responseContainer = "List"),
-        @ApiResponse(code = 400, message = "Bad Request", response = Error.class),
-        @ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
-        @ApiResponse(code = 403, message = "Forbidden", response = Void.class),
-        @ApiResponse(code = 409, message = "Conflict", response = Error.class),
-        @ApiResponse(code = 500, message = "Server Error", response = Error.class)
-    })
-    public Response meUpdateIdVClaims(@ApiParam(value = "This represents the identity provider to be created." ,required=true) @Valid List<VerificationClaimRequest> verificationClaimRequest) {
-
-        return delegate.meUpdateIdVClaims(verificationClaimRequest );
     }
 
     @Valid
