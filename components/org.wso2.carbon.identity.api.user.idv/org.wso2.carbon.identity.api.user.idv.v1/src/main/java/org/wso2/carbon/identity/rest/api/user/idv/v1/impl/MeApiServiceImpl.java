@@ -21,9 +21,7 @@ package org.wso2.carbon.identity.rest.api.user.idv.v1.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.core.IdentityVerificationService;
-import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerificationClaimRequest;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerificationClaimResponse;
-import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerificationClaimUpdateRequest;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerificationPostResponse;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerifyRequest;
 
@@ -42,14 +40,6 @@ public class MeApiServiceImpl implements MeApiService {
     IdentityVerificationService identityVerificationService;
 
     @Override
-    public Response meAddIdVClaim(List<VerificationClaimRequest> verificationClaimRequest) {
-
-        List<VerificationClaimResponse> idvAddClaimResponse =
-                identityVerificationService.addIdVClaims(getUserIdFromContext(), verificationClaimRequest);
-        return Response.ok().entity(idvAddClaimResponse).build();
-    }
-
-    @Override
     public Response meGetIdVClaim(String claimId) {
 
         VerificationClaimResponse verificationClaimResponse =
@@ -63,22 +53,6 @@ public class MeApiServiceImpl implements MeApiService {
         List<VerificationClaimResponse> verificationGetResponse =
                 identityVerificationService.getIdVClaims(getUserIdFromContext(), idvProviderid);
         return Response.ok().entity(verificationGetResponse).build();
-    }
-
-    @Override
-    public Response meUpdateIdVClaim(String claimId, VerificationClaimUpdateRequest verificationClaimUpdateRequest) {
-
-        VerificationClaimResponse verificationClaimResponse = identityVerificationService.
-                updateIdVClaim(getUserIdFromContext(), claimId, verificationClaimUpdateRequest);
-        return Response.ok().entity(verificationClaimResponse).build();
-    }
-
-    @Override
-    public Response meUpdateIdVClaims(List<VerificationClaimRequest> verificationClaimRequest) {
-
-        List<VerificationClaimResponse> idvClaimUpdateResponse = identityVerificationService.
-                updateIdVClaims(getUserIdFromContext(), verificationClaimRequest);
-        return Response.ok().entity(idvClaimUpdateResponse).build();
     }
 
     @Override
