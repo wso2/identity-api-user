@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2023-2024, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -22,7 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.Util;
-import org.wso2.carbon.identity.api.user.recovery.commons.UserAccountRecoveryServiceDataHolder;
 import org.wso2.carbon.identity.governance.service.notification.NotificationChannels;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryConstants;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryException;
@@ -32,6 +31,7 @@ import org.wso2.carbon.identity.recovery.dto.RecoveryChannelInfoDTO;
 import org.wso2.carbon.identity.recovery.dto.RecoveryInformationDTO;
 import org.wso2.carbon.identity.recovery.dto.ResendConfirmationDTO;
 import org.wso2.carbon.identity.recovery.dto.SuccessfulPasswordResetDTO;
+import org.wso2.carbon.identity.recovery.services.password.PasswordRecoveryManager;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.utils.RecoveryUtil;
 
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.APICall;
@@ -60,7 +60,14 @@ import javax.ws.rs.core.Response;
  */
 public class PasswordRecoveryService {
 
+    private final PasswordRecoveryManager passwordRecoveryManager;
+
     private static final Log LOG = LogFactory.getLog(PasswordRecoveryService.class.getName());
+
+    public PasswordRecoveryService(PasswordRecoveryManager passwordRecoveryManager) {
+
+        this.passwordRecoveryManager = passwordRecoveryManager;
+    }
 
     /**
      * Initiate Password Recovery from POST.
@@ -78,9 +85,8 @@ public class PasswordRecoveryService {
         Map<String, String> userClaims = RecoveryUtil.buildUserClaimsMap(initRequest.getClaims());
         try {
             // Get password recovery notification information.
-            RecoveryInformationDTO recoveryInformationDTO =
-                    UserAccountRecoveryServiceDataHolder.getPasswordRecoveryManager().initiate(userClaims, tenantDomain,
-                            RecoveryUtil.buildPropertiesMap(initRequest.getProperties()));
+            RecoveryInformationDTO recoveryInformationDTO = passwordRecoveryManager.initiate(userClaims, tenantDomain,
+                    RecoveryUtil.buildPropertiesMap(initRequest.getProperties()));
             return Response.ok().entity(buildPasswordRecoveryInitResponse(tenantDomain, recoveryInformationDTO))
                     .build();
         } catch (IdentityRecoveryException e) {
@@ -105,9 +111,8 @@ public class PasswordRecoveryService {
         String recoveryId = recoveryRequest.getRecoveryCode();
         String channelId = recoveryRequest.getChannelId();
         try {
-            PasswordRecoverDTO passwordRecoverDTO = UserAccountRecoveryServiceDataHolder.getPasswordRecoveryManager()
-                    .notify(recoveryId, channelId, tenantDomain,
-                            RecoveryUtil.buildPropertiesMap(recoveryRequest.getProperties()));
+            PasswordRecoverDTO passwordRecoverDTO = passwordRecoveryManager.notify(recoveryId, channelId, tenantDomain,
+                    RecoveryUtil.buildPropertiesMap(recoveryRequest.getProperties()));
             if (passwordRecoverDTO == null) {
                 if (LOG.isDebugEnabled()) {
                     String message = String
@@ -137,10 +142,9 @@ public class PasswordRecoveryService {
         }
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         try {
-            PasswordResetCodeDTO passwordResetCodeDTO =
-                    UserAccountRecoveryServiceDataHolder.getPasswordRecoveryManager()
-                            .confirm(confirmRequest.getOtp(), confirmRequest.getConfirmationCode(), tenantDomain,
-                                    RecoveryUtil.buildPropertiesMap(confirmRequest.getProperties()));
+            PasswordResetCodeDTO passwordResetCodeDTO = passwordRecoveryManager.confirm(confirmRequest.getOtp(),
+                    confirmRequest.getConfirmationCode(), tenantDomain, RecoveryUtil.buildPropertiesMap(confirmRequest
+                            .getProperties()));
             return Response.ok().entity(buildResetCodeResponse(tenantDomain, passwordResetCodeDTO)).build();
         } catch (IdentityRecoveryException e) {
             throw RecoveryUtil.handleIdentityRecoveryException(e, tenantDomain,
@@ -163,10 +167,9 @@ public class PasswordRecoveryService {
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         char[] password = resetRequest.getPassword().toCharArray();
         try {
-            SuccessfulPasswordResetDTO successfulPasswordResetDTO =
-                    UserAccountRecoveryServiceDataHolder.getPasswordRecoveryManager()
-                            .reset(resetRequest.getResetCode(), resetRequest.getFlowConfirmationCode(), password,
-                                    RecoveryUtil.buildPropertiesMap(resetRequest.getProperties()));
+            SuccessfulPasswordResetDTO successfulPasswordResetDTO = passwordRecoveryManager.reset(resetRequest
+                    .getResetCode(), resetRequest.getFlowConfirmationCode(), password, RecoveryUtil
+                    .buildPropertiesMap(resetRequest.getProperties()));
             return Response.ok().entity(buildPasswordResetResponse(successfulPasswordResetDTO)).build();
         } catch (IdentityRecoveryException e) {
             // Send the reset code again for a retry attempt.
@@ -192,9 +195,8 @@ public class PasswordRecoveryService {
         String resendCode = resendConfirmationRequest.getResendCode();
         Map<String, String> properties = RecoveryUtil.buildPropertiesMap(resendConfirmationRequest.getProperties());
         try {
-            ResendConfirmationDTO resendConfirmationDTO =
-                    UserAccountRecoveryServiceDataHolder.getPasswordRecoveryManager()
-                            .resend(tenantDomain, resendCode, properties);
+            ResendConfirmationDTO resendConfirmationDTO = passwordRecoveryManager.resend(tenantDomain,
+                    resendCode, properties);
             if (resendConfirmationDTO == null) {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("No ResendConfirmationDTO data for resend code :" + resendCode);

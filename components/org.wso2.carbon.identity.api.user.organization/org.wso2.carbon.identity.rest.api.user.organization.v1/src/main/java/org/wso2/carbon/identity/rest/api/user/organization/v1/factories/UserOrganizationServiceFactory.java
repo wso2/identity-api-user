@@ -46,7 +46,7 @@ public class UserOrganizationServiceFactory {
         ApplicationManagementService applicationManagementService = getApplicationManagementService();
 
         return new UserOrganizationService(organizationUserResidentResolverService, organizationManagementService,
-                applicationManagementService);
+                                           applicationManagementService);
     }
 
     /**

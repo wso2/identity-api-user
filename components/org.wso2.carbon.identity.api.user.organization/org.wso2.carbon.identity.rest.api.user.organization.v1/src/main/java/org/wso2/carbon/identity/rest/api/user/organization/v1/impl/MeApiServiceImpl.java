@@ -32,11 +32,11 @@ public class MeApiServiceImpl implements MeApiService {
     private final UserOrganizationService userOrganizationService;
 
     public MeApiServiceImpl() {
-
+      
         try {
             this.userOrganizationService = UserOrganizationServiceFactory.getUserOrganizationService();
         } catch (Exception e) {
-            throw new RuntimeException("Error occurred while initiating the UserOrganizationService.", e);
+            throw new RuntimeException("Error occurred while initiating UserOrganizationService.", e);
         }
     }
 

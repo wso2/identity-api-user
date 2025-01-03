@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2019-2024, WSO2 LLC. (http://www.wso2.com).
  *
- * WSO2 Inc. licenses this file to you under the Apache License,
+ * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.api.user.application.common;
 
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.application.mgt.DiscoverableApplicationManager;
 import org.wso2.carbon.identity.organization.management.application.OrgApplicationManager;
 
@@ -26,8 +27,21 @@ import org.wso2.carbon.identity.organization.management.application.OrgApplicati
  */
 public class ApplicationServiceHolder {
 
-    private static OrgApplicationManager orgApplicationManager;
-    private static DiscoverableApplicationManager discoverableApplicationManager;
+    private ApplicationServiceHolder () {}
+
+    private static class OrgApplicationManagerServiceHolder {
+
+        static final OrgApplicationManager SERVICE = (OrgApplicationManager)
+                PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                        .getOSGiService(OrgApplicationManager.class, null);
+    }
+
+    private static class DiscoverableApplicationManagerServiceHolder {
+
+        static final DiscoverableApplicationManager SERVICE = (DiscoverableApplicationManager)
+                PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                        .getOSGiService(DiscoverableApplicationManager.class, null);
+    }
 
     /**
      * Get application management service.
@@ -36,18 +50,7 @@ public class ApplicationServiceHolder {
      */
     public static DiscoverableApplicationManager getDiscoverableApplicationManager() {
 
-        return discoverableApplicationManager;
-    }
-
-    /**
-     * Set application management service.
-     *
-     * @param discoverableApplicationManager
-     */
-    public static void setDiscoverableApplicationManager(DiscoverableApplicationManager
-                                                                 discoverableApplicationManager) {
-
-        ApplicationServiceHolder.discoverableApplicationManager = discoverableApplicationManager;
+        return DiscoverableApplicationManagerServiceHolder.SERVICE;
     }
 
     /**
@@ -57,16 +60,7 @@ public class ApplicationServiceHolder {
      */
     public static OrgApplicationManager getOrgApplicationManager() {
 
-        return orgApplicationManager;
+        return OrgApplicationManagerServiceHolder.SERVICE;
     }
 
-    /**
-     * Set organization application management service.
-     *
-     * @param orgApplicationManager
-     */
-    public static void setOrgApplicationManager(OrgApplicationManager orgApplicationManager) {
-
-        ApplicationServiceHolder.orgApplicationManager = orgApplicationManager;
-    }
 }

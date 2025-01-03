@@ -68,7 +68,7 @@ public class UserOrganizationServiceHolder {
      */
     public static OrganizationManager getOrganizationManagementService() {
 
-        return OrganizationManagerHolder.SERVICE;
+        return OrganizationManagementServiceHolder.SERVICE;
     }
 
     /**

@@ -36,7 +36,7 @@ public class RootApiServiceImpl implements RootApiService {
         try {
             this.userOrganizationService = UserOrganizationServiceFactory.getUserOrganizationService();
         } catch (Exception e) {
-            throw new RuntimeException("Error occurred while initiating the UserOrganizationService.", e);
+            throw new RuntimeException("Error occurred while initiating the UserOrganizationService.", e);        
         }
     }
 
