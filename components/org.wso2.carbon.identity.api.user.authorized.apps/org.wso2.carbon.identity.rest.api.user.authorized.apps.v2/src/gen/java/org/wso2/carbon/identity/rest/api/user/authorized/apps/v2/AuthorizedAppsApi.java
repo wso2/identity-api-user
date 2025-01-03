@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.com).
+ * Copyright (c) 2021-2024, WSO2 LLC. (http://www.wso2.com).
  *
- * WSO2 Inc. licenses this file to you under the Apache License,
+ * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,19 +18,18 @@
 
 package org.wso2.carbon.identity.rest.api.user.authorized.apps.v2;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import java.io.InputStream;
 import java.util.List;
 
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.dto.ErrorDTO;
-import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.AuthorizedAppsApiService;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import io.swagger.annotations.*;
+import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.factories.AuthorizedAppsApiServiceFactory;
 
 import javax.validation.constraints.*;
 
@@ -39,8 +38,12 @@ import javax.validation.constraints.*;
 
 public class AuthorizedAppsApi  {
 
-    @Autowired
-    private AuthorizedAppsApiService delegate;
+    private final AuthorizedAppsApiService delegate;
+
+    protected AuthorizedAppsApi() {
+
+        this.delegate = AuthorizedAppsApiServiceFactory.getAuthorizedAppsApi();
+    }
 
     @Valid
     @DELETE
