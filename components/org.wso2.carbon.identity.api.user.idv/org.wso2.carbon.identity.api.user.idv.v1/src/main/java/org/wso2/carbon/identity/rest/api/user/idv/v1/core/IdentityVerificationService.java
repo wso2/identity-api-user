@@ -176,12 +176,13 @@ public class IdentityVerificationService {
             } else if (IdentityVerificationConstants.ErrorMessage.ERROR_INVALID_IDV_PROVIDER.getCode().
                     equals(e.getErrorCode())) {
                 throw handleIdVException(e, Constants.ErrorMessage.ERROR_CODE_IDV_PROVIDER_NOT_FOUND, userId);
-            } else if (IdentityVerificationConstants.ErrorMessage.ERROR_IDV_CLAIM_DATA_ALREADY_EXISTS.getCode().
+            } else if (IdentityVerificationConstants.ErrorMessage.ERROR_IDV_CLAIM_NOT_FOUND.getCode().
                     equals(e.getErrorCode())) {
-                throw handleException(Response.Status.CONFLICT, Constants.ErrorMessage.ERROR_CODE_IDV_CLAIM_CONFLICT,
-                        userId);
+                throw handleException(Response.Status.NOT_FOUND, Constants.ErrorMessage.ERROR_CODE_IDV_CLAIM_NOT_FOUND,
+                        String.format("for the user : %s", userId));
             } else {
-                throw handleIdVException(e, Constants.ErrorMessage.ERROR_ADDING_VERIFICATION_CLAIM, userId);
+                throw handleIdVException(e, Constants.ErrorMessage.ERROR_UPDATING_VERIFICATION_CLAIM,
+                        String.format("for the user : %s", userId));
             }
         }
         return createVerificationClaimsResponse(idVClaims);
