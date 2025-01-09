@@ -256,6 +256,10 @@ public class RecoveryUtil {
                 getCode().equals(e.getErrorCode())) {
             return RecoveryUtil.buildRetryPasswordResetObject(tenantDomain, errorDescription, errorCode, code,
                     correlationId);
+        } else if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_INVALID_CHANNEL_ID.getCode().equals(
+                e.getErrorCode())) {
+            errorMessage = Constants.STATUS_BAD_REQUEST_DEFAULT;
+            status = Response.Status.BAD_REQUEST;
         }
 
         if (e instanceof IdentityRecoveryClientException) {
