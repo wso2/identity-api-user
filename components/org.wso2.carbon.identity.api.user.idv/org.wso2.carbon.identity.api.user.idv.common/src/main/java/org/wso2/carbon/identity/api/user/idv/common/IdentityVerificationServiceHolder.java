@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2023-2024, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.api.user.idv.common;
 
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.extension.identity.verification.mgt.IdentityVerificationManager;
 import org.wso2.carbon.extension.identity.verification.provider.IdVProviderManager;
 
@@ -26,8 +27,21 @@ import org.wso2.carbon.extension.identity.verification.provider.IdVProviderManag
  */
 public class IdentityVerificationServiceHolder {
 
-    private static IdVProviderManager idVProviderManager;
-    private static IdentityVerificationManager identityVerificationManager;
+    private IdentityVerificationServiceHolder() {
+
+    }
+
+    private static class IdVProviderManagerHolder {
+
+        static final IdVProviderManager SERVICE = (IdVProviderManager) PrivilegedCarbonContext
+                .getThreadLocalCarbonContext().getOSGiService(IdVProviderManager.class, null);
+    }
+
+    private static class IdentityVerificationManagerHolder {
+
+        static final IdentityVerificationManager SERVICE = (IdentityVerificationManager) PrivilegedCarbonContext
+                .getThreadLocalCarbonContext().getOSGiService(IdentityVerificationManager.class, null);
+    }
 
     /**
      * Get IdVProviderManager osgi service.
@@ -36,27 +50,7 @@ public class IdentityVerificationServiceHolder {
      */
     public static IdVProviderManager getIdVProviderManager() {
 
-        return idVProviderManager;
-    }
-
-    /**
-     * Set IdVProviderManager osgi service.
-     *
-     * @param idVProviderManager IdVProviderManager.
-     */
-    public static void setIdVProviderManager(IdVProviderManager idVProviderManager) {
-
-        IdentityVerificationServiceHolder.idVProviderManager = idVProviderManager;
-    }
-
-    /**
-     * Set IdentityVerificationManager osgi service.
-     *
-     * @param identityVerificationManager IdentityVerificationManager.
-     */
-    public static void setIdentityVerificationManager(IdentityVerificationManager identityVerificationManager) {
-
-        IdentityVerificationServiceHolder.identityVerificationManager = identityVerificationManager;
+        return IdVProviderManagerHolder.SERVICE;
     }
 
     /**
@@ -66,6 +60,6 @@ public class IdentityVerificationServiceHolder {
      */
     public static IdentityVerificationManager getIdentityVerificationManager() {
 
-        return identityVerificationManager;
+        return IdentityVerificationManagerHolder.SERVICE;
     }
 }
