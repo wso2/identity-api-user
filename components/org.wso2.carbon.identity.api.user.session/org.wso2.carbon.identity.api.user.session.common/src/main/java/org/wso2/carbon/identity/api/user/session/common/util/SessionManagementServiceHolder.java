@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2019-2024, WSO2 LLC. (http://www.wso2.com).
  *
- * WSO2 Inc. licenses this file to you under the Apache License,
+ * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.api.user.session.common.util;
 
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.application.authentication.framework.UserSessionManagementService;
 import org.wso2.carbon.user.core.service.RealmService;
 
@@ -26,9 +27,19 @@ import org.wso2.carbon.user.core.service.RealmService;
  */
 public class SessionManagementServiceHolder {
 
-    private static UserSessionManagementService userSessionManagementService;
+    private SessionManagementServiceHolder () {}
 
-    private static RealmService realmService;
+    private static class UserSessionManagementServiceHolder {
+
+        static final UserSessionManagementService SERVICE = (UserSessionManagementService) PrivilegedCarbonContext
+                .getThreadLocalCarbonContext().getOSGiService(UserSessionManagementService.class, null);
+    }
+
+    private static class RealmServiceHolder {
+
+        static final RealmService SERVICE = (RealmService) PrivilegedCarbonContext
+                .getThreadLocalCarbonContext().getOSGiService(RealmService.class, null);
+    }
 
     /**
      * Method to get the session management osgi service.
@@ -36,20 +47,16 @@ public class SessionManagementServiceHolder {
      * @return UserSessionManagementService
      */
     public static UserSessionManagementService getUserSessionManagementService() {
-        return userSessionManagementService;
+        return UserSessionManagementServiceHolder.SERVICE;
     }
 
-    public static void setUserSessionManagementService(UserSessionManagementService userSessionManagementService) {
-        SessionManagementServiceHolder.userSessionManagementService = userSessionManagementService;
-    }
-
+    /**
+     * Method to get the realm service osgi service.
+     *
+     * @return RealmService
+     */
     public static RealmService getRealmService() {
 
-        return realmService;
-    }
-
-    public static void setRealmService(RealmService realmService) {
-
-        SessionManagementServiceHolder.realmService = realmService;
+        return RealmServiceHolder.SERVICE;
     }
 }

@@ -1,6 +1,23 @@
+/*
+ * Copyright (c) 2019-2024, WSO2 LLC. (http://www.wso2.com).
+ *
+ * WSO2 LLC. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package org.wso2.carbon.identity.rest.api.user.association.v1.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.function.UniqueIdToUser;
 import org.wso2.carbon.identity.application.common.model.User;
@@ -8,10 +25,12 @@ import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.rest.api.user.association.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.association.v1.core.UserAssociationService;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationUserRequestDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.factories.UserAssociationServiceFactory;
 import org.wso2.carbon.identity.rest.api.user.association.v1.util.UserAssociationServiceHolder;
 import org.wso2.carbon.user.core.util.UserCoreUtil;
 
 import java.net.URI;
+
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.ContextLoader.buildURIForHeader;
@@ -24,8 +43,16 @@ import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationE
  */
 public class MeApiServiceImpl extends MeApiService {
 
-    @Autowired
-    private UserAssociationService userAssociationService;
+    private final UserAssociationService userAssociationService;
+
+    public MeApiServiceImpl() {
+
+        try {
+            this.userAssociationService = UserAssociationServiceFactory.getUserAssociationService();
+        } catch (IllegalStateException e) {
+            throw new RuntimeException("Error occurred while initiating UserAssociationService.", e);
+        }
+    }
 
     @Override
     public Response meAssociationsDelete() {
@@ -44,6 +71,7 @@ public class MeApiServiceImpl extends MeApiService {
 
     @Override
     public Response meAssociationsGet() {
+
         return Response.ok().entity(userAssociationService.getAssociationsOfUser(
                 getFullyQualifiedUsernameFromContext())).build();
     }

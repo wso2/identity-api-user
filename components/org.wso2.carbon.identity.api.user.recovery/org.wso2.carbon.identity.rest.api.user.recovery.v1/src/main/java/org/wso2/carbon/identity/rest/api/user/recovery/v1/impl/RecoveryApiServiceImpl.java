@@ -1,26 +1,29 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2020-2024, WSO2 LLC. (http://www.wso2.com).
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * WSO2 LLC. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
  * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 package org.wso2.carbon.identity.rest.api.user.recovery.v1.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.RecoveryApiService;
 
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core.PasswordRecoveryService;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core.UsernameRecoveryService;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.factories.PasswordRecoveryServiceFactory;
+import org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.factories.UsernameRecoveryServiceFactory;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.ConfirmRequest;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.InitRequest;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.RecoveryRequest;
@@ -34,11 +37,19 @@ import javax.ws.rs.core.Response;
  */
 public class RecoveryApiServiceImpl implements RecoveryApiService {
 
-    @Autowired
-    private UsernameRecoveryService usernameRecoveryService;
+    private final UsernameRecoveryService usernameRecoveryService;
+    private final PasswordRecoveryService passwordRecoveryService;
 
-    @Autowired
-    private PasswordRecoveryService passwordRecoveryService;
+    public RecoveryApiServiceImpl() {
+
+        try {
+            this.usernameRecoveryService = UsernameRecoveryServiceFactory.getUsernameRecoveryService();
+            this.passwordRecoveryService = PasswordRecoveryServiceFactory.getPasswordRecoveryService();
+        } catch (IllegalStateException e) {
+            throw new RuntimeException("Error occurred while initiating required services for " +
+                    "RecoveryApiServiceImpl.", e);
+        }
+    }
 
     @Override
     public Response confirmRecovery(ConfirmRequest confirmRequest) {

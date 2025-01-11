@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2023-2024, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -21,12 +21,20 @@ package org.wso2.carbon.identity.rest.api.user.idv.v1.factories;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.impl.MeApiServiceImpl;
 
+/**
+ * Factory class for MeApiService.
+ */
 public class MeApiServiceFactory {
 
-   private final static MeApiService service = new MeApiServiceImpl();
+    private final static MeApiService SERVICE = new MeApiServiceImpl();
 
-   public static MeApiService getMeApi()
-   {
-      return service;
-   }
+    /**
+     * Get MeApiService.
+     *
+     * @return MeApiService
+     */
+    public static MeApiService getMeApi() {
+
+        return SERVICE;
+    }
 }

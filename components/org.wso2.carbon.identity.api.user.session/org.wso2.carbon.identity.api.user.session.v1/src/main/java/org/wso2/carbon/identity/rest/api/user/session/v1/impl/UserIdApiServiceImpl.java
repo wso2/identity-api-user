@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2019-2024, WSO2 LLC. (http://www.wso2.com).
  *
- * WSO2 Inc. licenses this file to you under the Apache License,
+ * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,7 +21,6 @@ package org.wso2.carbon.identity.rest.api.user.session.v1.impl;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.identity.api.user.common.Util;
 import org.wso2.carbon.identity.api.user.session.common.util.SessionManagementServiceHolder;
@@ -30,6 +29,7 @@ import org.wso2.carbon.identity.rest.api.user.session.v1.UserIdApiService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.core.SessionManagementService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionDTO;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionsDTO;
+import org.wso2.carbon.identity.rest.api.user.session.v1.factories.SessionManagementServiceFactory;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
@@ -45,8 +45,16 @@ public class UserIdApiServiceImpl extends UserIdApiService {
 
     private static final Log log = LogFactory.getLog(UserIdApiServiceImpl.class);
 
-    @Autowired
-    private SessionManagementService sessionManagementService;
+    private final SessionManagementService sessionManagementService;
+
+    public UserIdApiServiceImpl() {
+
+        try {
+            sessionManagementService = SessionManagementServiceFactory.getSessionManagementService();
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurred while initiating SessionManagementService.", e);
+        }
+    }
 
     @Override
     public Response getSessionBySessionId(String userId, String sessionId) {

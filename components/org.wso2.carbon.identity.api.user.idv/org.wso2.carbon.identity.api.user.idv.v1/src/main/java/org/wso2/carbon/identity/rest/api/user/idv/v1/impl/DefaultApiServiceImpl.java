@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2023-2024, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -18,9 +18,9 @@
 
 package org.wso2.carbon.identity.rest.api.user.idv.v1.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.DefaultApiService;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.core.IdentityVerificationService;
+import org.wso2.carbon.identity.rest.api.user.idv.v1.factories.IdentityVerificationServiceFactory;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerificationClaimRequest;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerificationClaimResponse;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerificationClaimUpdateRequest;
@@ -35,8 +35,17 @@ import javax.ws.rs.core.Response;
  */
 public class DefaultApiServiceImpl implements DefaultApiService {
 
-    @Autowired
-    IdentityVerificationService identityVerificationService;
+    private final IdentityVerificationService identityVerificationService;
+
+    public DefaultApiServiceImpl() {
+
+        try {
+            this.identityVerificationService = IdentityVerificationServiceFactory.getIdentityVerificationService();
+        } catch (IllegalStateException e) {
+            throw new RuntimeException("Error occurred while initiating required services for " +
+                    "IdentityVerificationService.", e);
+        }
+    }
 
     @Override
     public Response addIdVClaim(String userId, List<VerificationClaimRequest> verificationClaimRequest) {
