@@ -1,22 +1,28 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2020-2025, WSO2 LLC. (http://www.wso2.com).
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * WSO2 LLC. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
  * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 package org.wso2.carbon.identity.api.user.recovery.commons;
 
+import org.wso2.carbon.identity.recovery.internal.service.impl.password.PasswordRecoveryManagerImpl;
 import org.wso2.carbon.identity.recovery.services.password.PasswordRecoveryManager;
 import org.wso2.carbon.identity.recovery.services.username.UsernameRecoveryManager;
+
+import java.util.List;
 
 /**
  * Service holder class for user account recovery.
@@ -24,7 +30,7 @@ import org.wso2.carbon.identity.recovery.services.username.UsernameRecoveryManag
 public class UserAccountRecoveryServiceDataHolder {
 
     private static UsernameRecoveryManager usernameRecoveryManager;
-    private static PasswordRecoveryManager passwordRecoveryManager;
+    private static List<PasswordRecoveryManager> passwordRecoveryManager;
 
     /**
      * Get UsernameRecoveryManager instance.
@@ -53,6 +59,22 @@ public class UserAccountRecoveryServiceDataHolder {
      */
     public static PasswordRecoveryManager getPasswordRecoveryManager() {
 
+        // Return the default notification based passwordRecoveryManager.
+        for (PasswordRecoveryManager manager : passwordRecoveryManager) {
+            if (manager instanceof PasswordRecoveryManagerImpl) {
+                return manager;
+            }
+        }
+        return UserAccountRecoveryServiceDataHolder.passwordRecoveryManager.get(0);
+    }
+
+    /**
+     * Get all PasswordRecoveryManager instances.
+     *
+     * @return List of PasswordRecoveryManager.
+     */
+    public static List<PasswordRecoveryManager> getPasswordRecoveryManagers() {
+
         return UserAccountRecoveryServiceDataHolder.passwordRecoveryManager;
     }
 
@@ -62,7 +84,7 @@ public class UserAccountRecoveryServiceDataHolder {
      * @param passwordRecoveryManager PasswordRecoveryManager
      */
     public static void setPasswordRecoveryManager(
-            PasswordRecoveryManager passwordRecoveryManager) {
+            List<PasswordRecoveryManager> passwordRecoveryManager) {
 
         UserAccountRecoveryServiceDataHolder.passwordRecoveryManager = passwordRecoveryManager;
     }
