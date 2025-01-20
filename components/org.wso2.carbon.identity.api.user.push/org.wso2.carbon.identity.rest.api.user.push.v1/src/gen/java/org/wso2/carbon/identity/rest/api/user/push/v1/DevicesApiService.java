@@ -38,6 +38,8 @@ public interface DevicesApiService {
 
       public Response getDeviceById(String deviceId);
 
+      public Response getDevices();
+
       public Response registerDevice(RegistrationRequestDTO registrationRequestDTO);
 
       public Response removeDeviceFromMobile(String deviceId, RemoveRequestDTO removeRequestDTO);

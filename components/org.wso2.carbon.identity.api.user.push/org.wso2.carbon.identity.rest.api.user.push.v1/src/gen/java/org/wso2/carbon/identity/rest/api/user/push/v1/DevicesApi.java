@@ -85,6 +85,25 @@ public class DevicesApi  {
     }
 
     @Valid
+    @GET
+    
+    
+    @Produces({ "application/json" })
+    @ApiOperation(value = "Get all devices registered for a user.", notes = "This API is used to list the devices registered for the particular user. ", response = DeviceDTO.class, responseContainer = "List", tags={ "me", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Listed devices registered for a user", response = DeviceDTO.class, responseContainer = "List"),
+        @ApiResponse(code = 400, message = "Invalid input in the request.", response = Error.class),
+        @ApiResponse(code = 401, message = "Authentication information is missing or invalid.", response = Void.class),
+        @ApiResponse(code = 403, message = "Access forbidden.", response = Void.class),
+        @ApiResponse(code = 500, message = "Internal server error.", response = Error.class),
+        @ApiResponse(code = 501, message = "Not Implemented.", response = Error.class)
+    })
+    public Response getDevices() {
+
+        return delegate.getDevices();
+    }
+
+    @Valid
     @POST
     
     @Consumes({ "application/json" })

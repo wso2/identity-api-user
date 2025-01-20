@@ -26,6 +26,8 @@ import org.wso2.carbon.identity.rest.api.user.push.v1.model.RegistrationRequestD
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.RegistrationResponseDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.RemoveRequestDTO;
 
+import java.util.List;
+
 import javax.ws.rs.core.Response;
 
 /**
@@ -48,6 +50,13 @@ public class DevicesApiServiceImpl implements DevicesApiService {
 
         DeviceDTO deviceDTO = pushDeviceManagementService.getDevice(deviceId);
         return Response.ok().entity(deviceDTO).build();
+    }
+
+    @Override
+    public Response getDevices() {
+
+        List<DeviceDTO> deviceDTOList = pushDeviceManagementService.getDeviceByUserId();
+        return Response.ok().entity(deviceDTOList).build();
     }
 
     @Override

@@ -81,6 +81,30 @@ paths:
           $ref: '#/components/responses/ServerError'
         '501':
           $ref: '#/components/responses/NotImplemented'
+    get:
+      tags:
+        - me
+      description: |
+        This API is used to list the devices registered for the particular user.
+      summary: Get all devices registered for a user.
+      operationId: getDevices
+      responses:
+        '200':
+          description: Listed devices registered for a user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceDTOList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
   /devices/{deviceId}:
     get:
       tags:
@@ -274,6 +298,11 @@ components:
         provider:
           type: string
           example: fcm
+
+    DeviceDTOList:
+      type: array
+      items:
+        $ref: '#/components/schemas/DeviceDTO'
 
     RemoveRequestDTO:
       type: object

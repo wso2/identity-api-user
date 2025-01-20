@@ -18,6 +18,9 @@ import org.wso2.carbon.identity.rest.api.user.push.v1.model.DiscoveryDataDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.RegistrationRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.RegistrationResponseDTO;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.wso2.carbon.identity.rest.api.user.push.v1.util.Util.handlePushDeviceHandlerException;
 
 /**
@@ -48,6 +51,12 @@ public class PushDeviceManagementService {
         }
     }
 
+    /**
+     * Get device by device ID.
+     *
+     * @param deviceId Device ID.
+     * @return Device.
+     */
     public DeviceDTO getDevice(String deviceId) {
 
         try {
@@ -58,6 +67,32 @@ public class PushDeviceManagementService {
         }
     }
 
+    /**
+     * Get device by user ID.
+     *
+     * @return Device.
+     */
+    public List<DeviceDTO> getDeviceByUserId() {
+
+        try {
+            User user = ContextLoader.getUserFromContext();
+            String tenantDomain = user.getTenantDomain();
+            String userId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserId();
+            Device device = PushDeviceManagerServiceDataHolder.getDeviceHandlerService().getDeviceByUserId(userId,
+                    tenantDomain);
+            List<DeviceDTO> deviceDTOList = new ArrayList<>();
+            deviceDTOList.add(buildDeviceDTO(device));
+            return deviceDTOList;
+        } catch (PushDeviceHandlerException e) {
+            throw handlePushDeviceHandlerException(e);
+        }
+    }
+
+    /**
+     * Remove device by device ID.
+     *
+     * @param deviceId Device ID.
+     */
     public void removeDevice(String deviceId) {
 
         try {
@@ -67,6 +102,12 @@ public class PushDeviceManagementService {
         }
     }
 
+    /**
+     * Remove device from mobile.
+     *
+     * @param deviceId Device ID.
+     * @param token    Token.
+     */
     public void removeDeviceFromMobile(String deviceId, String token) {
 
         try {
@@ -76,6 +117,12 @@ public class PushDeviceManagementService {
         }
     }
 
+    /**
+     * Register a device.
+     *
+     * @param registrationRequestDTO Registration request DTO.
+     * @return Registration response DTO.
+     */
     public RegistrationResponseDTO registerDevice(RegistrationRequestDTO registrationRequestDTO) {
 
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
@@ -91,6 +138,12 @@ public class PushDeviceManagementService {
         }
     }
 
+    /**
+     * Build discovery data DTO.
+     *
+     * @param data Registration discovery data.
+     * @return Discovery data DTO.
+     */
     private DiscoveryDataDTO buildDiscoveryDataDTO(RegistrationDiscoveryData data) {
 
         DiscoveryDataDTO discoveryDataDTO = new DiscoveryDataDTO();
@@ -108,6 +161,12 @@ public class PushDeviceManagementService {
         return discoveryDataDTO;
     }
 
+    /**
+     * Build device DTO.
+     *
+     * @param device Device.
+     * @return Device DTO.
+     */
     private DeviceDTO buildDeviceDTO(Device device) {
 
         DeviceDTO deviceDTO = new DeviceDTO();
@@ -118,6 +177,12 @@ public class PushDeviceManagementService {
         return deviceDTO;
     }
 
+    /**
+     * Build registration request.
+     *
+     * @param dto Registration request DTO.
+     * @return Registration request.
+     */
     private RegistrationRequest buildRegistrationRequest(RegistrationRequestDTO dto) {
 
         RegistrationRequest request = new RegistrationRequest();
