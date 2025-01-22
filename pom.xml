@@ -484,7 +484,7 @@
         <carbon.identity.account.association.version>5.5.10</carbon.identity.account.association.version>
         <maven.findbugsplugin.version>3.0.5</maven.findbugsplugin.version>
         <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
-        <identity.oauth.version>7.0.169</identity.oauth.version>
+        <identity.oauth.version>7.0.218</identity.oauth.version>
         <identity.org.mgt.core.version>1.1.17</identity.org.mgt.core.version>
         <testng.version>6.9.10</testng.version>
         <fido2.version>5.4.7</fido2.version>
