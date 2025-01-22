@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2025, WSO2 LLC. (http://www.wso2.com).
+ *
+ * WSO2 LLC. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package org.wso2.carbon.identity.rest.api.user.push.v1.core;
 
 import com.google.gson.Gson;
@@ -16,11 +34,11 @@ import org.wso2.carbon.identity.notification.push.device.handler.model.Registrat
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.DeviceDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.DiscoveryDataDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.RegistrationRequestDTO;
-import org.wso2.carbon.identity.rest.api.user.push.v1.model.RegistrationResponseDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.wso2.carbon.identity.notification.push.device.handler.constant.PushDeviceHandlerConstants.ErrorMessages.ERROR_CODE_DEVICE_NOT_FOUND_FOR_USER_ID;
 import static org.wso2.carbon.identity.rest.api.user.push.v1.util.Util.handlePushDeviceHandlerException;
 
 /**
@@ -74,18 +92,20 @@ public class PushDeviceManagementService {
      */
     public List<DeviceDTO> getDeviceByUserId() {
 
+        List<DeviceDTO> deviceDTOList = new ArrayList<>();
         try {
             User user = ContextLoader.getUserFromContext();
             String tenantDomain = user.getTenantDomain();
             String userId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserId();
             Device device = PushDeviceManagerServiceDataHolder.getDeviceHandlerService().getDeviceByUserId(userId,
                     tenantDomain);
-            List<DeviceDTO> deviceDTOList = new ArrayList<>();
             deviceDTOList.add(buildDeviceDTO(device));
-            return deviceDTOList;
         } catch (PushDeviceHandlerException e) {
-            throw handlePushDeviceHandlerException(e);
+            if (!ERROR_CODE_DEVICE_NOT_FOUND_FOR_USER_ID.getCode().equals(e.getErrorCode())) {
+                throw handlePushDeviceHandlerException(e);
+            }
         }
+        return deviceDTOList;
     }
 
     /**
@@ -121,18 +141,14 @@ public class PushDeviceManagementService {
      * Register a device.
      *
      * @param registrationRequestDTO Registration request DTO.
-     * @return Registration response DTO.
      */
-    public RegistrationResponseDTO registerDevice(RegistrationRequestDTO registrationRequestDTO) {
+    public void registerDevice(RegistrationRequestDTO registrationRequestDTO) {
 
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         RegistrationRequest request = buildRegistrationRequest(registrationRequestDTO);
         try {
-            Device device = PushDeviceManagerServiceDataHolder.getDeviceHandlerService()
+            PushDeviceManagerServiceDataHolder.getDeviceHandlerService()
                     .registerDevice(request, tenantDomain);
-            RegistrationResponseDTO responseDTO = new RegistrationResponseDTO();
-            responseDTO.setDeviceId(device.getDeviceId());
-            return responseDTO;
         } catch (PushDeviceHandlerException e) {
             throw handlePushDeviceHandlerException(e);
         }
@@ -151,11 +167,9 @@ public class PushDeviceManagementService {
         discoveryDataDTO.setUsername(data.getUsername());
         discoveryDataDTO.setHost(data.getHost());
         discoveryDataDTO.setTenantDomain(data.getTenantDomain());
-        discoveryDataDTO.setTenantPath(data.getTenantPath());
         if (StringUtils.isNotBlank(data.getOrganizationId())) {
             discoveryDataDTO.setOrganizationId(data.getOrganizationId());
             discoveryDataDTO.setOrganizationName(data.getOrganizationName());
-            discoveryDataDTO.setOrganizationPath(data.getOrganizationPath());
         }
         discoveryDataDTO.setChallenge(data.getChallenge());
         return discoveryDataDTO;

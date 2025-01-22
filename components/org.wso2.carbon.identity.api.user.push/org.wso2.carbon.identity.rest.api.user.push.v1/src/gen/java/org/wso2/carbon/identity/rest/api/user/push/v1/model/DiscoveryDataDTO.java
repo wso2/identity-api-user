@@ -39,10 +39,8 @@ public class DiscoveryDataDTO  {
     private String username;
     private String host;
     private String tenantDomain;
-    private String tenantPath;
     private String organizationId;
     private String organizationName;
-    private String organizationPath;
     private String challenge;
 
     /**
@@ -122,25 +120,6 @@ public class DiscoveryDataDTO  {
     }
 
     /**
-    * Tenanted path
-    **/
-    public DiscoveryDataDTO tenantPath(String tenantPath) {
-
-        this.tenantPath = tenantPath;
-        return this;
-    }
-    
-    @ApiModelProperty(example = "/t/carbon.super", value = "Tenanted path")
-    @JsonProperty("tenantPath")
-    @Valid
-    public String getTenantPath() {
-        return tenantPath;
-    }
-    public void setTenantPath(String tenantPath) {
-        this.tenantPath = tenantPath;
-    }
-
-    /**
     * Organization ID
     **/
     public DiscoveryDataDTO organizationId(String organizationId) {
@@ -179,25 +158,6 @@ public class DiscoveryDataDTO  {
     }
 
     /**
-    * Organization path
-    **/
-    public DiscoveryDataDTO organizationPath(String organizationPath) {
-
-        this.organizationPath = organizationPath;
-        return this;
-    }
-    
-    @ApiModelProperty(example = "/o/sampleOrg", value = "Organization path")
-    @JsonProperty("organizationPath")
-    @Valid
-    public String getOrganizationPath() {
-        return organizationPath;
-    }
-    public void setOrganizationPath(String organizationPath) {
-        this.organizationPath = organizationPath;
-    }
-
-    /**
     * Challenge
     **/
     public DiscoveryDataDTO challenge(String challenge) {
@@ -232,16 +192,14 @@ public class DiscoveryDataDTO  {
             Objects.equals(this.username, discoveryDataDTO.username) &&
             Objects.equals(this.host, discoveryDataDTO.host) &&
             Objects.equals(this.tenantDomain, discoveryDataDTO.tenantDomain) &&
-            Objects.equals(this.tenantPath, discoveryDataDTO.tenantPath) &&
             Objects.equals(this.organizationId, discoveryDataDTO.organizationId) &&
             Objects.equals(this.organizationName, discoveryDataDTO.organizationName) &&
-            Objects.equals(this.organizationPath, discoveryDataDTO.organizationPath) &&
             Objects.equals(this.challenge, discoveryDataDTO.challenge);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(deviceId, username, host, tenantDomain, tenantPath, organizationId, organizationName, organizationPath, challenge);
+        return Objects.hash(deviceId, username, host, tenantDomain, organizationId, organizationName, challenge);
     }
 
     @Override
@@ -254,10 +212,8 @@ public class DiscoveryDataDTO  {
         sb.append("    username: ").append(toIndentedString(username)).append("\n");
         sb.append("    host: ").append(toIndentedString(host)).append("\n");
         sb.append("    tenantDomain: ").append(toIndentedString(tenantDomain)).append("\n");
-        sb.append("    tenantPath: ").append(toIndentedString(tenantPath)).append("\n");
         sb.append("    organizationId: ").append(toIndentedString(organizationId)).append("\n");
         sb.append("    organizationName: ").append(toIndentedString(organizationName)).append("\n");
-        sb.append("    organizationPath: ").append(toIndentedString(organizationPath)).append("\n");
         sb.append("    challenge: ").append(toIndentedString(challenge)).append("\n");
         sb.append("}");
         return sb.toString();

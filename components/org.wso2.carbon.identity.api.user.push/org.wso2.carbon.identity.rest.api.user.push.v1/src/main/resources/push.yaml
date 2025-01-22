@@ -67,10 +67,6 @@ paths:
       responses:
         '201':
           description: Registered a new device
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RegistrationResponseDTO'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -223,10 +219,6 @@ components:
           description: Tenant domain
           type: string
           example: carbon.super
-        tenantPath:
-          description: Tenanted path
-          type: string
-          example: /t/carbon.super
         organizationId:
           description: Organization ID
           type: string
@@ -235,10 +227,6 @@ components:
           description: Organization name
           type: string
           example: sampleOrg
-        organizationPath:
-          description: Organization path
-          type: string
-          example: /o/sampleOrg
         challenge:
           description: Challenge
           type: string

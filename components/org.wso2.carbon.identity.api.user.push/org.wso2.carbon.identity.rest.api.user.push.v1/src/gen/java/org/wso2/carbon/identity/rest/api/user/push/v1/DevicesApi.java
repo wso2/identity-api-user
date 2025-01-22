@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -27,7 +27,6 @@ import java.util.List;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.DeviceDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.Error;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.RegistrationRequestDTO;
-import org.wso2.carbon.identity.rest.api.user.push.v1.model.RegistrationResponseDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.RemoveRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.DevicesApiService;
 
@@ -108,9 +107,9 @@ public class DevicesApi  {
     
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @ApiOperation(value = "Register mobile devices to receive push notifications.", notes = "This API is used to register a push notification device into the Identity Server. This API will be invoked from the mobile device. ", response = RegistrationResponseDTO.class, tags={ "mobile", })
+    @ApiOperation(value = "Register mobile devices to receive push notifications.", notes = "This API is used to register a push notification device into the Identity Server. This API will be invoked from the mobile device. ", response = Void.class, tags={ "mobile", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 201, message = "Registered a new device", response = RegistrationResponseDTO.class),
+        @ApiResponse(code = 201, message = "Registered a new device", response = Void.class),
         @ApiResponse(code = 400, message = "Invalid input in the request.", response = Error.class),
         @ApiResponse(code = 401, message = "Authentication information is missing or invalid.", response = Void.class),
         @ApiResponse(code = 403, message = "Access forbidden.", response = Void.class),
