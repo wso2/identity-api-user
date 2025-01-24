@@ -18,14 +18,12 @@
 
 package org.wso2.carbon.identity.rest.api.user.push.v1;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import java.io.InputStream;
 import java.util.List;
 
 import org.wso2.carbon.identity.rest.api.user.push.v1.factories.DevicesApiServiceFactory;
-import org.wso2.carbon.identity.rest.api.user.push.v1.factories.PushDeviceManagementServiceFactory;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.DeviceDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.Error;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.RegistrationRequestDTO;
