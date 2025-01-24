@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.api.user.push.common;
 
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.notification.push.device.handler.DeviceHandlerService;
 
 /**
@@ -25,7 +26,15 @@ import org.wso2.carbon.identity.notification.push.device.handler.DeviceHandlerSe
  */
 public class PushDeviceManagerServiceDataHolder {
 
-    private static DeviceHandlerService deviceHandlerService;
+    private PushDeviceManagerServiceDataHolder() {
+
+    }
+
+    private static class PushDeviceManagerServiceHolder {
+
+        static final DeviceHandlerService SERVICE = (DeviceHandlerService) PrivilegedCarbonContext
+                .getThreadLocalCarbonContext().getOSGiService(DeviceHandlerService.class, null);
+    }
 
     /**
      * Get Device Handler Service.
@@ -34,16 +43,6 @@ public class PushDeviceManagerServiceDataHolder {
      */
     public static DeviceHandlerService getDeviceHandlerService() {
 
-        return PushDeviceManagerServiceDataHolder.deviceHandlerService;
-    }
-
-    /**
-     * Set Device Handler Service.
-     *
-     * @param deviceHandlerService DeviceHandlerService
-     */
-    public static void setDeviceHandlerService(DeviceHandlerService deviceHandlerService) {
-
-        PushDeviceManagerServiceDataHolder.deviceHandlerService = deviceHandlerService;
+        return PushDeviceManagerServiceHolder.SERVICE;
     }
 }

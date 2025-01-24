@@ -25,8 +25,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.ContextLoader;
-import org.wso2.carbon.identity.api.user.push.common.PushDeviceManagerServiceDataHolder;
 import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.notification.push.device.handler.DeviceHandlerService;
 import org.wso2.carbon.identity.notification.push.device.handler.exception.PushDeviceHandlerException;
 import org.wso2.carbon.identity.notification.push.device.handler.model.Device;
 import org.wso2.carbon.identity.notification.push.device.handler.model.RegistrationDiscoveryData;
@@ -46,7 +46,18 @@ import static org.wso2.carbon.identity.rest.api.user.push.v1.util.Util.handlePus
  */
 public class PushDeviceManagementService {
 
+    private final DeviceHandlerService deviceHandlerService;
     private static final Log log = LogFactory.getLog(PushDeviceManagementService.class);
+
+    /**
+     * Constructor for PushDeviceManagementService.
+     *
+     * @param deviceHandlerService Device handler service.
+     */
+    public PushDeviceManagementService(DeviceHandlerService deviceHandlerService) {
+
+        this.deviceHandlerService = deviceHandlerService;
+    }
 
     /**
      * Get registration discovery data.
@@ -59,8 +70,7 @@ public class PushDeviceManagementService {
         String username = user.toFullQualifiedUsername();
         String tenantDomain = user.getTenantDomain();
         try {
-            RegistrationDiscoveryData data = PushDeviceManagerServiceDataHolder.getDeviceHandlerService()
-                    .getRegistrationDiscoveryData(username, tenantDomain);
+            RegistrationDiscoveryData data = deviceHandlerService.getRegistrationDiscoveryData(username, tenantDomain);
             DiscoveryDataDTO discoveryDataDTO = buildDiscoveryDataDTO(data);
             Gson gson = new GsonBuilder().create();
             return gson.toJson(discoveryDataDTO);
@@ -78,7 +88,7 @@ public class PushDeviceManagementService {
     public DeviceDTO getDevice(String deviceId) {
 
         try {
-            Device device = PushDeviceManagerServiceDataHolder.getDeviceHandlerService().getDevice(deviceId);
+            Device device = deviceHandlerService.getDevice(deviceId);
             return buildDeviceDTO(device);
         } catch (PushDeviceHandlerException e) {
             throw handlePushDeviceHandlerException(e);
@@ -97,8 +107,7 @@ public class PushDeviceManagementService {
             User user = ContextLoader.getUserFromContext();
             String tenantDomain = user.getTenantDomain();
             String userId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserId();
-            Device device = PushDeviceManagerServiceDataHolder.getDeviceHandlerService().getDeviceByUserId(userId,
-                    tenantDomain);
+            Device device = deviceHandlerService.getDeviceByUserId(userId, tenantDomain);
             deviceDTOList.add(buildDeviceDTO(device));
         } catch (PushDeviceHandlerException e) {
             if (!ERROR_CODE_DEVICE_NOT_FOUND_FOR_USER_ID.getCode().equals(e.getErrorCode())) {
@@ -116,7 +125,7 @@ public class PushDeviceManagementService {
     public void removeDevice(String deviceId) {
 
         try {
-            PushDeviceManagerServiceDataHolder.getDeviceHandlerService().unregisterDevice(deviceId);
+            deviceHandlerService.unregisterDevice(deviceId);
         } catch (PushDeviceHandlerException e) {
             throw handlePushDeviceHandlerException(e);
         }
@@ -131,7 +140,7 @@ public class PushDeviceManagementService {
     public void removeDeviceFromMobile(String deviceId, String token) {
 
         try {
-            PushDeviceManagerServiceDataHolder.getDeviceHandlerService().unregisterDeviceMobile(deviceId, token);
+            deviceHandlerService.unregisterDeviceMobile(deviceId, token);
         } catch (PushDeviceHandlerException e) {
             throw handlePushDeviceHandlerException(e);
         }
@@ -147,8 +156,7 @@ public class PushDeviceManagementService {
         String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         RegistrationRequest request = buildRegistrationRequest(registrationRequestDTO);
         try {
-            PushDeviceManagerServiceDataHolder.getDeviceHandlerService()
-                    .registerDevice(request, tenantDomain);
+            deviceHandlerService.registerDevice(request, tenantDomain);
         } catch (PushDeviceHandlerException e) {
             throw handlePushDeviceHandlerException(e);
         }

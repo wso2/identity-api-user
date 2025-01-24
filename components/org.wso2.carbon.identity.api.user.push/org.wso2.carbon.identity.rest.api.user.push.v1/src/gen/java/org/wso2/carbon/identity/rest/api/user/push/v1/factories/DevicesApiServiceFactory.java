@@ -21,12 +21,19 @@ package org.wso2.carbon.identity.rest.api.user.push.v1.factories;
 import org.wso2.carbon.identity.rest.api.user.push.v1.DevicesApiService;
 import org.wso2.carbon.identity.rest.api.user.push.v1.impl.DevicesApiServiceImpl;
 
+/**
+ * Factory class for DevicesApiService.
+ */
 public class DevicesApiServiceFactory {
 
-   private final static DevicesApiService service = new DevicesApiServiceImpl();
+   private final static DevicesApiService SERVICE = new DevicesApiServiceImpl();
 
+   /**
+    * Get DevicesApi
+    * @return DevicesApiService
+    */
    public static DevicesApiService getDevicesApi()
    {
-      return service;
+      return SERVICE;
    }
 }

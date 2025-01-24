@@ -21,12 +21,19 @@ package org.wso2.carbon.identity.rest.api.user.push.v1.factories;
 import org.wso2.carbon.identity.rest.api.user.push.v1.DiscoveryDataApiService;
 import org.wso2.carbon.identity.rest.api.user.push.v1.impl.DiscoveryDataApiServiceImpl;
 
+/**
+ * Factory class for DiscoveryDataApiService.
+ */
 public class DiscoveryDataApiServiceFactory {
 
-   private final static DiscoveryDataApiService service = new DiscoveryDataApiServiceImpl();
+   private final static DiscoveryDataApiService SERVICE = new DiscoveryDataApiServiceImpl();
 
+   /**
+    * Get DiscoveryDataApi
+    * @return DiscoveryDataApiService
+    */
    public static DiscoveryDataApiService getDiscoveryDataApi()
    {
-      return service;
+      return SERVICE;
    }
 }

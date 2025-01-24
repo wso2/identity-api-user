@@ -23,14 +23,23 @@ import org.wso2.carbon.identity.rest.api.user.push.v1.DiscoveryDataApiService;
 import org.wso2.carbon.identity.rest.api.user.push.v1.core.PushDeviceManagementService;
 
 import javax.ws.rs.core.Response;
+import org.wso2.carbon.identity.rest.api.user.push.v1.factories.PushDeviceManagementServiceFactory;
 
 /**
  * Implementation class of Push device Handler User APIs.
  */
 public class DiscoveryDataApiServiceImpl implements DiscoveryDataApiService {
 
-    @Autowired
-    private PushDeviceManagementService pushDeviceManagementService;
+    private final PushDeviceManagementService pushDeviceManagementService;
+
+    public DiscoveryDataApiServiceImpl() {
+
+        try {
+            this.pushDeviceManagementService = PushDeviceManagementServiceFactory.getPushDeviceManagementService();
+        } catch (IllegalStateException e) {
+            throw new RuntimeException("Error occurred while initiating PushDeviceManagementService.", e);
+        }
+    }
 
     @Override
     public Response getRegistrationDiscoveryData() {

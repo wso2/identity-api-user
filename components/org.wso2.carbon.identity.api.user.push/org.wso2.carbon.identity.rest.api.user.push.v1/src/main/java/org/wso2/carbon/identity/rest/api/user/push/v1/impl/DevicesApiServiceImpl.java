@@ -18,9 +18,9 @@
 
 package org.wso2.carbon.identity.rest.api.user.push.v1.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.push.v1.DevicesApiService;
 import org.wso2.carbon.identity.rest.api.user.push.v1.core.PushDeviceManagementService;
+import org.wso2.carbon.identity.rest.api.user.push.v1.factories.PushDeviceManagementServiceFactory;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.DeviceDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.RegistrationRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.RemoveRequestDTO;
@@ -34,8 +34,16 @@ import javax.ws.rs.core.Response;
  */
 public class DevicesApiServiceImpl implements DevicesApiService {
 
-    @Autowired
-    private PushDeviceManagementService pushDeviceManagementService;
+    private final PushDeviceManagementService pushDeviceManagementService;
+
+    public DevicesApiServiceImpl() {
+
+        try {
+            this.pushDeviceManagementService = PushDeviceManagementServiceFactory.getPushDeviceManagementService();
+        } catch (IllegalStateException e) {
+            throw new RuntimeException("Error occurred while initiating PushDeviceManagementService.", e);
+        }
+    }
 
     @Override
     public Response deleteDeviceById(String deviceId) {

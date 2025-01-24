@@ -24,6 +24,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import java.io.InputStream;
 import java.util.List;
 
+import org.wso2.carbon.identity.rest.api.user.push.v1.factories.DiscoveryDataApiServiceFactory;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.DiscoveryDataDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.Error;
 import org.wso2.carbon.identity.rest.api.user.push.v1.DiscoveryDataApiService;
@@ -40,8 +41,12 @@ import javax.validation.constraints.*;
 
 public class DiscoveryDataApi  {
 
-    @Autowired
-    private DiscoveryDataApiService delegate;
+    private final DiscoveryDataApiService delegate;
+
+    public DiscoveryDataApi() {
+
+        this.delegate = DiscoveryDataApiServiceFactory.getDiscoveryDataApi();
+    }
 
     @Valid
     @GET
