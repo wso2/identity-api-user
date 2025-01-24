@@ -20,10 +20,10 @@ package org.wso2.carbon.identity.rest.api.user.push.v1.impl;
 
 import org.wso2.carbon.identity.rest.api.user.push.v1.DiscoveryDataApiService;
 import org.wso2.carbon.identity.rest.api.user.push.v1.core.PushDeviceManagementService;
-
-import javax.ws.rs.core.Response;
 import org.wso2.carbon.identity.rest.api.user.push.v1.factories.PushDeviceManagementServiceFactory;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.DiscoveryDataDTO;
+
+import javax.ws.rs.core.Response;
 
 /**
  * Implementation class of Push device Handler User APIs.
