@@ -511,6 +511,7 @@
         <mavan.findbugsplugin.exclude.file>findbugs-exclude-filter.xml</mavan.findbugsplugin.exclude.file>
         <config.mapper.version>1.0.13</config.mapper.version>
         <identity.organization.management.version>1.4.48</identity.organization.management.version>
+        <openapi-generator-maven-plugin.version>4.1.2</openapi-generator-maven-plugin.version>
     </properties>
 
     <modules>

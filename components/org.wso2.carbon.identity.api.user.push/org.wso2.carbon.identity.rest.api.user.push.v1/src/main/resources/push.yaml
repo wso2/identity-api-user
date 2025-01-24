@@ -6,7 +6,6 @@ info:
   contact:
     name: WSO2
     url: 'http://wso2.com/products/identity-server/'
-    email: iam-dev@wso2.org
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
@@ -15,13 +14,11 @@ servers:
     variables:
       tenant-domain:
         default: petstore
-
 tags:
   - name: me
     description: Operations for the authenticated user.
-  - name: mobile
+  - name: device
     description: Operations initiated through user's device.
-
 paths:
   /discovery-data:
     get:
@@ -47,15 +44,13 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/ServerError'
-        '501':
-          $ref: '#/components/responses/NotImplemented'
   /devices:
     post:
       tags:
-        - mobile
+        - device
       description: |
-        This API is used to register a push notification device into the Identity Server. This API will be invoked from the mobile device.
-      summary: Register mobile devices to receive push notifications.
+        This API is used to register a push notification device into the Identity Server. This API will be invoked from the device.
+      summary: Register devices to receive push notifications.
       operationId: registerDevice
       requestBody:
         description: Request body sent by a device for registration.
@@ -75,8 +70,6 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/ServerError'
-        '501':
-          $ref: '#/components/responses/NotImplemented'
     get:
       tags:
         - me
@@ -99,15 +92,13 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/ServerError'
-        '501':
-          $ref: '#/components/responses/NotImplemented'
   /devices/{deviceId}:
     get:
       tags:
         - me
       description: |
         This API is used to get a specific registered device
-      summary: Get mobile device details by device ID.
+      summary: Get device details by device ID.
       operationId: getDeviceById
       parameters:
         - name: deviceId
@@ -131,8 +122,6 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/ServerError'
-        '501':
-          $ref: '#/components/responses/NotImplemented'
     delete:
       tags:
         - me
@@ -158,15 +147,13 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/ServerError'
-        '501':
-          $ref: '#/components/responses/NotImplemented'
   /devices/{deviceId}/remove:
     post:
       tags:
-        - mobile
+        - device
       description: |
-        This API is used to remove a registered device through mobile device.
-      summary: Remove a registered device from the mobile device.
+        This API is used to remove a registered device through device.
+      summary: Remove a registered device from the device.
       operationId: removeDeviceFromMobile
       parameters:
         - name: deviceId
@@ -193,10 +180,6 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/ServerError'
-        '501':
-          $ref: '#/components/responses/NotImplemented'
-
-
 components:
   schemas:
     DiscoveryDataDTO:
@@ -231,10 +214,9 @@ components:
           description: Challenge
           type: string
           example: b03f90c9-6723-48f6-863b-a35f1ac77f57
-
     RegistrationRequestDTO:
       type: object
-      description: The registration request body sent from the mobile device
+      description: The registration request body sent from the device
       properties:
         deviceId:
           type: string
@@ -260,7 +242,6 @@ components:
           type: string
           description: Signature string comprising of the pushId and the challenge
           example: 'rT/VxgPYMioT6wHajYg0mJpBv46HvFBm/elZ/VL4ClUIFfX7i3Ou5ER5sEiFtehaurLXPNsA8hF4SQAueVBRymEAmchhwYlT160g3wv6kDQvWLkTqnLWGfn++wg5xRManOoN9zG9GhxCgRr9y+lk9rtvydfX0lTcdEZBkynSJnM='
-
     RegistrationResponseDTO:
       type: object
       description: The registration response sent after successful device registration.
@@ -269,7 +250,6 @@ components:
           type: string
           description: Unique UUID for the device.
           example: b03f90c9-6723-48f6-863b-a35f1ac77f57
-
     DeviceDTO:
       type: object
       description: Model for the registered device object
@@ -286,15 +266,13 @@ components:
         provider:
           type: string
           example: fcm
-
     DeviceDTOList:
       type: array
       items:
         $ref: '#/components/schemas/DeviceDTO'
-
     RemoveRequestDTO:
       type: object
-      description: Remove device request body sent from the mobile device
+      description: Remove device request body sent from the device
       required:
         - token
       properties:
@@ -302,7 +280,6 @@ components:
           type: string
           description: JWT containing the remove device information signed with a unique private key
           example: 'signedDeviceToken'
-
     Error:
       type: object
       required:
@@ -325,7 +302,6 @@ components:
           type: string
           example: e0fbcfeb-3617-43c4-8dd0-7b7d38e13047
           description: An error trace identifier.
-
   #--------------------------------------------------------
   # Descriptions of error responses.
   #--------------------------------------------------------

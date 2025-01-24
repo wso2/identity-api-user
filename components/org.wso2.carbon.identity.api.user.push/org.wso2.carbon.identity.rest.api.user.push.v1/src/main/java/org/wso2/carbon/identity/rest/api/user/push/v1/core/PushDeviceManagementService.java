@@ -18,15 +18,16 @@
 
 package org.wso2.carbon.identity.rest.api.user.push.v1.core;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.ContextLoader;
+import org.wso2.carbon.identity.api.user.common.error.APIError;
+import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.notification.push.device.handler.DeviceHandlerService;
+import org.wso2.carbon.identity.notification.push.device.handler.exception.PushDeviceHandlerClientException;
 import org.wso2.carbon.identity.notification.push.device.handler.exception.PushDeviceHandlerException;
 import org.wso2.carbon.identity.notification.push.device.handler.model.Device;
 import org.wso2.carbon.identity.notification.push.device.handler.model.RegistrationDiscoveryData;
@@ -38,8 +39,9 @@ import org.wso2.carbon.identity.rest.api.user.push.v1.model.RegistrationRequestD
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.core.Response;
+
 import static org.wso2.carbon.identity.notification.push.device.handler.constant.PushDeviceHandlerConstants.ErrorMessages.ERROR_CODE_DEVICE_NOT_FOUND_FOR_USER_ID;
-import static org.wso2.carbon.identity.rest.api.user.push.v1.util.Util.handlePushDeviceHandlerException;
 
 /**
  * Service class for push device management.
@@ -47,7 +49,7 @@ import static org.wso2.carbon.identity.rest.api.user.push.v1.util.Util.handlePus
 public class PushDeviceManagementService {
 
     private final DeviceHandlerService deviceHandlerService;
-    private static final Log log = LogFactory.getLog(PushDeviceManagementService.class);
+    private static final Log LOG = LogFactory.getLog(PushDeviceManagementService.class);
 
     /**
      * Constructor for PushDeviceManagementService.
@@ -64,16 +66,14 @@ public class PushDeviceManagementService {
      *
      * @return Registration discovery data.
      */
-    public String getRegistrationDiscoveryData() {
+    public DiscoveryDataDTO getRegistrationDiscoveryData() {
 
         User user = ContextLoader.getUserFromContext();
         String username = user.toFullQualifiedUsername();
         String tenantDomain = user.getTenantDomain();
         try {
             RegistrationDiscoveryData data = deviceHandlerService.getRegistrationDiscoveryData(username, tenantDomain);
-            DiscoveryDataDTO discoveryDataDTO = buildDiscoveryDataDTO(data);
-            Gson gson = new GsonBuilder().create();
-            return gson.toJson(discoveryDataDTO);
+            return buildDiscoveryDataDTO(data);
         } catch (PushDeviceHandlerException e) {
             throw handlePushDeviceHandlerException(e);
         }
@@ -110,6 +110,7 @@ public class PushDeviceManagementService {
             Device device = deviceHandlerService.getDeviceByUserId(userId, tenantDomain);
             deviceDTOList.add(buildDeviceDTO(device));
         } catch (PushDeviceHandlerException e) {
+            // If no device registered for the userId, the below-mentioned error is thrown.
             if (!ERROR_CODE_DEVICE_NOT_FOUND_FOR_USER_ID.getCode().equals(e.getErrorCode())) {
                 throw handlePushDeviceHandlerException(e);
             }
@@ -215,5 +216,32 @@ public class PushDeviceManagementService {
         request.setPublicKey(dto.getPublicKey());
         request.setSignature(dto.getSignature());
         return request;
+    }
+
+    /**
+     * Handle push device handler exception.
+     *
+     * @param e PushDeviceHandlerException.
+     * @return APIError.
+     */
+    private static APIError handlePushDeviceHandlerException(PushDeviceHandlerException e) {
+
+        if (e instanceof PushDeviceHandlerClientException) {
+            ErrorResponse errorResponse = getErrorBuilder(e).build(LOG, e.getMessage());
+            return new APIError(Response.Status.BAD_REQUEST, errorResponse);
+        }
+        ErrorResponse errorResponse = getErrorBuilder(e).build(LOG, e, e.getMessage());
+        return new APIError(Response.Status.INTERNAL_SERVER_ERROR, errorResponse);
+    }
+
+    /**
+     * Get error builder.
+     *
+     * @param e PushDeviceHandlerException.
+     * @return ErrorResponse.Builder.
+     */
+    private static ErrorResponse.Builder getErrorBuilder(PushDeviceHandlerException e) {
+
+        return new ErrorResponse.Builder().withCode(e.getErrorCode()).withMessage(e.getMessage());
     }
 }
