@@ -31,7 +31,7 @@ public class MeApiServiceFactory {
     /**
      * Get MeApiService service.
      *
-     * @return MeApiService
+     * @return MeApiService.
      */
     public static MeApiService getMeApi() {
 
