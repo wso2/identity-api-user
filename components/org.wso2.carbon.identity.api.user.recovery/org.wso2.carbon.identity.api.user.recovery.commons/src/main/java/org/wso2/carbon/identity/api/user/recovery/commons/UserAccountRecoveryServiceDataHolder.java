@@ -18,6 +18,8 @@
 
 package org.wso2.carbon.identity.api.user.recovery.commons;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.recovery.internal.service.impl.password.PasswordRecoveryManagerImpl;
 import org.wso2.carbon.identity.recovery.services.password.PasswordRecoveryManager;
@@ -31,6 +33,8 @@ import java.util.stream.Collectors;
  */
 public class UserAccountRecoveryServiceDataHolder {
 
+    private static final Log LOG = LogFactory.getLog(UserAccountRecoveryServiceDataHolder.class);
+
     private UserAccountRecoveryServiceDataHolder() {
 
     }
@@ -43,9 +47,18 @@ public class UserAccountRecoveryServiceDataHolder {
 
     private static class PasswordRecoveryManagerHolder {
 
-        static final List<PasswordRecoveryManager> SERVICES = PrivilegedCarbonContext.getThreadLocalCarbonContext()
+        static final List<PasswordRecoveryManager> SERVICES = resolvePasswordRecoveryManagers();
+    }
+
+    private static List<PasswordRecoveryManager> resolvePasswordRecoveryManagers() {
+
+        List<PasswordRecoveryManager> passwordRecoveryManagers = PrivilegedCarbonContext.getThreadLocalCarbonContext()
                 .getOSGiServices(PasswordRecoveryManager.class, null).stream()
                 .map(PasswordRecoveryManager.class::cast).collect(Collectors.toList());
+        if (passwordRecoveryManagers.isEmpty()) {
+            LOG.debug("No PasswordRecoveryManager implementation is available.");
+        }
+        return passwordRecoveryManagers;
     }
 
     /**
