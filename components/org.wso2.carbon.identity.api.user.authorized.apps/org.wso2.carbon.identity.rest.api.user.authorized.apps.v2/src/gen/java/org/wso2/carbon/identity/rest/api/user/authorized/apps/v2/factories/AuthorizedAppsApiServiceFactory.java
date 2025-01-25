@@ -31,7 +31,7 @@ public class AuthorizedAppsApiServiceFactory {
    /**
     * Get AuthorizedAppsApiService.
     *
-    * @return AuthorizedAppsApiService
+    * @return AuthorizedAppsApiService.
     */
    public static AuthorizedAppsApiService getAuthorizedAppsApi() {
 
