@@ -29,7 +29,7 @@ public class AuthorizedAppsApiServiceFactory {
    private final static AuthorizedAppsApiService SERVICE = new AuthorizedAppsApiServiceImpl();
 
    /**
-    * Get AuthorizedAppsApiService
+    * Get AuthorizedAppsApiService.
     *
     * @return AuthorizedAppsApiService
     */
