@@ -30,6 +30,7 @@ import org.wso2.carbon.identity.rest.api.user.association.v1.dto.FederatedAssoci
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.FederatedAssociationRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.IdpDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.UserDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.util.UserAssociationServiceHolder;
 import org.wso2.carbon.identity.user.account.association.UserAccountConnector;
 import org.wso2.carbon.identity.user.account.association.dto.UserAccountAssociationDTO;
 import org.wso2.carbon.identity.user.account.association.exception.UserAccountAssociationClientException;

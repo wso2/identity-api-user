@@ -20,6 +20,7 @@ package org.wso2.carbon.identity.rest.api.user.association.v1;
 
 import io.swagger.annotations.ApiParam;
 
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.FederatedAssociationRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.UserDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.FederatedAssociationDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.factories.UserIdApiServiceFactory;
