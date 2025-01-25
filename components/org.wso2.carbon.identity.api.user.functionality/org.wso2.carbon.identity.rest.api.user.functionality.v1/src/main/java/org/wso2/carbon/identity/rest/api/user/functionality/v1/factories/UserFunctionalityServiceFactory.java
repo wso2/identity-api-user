@@ -41,7 +41,6 @@ public class UserFunctionalityServiceFactory {
 
         UserFunctionalityManager userFunctionalityManager = getUserFunctionalityManager();
         RealmService realmService = getRealmService();
-
         return new UserFunctionalityService(userFunctionalityManager, realmService);
     }
 
