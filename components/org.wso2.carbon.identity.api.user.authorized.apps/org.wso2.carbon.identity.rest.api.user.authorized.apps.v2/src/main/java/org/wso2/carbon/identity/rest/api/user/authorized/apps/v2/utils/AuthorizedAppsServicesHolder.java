@@ -54,6 +54,7 @@ public class AuthorizedAppsServicesHolder {
     private static class RealmServiceHolder {
 
         static final RealmService SERVICE;
+        
         static {
             SERVICE = (RealmService) PrivilegedCarbonContext.getThreadLocalCarbonContext()
                     .getOSGiService(RealmService.class, null);
