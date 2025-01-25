@@ -18,15 +18,14 @@
 
 package org.wso2.carbon.identity.rest.api.user.organization.v1;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import java.io.InputStream;
 import java.util.List;
 
+import org.wso2.carbon.identity.rest.api.user.organization.v1.factories.MeApiServiceFactory;
 import org.wso2.carbon.identity.rest.api.user.organization.v1.model.Error;
 import org.wso2.carbon.identity.rest.api.user.organization.v1.model.OrganizationsResponse;
-import org.wso2.carbon.identity.rest.api.user.organization.v1.MeApiService;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -40,8 +39,12 @@ import javax.validation.constraints.*;
 
 public class MeApi  {
 
-    @Autowired
-    private MeApiService delegate;
+    private final MeApiService delegate;
+
+    public MeApi () {
+
+        this.delegate = MeApiServiceFactory.getMeApi();
+    }
 
     @Valid
     @GET

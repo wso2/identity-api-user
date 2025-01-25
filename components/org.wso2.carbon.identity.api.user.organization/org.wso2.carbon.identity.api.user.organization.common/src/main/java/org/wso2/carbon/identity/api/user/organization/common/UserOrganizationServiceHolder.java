@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.api.user.organization.common;
 
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.application.mgt.ApplicationManagementService;
 import org.wso2.carbon.identity.organization.management.service.OrganizationManager;
 import org.wso2.carbon.identity.organization.management.service.OrganizationUserResidentResolverService;
@@ -27,10 +28,27 @@ import org.wso2.carbon.identity.organization.management.service.OrganizationUser
  */
 public class UserOrganizationServiceHolder {
 
-    private static OrganizationUserResidentResolverService organizationUserResidentResolverService;
+    private UserOrganizationServiceHolder () {}
 
-    private static OrganizationManager organizationManagementService;
-    private static ApplicationManagementService applicationManagementService;
+    private static class OrganizationUserResidentResolverServiceHolder {
+
+        static final OrganizationUserResidentResolverService SERVICE = (OrganizationUserResidentResolverService)
+                PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                        .getOSGiService(OrganizationUserResidentResolverService.class, null);
+    }
+
+    private static class OrganizationManagementServiceHolder {
+
+        static final OrganizationManager SERVICE = (OrganizationManager) PrivilegedCarbonContext
+                .getThreadLocalCarbonContext().getOSGiService(OrganizationManager.class, null);
+    }
+
+    private static class ApplicationManagementServiceHolder {
+
+        static final ApplicationManagementService SERVICE = (ApplicationManagementService)
+                PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                        .getOSGiService(ApplicationManagementService.class, null);
+    }
 
     /**
      * Method to get the organization user resident resolver OSGi service.
@@ -39,18 +57,7 @@ public class UserOrganizationServiceHolder {
      */
     public static OrganizationUserResidentResolverService getOrganizationUserResidentResolverService() {
 
-        return organizationUserResidentResolverService;
-    }
-
-    /**
-     * Set OrganizationUserResidentResolverService OSGi service.
-     *
-     * @param organizationUserResidentResolverService OrganizationUserResidentResolverService.
-     */
-    public static void setOrganizationUserResidentResolverService(
-            OrganizationUserResidentResolverService organizationUserResidentResolverService) {
-
-        UserOrganizationServiceHolder.organizationUserResidentResolverService = organizationUserResidentResolverService;
+        return OrganizationUserResidentResolverServiceHolder.SERVICE;
     }
 
     /**
@@ -60,18 +67,7 @@ public class UserOrganizationServiceHolder {
      */
     public static OrganizationManager getOrganizationManagementService() {
 
-        return organizationManagementService;
-    }
-
-    /**
-     * Set Organization management OSGi service.
-     *
-     * @param organizationManagementService Organization management service.
-     */
-    public static void setOrganizationManagementService(
-            OrganizationManager organizationManagementService) {
-
-        UserOrganizationServiceHolder.organizationManagementService = organizationManagementService;
+        return OrganizationManagementServiceHolder.SERVICE;
     }
 
     /**
@@ -81,17 +77,7 @@ public class UserOrganizationServiceHolder {
      */
     public static ApplicationManagementService getApplicationManagementService() {
 
-        return applicationManagementService;
+        return ApplicationManagementServiceHolder.SERVICE;
     }
 
-    /**
-     * Set application management OSGi service.
-     *
-     * @param applicationManagementService Application management service.
-     */
-    public static void setApplicationManagementService(
-            ApplicationManagementService applicationManagementService) {
-
-        UserOrganizationServiceHolder.applicationManagementService = applicationManagementService;
-    }
 }
