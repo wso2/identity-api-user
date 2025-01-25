@@ -21,12 +21,20 @@ package org.wso2.carbon.identity.rest.api.user.idv.v1.factories;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.DefaultApiService;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.impl.DefaultApiServiceImpl;
 
+/**
+ * Factory class for DefaultApiService.
+ */
 public class DefaultApiServiceFactory {
 
-   private final static DefaultApiService service = new DefaultApiServiceImpl();
+    private static final DefaultApiService SERVICE = new DefaultApiServiceImpl();
 
-   public static DefaultApiService getDefaultApi()
-   {
-      return service;
-   }
+    /**
+     * Get DefaultApiService.
+     *
+     * @return DefaultApiService.
+     */
+    public static DefaultApiService getDefaultApi() {
+
+        return SERVICE;
+    }
 }

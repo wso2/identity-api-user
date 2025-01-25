@@ -18,12 +18,12 @@
 
 package org.wso2.carbon.identity.rest.api.user.idv.v1;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import java.io.InputStream;
 import java.util.List;
 
+import org.wso2.carbon.identity.rest.api.user.idv.v1.factories.DefaultApiServiceFactory;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.Error;
 import java.util.List;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerificationClaimRequest;
@@ -31,7 +31,6 @@ import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerificationClaimResp
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerificationClaimUpdateRequest;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerificationPostResponse;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.VerifyRequest;
-import org.wso2.carbon.identity.rest.api.user.idv.v1.DefaultApiService;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -45,8 +44,12 @@ import javax.validation.constraints.*;
 
 public class DefaultApi  {
 
-    @Autowired
-    private DefaultApiService delegate;
+    private final DefaultApiService delegate;
+
+    public DefaultApi() {
+
+        this.delegate = DefaultApiServiceFactory.getDefaultApi();
+    }
 
     @Valid
     @POST
