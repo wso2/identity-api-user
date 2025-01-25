@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2020-2025, WSO2 LLC. (http://www.wso2.com).
  *
- * WSO2 Inc. licenses this file to you under the Apache License,
+ * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,9 +18,9 @@
 
 package org.wso2.carbon.identity.rest.api.user.functionality.v1.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.functionality.v1.UserIdApiService;
 import org.wso2.carbon.identity.rest.api.user.functionality.v1.core.UserFunctionalityService;
+import org.wso2.carbon.identity.rest.api.user.functionality.v1.factories.UserFunctionalityServiceFactory;
 import org.wso2.carbon.identity.rest.api.user.functionality.v1.model.StatusChangeRequest;
 
 import javax.ws.rs.core.Response;
@@ -30,8 +30,17 @@ import javax.ws.rs.core.Response;
  */
 public class UserIdApiServiceImpl implements UserIdApiService {
 
-    @Autowired
-    private UserFunctionalityService userFunctionalityService;
+    private final UserFunctionalityService userFunctionalityService;
+
+    public UserIdApiServiceImpl() {
+
+        try {
+            this.userFunctionalityService = UserFunctionalityServiceFactory.getUserFunctionalityService();
+        } catch (IllegalStateException e) {
+            throw new RuntimeException("Error occurred while initiating required services for " +
+                    "UserFunctionalityService.", e);
+        }
+    }
 
     @Override
     public Response changeStatus(String functionId, String userId, StatusChangeRequest statusChangeRequest) {

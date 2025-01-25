@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2020-2025, WSO2 LLC. (http://www.wso2.com).
  *
- * WSO2 Inc. licenses this file to you under the Apache License,
+ * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,7 +26,6 @@ import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.api.user.common.function.UserToUniqueId;
 import org.wso2.carbon.identity.api.user.functionality.common.Constants;
-import org.wso2.carbon.identity.api.user.functionality.common.UserFunctionalityServiceHolder;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.rest.api.user.functionality.v1.model.LockStatusResponse;
 import org.wso2.carbon.identity.rest.api.user.functionality.v1.model.StatusChangeRequest;
@@ -36,6 +35,7 @@ import org.wso2.carbon.identity.user.functionality.mgt.UserFunctionalityMgtConst
 import org.wso2.carbon.identity.user.functionality.mgt.exception.UserFunctionalityManagementClientException;
 import org.wso2.carbon.identity.user.functionality.mgt.exception.UserFunctionalityManagementException;
 import org.wso2.carbon.identity.user.functionality.mgt.model.FunctionalityLockStatus;
+import org.wso2.carbon.user.core.service.RealmService;
 
 import javax.ws.rs.core.Response;
 
@@ -48,7 +48,16 @@ import static org.wso2.carbon.identity.api.user.common.ContextLoader.getUserFrom
  */
 public class UserFunctionalityService {
 
+    private final UserFunctionalityManager userFunctionalityManager;
+    private final RealmService realmService;
+
     private static final Log log = LogFactory.getLog(UserFunctionalityService.class);
+
+    public UserFunctionalityService(UserFunctionalityManager userFunctionalityManager, RealmService realmService) {
+
+        this.userFunctionalityManager = userFunctionalityManager;
+        this.realmService = realmService;
+    }
 
     /**
      * Lock or Unlock a functionality of a user by a privileged user.
@@ -91,8 +100,6 @@ public class UserFunctionalityService {
             if (statusChangeRequest.getTimeToLock() != null) {
                 unlockTime = Long.parseLong(statusChangeRequest.getTimeToLock());
             }
-            UserFunctionalityManager userFunctionalityManager =
-                    UserFunctionalityServiceHolder.getuserFunctionalityManager();
             userFunctionalityManager.lock(userId,
                     tenantId, functionalityIdentifier, unlockTime,
                     statusChangeRequest.getFunctionalityLockReasonCode(),
@@ -119,8 +126,6 @@ public class UserFunctionalityService {
 
         try {
             int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
-            UserFunctionalityManager userFunctionalityManager =
-                    UserFunctionalityServiceHolder.getuserFunctionalityManager();
             userFunctionalityManager.unlock(userId,
                     tenantId, functionalityIdentifier);
             userFunctionalityManager.deleteAllPropertiesForUser(userId, tenantId, functionalityIdentifier);
@@ -147,9 +152,8 @@ public class UserFunctionalityService {
         try {
             LockStatusResponse lockStatusResponse;
             int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
-            FunctionalityLockStatus functionalityLockStatus =
-                    UserFunctionalityServiceHolder.getuserFunctionalityManager().getLockStatus(userId,
-                            tenantId, functionalityIdentifier);
+            FunctionalityLockStatus functionalityLockStatus = userFunctionalityManager.getLockStatus(userId,
+                    tenantId, functionalityIdentifier);
             lockStatusResponse = new FunctionalityLockStatusToExternal().apply(functionalityLockStatus);
             return lockStatusResponse;
         } catch (UserFunctionalityManagementException e) {
@@ -195,8 +199,6 @@ public class UserFunctionalityService {
 
         try {
             int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
-            UserFunctionalityManager userFunctionalityManager =
-                    UserFunctionalityServiceHolder.getuserFunctionalityManager();
 
             FunctionalityLockStatus lockStatus = userFunctionalityManager.getLockStatus(userId, tenantId,
                     functionalityIdentifier);
@@ -236,8 +238,6 @@ public class UserFunctionalityService {
             if (userStatusChangeRequest.getTimeToLock() != null) {
                 unlockTime = Long.parseLong(userStatusChangeRequest.getTimeToLock());
             }
-            UserFunctionalityManager userFunctionalityManager =
-                    UserFunctionalityServiceHolder.getuserFunctionalityManager();
             FunctionalityLockStatus status = userFunctionalityManager.getLockStatus(userId, tenantId,
                     functionalityIdentifier);
             if (status.getLockStatus() && !StringUtils.equals(status.getLockReasonCode(),
@@ -275,8 +275,6 @@ public class UserFunctionalityService {
             String userId = getUserIdFromUser(getUserFromContext());
             LockStatusResponse lockStatusResponse;
             int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
-            UserFunctionalityManager userFunctionalityManager =
-                    UserFunctionalityServiceHolder.getuserFunctionalityManager();
             FunctionalityLockStatus functionalityLockStatus = userFunctionalityManager
                     .getLockStatus(userId, tenantId, functionalityIdentifier);
             lockStatusResponse = new FunctionalityLockStatusToExternal().apply(functionalityLockStatus);
@@ -321,6 +319,6 @@ public class UserFunctionalityService {
 
     private String getUserIdFromUser(User user) {
 
-        return new UserToUniqueId().apply(UserFunctionalityServiceHolder.getRealmService(), user);
+        return new UserToUniqueId().apply(realmService, user);
     }
 }
