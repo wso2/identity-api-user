@@ -25,8 +25,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
+import org.wso2.carbon.identity.api.user.onboard.v1.factories.OfflineInviteLinkApiServiceFactory;
 import org.wso2.carbon.identity.api.user.onboard.v1.model.Error;
 import org.wso2.carbon.identity.api.user.onboard.v1.model.InvitationRequest;
 
@@ -45,8 +44,12 @@ import javax.ws.rs.core.Response;
 
 public class OfflineInviteLinkApi  {
 
-    @Autowired
-    private OfflineInviteLinkApiService delegate;
+    private final OfflineInviteLinkApiService delegate;
+
+    public OfflineInviteLinkApi() {
+
+        this.delegate = OfflineInviteLinkApiServiceFactory.getOfflineInviteLinkApi();
+    }
 
     @Valid
     @POST

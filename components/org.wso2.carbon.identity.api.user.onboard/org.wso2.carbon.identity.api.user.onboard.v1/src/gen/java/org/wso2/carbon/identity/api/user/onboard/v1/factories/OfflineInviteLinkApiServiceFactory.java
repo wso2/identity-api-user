@@ -26,9 +26,15 @@ import org.wso2.carbon.identity.api.user.onboard.v1.impl.OfflineInviteLinkApiSer
  */
 public class OfflineInviteLinkApiServiceFactory {
 
-   private static final OfflineInviteLinkApiService service = new OfflineInviteLinkApiServiceImpl();
+    private static final OfflineInviteLinkApiService SERVICE = new OfflineInviteLinkApiServiceImpl();
 
-   public static OfflineInviteLinkApiService getOfflineInviteLinkApi() {
-      return service;
-   }
+    /**
+     * Get OfflineInviteLinkApiService.
+     *
+     * @return OfflineInviteLinkApiService.
+     */
+    public static OfflineInviteLinkApiService getOfflineInviteLinkApi() {
+
+        return SERVICE;
+    }
 }
