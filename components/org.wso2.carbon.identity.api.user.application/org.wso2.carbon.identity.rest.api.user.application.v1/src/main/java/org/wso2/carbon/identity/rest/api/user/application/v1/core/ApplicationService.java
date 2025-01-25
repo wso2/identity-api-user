@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2019-2025, WSO2 LLC. (http://www.wso2.com).
  *
- * WSO2 Inc. licenses this file to you under the Apache License,
+ * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,17 +23,18 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.user.application.common.ApplicationServiceConstants;
-import org.wso2.carbon.identity.api.user.application.common.ApplicationServiceHolder;
 import org.wso2.carbon.identity.api.user.common.ContextLoader;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.application.common.IdentityApplicationManagementException;
 import org.wso2.carbon.identity.application.common.model.ApplicationBasicInfo;
+import org.wso2.carbon.identity.application.mgt.DiscoverableApplicationManager;
 import org.wso2.carbon.identity.base.IdentityException;
 import org.wso2.carbon.identity.core.model.ExpressionNode;
 import org.wso2.carbon.identity.core.model.FilterTreeBuilder;
 import org.wso2.carbon.identity.core.model.Node;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
+import org.wso2.carbon.identity.organization.management.application.OrgApplicationManager;
 import org.wso2.carbon.identity.organization.management.service.exception.OrganizationManagementException;
 import org.wso2.carbon.identity.organization.management.service.util.OrganizationManagementUtil;
 import org.wso2.carbon.identity.rest.api.user.application.v1.core.function.ApplicationBasicInfoToApiModel;
@@ -59,10 +60,20 @@ import static org.wso2.carbon.identity.api.user.application.common.ApplicationSe
  */
 public class ApplicationService {
 
+    private final OrgApplicationManager orgApplicationManager;
+    private final DiscoverableApplicationManager discoverableApplicationManager;
+
     private static final String APPLICATIONS_PAGINATION_LINK_FORMAT = "/v1/me/applications?offset=%d&limit=%d";
     private static final Log LOG = LogFactory.getLog(ApplicationService.class);
     private static final String PAGE_LINK_REL_NEXT = "next";
     private static final String PAGE_LINK_REL_PREVIOUS = "previous";
+
+    public ApplicationService (OrgApplicationManager orgApplicationManager, DiscoverableApplicationManager
+            discoverableApplicationManager) {
+
+        this.orgApplicationManager = orgApplicationManager;
+        this.discoverableApplicationManager = discoverableApplicationManager;
+    }
 
     /**
      * Get application from application ID.
@@ -75,7 +86,7 @@ public class ApplicationService {
         try {
 
             String tenantDomain = IdentityTenantUtil.resolveTenantDomain();
-            ApplicationBasicInfo applicationBasicInfo = ApplicationServiceHolder.getDiscoverableApplicationManager()
+            ApplicationBasicInfo applicationBasicInfo = discoverableApplicationManager
                     .getDiscoverableApplicationBasicInfoByResourceId(applicationId, tenantDomain);
             if (applicationBasicInfo == null) {
                 throw handleNotFoundError(applicationId, ApplicationServiceConstants.ErrorMessage
@@ -130,10 +141,10 @@ public class ApplicationService {
 
         try {
             if (OrganizationManagementUtil.isOrganization(tenantDomain)) {
-                return ApplicationServiceHolder.getOrgApplicationManager().getDiscoverableSharedApplicationBasicInfo(
+                return orgApplicationManager.getDiscoverableSharedApplicationBasicInfo(
                         limit, offset, filter, sortOrder, sortBy, tenantDomain);
             }
-            return ApplicationServiceHolder.getDiscoverableApplicationManager().getDiscoverableApplicationBasicInfo(
+            return discoverableApplicationManager.getDiscoverableApplicationBasicInfo(
                     limit, offset, filter, sortOrder, sortBy, tenantDomain);
         } catch (OrganizationManagementException e) {
             throw new IdentityApplicationManagementException(e.getMessage(), e);
@@ -145,11 +156,9 @@ public class ApplicationService {
 
         try {
             if (OrganizationManagementUtil.isOrganization(tenantDomain)) {
-                return ApplicationServiceHolder.getOrgApplicationManager()
-                        .getCountOfDiscoverableSharedApplications(filter, tenantDomain);
+                return orgApplicationManager.getCountOfDiscoverableSharedApplications(filter, tenantDomain);
             }
-            return ApplicationServiceHolder.getDiscoverableApplicationManager()
-                    .getCountOfDiscoverableApplications(filter, tenantDomain);
+            return discoverableApplicationManager.getCountOfDiscoverableApplications(filter, tenantDomain);
         } catch (OrganizationManagementException e) {
             throw new IdentityApplicationManagementException(e.getMessage(), e);
         }
