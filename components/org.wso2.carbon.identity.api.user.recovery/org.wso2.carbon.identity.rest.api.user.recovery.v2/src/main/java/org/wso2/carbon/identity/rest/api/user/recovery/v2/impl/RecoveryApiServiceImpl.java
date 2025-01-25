@@ -18,11 +18,12 @@
 
 package org.wso2.carbon.identity.rest.api.user.recovery.v2.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.RecoveryApiService;
 
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.PasswordRecoveryService;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.UsernameRecoveryService;
+import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.factories.PasswordRecoveryServiceFactory;
+import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.factories.UsernameRecoveryServiceFactory;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.ConfirmRequest;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.InitRequest;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.RecoveryRequest;
@@ -36,11 +37,19 @@ import javax.ws.rs.core.Response;
  */
 public class RecoveryApiServiceImpl implements RecoveryApiService {
 
-    @Autowired
-    private UsernameRecoveryService usernameRecoveryService;
+    private final UsernameRecoveryService usernameRecoveryService;
+    private final PasswordRecoveryService passwordRecoveryService;
 
-    @Autowired
-    private PasswordRecoveryService passwordRecoveryService;
+    public RecoveryApiServiceImpl() {
+
+        try {
+            this.usernameRecoveryService = UsernameRecoveryServiceFactory.getUsernameRecoveryService();
+            this.passwordRecoveryService = PasswordRecoveryServiceFactory.getPasswordRecoveryService();
+        } catch (IllegalStateException e) {
+            throw new RuntimeException("Error occurred while initiating required services for " +
+                    "RecoveryApiServiceImpl.", e);
+        }
+    }
 
     @Override
     public Response confirmRecovery(ConfirmRequest confirmRequest) {

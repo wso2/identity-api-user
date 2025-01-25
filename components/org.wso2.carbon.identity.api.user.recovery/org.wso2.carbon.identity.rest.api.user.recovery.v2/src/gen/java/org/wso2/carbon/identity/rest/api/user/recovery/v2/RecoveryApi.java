@@ -18,12 +18,12 @@
 
 package org.wso2.carbon.identity.rest.api.user.recovery.v2;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import java.io.InputStream;
 import java.util.List;
 
+import org.wso2.carbon.identity.rest.api.user.recovery.v2.factories.RecoveryApiServiceFactory;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.AccountRecoveryType;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.ConfirmRequest;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.ErrorResponse;
@@ -39,7 +39,6 @@ import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.ResetCodeRespons
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.ResetRequest;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.RetryErrorResponse;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.UsernameRecoveryNotifyResponse;
-import org.wso2.carbon.identity.rest.api.user.recovery.v2.RecoveryApiService;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -53,8 +52,12 @@ import javax.validation.constraints.*;
 
 public class RecoveryApi  {
 
-    @Autowired
-    private RecoveryApiService delegate;
+    private final RecoveryApiService delegate;
+
+    public RecoveryApi() {
+
+        this.delegate = RecoveryApiServiceFactory.getRecoveryApi();
+    }
 
     @Valid
     @POST

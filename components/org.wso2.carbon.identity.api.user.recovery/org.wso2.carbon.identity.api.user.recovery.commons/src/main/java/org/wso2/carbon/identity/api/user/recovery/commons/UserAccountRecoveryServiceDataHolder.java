@@ -18,54 +18,60 @@
 
 package org.wso2.carbon.identity.api.user.recovery.commons;
 
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.recovery.internal.service.impl.password.PasswordRecoveryManagerImpl;
 import org.wso2.carbon.identity.recovery.services.password.PasswordRecoveryManager;
 import org.wso2.carbon.identity.recovery.services.username.UsernameRecoveryManager;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service holder class for user account recovery.
  */
 public class UserAccountRecoveryServiceDataHolder {
 
-    private static UsernameRecoveryManager usernameRecoveryManager;
-    private static List<PasswordRecoveryManager> passwordRecoveryManager;
+    private UserAccountRecoveryServiceDataHolder() {
+
+    }
+
+    private static class UsernameRecoveryManagerHolder {
+
+        static final UsernameRecoveryManager SERVICE = (UsernameRecoveryManager) PrivilegedCarbonContext
+                .getThreadLocalCarbonContext().getOSGiService(UsernameRecoveryManager.class, null);
+    }
+
+    private static class PasswordRecoveryManagerHolder {
+
+        static final List<PasswordRecoveryManager> SERVICES = PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                .getOSGiServices(PasswordRecoveryManager.class, null).stream()
+                .map(PasswordRecoveryManager.class::cast).collect(Collectors.toList());
+    }
 
     /**
      * Get UsernameRecoveryManager instance.
      *
-     * @return UsernameRecoveryManager
+     * @return UsernameRecoveryManager.
      */
     public static UsernameRecoveryManager getUsernameRecoveryManager() {
 
-        return UserAccountRecoveryServiceDataHolder.usernameRecoveryManager;
-    }
-
-    /**
-     * Set UsernameRecoveryManager instance.
-     *
-     * @param usernameRecoveryManager UsernameRecoveryManager
-     */
-    public static void setUsernameRecoveryManager(UsernameRecoveryManager usernameRecoveryManager) {
-
-        UserAccountRecoveryServiceDataHolder.usernameRecoveryManager = usernameRecoveryManager;
+        return UsernameRecoveryManagerHolder.SERVICE;
     }
 
     /**
      * Get PasswordRecoveryManager instance.
      *
-     * @return PasswordRecoveryManager
+     * @return PasswordRecoveryManager.
      */
     public static PasswordRecoveryManager getPasswordRecoveryManager() {
 
         // Return the default notification based passwordRecoveryManager.
-        for (PasswordRecoveryManager manager : passwordRecoveryManager) {
+        for (PasswordRecoveryManager manager : PasswordRecoveryManagerHolder.SERVICES) {
             if (manager instanceof PasswordRecoveryManagerImpl) {
                 return manager;
             }
         }
-        return UserAccountRecoveryServiceDataHolder.passwordRecoveryManager.get(0);
+        return PasswordRecoveryManagerHolder.SERVICES.get(0);
     }
 
     /**
@@ -75,17 +81,6 @@ public class UserAccountRecoveryServiceDataHolder {
      */
     public static List<PasswordRecoveryManager> getPasswordRecoveryManagers() {
 
-        return UserAccountRecoveryServiceDataHolder.passwordRecoveryManager;
-    }
-
-    /**
-     * Get PasswordRecoveryManager instance.
-     *
-     * @param passwordRecoveryManager PasswordRecoveryManager
-     */
-    public static void setPasswordRecoveryManager(
-            List<PasswordRecoveryManager> passwordRecoveryManager) {
-
-        UserAccountRecoveryServiceDataHolder.passwordRecoveryManager = passwordRecoveryManager;
+        return PasswordRecoveryManagerHolder.SERVICES;
     }
 }

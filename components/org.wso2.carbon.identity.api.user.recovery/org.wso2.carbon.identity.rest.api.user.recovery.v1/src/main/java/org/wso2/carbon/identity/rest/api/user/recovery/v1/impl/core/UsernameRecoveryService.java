@@ -1,18 +1,21 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2020-2025, WSO2 LLC. (http://www.wso2.com).
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * WSO2 LLC. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
  * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 package org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core;
 
 import org.apache.commons.lang.StringUtils;
@@ -21,7 +24,6 @@ import org.apache.commons.logging.LogFactory;
 
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.Util;
-import org.wso2.carbon.identity.api.user.recovery.commons.UserAccountRecoveryServiceDataHolder;
 import org.wso2.carbon.identity.governance.service.notification.NotificationChannels;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryClientException;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryConstants;
@@ -30,6 +32,7 @@ import org.wso2.carbon.identity.recovery.dto.RecoveryChannelInfoDTO;
 import org.wso2.carbon.identity.recovery.dto.RecoveryInformationDTO;
 import org.wso2.carbon.identity.recovery.dto.UsernameRecoverDTO;
 
+import org.wso2.carbon.identity.recovery.services.username.UsernameRecoveryManager;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core.utils.RecoveryUtil;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.APICall;
 import org.wso2.carbon.identity.rest.api.user.recovery.v1.model.AccountRecoveryType;
@@ -49,7 +52,14 @@ import javax.ws.rs.core.Response;
  */
 public class UsernameRecoveryService {
 
+    private final UsernameRecoveryManager usernameRecoveryManager;
+
     private static final Log log = LogFactory.getLog(UsernameRecoveryService.class);
+
+    public UsernameRecoveryService(UsernameRecoveryManager usernameRecoveryManager) {
+
+        this.usernameRecoveryManager = usernameRecoveryManager;
+    }
 
     /**
      * Initiate userName recovery from POST.
@@ -64,9 +74,8 @@ public class UsernameRecoveryService {
         Map<String, String> userClaims = RecoveryUtil.buildUserClaimsMap(initRequest.getClaims());
         try {
             // Get username recovery notification information.
-            RecoveryInformationDTO recoveryInformationDTO =
-                    UserAccountRecoveryServiceDataHolder.getUsernameRecoveryManager().initiate(userClaims, tenantDomain,
-                            RecoveryUtil.buildPropertiesMap(initRequest.getProperties()));
+            RecoveryInformationDTO recoveryInformationDTO = usernameRecoveryManager.initiate(userClaims, tenantDomain,
+                    RecoveryUtil.buildPropertiesMap(initRequest.getProperties()));
             if (recoveryInformationDTO == null) {
                 // If RecoveryChannelInfoDTO is null throw not found error.
                 if (log.isDebugEnabled()) {
@@ -100,9 +109,8 @@ public class UsernameRecoveryService {
         String recoveryId = recoveryRequest.getRecoveryCode();
         String channelId = recoveryRequest.getChannelId();
         try {
-            UsernameRecoverDTO usernameRecoverDTO = UserAccountRecoveryServiceDataHolder.getUsernameRecoveryManager().
-                    notify(recoveryId, channelId, tenantDomain,
-                            RecoveryUtil.buildPropertiesMap(recoveryRequest.getProperties()));
+            UsernameRecoverDTO usernameRecoverDTO = usernameRecoveryManager.notify(recoveryId, channelId, tenantDomain,
+                    RecoveryUtil.buildPropertiesMap(recoveryRequest.getProperties()));
             if (usernameRecoverDTO == null) {
                 if (log.isDebugEnabled()) {
                     String message = String.format("No recovery data object for recovery code : %s", recoveryId);
