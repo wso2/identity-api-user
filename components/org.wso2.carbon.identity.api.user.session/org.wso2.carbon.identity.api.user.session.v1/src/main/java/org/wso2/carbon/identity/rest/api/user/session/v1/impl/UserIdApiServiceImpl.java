@@ -51,7 +51,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
 
         try {
             sessionManagementService = SessionManagementServiceFactory.getSessionManagementService();
-        } catch (Exception e) {
+        } catch (IllegalStateException e) {
             throw new RuntimeException("Error occurred while initiating SessionManagementService.", e);
         }
     }
