@@ -59,7 +59,6 @@ public class IdentityVerificationServiceFactory {
         if (service == null) {
             throw new IllegalStateException("IdentityVerificationManager is not available from OSGi context.");
         }
-
         return service;
     }
 }
