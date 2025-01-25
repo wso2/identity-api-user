@@ -32,6 +32,7 @@ public class MeApiServiceImpl implements MeApiService {
     private final ApplicationService applicationService;
 
     public MeApiServiceImpl () {
+
         try {
             this.applicationService = ApplicationServiceFactory.getApplicationService();
         } catch (IllegalStateException e) {

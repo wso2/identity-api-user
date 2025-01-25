@@ -31,16 +31,14 @@ public class ApplicationServiceHolder {
 
     private static class OrgApplicationManagerServiceHolder {
 
-        static final OrgApplicationManager SERVICE = (OrgApplicationManager)
-                PrivilegedCarbonContext.getThreadLocalCarbonContext()
-                        .getOSGiService(OrgApplicationManager.class, null);
+        static final OrgApplicationManager SERVICE = (OrgApplicationManager) PrivilegedCarbonContext
+                .getThreadLocalCarbonContext().getOSGiService(OrgApplicationManager.class, null);
     }
 
     private static class DiscoverableApplicationManagerServiceHolder {
 
-        static final DiscoverableApplicationManager SERVICE = (DiscoverableApplicationManager)
-                PrivilegedCarbonContext.getThreadLocalCarbonContext()
-                        .getOSGiService(DiscoverableApplicationManager.class, null);
+        static final DiscoverableApplicationManager SERVICE = (DiscoverableApplicationManager) PrivilegedCarbonContext
+                .getThreadLocalCarbonContext().getOSGiService(DiscoverableApplicationManager.class, null);
     }
 
     /**
