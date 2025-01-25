@@ -39,7 +39,6 @@ public class IdentityVerificationServiceFactory {
     private static IdentityVerificationService createServiceInstance() {
 
         IdentityVerificationManager identityVerificationManager = getIdentityVerificationManager();
-
         return new IdentityVerificationService(identityVerificationManager);
     }
 
