@@ -70,7 +70,7 @@ public class DevicesApiServiceImpl implements DevicesApiService {
     public Response registerDevice(RegistrationRequestDTO registrationRequestDTO) {
 
         pushDeviceManagementService.registerDevice(registrationRequestDTO);
-        return Response.created(null).build();
+        return Response.status(Response.Status.CREATED).build();
     }
 
     @Override
