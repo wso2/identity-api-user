@@ -20,8 +20,8 @@ package org.wso2.carbon.identity.api.user.onboard.v1.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.api.user.onboard.v1.OfflineInviteLinkApiService;
+import org.wso2.carbon.identity.api.user.onboard.v1.factories.OfflineInviteLinkServiceFactory;
 import org.wso2.carbon.identity.api.user.onboard.v1.model.InvitationRequest;
 import org.wso2.carbon.identity.api.user.onboard.v1.service.OfflineInviteLinkService;
 
@@ -35,14 +35,16 @@ import javax.ws.rs.core.Response;
 public class OfflineInviteLinkApiServiceImpl implements OfflineInviteLinkApiService {
 
     private static final Log LOG = LogFactory.getLog(OfflineInviteLinkApiServiceImpl.class);
-    @Autowired
-    private OfflineInviteLinkService offlineInviteLinkService;
+    private final OfflineInviteLinkService offlineInviteLinkService;
 
-    /**
-     * Creates UsersApiServiceImpl.
-     */
     public OfflineInviteLinkApiServiceImpl() {
-        super();
+
+        try {
+            this.offlineInviteLinkService = OfflineInviteLinkServiceFactory.getOfflineInviteLinkService();
+        } catch (IllegalStateException e) {
+            throw new RuntimeException("Error occurred while initiating required services for " +
+                    "OfflineInviteLinkService.", e);
+        }
     }
 
     @Override
