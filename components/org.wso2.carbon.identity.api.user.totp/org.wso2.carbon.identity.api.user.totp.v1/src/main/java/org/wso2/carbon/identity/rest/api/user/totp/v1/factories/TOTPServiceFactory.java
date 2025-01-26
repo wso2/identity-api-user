@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2025, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -18,23 +18,23 @@
 
 package org.wso2.carbon.identity.rest.api.user.totp.v1.factories;
 
-import org.wso2.carbon.identity.rest.api.user.totp.v1.MeApiService;
-import org.wso2.carbon.identity.rest.api.user.totp.v1.impl.MeApiServiceImpl;
+import org.wso2.carbon.identity.rest.api.user.totp.v1.core.TOTPService;
 
 /**
- * Factory class for MeApiService.
+ * Factory class for TOTPService.
  */
-public class MeApiServiceFactory {
+public class TOTPServiceFactory {
 
-    private final static MeApiService SERVICE = new MeApiServiceImpl();
+    private static final TOTPService SERVICE = new TOTPService();
 
     /**
-     * Get MeApiService.
+     * Get TOTPService.
      *
-     * @return MeApiService.
+     * @return TOTPService.
      */
-    public static MeApiService getMeApi() {
+    public static TOTPService getTOTPService() {
 
         return SERVICE;
     }
+
 }
