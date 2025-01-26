@@ -33,8 +33,15 @@ public class AuthorizedAppsServicesHolder {
 
     private static class OAuthAdminServiceImplServiceHolder {
 
-        static final OAuthAdminServiceImpl SERVICE = (OAuthAdminServiceImpl) PrivilegedCarbonContext
-                .getThreadLocalCarbonContext().getOSGiService(OAuthAdminServiceImpl.class, null);
+        static final OAuthAdminServiceImpl SERVICE;
+
+        static {
+            SERVICE = (OAuthAdminServiceImpl) PrivilegedCarbonContext
+                    .getThreadLocalCarbonContext().getOSGiService(OAuthAdminServiceImpl.class, null);
+            if (SERVICE == null) {
+                throw new IllegalStateException("OAuthAdminServiceImpl is not available from OSGi context.");
+            }
+        }
     }
 
     /**
