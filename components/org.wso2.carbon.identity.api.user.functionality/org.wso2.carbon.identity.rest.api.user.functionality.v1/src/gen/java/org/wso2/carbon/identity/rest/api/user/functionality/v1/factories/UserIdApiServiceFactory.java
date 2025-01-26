@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2020-2024, WSO2 LLC. (http://www.wso2.com).
  *
- * WSO2 Inc. licenses this file to you under the Apache License,
+ * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,12 +21,20 @@ package org.wso2.carbon.identity.rest.api.user.functionality.v1.factories;
 import org.wso2.carbon.identity.rest.api.user.functionality.v1.UserIdApiService;
 import org.wso2.carbon.identity.rest.api.user.functionality.v1.impl.UserIdApiServiceImpl;
 
+/**
+ * Factory class for UserIdApiService.
+ */
 public class UserIdApiServiceFactory {
 
-   private final static UserIdApiService service = new UserIdApiServiceImpl();
+    private final static UserIdApiService SERVICE = new UserIdApiServiceImpl();
 
-   public static UserIdApiService getUserIdApi()
-   {
-      return service;
-   }
+    /**
+     * Get UserIdApiService service.
+     *
+     * @return UserIdApiService.
+     */
+    public static UserIdApiService getUserIdApi() {
+
+        return SERVICE;
+    }
 }
