@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.com).
+ * Copyright (c) 2021-2025, WSO2 LLC. (http://www.wso2.com).
  *
- * WSO2 Inc. licenses this file to you under the Apache License,
+ * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,9 +18,9 @@
 
 package org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.AuthorizedAppsApiService;
 import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.core.AuthorizedAppsService;
+import org.wso2.carbon.identity.rest.api.user.authorized.apps.v2.factories.AuthorizedAppsServiceFactory;
 
 import javax.ws.rs.core.Response;
 
@@ -29,8 +29,12 @@ import javax.ws.rs.core.Response;
  */
 public class AuthorizedAppsApiServiceImpl implements AuthorizedAppsApiService {
 
-    @Autowired
-    private AuthorizedAppsService authorizedAppsService;
+    private final AuthorizedAppsService authorizedAppsService;
+
+    public AuthorizedAppsApiServiceImpl() {
+
+        this.authorizedAppsService = AuthorizedAppsServiceFactory.getAuthorizedAppsService();
+    }
 
     @Override
     public Response deleteIssuedTokensByAppId(String applicationId) {

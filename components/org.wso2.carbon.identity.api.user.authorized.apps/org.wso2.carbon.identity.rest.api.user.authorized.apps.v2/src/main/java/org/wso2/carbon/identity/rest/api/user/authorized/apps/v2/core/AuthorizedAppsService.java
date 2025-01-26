@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2020-2025, WSO2 LLC. (http://www.wso2.com).
  *
- * WSO2 Inc. licenses this file to you under the Apache License,
+ * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
@@ -67,21 +67,20 @@ public class AuthorizedAppsService {
 
     private static final Log log = LogFactory.getLog(AuthorizedAppsService.class);
     private static final String OAUTH2 = "oauth2";
-    private static final ApplicationManagementService applicationManagementService;
-    private static final OAuthAdminServiceImpl oAuthAdminService;
-    private static final OAuth2ScopeService oAuth2ScopeService;
-    private static final RealmService realmService;
+    private final ApplicationManagementService applicationManagementService;
+    private final OAuthAdminServiceImpl oAuthAdminService;
+    private final OAuth2ScopeService oAuth2ScopeService;
+    private final RealmService realmService;
 
+    public AuthorizedAppsService(ApplicationManagementService applicationManagementService,
+                                 OAuthAdminServiceImpl oAuthAdminService,
+                                 OAuth2ScopeService oAuth2ScopeService,
+                                 RealmService realmService) {
 
-    static {
-        applicationManagementService = (ApplicationManagementService) PrivilegedCarbonContext.
-                getThreadLocalCarbonContext().getOSGiService(ApplicationManagementService.class, null);
-        oAuthAdminService = (OAuthAdminServiceImpl) PrivilegedCarbonContext.getThreadLocalCarbonContext()
-                .getOSGiService(OAuthAdminServiceImpl.class, null);
-        oAuth2ScopeService = (OAuth2ScopeService) PrivilegedCarbonContext.
-                getThreadLocalCarbonContext().getOSGiService(OAuth2ScopeService.class, null);
-        realmService = (RealmService) PrivilegedCarbonContext.
-                getThreadLocalCarbonContext().getOSGiService(RealmService.class, null);
+        this.applicationManagementService = applicationManagementService;
+        this.oAuthAdminService = oAuthAdminService;
+        this.oAuth2ScopeService = oAuth2ScopeService;
+        this.realmService = realmService;
     }
 
     /**
