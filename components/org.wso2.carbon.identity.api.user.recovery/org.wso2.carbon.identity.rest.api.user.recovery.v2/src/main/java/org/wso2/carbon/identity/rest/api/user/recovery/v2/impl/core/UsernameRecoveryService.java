@@ -23,7 +23,6 @@ import org.apache.commons.logging.LogFactory;
 
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.Util;
-import org.wso2.carbon.identity.api.user.recovery.commons.UserAccountRecoveryServiceDataHolder;
 import org.wso2.carbon.identity.governance.service.notification.NotificationChannels;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryConstants;
 import org.wso2.carbon.identity.recovery.IdentityRecoveryException;
@@ -31,6 +30,7 @@ import org.wso2.carbon.identity.recovery.dto.RecoveryChannelInfoDTO;
 import org.wso2.carbon.identity.recovery.dto.RecoveryInformationDTO;
 import org.wso2.carbon.identity.recovery.dto.UsernameRecoverDTO;
 
+import org.wso2.carbon.identity.recovery.services.username.UsernameRecoveryManager;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.core.utils.RecoveryUtil;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.APICall;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.model.AccountRecoveryType;
@@ -50,7 +50,14 @@ import javax.ws.rs.core.Response;
  */
 public class UsernameRecoveryService {
 
+    private final UsernameRecoveryManager usernameRecoveryManager;
+
     private static final Log log = LogFactory.getLog(UsernameRecoveryService.class);
+
+    public UsernameRecoveryService(UsernameRecoveryManager usernameRecoveryManager) {
+
+        this.usernameRecoveryManager = usernameRecoveryManager;
+    }
 
     /**
      * Initiate userName recovery from POST.
@@ -64,9 +71,8 @@ public class UsernameRecoveryService {
         Map<String, String> userClaims = RecoveryUtil.buildUserClaimsMap(initRequest.getClaims());
         try {
             // Get username recovery notification information.
-            RecoveryInformationDTO recoveryInformationDTO =
-                    UserAccountRecoveryServiceDataHolder.getUsernameRecoveryManager().initiate(userClaims, tenantDomain,
-                            RecoveryUtil.buildPropertiesMap(initRequest.getProperties()));
+            RecoveryInformationDTO recoveryInformationDTO = usernameRecoveryManager.initiate(userClaims, tenantDomain,
+                    RecoveryUtil.buildPropertiesMap(initRequest.getProperties()));
             if (recoveryInformationDTO == null) {
                 // If RecoveryChannelInfoDTO is null throw not found error.
                 String message = "No recovery information username recovery request";
@@ -94,9 +100,8 @@ public class UsernameRecoveryService {
         String recoveryId = recoveryRequest.getRecoveryCode();
         String channelId = recoveryRequest.getChannelId();
         try {
-            UsernameRecoverDTO usernameRecoverDTO = UserAccountRecoveryServiceDataHolder.getUsernameRecoveryManager().
-                    notify(recoveryId, channelId, tenantDomain,
-                            RecoveryUtil.buildPropertiesMap(recoveryRequest.getProperties()));
+            UsernameRecoverDTO usernameRecoverDTO = usernameRecoveryManager.notify(recoveryId, channelId, tenantDomain,
+                    RecoveryUtil.buildPropertiesMap(recoveryRequest.getProperties()));
             if (usernameRecoverDTO == null) {
                 if (log.isDebugEnabled()) {
                     String message = String.format("No recovery data object for recovery code : %s", recoveryId);

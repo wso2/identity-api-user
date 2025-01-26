@@ -21,12 +21,20 @@ package org.wso2.carbon.identity.rest.api.user.recovery.v2.factories;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.RecoveryApiService;
 import org.wso2.carbon.identity.rest.api.user.recovery.v2.impl.RecoveryApiServiceImpl;
 
+/**
+ * Factory class for RecoveryApiService.
+ */
 public class RecoveryApiServiceFactory {
 
-   private final static RecoveryApiService service = new RecoveryApiServiceImpl();
+    private final static RecoveryApiService SERVICE = new RecoveryApiServiceImpl();
 
-   public static RecoveryApiService getRecoveryApi()
-   {
-      return service;
-   }
+    /**
+     * Get RecoveryApiService instance.
+     *
+     * @return RecoveryApiService.
+     */
+    public static RecoveryApiService getRecoveryApi() {
+
+        return SERVICE;
+    }
 }
