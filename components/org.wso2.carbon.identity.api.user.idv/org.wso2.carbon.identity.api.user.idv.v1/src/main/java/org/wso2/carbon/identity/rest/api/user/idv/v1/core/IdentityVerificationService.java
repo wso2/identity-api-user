@@ -15,12 +15,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.wso2.carbon.identity.rest.api.user.idv.v1.core;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.extension.identity.verification.mgt.IdentityVerificationManager;
 import org.wso2.carbon.extension.identity.verification.mgt.exception.IdentityVerificationClientException;
 import org.wso2.carbon.extension.identity.verification.mgt.exception.IdentityVerificationException;
 import org.wso2.carbon.extension.identity.verification.mgt.model.IdVClaim;
@@ -30,7 +32,6 @@ import org.wso2.carbon.extension.identity.verification.mgt.utils.IdentityVerific
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.api.user.idv.common.Constants;
-import org.wso2.carbon.identity.api.user.idv.common.IdentityVerificationServiceHolder;
 import org.wso2.carbon.identity.base.IdentityException;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.rest.api.user.idv.v1.model.ProviderProperty;
@@ -50,7 +51,14 @@ import javax.ws.rs.core.Response;
  */
 public class IdentityVerificationService {
 
+    private final IdentityVerificationManager identityVerificationManager;
+
     private static final Log log = LogFactory.getLog(IdentityVerificationService.class);
+
+    public IdentityVerificationService(IdentityVerificationManager identityVerificationManager) {
+
+        this.identityVerificationManager = identityVerificationManager;
+    }
 
     /**
      * Add identity verification claim.
@@ -64,8 +72,8 @@ public class IdentityVerificationService {
         List<IdVClaim> idVClaims;
         int tenantId = getTenantId();
         try {
-            idVClaims = IdentityVerificationServiceHolder.getIdentityVerificationManager().
-                    addIdVClaims(userId, createIdVClaims(userId, verificationClaimRequest), tenantId);
+            idVClaims = identityVerificationManager.addIdVClaims(userId, createIdVClaims(userId,
+                    verificationClaimRequest), tenantId);
         } catch (IdentityVerificationException e) {
             if (IdentityVerificationConstants.ErrorMessage.ERROR_INVALID_USER_ID.getCode().equals(e.getErrorCode())) {
                 throw handleIdVException(e, Constants.ErrorMessage.ERROR_CODE_USER_ID_NOT_FOUND, userId);
@@ -94,8 +102,7 @@ public class IdentityVerificationService {
         IdVClaim idVClaim;
         int tenantId = getTenantId();
         try {
-            idVClaim = IdentityVerificationServiceHolder.
-                    getIdentityVerificationManager().getIdVClaim(userId, claimId, tenantId);
+            idVClaim = identityVerificationManager.getIdVClaim(userId, claimId, tenantId);
             if (idVClaim == null) {
                 throw handleException(Response.Status.NOT_FOUND,
                         Constants.ErrorMessage.ERROR_CODE_IDV_CLAIM_NOT_FOUND, claimId);
@@ -129,8 +136,7 @@ public class IdentityVerificationService {
         IdVClaim idVClaim;
         int tenantId = getTenantId();
         try {
-            idVClaim = IdentityVerificationServiceHolder.getIdentityVerificationManager().
-                    getIdVClaim(userId, claimId, tenantId);
+            idVClaim = identityVerificationManager.getIdVClaim(userId, claimId, tenantId);
             if (idVClaim == null) {
                 throw handleException(Response.Status.NOT_FOUND,
                         Constants.ErrorMessage.ERROR_CODE_IDV_CLAIM_NOT_FOUND, claimId);
@@ -140,8 +146,8 @@ public class IdentityVerificationService {
                 throw handleException(Response.Status.BAD_REQUEST,
                         Constants.ErrorMessage.ERROR_CODE_INCOMPLETE_UPDATE_REQUEST, claimId);
             }
-            idVClaim = IdentityVerificationServiceHolder.getIdentityVerificationManager().
-                    updateIdVClaim(userId, createIdVClaims(verificationClaimUpdateRequest, userId, claimId), tenantId);
+            idVClaim = identityVerificationManager.updateIdVClaim(userId,
+                    createIdVClaims(verificationClaimUpdateRequest, userId, claimId), tenantId);
         } catch (IdentityVerificationException e) {
             if (IdentityVerificationConstants.ErrorMessage.ERROR_INVALID_USER_ID.getCode().equals(e.getErrorCode())) {
                 throw handleIdVException(e, Constants.ErrorMessage.ERROR_CODE_USER_ID_NOT_FOUND, userId);
@@ -168,8 +174,8 @@ public class IdentityVerificationService {
         List<IdVClaim> idVClaims;
         int tenantId = getTenantId();
         try {
-            idVClaims = IdentityVerificationServiceHolder.getIdentityVerificationManager().
-                    updateIdVClaims(userId, createIdVClaims(userId, verificationClaimRequest), tenantId);
+            idVClaims = identityVerificationManager.updateIdVClaims(userId, createIdVClaims(userId,
+                    verificationClaimRequest), tenantId);
         } catch (IdentityVerificationException e) {
             if (IdentityVerificationConstants.ErrorMessage.ERROR_INVALID_USER_ID.getCode().equals(e.getErrorCode())) {
                 throw handleIdVException(e, Constants.ErrorMessage.ERROR_CODE_USER_ID_NOT_FOUND, userId);
@@ -200,8 +206,7 @@ public class IdentityVerificationService {
         IdVClaim[] idVClaims;
         int tenantId = getTenantId();
         try {
-            idVClaims = IdentityVerificationServiceHolder.getIdentityVerificationManager().
-                    getIdVClaims(userId, idvProviderId, null, tenantId);
+            idVClaims = identityVerificationManager.getIdVClaims(userId, idvProviderId, null, tenantId);
         } catch (IdentityVerificationException e) {
             if (IdentityVerificationConstants.ErrorMessage.ERROR_INVALID_USER_ID.getCode().equals(e.getErrorCode())) {
                 throw handleIdVException(e, Constants.ErrorMessage.ERROR_CODE_USER_ID_NOT_FOUND, userId);
@@ -227,8 +232,8 @@ public class IdentityVerificationService {
         IdentityVerifierData identityVerifierData = getIdentityVerifierData(verifyRequest);
         int tenantId = getTenantId();
         try {
-            identityVerifierResponse = IdentityVerificationServiceHolder.getIdentityVerificationManager().
-                    verifyIdentity(userId, identityVerifierData, tenantId);
+            identityVerifierResponse = identityVerificationManager.verifyIdentity(userId,
+                    identityVerifierData, tenantId);
         } catch (IdentityVerificationException e) {
             if (IdentityVerificationConstants.ErrorMessage.ERROR_INVALID_USER_ID.getCode().equals(e.getErrorCode())) {
                 throw handleIdVException(e, Constants.ErrorMessage.ERROR_CODE_USER_ID_NOT_FOUND, userId);
