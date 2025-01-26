@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2025, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -18,15 +18,22 @@
 
 package org.wso2.carbon.identity.rest.api.user.fido2.v1.factories;
 
-import org.wso2.carbon.identity.rest.api.user.fido2.v1.MeApiService;
-import org.wso2.carbon.identity.rest.api.user.fido2.v1.impl.MeApiServiceImpl;
+import org.wso2.carbon.identity.application.authenticator.fido2.core.WebAuthnService;
 
-public class MeApiServiceFactory {
+/**
+ * Factory class for WebAuthnService.
+ */
+public class WebAuthnServiceFactory {
 
-   private final static MeApiService SERVICE = new MeApiServiceImpl();
+    private static final WebAuthnService SERVICE = new WebAuthnService();
 
-   public static MeApiService getMeApi()
-   {
-      return SERVICE;
-   }
+    /**
+    * This method is used to get the WebAuthnService instance.
+    *
+    * @return WebAuthnService instance.
+    */
+    public static WebAuthnService getWebAuthnService() {
+
+        return SERVICE;
+    }
 }
