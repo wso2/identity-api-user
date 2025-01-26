@@ -23,10 +23,10 @@ import org.wso2.carbon.identity.rest.api.user.organization.v1.impl.RootApiServic
 
 public class RootApiServiceFactory {
 
-   private final static RootApiService service = new RootApiServiceImpl();
+   private final static RootApiService SERVICE = new RootApiServiceImpl();
 
-   public static RootApiService getRootApi()
-   {
-      return service;
+   public static RootApiService getRootApi() {
+
+      return SERVICE;
    }
 }

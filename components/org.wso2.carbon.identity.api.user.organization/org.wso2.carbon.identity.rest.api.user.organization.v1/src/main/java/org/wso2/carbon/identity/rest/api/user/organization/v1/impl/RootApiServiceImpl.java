@@ -18,9 +18,9 @@
 
 package org.wso2.carbon.identity.rest.api.user.organization.v1.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.organization.v1.RootApiService;
 import org.wso2.carbon.identity.rest.api.user.organization.v1.core.UserOrganizationService;
+import org.wso2.carbon.identity.rest.api.user.organization.v1.factories.UserOrganizationServiceFactory;
 
 import javax.ws.rs.core.Response;
 
@@ -29,8 +29,16 @@ import javax.ws.rs.core.Response;
  */
 public class RootApiServiceImpl implements RootApiService {
 
-    @Autowired
-    UserOrganizationService userOrganizationService;
+    private final UserOrganizationService userOrganizationService;
+
+    public RootApiServiceImpl() {
+
+        try {
+            this.userOrganizationService = UserOrganizationServiceFactory.getUserOrganizationService();
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurred while initiating UserOrganizationService.", e);
+        }
+    }
 
     @Override
     public Response rootGet() {
