@@ -40,7 +40,7 @@ public class AuthorizedAppsApi  {
 
     private final AuthorizedAppsApiService delegate;
 
-    protected AuthorizedAppsApi() {
+    public AuthorizedAppsApi() {
 
         this.delegate = AuthorizedAppsApiServiceFactory.getAuthorizedAppsApi();
     }
