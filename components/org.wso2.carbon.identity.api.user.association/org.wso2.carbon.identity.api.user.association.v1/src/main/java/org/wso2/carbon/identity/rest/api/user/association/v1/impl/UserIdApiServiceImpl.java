@@ -83,6 +83,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
                                                     FederatedAssociationRequestDTO federatedAssociation) {
 
         userAssociationService.addFederatedUserAccountAssociation(getUser(userId), federatedAssociation);
+        // Returning a 204 here as the created association is not return from the OSGi service.
         return Response.noContent().build();
     }
 

@@ -439,10 +439,8 @@ paths:
           schema:
             $ref: '#/definitions/FederatedAssociationRequest'
       responses:
-        201:
-          description: Successfully created
-          schema:
-            $ref: '#/definitions/FederatedAssociation'
+        204:
+          description: No content
         400:
           description: Bad Request
           schema:
@@ -453,6 +451,10 @@ paths:
             $ref: '#/definitions/Error'
         403:
           description: Resource Forbidden
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Not Found
           schema:
             $ref: '#/definitions/Error'
         500:
