@@ -23,8 +23,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
+import org.wso2.carbon.identity.api.user.common.function.UniqueIdToUser;
 import org.wso2.carbon.identity.api.user.common.function.UserToUniqueId;
 import org.wso2.carbon.identity.application.common.model.User;
+import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationUserRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.FederatedAssociationDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.FederatedAssociationRequestDTO;
@@ -162,8 +164,9 @@ public class UserAssociationService {
                                                    FederatedAssociationRequestDTO federatedAssociationDTO) {
 
         try {
-            UserAssociationServiceHolder.getFederatedAssociationManager().createFederatedAssociation(getUser(userId),
-                    federatedAssociationDTO.getIdp(), federatedAssociationDTO.getFederatedUserId());
+            UserAssociationServiceHolder.getFederatedAssociationManager()
+                    .createFederatedAssociation(getUserFromUserId(userId), federatedAssociationDTO.getIdp(),
+                            federatedAssociationDTO.getFederatedUserId());
         } catch (FederatedAssociationManagerException e) {
             throw handleFederatedAssociationManagerException(e, "Error while adding federated user association: "
                     + userId);
@@ -258,15 +261,13 @@ public class UserAssociationService {
 
     private APIError handleFederatedAssociationManagerException(FederatedAssociationManagerException e,
                                                                 String message) {
-
-        ErrorResponse errorResponse = new ErrorResponse.Builder()
-                .withCode(e.getErrorCode())
-                .withMessage(message)
-                .build(log, e, e.getMessage());
-
+        ErrorResponse errorResponse;
         Response.Status status;
-
         if (e instanceof FederatedAssociationManagerClientException) {
+            errorResponse = new ErrorResponse.Builder()
+                    .withCode(e.getErrorCode())
+                    .withMessage(message)
+                    .build();
             if (e.getErrorCode() != null) {
                 String errorCode = e.getErrorCode();
                 errorCode = errorCode.contains(ERROR_CODE_DELIMITER) ? errorCode : ASSOCIATION_ERROR_PREFIX
@@ -276,6 +277,10 @@ public class UserAssociationService {
             handleErrorDescription(e, errorResponse);
             status = Response.Status.BAD_REQUEST;
         } else {
+            errorResponse = new ErrorResponse.Builder()
+                    .withCode(e.getErrorCode())
+                    .withMessage(message)
+                    .build(log, e, e.getMessage());
             status = Response.Status.INTERNAL_SERVER_ERROR;
         }
         return new APIError(status, errorResponse);
@@ -312,6 +317,13 @@ public class UserAssociationService {
         user.setUserStoreDomain(userAccountAssociationDTO.getDomain());
         user.setTenantDomain(userAccountAssociationDTO.getTenantDomain());
         return new UserToUniqueId().apply(realmService, user);
+    }
+
+    private User getUserFromUserId(String userId) {
+
+        User user = new UniqueIdToUser().apply(UserAssociationServiceHolder.getRealmService(), userId,
+                IdentityTenantUtil.resolveTenantDomain());
+        return getUser(user.toFullQualifiedUsername());
     }
 
     private User getUser(String userId) {
