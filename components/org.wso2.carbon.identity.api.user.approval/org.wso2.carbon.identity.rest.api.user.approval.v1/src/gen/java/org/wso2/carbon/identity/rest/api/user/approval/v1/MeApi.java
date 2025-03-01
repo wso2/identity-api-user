@@ -20,6 +20,7 @@ package org.wso2.carbon.identity.rest.api.user.approval.v1;
 
 import java.util.List;
 
+import org.wso2.carbon.identity.rest.api.user.approval.v1.factories.MeApiServiceFactory;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.model.Error;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.model.StateDTO;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.model.TaskData;
@@ -37,7 +38,13 @@ import javax.validation.constraints.*;
 
 public class MeApi  {
 
-    private MeApiService delegate;
+    private final MeApiService delegate;
+
+    public MeApi(){
+
+        this.delegate = MeApiServiceFactory.getMeApi();
+
+    }
 
     @Valid
     @GET
