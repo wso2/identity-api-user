@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -18,17 +18,12 @@
 
 package org.wso2.carbon.identity.rest.api.user.approval.v1;
 
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-import java.io.InputStream;
 import java.util.List;
 
-import org.wso2.carbon.identity.rest.api.user.approval.v1.factories.MeApiServiceFactory;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.model.Error;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.model.StateDTO;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.model.TaskData;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.model.TaskSummary;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.MeApiService;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -42,19 +37,14 @@ import javax.validation.constraints.*;
 
 public class MeApi  {
 
-    private final MeApiService delegate;
-
-    public MeApi() {
-
-        this.delegate = MeApiServiceFactory.getMeApi();
-    }
+    private MeApiService delegate;
 
     @Valid
     @GET
     @Path("/approval-tasks/{task-id}")
     
     @Produces({ "application/json" })
-    @ApiOperation(value = "Retrieves an approval task by the task-id", notes = "Retrieves information of a specific approval task identified by the task-id <br/> <b>Permission required:</b>     * /permission/admin/manage/humantask/viewtasks <b>Scope required:</b>     * internal_humantask_view ", response = TaskData.class, authorizations = {
+    @ApiOperation(value = "Retrieves an approval task by the task-id", notes = "Retrieves information of a specific approval task identified by the task-id  ", response = TaskData.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
@@ -79,7 +69,7 @@ public class MeApi  {
     @Path("/approval-tasks")
     
     @Produces({ "application/json" })
-    @ApiOperation(value = "Retrieves available approvals for the authenticated user", notes = "Retrieve the available approval tasks in the system for the authenticated user. This API returns the following types of approvals:   * READY - Tasks that are _claimable_ by the user. If a particular task is in the READY state, the user is eligible to self-assign the task and complete it.   * RESERVED -  Tasks that are _assigned_ to the user and to be approved by this user.   * COMPLETED - Tasks that are already _completed_ (approved or denied) by this user.  <b>Permission required:</b>     * /permission/admin/manage/humantask/viewtasks <b>Scope required:</b>     * internal_humantask_view   A user can also invoke the endpoint with the following query parameters. ", response = TaskSummary.class, responseContainer = "List", authorizations = {
+    @ApiOperation(value = "Retrieves available approvals for the authenticated user", notes = "Retrieve the available approval tasks in the system for the authenticated user. This API returns the following types of approvals:   * READY - Tasks that are _claimable_ by the user. If a particular task is in the READY state, the user is eligible to self-assign the task and complete it.   * RESERVED -  Tasks that are _assigned_ to the user and to be approved by this user.   * COMPLETED - Tasks that are already _completed_ (approved or denied) by this user.   A user can also invoke the endpoint with the following query parameters. ", response = TaskSummary.class, responseContainer = "List", authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
@@ -102,7 +92,7 @@ public class MeApi  {
     @Path("/approval-tasks/{task-id}/state")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @ApiOperation(value = "Changes the state of an approval task", notes = "Update the approval task status by defining one of the following actions:  * CLAIM - Reserve the task for the user. Status of the task will be changed from READY to RESERVED.  * RELEASE - Release the task for other users to claim. Status of the task will be changed from RESERVED to READY.  * APPROVE - Approve the task. Status of the task will be changed to COMPLETED.  * REJECT - Deny the task. Status of the task will be changed to COMPLETED.  <br/>  <b>Permission required:</b>     * /permission/admin/manage/humantask/viewtasks <b>Scope required:</b>     * internal_humantask_view ", response = Void.class, authorizations = {
+    @ApiOperation(value = "Changes the state of an approval task", notes = "Update the approval task status by defining one of the following actions:  * CLAIM - Reserve the task for the user. Status of the task will be changed from READY to RESERVED.  * RELEASE - Release the task for other users to claim. Status of the task will be changed from RESERVED to READY.  * APPROVE - Approve the task. Status of the task will be changed to COMPLETED.  * REJECT - Deny the task. Status of the task will be changed to COMPLETED. ", response = Void.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
@@ -116,9 +106,9 @@ public class MeApi  {
         @ApiResponse(code = 404, message = "The specified resource is not found", response = Error.class),
         @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
-    public Response updateStateOfTask(@ApiParam(value = "Task ID",required=true) @PathParam("task-id") String taskId, @ApiParam(value = "To which state the task should be changed." ) @Valid StateDTO nextState) {
+    public Response updateStateOfTask(@ApiParam(value = "Task ID",required=true) @PathParam("task-id") String taskId, @ApiParam(value = "To which state the task should be changed." ) @Valid StateDTO stateDTO) {
 
-        return delegate.updateStateOfTask(taskId,  nextState );
+        return delegate.updateStateOfTask(taskId,  stateDTO );
     }
 
 }

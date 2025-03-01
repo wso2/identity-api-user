@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -29,22 +29,27 @@ import javax.ws.rs.core.Response;
 
 public class MeApiServiceImpl implements MeApiService {
 
-    private final ApprovalEventService approvalEventService;
+    ApprovalEventService approvalEventService;
+
     public MeApiServiceImpl(){
-        this.approvalEventService = ApprovalEventServiceFactory.getApprovalEventService();
+
+        try {
+            this.approvalEventService = ApprovalEventServiceFactory.getApprovalEventService();
+        } catch (IllegalStateException e) {
+            throw new RuntimeException("Error occurred while initializing ApprovalEventService.", e);
+        }
+
     }
 
     @Override
     public Response getApprovalTaskInfo(String taskId) {
 
-        // do some magic!
         return Response.ok().entity(approvalEventService.getTaskData(taskId)).build();
     }
 
     @Override
     public Response listApprovalTasksForLoggedInUser(Integer limit, Integer offset, List<String> status) {
 
-        // do some magic!
         return Response.ok().entity(approvalEventService.listTasks(limit, offset, status)).build();
     }
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2024, WSO2 LLC. (http://www.wso2.com).
+  ~ Copyright (c) 2025, WSO2 LLC. (http://www.wso2.com).
   ~
   ~ WSO2 LLC. licenses this file to you under the Apache License,
   ~ Version 2.0 (the "License"); you may not use this file except
@@ -41,14 +41,14 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <!--<plugin>-->
-            <!--<groupId>org.wso2.maven.plugins</groupId>-->
-            <!--<artifactId>swagger2cxf-maven-plugin</artifactId>-->
-            <!--<version>1.0-SNAPSHOT</version>-->
-            <!--<configuration>-->
-            <!--<inputSpec>${project.basedir}/src/main/resources/approval.yaml</inputSpec>-->
-            <!--</configuration>-->
-            <!--</plugin>-->
+<!--            <plugin>-->
+<!--            <groupId>org.wso2.maven.plugins</groupId>-->
+<!--            <artifactId>swagger2cxf-maven-plugin</artifactId>-->
+<!--            <version>1.0-SNAPSHOT</version>-->
+<!--            <configuration>-->
+<!--            <inputSpec>${project.basedir}/src/main/resources/approval.yaml</inputSpec>-->
+<!--            </configuration>-->
+<!--            </plugin>-->
 <!--            <plugin>-->
 <!--                <groupId>org.openapitools</groupId>-->
 <!--                <artifactId>openapi-generator-maven-plugin</artifactId>-->
