@@ -18,16 +18,8 @@
 
 package org.wso2.carbon.identity.rest.api.user.approval.v1;
 
-import org.wso2.carbon.identity.rest.api.user.approval.v1.*;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.model.*;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-import java.io.InputStream;
 import java.util.List;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.model.Error;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.model.StateDTO;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.model.TaskData;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.model.TaskSummary;
 import javax.ws.rs.core.Response;
 
 

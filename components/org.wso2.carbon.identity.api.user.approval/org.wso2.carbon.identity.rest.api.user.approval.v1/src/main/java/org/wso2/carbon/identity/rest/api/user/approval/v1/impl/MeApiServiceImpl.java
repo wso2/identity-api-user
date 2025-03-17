@@ -27,18 +27,16 @@ import java.util.List;
 
 import javax.ws.rs.core.Response;
 
+/**
+ * Class for approval management.
+ */
 public class MeApiServiceImpl implements MeApiService {
 
-    ApprovalEventService approvalEventService;
+    private final ApprovalEventService approvalEventService;
 
     public MeApiServiceImpl(){
 
-        try {
-            this.approvalEventService = ApprovalEventServiceFactory.getApprovalEventService();
-        } catch (IllegalStateException e) {
-            throw new RuntimeException("Error occurred while initializing ApprovalEventService.", e);
-        }
-
+        this.approvalEventService = ApprovalEventServiceFactory.getApprovalEventService();
     }
 
     @Override
@@ -58,13 +56,13 @@ public class MeApiServiceImpl implements MeApiService {
 
         org.wso2.carbon.identity.workflow.engine.dto.StateDTO nextStateDTO = convertState(nextState);
         approvalEventService.updateStatus(taskId, nextStateDTO);
-
         return Response.ok().build();
     }
 
     private org.wso2.carbon.identity.workflow.engine.dto.StateDTO convertState(StateDTO nextState) {
 
-        org.wso2.carbon.identity.workflow.engine.dto.StateDTO nextStateDTO = new org.wso2.carbon.identity.workflow.engine.dto.StateDTO();
+        org.wso2.carbon.identity.workflow.engine.dto.StateDTO nextStateDTO =
+                new org.wso2.carbon.identity.workflow.engine.dto.StateDTO();
 
         if (nextState.getAction() == StateDTO.ActionEnum.APPROVE) {
             nextStateDTO.setAction(org.wso2.carbon.identity.workflow.engine.dto.StateDTO.ActionEnum.APPROVE);
@@ -75,7 +73,6 @@ public class MeApiServiceImpl implements MeApiService {
         } else if (nextState.getAction() == StateDTO.ActionEnum.CLAIM) {
             nextStateDTO.setAction(org.wso2.carbon.identity.workflow.engine.dto.StateDTO.ActionEnum.CLAIM);
         }
-
         return nextStateDTO;
     }
 }

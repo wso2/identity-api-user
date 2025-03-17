@@ -37,5 +37,4 @@
         <module>org.wso2.carbon.identity.rest.api.user.approval.v1</module>
         <module>org.wso2.carbon.identity.api.user.approval.common</module>
     </modules>
-
 </project>

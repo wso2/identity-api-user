@@ -78,22 +78,24 @@ public class ApprovalConstant {
         }
 
         public String getCode() {
+
             return USER_APPROVAL_PREFIX + code;
         }
 
         public String getMessage() {
+
             return message;
         }
 
         public String getDescription() {
+
             return description;
         }
 
         @Override
         public String toString() {
+
             return code + " | " + message;
         }
-
     }
-
 }

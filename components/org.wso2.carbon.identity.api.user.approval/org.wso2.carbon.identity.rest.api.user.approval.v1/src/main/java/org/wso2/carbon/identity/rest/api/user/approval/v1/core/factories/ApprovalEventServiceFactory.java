@@ -20,6 +20,9 @@ package org.wso2.carbon.identity.rest.api.user.approval.v1.core.factories;
 
 import org.wso2.carbon.identity.workflow.engine.ApprovalEventService;
 
+/**
+ * Implementation of Approval Management REST API.
+ */
 public class ApprovalEventServiceFactory {
 
     private static final ApprovalEventService SERVICE;
