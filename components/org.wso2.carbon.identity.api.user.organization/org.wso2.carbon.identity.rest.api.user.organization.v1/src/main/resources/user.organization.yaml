@@ -2,8 +2,10 @@ openapi: 3.0.0
 info:
   version: "v1"
   title: 'WSO2 Identity Server - User Organization Management API Definition'
-  description: 'This is the RESTful API for retrieving authenticated users resident organization in WSO2 Identity Server. 
-  This API provides the capability to retrieve the root organization of the authenticated user.'
+  description: |
+    This document specifies an **User Organization Management RESTful API** for **WSO2 Identity Server**.
+    
+    This API provides the capability to retrieve the resident organization of the authenticated user.
   contact:
     name: WSO2
     url: 'http://wso2.com/products/identity-server/'
@@ -64,14 +66,9 @@ paths:
       summary: |
         Get the root organization of the authenticated user
       description: |
-        This API provides the capability to retrieve
-        the root organization of the authenticated user.
+        This API provides the capability to retrieve the root organization of the authenticated user.
 
-        <b>Permission required:</b> <br/>
-          - none
-
-        <b>Scope required:</b> <br/>
-          - internal_login
+        <b>Scope(Permission) required:</b> `internal_login`
       responses:
         '200':
           description: Successful Response
@@ -98,11 +95,7 @@ paths:
         the descendant organizations of the authenticated user's resident organizations. The response includes 
         the organization's id and name from the resident organization to the accessed child organization.
         
-        <b>Permission required:</b> <br/>
-          - none
-        
-        <b>Scope required:</b> <br/>
-          - internal_login
+        <b>Scope(Permission) required:</b> `internal_login`
       responses:
         '200':
           description: Successful Response
@@ -165,13 +158,13 @@ components:
         type: boolean
         default: false
     authorizedAppNameQueryParam:
-        in: query
-        name: authorizedAppName
-        required: false
-        description:
-          Retrieves the organizations that are authorized for the user through the role bound to the application.
-        schema:
-            type: string
+      in: query
+      name: authorizedAppName
+      required: false
+      description:
+        Retrieves the organizations that are authorized for the user through the role bound to the application.
+      schema:
+        type: string
   schemas:
     RootOrganizationResponse:
       type: object
