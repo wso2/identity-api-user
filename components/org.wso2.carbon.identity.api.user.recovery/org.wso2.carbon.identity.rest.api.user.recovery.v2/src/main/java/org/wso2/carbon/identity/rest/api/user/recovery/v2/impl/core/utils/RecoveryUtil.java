@@ -263,15 +263,12 @@ public class RecoveryUtil {
         }
 
         if (e instanceof IdentityRecoveryClientException) {
-            status = Response.Status.BAD_REQUEST;
-
             if (IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_PRE_UPDATE_PASSWORD_ACTION_FAILURE.getCode()
                     .equals(e.getErrorCode())) {
                 IdentityRecoveryClientException identityRecoveryClientException = (IdentityRecoveryClientException) e;
-                ErrorResponse errorResponse =
-                        buildErrorResponse(errorCode, identityRecoveryClientException.getMessage(),
-                                identityRecoveryClientException.getDescription());
-                return new APIError(status, errorResponse);
+                status = Response.Status.BAD_REQUEST;
+                errorMessage = identityRecoveryClientException.getMessage();
+                errorDescription = identityRecoveryClientException.getDescription();
             }
             return buildClientError(errorCode, errorMessage, errorDescription, status);
         }
