@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -52,7 +52,7 @@ public class RootApi  {
     @Path("/descendants")
     
     @Produces({ "application/json" })
-    @ApiOperation(value = "Get the descendant organizations of the authenticated user's resident organization ", notes = "This API provides the capability to retrieve the descendant organizations of the authenticated user's resident organizations. The response includes  the organization's id and name from the resident organization to the accessed child organization.  <b>Permission required:</b> <br/>   - none  <b>Scope required:</b> <br/>   - internal_login ", response = BasicOrganizationObject.class, responseContainer = "List", authorizations = {
+    @ApiOperation(value = "Get the descendant organizations of the authenticated user's resident organization ", notes = "This API provides the capability to retrieve the descendant organizations of the authenticated user's resident organizations. The response includes  the organization's id and name from the resident organization to the accessed child organization.  <b>Scope(Permission) required:</b> `internal_login` ", response = BasicOrganizationObject.class, responseContainer = "List", authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
@@ -75,7 +75,7 @@ public class RootApi  {
     
     
     @Produces({ "application/json" })
-    @ApiOperation(value = "Get the root organization of the authenticated user ", notes = "This API provides the capability to retrieve the root organization of the authenticated user.  <b>Permission required:</b> <br/>   - none  <b>Scope required:</b> <br/>   - internal_login ", response = RootOrganizationResponse.class, authorizations = {
+    @ApiOperation(value = "Get the root organization of the authenticated user ", notes = "This API provides the capability to retrieve the root organization of the authenticated user.  <b>Scope(Permission) required:</b> `internal_login` ", response = RootOrganizationResponse.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             

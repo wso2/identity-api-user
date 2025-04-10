@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -34,6 +34,7 @@ public class BasicOrganizationObject  {
   
     private String id;
     private String name;
+    private String orgHandle;
 
     /**
     **/
@@ -75,6 +76,26 @@ public class BasicOrganizationObject  {
         this.name = name;
     }
 
+    /**
+    **/
+    public BasicOrganizationObject orgHandle(String orgHandle) {
+
+        this.orgHandle = orgHandle;
+        return this;
+    }
+    
+    @ApiModelProperty(example = "abcbuilders", required = true, value = "")
+    @JsonProperty("orgHandle")
+    @Valid
+    @NotNull(message = "Property orgHandle cannot be null.")
+
+    public String getOrgHandle() {
+        return orgHandle;
+    }
+    public void setOrgHandle(String orgHandle) {
+        this.orgHandle = orgHandle;
+    }
+
 
 
     @Override
@@ -88,12 +109,13 @@ public class BasicOrganizationObject  {
         }
         BasicOrganizationObject basicOrganizationObject = (BasicOrganizationObject) o;
         return Objects.equals(this.id, basicOrganizationObject.id) &&
-            Objects.equals(this.name, basicOrganizationObject.name);
+            Objects.equals(this.name, basicOrganizationObject.name) &&
+            Objects.equals(this.orgHandle, basicOrganizationObject.orgHandle);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id, name, orgHandle);
     }
 
     @Override
@@ -104,6 +126,7 @@ public class BasicOrganizationObject  {
         
         sb.append("    id: ").append(toIndentedString(id)).append("\n");
         sb.append("    name: ").append(toIndentedString(name)).append("\n");
+        sb.append("    orgHandle: ").append(toIndentedString(orgHandle)).append("\n");
         sb.append("}");
         return sb.toString();
     }

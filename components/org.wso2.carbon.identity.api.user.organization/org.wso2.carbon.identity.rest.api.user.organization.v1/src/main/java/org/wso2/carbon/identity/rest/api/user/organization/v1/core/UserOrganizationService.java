@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2023-2025, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -126,6 +126,7 @@ public class UserOrganizationService {
                 BasicOrganizationObject basicOrganizationObject = new BasicOrganizationObject();
                 basicOrganizationObject.setId(basicOrganization.getId());
                 basicOrganizationObject.setName(basicOrganization.getName());
+                basicOrganizationObject.setOrgHandle(basicOrganization.getOrganizationHandle());
                 rootDescendantsOrganizationResponseList.add(basicOrganizationObject);
             }
             return rootDescendantsOrganizationResponseList;
@@ -170,8 +171,11 @@ public class UserOrganizationService {
             throws OrganizationManagementException {
 
         RootOrganizationResponse rootOrganizationResponse = new RootOrganizationResponse();
+        org.wso2.carbon.identity.organization.management.service.model.Organization organization
+                = getOrganizationManagementService().getOrganization(rootOrgId, false, false);
         rootOrganizationResponse.setId(rootOrgId);
-        rootOrganizationResponse.setName(getOrganizationManagementService().getOrganizationNameById(rootOrgId));
+        rootOrganizationResponse.setName(organization.getName());
+        rootOrganizationResponse.setOrgHandle(organization.getOrganizationHandle());
         return rootOrganizationResponse;
     }
 
@@ -265,6 +269,7 @@ public class UserOrganizationService {
                 Organization organizationDTO = new Organization();
                 organizationDTO.setId(organization.getId());
                 organizationDTO.setName(organization.getName());
+                organizationDTO.setOrgHandle(organization.getOrganizationHandle());
                 organizationDTO.setStatus(Organization.StatusEnum.valueOf(organization.getStatus()));
                 organizationDTO.setRef(buildOrganizationURL(organization.getId()).toString());
                 organizationDTOs.add(organizationDTO);
