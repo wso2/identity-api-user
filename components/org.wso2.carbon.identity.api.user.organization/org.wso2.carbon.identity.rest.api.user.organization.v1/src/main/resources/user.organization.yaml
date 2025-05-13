@@ -2,8 +2,10 @@ openapi: 3.0.0
 info:
   version: "v1"
   title: 'WSO2 Identity Server - User Organization Management API Definition'
-  description: 'This is the RESTful API for retrieving authenticated users resident organization in WSO2 Identity Server. 
-  This API provides the capability to retrieve the root organization of the authenticated user.'
+  description: |
+    This document specifies an **User Organization Management RESTful API** for **WSO2 Identity Server**.
+    
+    This API provides the capability to retrieve the resident organization of the authenticated user.
   contact:
     name: WSO2
     url: 'http://wso2.com/products/identity-server/'
@@ -12,18 +14,16 @@ info:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 servers:
-  - url: 'https://localhost:9443/o/{organization-domain}/api/users/v1/me/organizations'
+  - url: 'https://localhost:9443/t/{tenant-domain}/api/users/v1/me/organizations'
     variables:
       organization-domain:
         default: 10084a8d-113f-4211-a0d5-efe36b082211
 security:
   - OAuth2: []
   - BasicAuth: []
-
 tags:
   - name: me
     description: Operations for the authenticated user
-
 paths:
   /:
     get:
@@ -64,14 +64,8 @@ paths:
       summary: |
         Get the root organization of the authenticated user
       description: |
-        This API provides the capability to retrieve
-        the root organization of the authenticated user.
-
-        <b>Permission required:</b> <br/>
-          - none
-
-        <b>Scope required:</b> <br/>
-          - internal_login
+        This API provides the capability to retrieve the root organization of the authenticated user.
+        <b>Scope(Permission) required:</b> `internal_login`
       responses:
         '200':
           description: Successful Response
@@ -98,11 +92,7 @@ paths:
         the descendant organizations of the authenticated user's resident organizations. The response includes 
         the organization's id and name from the resident organization to the accessed child organization.
         
-        <b>Permission required:</b> <br/>
-          - none
-        
-        <b>Scope required:</b> <br/>
-          - internal_login
+        <b>Scope(Permission) required:</b> `internal_login`
       responses:
         '200':
           description: Successful Response
@@ -118,7 +108,6 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/ServerError'
-
 components:
   parameters:
     filterQueryParam:
@@ -165,19 +154,20 @@ components:
         type: boolean
         default: false
     authorizedAppNameQueryParam:
-        in: query
-        name: authorizedAppName
-        required: false
-        description:
-          Retrieves the organizations that are authorized for the user through the role bound to the application.
-        schema:
-            type: string
+      in: query
+      name: authorizedAppName
+      required: false
+      description:
+        Retrieves the organizations that are authorized for the user through the role bound to the application.
+      schema:
+        type: string
   schemas:
     RootOrganizationResponse:
       type: object
       required:
         - id
         - name
+        - orgHandle
       properties:
         id:
           type: string
@@ -185,6 +175,9 @@ components:
         name:
           type: string
           example: 'ABC Builders'
+        orgHandle:
+          type: string
+          example: 'abcbuilders'
 
     OrganizationsResponse:
       type: object
@@ -223,6 +216,7 @@ components:
       required:
         - id
         - name
+        - orgHandle
         - status
         - ref
       properties:
@@ -232,6 +226,9 @@ components:
         name:
           type: string
           example: 'ABC Builders'
+        orgHandle:
+          type: string
+          example: 'abcbuilders'
         status:
           type: string
           enum: [ ACTIVE, DISABLED ]
@@ -245,6 +242,7 @@ components:
       required:
         - id
         - name
+        - orgHandle
       properties:
         id:
           type: string
@@ -252,6 +250,9 @@ components:
         name:
           type: string
           example: 'ABC Builders'
+        orgHandle:
+          type: string
+          example: 'abcbuilders'
 
     RootDescendantsOrganizationResponse:
       type: array
