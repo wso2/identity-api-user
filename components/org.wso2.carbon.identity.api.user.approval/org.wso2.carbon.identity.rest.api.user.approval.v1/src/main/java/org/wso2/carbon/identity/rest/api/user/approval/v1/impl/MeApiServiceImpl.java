@@ -18,9 +18,9 @@
 
 package org.wso2.carbon.identity.rest.api.user.approval.v1.impl;
 
-import org.wso2.carbon.identity.rest.api.user.approval.v1.*;
+import org.wso2.carbon.identity.rest.api.user.approval.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.core.factories.ApprovalEventServiceFactory;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.model.*;
+import org.wso2.carbon.identity.rest.api.user.approval.v1.model.StateDTO;
 import org.wso2.carbon.identity.workflow.engine.ApprovalEventService;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class MeApiServiceImpl implements MeApiService {
 
     private final ApprovalEventService approvalEventService;
 
-    public MeApiServiceImpl(){
+    public MeApiServiceImpl() {
 
         this.approvalEventService = ApprovalEventServiceFactory.getApprovalEventService();
     }

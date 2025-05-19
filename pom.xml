@@ -223,6 +223,12 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>org.wso2.carbon.identity.user.api</groupId>
+                <artifactId>org.wso2.carbon.identity.api.user.approval.common</artifactId>
+                <version>${project.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.wso2.carbon.identity.framework</groupId>
                 <artifactId>org.wso2.carbon.identity.user.functionality.mgt</artifactId>
                 <version>${carbon.identity.framework.version}</version>
@@ -511,7 +517,7 @@
         <config.mapper.version>1.0.13</config.mapper.version>
         <identity.organization.management.version>1.4.48</identity.organization.management.version>
         <openapi-generator-maven-plugin.version>4.1.2</openapi-generator-maven-plugin.version>
-        <carbon.workflow-engine.version>1.0-SNAPSHOT</carbon.workflow-engine.version>
+        <carbon.workflow-engine.version>1.0.0</carbon.workflow-engine.version>
     </properties>
 
     <modules>
