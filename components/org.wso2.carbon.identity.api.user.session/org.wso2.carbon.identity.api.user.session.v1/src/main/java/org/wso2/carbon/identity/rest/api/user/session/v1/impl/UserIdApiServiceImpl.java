@@ -24,6 +24,8 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.identity.api.user.common.Util;
 import org.wso2.carbon.identity.api.user.session.common.util.SessionManagementServiceHolder;
+import org.wso2.carbon.identity.core.context.IdentityContext;
+import org.wso2.carbon.identity.core.context.model.Flow;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.rest.api.user.session.v1.UserIdApiService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.core.SessionManagementService;
@@ -35,6 +37,7 @@ import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 
 import java.util.Optional;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -89,6 +92,7 @@ public class UserIdApiServiceImpl extends UserIdApiService {
 
         Util.validateUserId(SessionManagementServiceHolder.getRealmService(), userId,
                 IdentityTenantUtil.resolveTenantDomain());
+        setFlowValues();
         sessionManagementService.terminateSessionBySessionId(userId, sessionId);
         return Response.noContent().build();
     }
@@ -121,12 +125,21 @@ public class UserIdApiServiceImpl extends UserIdApiService {
 
             Util.validateUserId(SessionManagementServiceHolder.getRealmService(), userId,
                     IdentityTenantUtil.resolveTenantDomain());
+            setFlowValues();
             sessionManagementService.terminateSessionsByUserId(userId);
             return Response.noContent().build();
         } catch (UserStoreException e) {
             log.error("Error occurred while invoking userstore manager.", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
+    }
 
+    private void setFlowValues() {
+
+        Flow flow = new Flow.Builder()
+                .name(Flow.Name.SESSION_REVOKE)
+                .initiatingPersona(Flow.InitiatingPersona.ADMIN)
+                .build();
+        IdentityContext.getThreadLocalIdentityContext().setFlow(flow);
     }
 }

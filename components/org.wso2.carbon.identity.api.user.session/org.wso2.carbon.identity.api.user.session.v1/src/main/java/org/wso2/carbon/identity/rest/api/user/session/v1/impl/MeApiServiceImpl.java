@@ -18,6 +18,8 @@
 
 package org.wso2.carbon.identity.rest.api.user.session.v1.impl;
 
+import org.wso2.carbon.identity.core.context.IdentityContext;
+import org.wso2.carbon.identity.core.context.model.Flow;
 import org.wso2.carbon.identity.rest.api.user.session.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.core.SessionManagementService;
 import org.wso2.carbon.identity.rest.api.user.session.v1.dto.SessionsDTO;
@@ -60,6 +62,7 @@ public class MeApiServiceImpl extends MeApiService {
     @Override
     public Response terminateSessionByLoggedInUser(String sessionId) {
 
+        setFlowValues();
         sessionManagementService.terminateSessionBySessionId(getUserFromContext(), sessionId);
 
         return Response.noContent().build();
@@ -68,8 +71,18 @@ public class MeApiServiceImpl extends MeApiService {
     @Override
     public Response terminateSessionsByLoggedInUser() {
 
+        setFlowValues();
         sessionManagementService.terminateSessionsByUserId(getUserFromContext());
 
         return Response.noContent().build();
+    }
+
+    private void setFlowValues() {
+
+        Flow flow = new Flow.Builder()
+                .name(Flow.Name.SESSION_REVOKE)
+                .initiatingPersona(Flow.InitiatingPersona.USER)
+                .build();
+        IdentityContext.getThreadLocalIdentityContext().setFlow(flow);
     }
 }
