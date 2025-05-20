@@ -28,7 +28,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>identity-api-user</artifactId>
     <packaging>pom</packaging>
-    <version>1.3.61</version>
+    <version>1.3.64-SNAPSHOT</version>
     <name>WSO2 Identity Server - User API Module</name>
     <description>
 
@@ -39,7 +39,7 @@
         <url>https://github.com/wso2/identity-api-user.git</url>
         <developerConnection>scm:git:https://github.com/wso2/identity-api-user.git</developerConnection>
         <connection>scm:git:https://github.com/wso2/identity-api-user.git</connection>
-        <tag>v1.3.61</tag>
+        <tag>HEAD</tag>
     </scm>
 
 
@@ -223,6 +223,12 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>org.wso2.carbon.identity.user.api</groupId>
+                <artifactId>org.wso2.carbon.identity.api.user.approval.common</artifactId>
+                <version>${project.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.wso2.carbon.identity.framework</groupId>
                 <artifactId>org.wso2.carbon.identity.user.functionality.mgt</artifactId>
                 <version>${carbon.identity.framework.version}</version>
@@ -288,6 +294,11 @@
                 <artifactId>org.wso2.carbon.core.services</artifactId>
                 <version>${carbon.kernel.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.workflow.engine</groupId>
+                <artifactId>workflow.engine</artifactId>
+                <version>${carbon.workflow-engine.version}</version>
             </dependency>
 
             <!-- Test Dependencies -->
@@ -491,7 +502,7 @@
         <maven.findbugsplugin.version>3.0.5</maven.findbugsplugin.version>
         <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
         <identity.oauth.version>7.0.169</identity.oauth.version>
-        <identity.org.mgt.core.version>1.1.17</identity.org.mgt.core.version>
+        <identity.org.mgt.core.version>1.1.29</identity.org.mgt.core.version>
         <identity.notification.push.version>1.0.2</identity.notification.push.version>
         <identity.notification.push.version.range>[1.0.0, 2.0.0)</identity.notification.push.version.range>
         <testng.version>6.9.10</testng.version>
@@ -506,6 +517,7 @@
         <config.mapper.version>1.0.13</config.mapper.version>
         <identity.organization.management.version>1.4.122</identity.organization.management.version>
         <openapi-generator-maven-plugin.version>4.1.2</openapi-generator-maven-plugin.version>
+        <carbon.workflow-engine.version>1.0.0</carbon.workflow-engine.version>
     </properties>
 
     <modules>
@@ -524,6 +536,7 @@
         <module>components/org.wso2.carbon.identity.api.user.organization</module>
         <module>components/org.wso2.carbon.identity.api.user.onboard</module>
         <module>components/org.wso2.carbon.identity.api.user.push</module>
+        <module>components/org.wso2.carbon.identity.api.user.approval</module>
     </modules>
 
 </project>
