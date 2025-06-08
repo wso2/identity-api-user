@@ -28,10 +28,16 @@ import org.wso2.carbon.identity.api.user.common.function.UserToUniqueId;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationUserRequestDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.BulkAssociationOperationResponseDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.BulkAssociationOperationResponseStatusDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.BulkFederatedAssociationOperationDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.BulkFederatedAssociationRequestDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.BulkFederatedAssociationResponseDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.FederatedAssociationDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.FederatedAssociationRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.IdpDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.UserDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.model.BulkAssociationPathObject;
 import org.wso2.carbon.identity.rest.api.user.association.v1.util.UserAssociationServiceHolder;
 import org.wso2.carbon.identity.user.account.association.UserAccountConnector;
 import org.wso2.carbon.identity.user.account.association.dto.UserAccountAssociationDTO;
@@ -54,6 +60,8 @@ import static org.wso2.carbon.identity.api.user.common.Constants.ERROR_CODE_DELI
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ASSOCIATION_ERROR_PREFIX;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ERROR_MSG_DELIMITER;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ErrorMessages.ERROR_CODE_PW_MANDATORY;
+import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.HTTP_DELETE;
+import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.HTTP_POST;
 
 /**
  * This service is used to execute the association related APIs through the UserAccountConnector OSGI service.
@@ -160,6 +168,88 @@ public class UserAssociationService {
         }
     }
 
+    public BulkFederatedAssociationResponseDTO handleBulkFederatedAssociations(BulkFederatedAssociationRequestDTO
+                                                                                       bulkAssociationRequest) {
+
+        BulkFederatedAssociationResponseDTO bulkAssociationResponse = new BulkFederatedAssociationResponseDTO();
+        List<BulkAssociationOperationResponseDTO> bulkAssociationOperationResponses = new ArrayList<>();
+        bulkAssociationResponse.setOperations(bulkAssociationOperationResponses);
+
+        int failOnErrorsCount = 0;
+        boolean failOnErrors = false;
+        int errorCount = 0;
+        if (bulkAssociationRequest.getFailOnErrors() != null) {
+            failOnErrorsCount = bulkAssociationRequest.getFailOnErrors();
+            failOnErrors = true;
+        }
+        List<BulkFederatedAssociationOperationDTO> bulkOperations = bulkAssociationRequest.getOperations();
+
+        for (BulkFederatedAssociationOperationDTO bulkOperation : bulkOperations) {
+            if (failOnErrors && errorCount >= failOnErrorsCount) {
+                break;
+            }
+
+            BulkAssociationOperationResponseDTO bulkAssociationOperationResponse =
+                    new BulkAssociationOperationResponseDTO();
+            BulkAssociationOperationResponseStatusDTO bulkAssociationOperationResponseStatus =
+                    new BulkAssociationOperationResponseStatusDTO();
+            bulkAssociationOperationResponse.setStatus(bulkAssociationOperationResponseStatus);
+            bulkAssociationOperationResponse.setBulkId(bulkOperation.getBulkId());
+
+            try {
+                if (HTTP_POST.equals(bulkOperation.getMethod())) {
+                    handleBulkFedAssociationPostOperation(bulkOperation);
+                    bulkAssociationOperationResponseStatus.setStatusCode(Response.Status.CREATED.getStatusCode());
+                } else if (HTTP_DELETE.equals(bulkOperation.getMethod())) {
+                    handleBulkFedAssociationDeleteOperation(bulkOperation);
+                    bulkAssociationOperationResponseStatus.setStatusCode(Response.Status.NO_CONTENT.getStatusCode());
+                } else {
+                    bulkAssociationOperationResponseStatus.setStatusCode(Response.Status.BAD_REQUEST.getStatusCode());
+                    bulkAssociationOperationResponseStatus.setErrorCode("BULK_OPERATION_INVALID_METHOD");
+                    bulkAssociationOperationResponseStatus.setErrorMessage(
+                            "Invalid method: " + bulkOperation.getMethod());
+                    bulkAssociationOperationResponseStatus.setErrorDescription("The method " + bulkOperation.getMethod()
+                            + " is not supported for bulk operations.");
+                    errorCount++;
+                    bulkAssociationOperationResponses.add(bulkAssociationOperationResponse);
+                    continue;
+                }
+            } catch (APIError e) {
+                bulkAssociationOperationResponseStatus.setStatusCode(e.getStatus().getStatusCode());
+                bulkAssociationOperationResponseStatus.setErrorCode(e.getCode());
+                bulkAssociationOperationResponseStatus.setErrorMessage(e.getMessage());
+                bulkAssociationOperationResponseStatus.setErrorDescription(e.getResponseEntity().getDescription());
+                errorCount++;
+            }
+            bulkAssociationOperationResponses.add(bulkAssociationOperationResponse);
+        }
+        return bulkAssociationResponse;
+    }
+
+    private void handleBulkFedAssociationPostOperation(
+            BulkFederatedAssociationOperationDTO bulkFederatedAssociationOperationDTO) {
+
+        BulkAssociationPathObject bulkAssociationPathObject =
+                BulkAssociationPathObject.parseBulkAssociationPathObject(
+                        bulkFederatedAssociationOperationDTO.getMethod(),
+                        bulkFederatedAssociationOperationDTO.getPath());
+
+        addFederatedUserAccountAssociation(
+                bulkAssociationPathObject.getUserId(), bulkFederatedAssociationOperationDTO.getData().getIdp(),
+                bulkFederatedAssociationOperationDTO.getData().getFederatedUserId());
+    }
+
+    private void handleBulkFedAssociationDeleteOperation(
+            BulkFederatedAssociationOperationDTO bulkFederatedAssociationOperationDTO) {
+
+        BulkAssociationPathObject bulkAssociationPathObject =
+                BulkAssociationPathObject.parseBulkAssociationPathObject(
+                        bulkFederatedAssociationOperationDTO.getMethod(),
+                        bulkFederatedAssociationOperationDTO.getPath());
+        deleteFederatedUserAccountAssociation(
+                bulkAssociationPathObject.getUserId(), bulkAssociationPathObject.getAssociationId());
+    }
+
     public void addFederatedUserAccountAssociation(String userId,
                                                    FederatedAssociationRequestDTO federatedAssociationDTO) {
 
@@ -167,6 +257,17 @@ public class UserAssociationService {
             UserAssociationServiceHolder.getFederatedAssociationManager()
                     .createFederatedAssociation(getUserFromUserId(userId), federatedAssociationDTO.getIdp(),
                             federatedAssociationDTO.getFederatedUserId());
+        } catch (FederatedAssociationManagerException e) {
+            throw handleFederatedAssociationManagerException(e, "Error while adding federated user association: "
+                    + userId);
+        }
+    }
+
+    public void addFederatedUserAccountAssociation(String userId, String idp, String federatedUserId) {
+
+        try {
+            UserAssociationServiceHolder.getFederatedAssociationManager()
+                    .createFederatedAssociation(getUserFromUserId(userId), idp, federatedUserId);
         } catch (FederatedAssociationManagerException e) {
             throw handleFederatedAssociationManagerException(e, "Error while adding federated user association: "
                     + userId);

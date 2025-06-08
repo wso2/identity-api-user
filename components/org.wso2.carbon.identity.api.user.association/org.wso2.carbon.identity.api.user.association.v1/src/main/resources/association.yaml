@@ -499,6 +499,44 @@ paths:
             $ref: '#/definitions/Error'
       tags:
         - admin
+  /federated-associations/bulk:
+    post:
+      summary: Create users' associations in bulk
+      description: |
+        This API is used to create users' association in bulk
+      parameters:
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/BulkFederatedAssociationRequest'
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/BulkFederatedAssociationResponse'
+        207:
+          description: Multi-Status
+          schema:
+            $ref: '#/definitions/BulkFederatedAssociationResponse'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+      tags:
+        - admin
 
 definitions:
 
@@ -624,6 +662,78 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Property'
+
+  BulkFederatedAssociationRequest:
+    type: object
+    properties:
+      failOnErrors:
+        type: integer
+        example: 1
+      operations:
+        type: array
+        items:
+          $ref: '#/definitions/BulkFederatedAssociationOperation'
+
+  BulkFederatedAssociationOperation:
+    type: object
+    required:
+      - method
+      - bulkId
+      - path
+    properties:
+      method:
+        type: string
+        example: "POST"
+      bulkId:
+        type: string
+        example: "ytrewq"
+      path:
+        type: string
+        example: "/b1781d25-bde5-460a-a58a-8fe8dbfd8487/federated-associations"
+      data:
+        $ref: '#/definitions/UserFederatedAssociationData'
+
+  UserFederatedAssociationData:
+    type: object
+    additionalProperties: true
+    properties:
+      idp:
+        type: string
+        example: "exampleIdP"
+      federatedUserId:
+        type: string
+        example: "john@example.com"
+
+  BulkFederatedAssociationResponse:
+    type: object
+    properties:
+      Operations:
+        type: array
+        items:
+          $ref: '#/definitions/BulkAssociationOperationResponse'
+
+  BulkAssociationOperationResponse:
+    type: object
+    properties:
+      bulkId:
+        type: string
+        example: "qwerty"
+      status:
+        type: object
+        properties:
+          statusCode:
+            type: integer
+            example: "400"
+          errorCode:
+            type: string
+            example: "UAA-10012"
+          errorMessage:
+            type: string
+            example: "Error while adding federated user association: 1890c6c0-d1a0-4eb4-8075-320756d75946"
+          errorDescription:
+            type: string
+            example: "The federated association is already associated to a local user"
+
 securityDefinitions:
   BasicAuth:
     type: basic

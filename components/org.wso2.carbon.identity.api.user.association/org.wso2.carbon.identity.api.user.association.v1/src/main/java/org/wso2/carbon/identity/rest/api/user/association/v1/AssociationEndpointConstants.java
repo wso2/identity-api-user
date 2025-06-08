@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2019-2025, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,13 @@ public class AssociationEndpointConstants {
     public static final String ASSOCIATION_ERROR_PREFIX = "UAA-";
     public static final String V1_API_PATH_COMPONENT = "/v1";
     public static final String USER_ASSOCIATIONS_PATH_COMPONENT = "/%s/associations";
+    public static final String USER_ASSOCIATIONS_COMPONENT = "associations";
     public static final String FEDERATED_USER_ASSOCIATIONS_PATH_COMPONENT = "/%s/federated-associations";
+    public static final String FEDERATED_USER_ASSOCIATIONS_COMPONENT = "federated-associations";
     public static final String ME_CONTEXT = "me";
     public static final String ERROR_MSG_DELIMITER = "-";
+    public static final String HTTP_POST = "POST";
+    public static final String HTTP_DELETE = "DELETE";
 
     /**
      * Enum for error messages.
