@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2025, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -18,9 +18,12 @@
 
 package org.wso2.carbon.identity.rest.api.user.association.v1.model;
 
+import org.wso2.carbon.identity.user.profile.mgt.association.federation.exception.FederatedAssociationManagerClientException;
+
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.FEDERATED_USER_ASSOCIATIONS_COMPONENT;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.HTTP_DELETE;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.HTTP_POST;
+import static org.wso2.carbon.identity.user.profile.mgt.association.federation.constant.FederatedAssociationConstants.ErrorMessages.INVALID_BULK_OPERATION_PATH;
 
 /**
  * Represents a bulk operation path object for user associations.
@@ -34,13 +37,16 @@ public class BulkAssociationPathObject {
     private AssociationTypes associationType;
 
     private Operations operation;
+    private static final int USER_FEDERATED_ASSOCIATIONS_PARTS = 2;
+    private static final int USER_FEDERATED_ASSOCIATION_PARTS = 3;
 
-/**
+    /**
      * Enum representing the types of operations that can be performed on user associations.
      */
     public enum Operations {
         ADD_FEDERATED_ASSOCIATION,
         REMOVE_FEDERATED_ASSOCIATION,
+        REMOVE_ALL_FEDERATED_ASSOCIATIONS
     }
 
     /**
@@ -60,29 +66,40 @@ public class BulkAssociationPathObject {
      * @return A BulkAssociationPathObject representing the parsed operation.
      */
     public static BulkAssociationPathObject parseBulkAssociationPathObject(String bulkOperationMethod,
-                                                                           String bulkOperationPath) {
+                                                                           String bulkOperationPath)
+            throws FederatedAssociationManagerClientException {
 
         BulkAssociationPathObject bulkAssociationPathObject = new BulkAssociationPathObject();
-        String[] pathParts = bulkOperationPath.split("/");
+        String sanitizedPath = bulkOperationPath.replaceAll("^/+", "").replaceAll("/+$", "");
+        String[] pathParts = sanitizedPath.split("/");
 
-        if (HTTP_POST.equals(bulkOperationMethod) && pathParts.length == 2 &&
+        if (HTTP_POST.equals(bulkOperationMethod) && pathParts.length == USER_FEDERATED_ASSOCIATIONS_PARTS &&
                 FEDERATED_USER_ASSOCIATIONS_COMPONENT.equals(pathParts[1])) {
 
             bulkAssociationPathObject.setOperation(BulkAssociationPathObject.Operations.ADD_FEDERATED_ASSOCIATION);
             bulkAssociationPathObject.setAssociationType(AssociationTypes.FEDERATED);
             bulkAssociationPathObject.setUserId(pathParts[0]);
             return bulkAssociationPathObject;
-        } else if (HTTP_DELETE.equals(bulkOperationMethod) && pathParts.length == 3 &&
-                FEDERATED_USER_ASSOCIATIONS_COMPONENT.equals(pathParts[1])) {
-
-            bulkAssociationPathObject.setOperation(BulkAssociationPathObject.Operations.REMOVE_FEDERATED_ASSOCIATION);
-            bulkAssociationPathObject.setAssociationType(AssociationTypes.FEDERATED);
-            bulkAssociationPathObject.setUserId(pathParts[0]);
-            bulkAssociationPathObject.setAssociationId(pathParts[2]);
-            return bulkAssociationPathObject;
-        } else {
-            throw new IllegalArgumentException("Invalid path for bulk operation: " + bulkOperationPath);
+        } else if (HTTP_DELETE.equals(bulkOperationMethod)) {
+            if (pathParts.length == USER_FEDERATED_ASSOCIATION_PARTS &&
+                    FEDERATED_USER_ASSOCIATIONS_COMPONENT.equals(pathParts[1])) {
+                bulkAssociationPathObject.setOperation(
+                        BulkAssociationPathObject.Operations.REMOVE_FEDERATED_ASSOCIATION);
+                bulkAssociationPathObject.setAssociationType(AssociationTypes.FEDERATED);
+                bulkAssociationPathObject.setUserId(pathParts[0]);
+                bulkAssociationPathObject.setAssociationId(pathParts[2]);
+                return bulkAssociationPathObject;
+            } else if (pathParts.length == USER_FEDERATED_ASSOCIATIONS_PARTS &&
+                    FEDERATED_USER_ASSOCIATIONS_COMPONENT.equals(pathParts[1])) {
+                bulkAssociationPathObject.setOperation(
+                        BulkAssociationPathObject.Operations.REMOVE_ALL_FEDERATED_ASSOCIATIONS);
+                bulkAssociationPathObject.setAssociationType(AssociationTypes.FEDERATED);
+                bulkAssociationPathObject.setUserId(pathParts[0]);
+                return bulkAssociationPathObject;
+            }
         }
+            throw new FederatedAssociationManagerClientException(String.valueOf(INVALID_BULK_OPERATION_PATH.getCode()),
+                    INVALID_BULK_OPERATION_PATH.getDescription());
     }
 
     /**
