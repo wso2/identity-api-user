@@ -296,8 +296,8 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.identity.workflow.engine</groupId>
-                <artifactId>workflow.engine</artifactId>
+                <groupId>org.wso2.carbon.identity.workflow</groupId>
+                <artifactId>org.wso2.carbon.identity.workflow.engine</artifactId>
                 <version>${carbon.workflow-engine.version}</version>
             </dependency>
 
@@ -517,7 +517,7 @@
         <config.mapper.version>1.0.13</config.mapper.version>
         <identity.organization.management.version>1.4.122</identity.organization.management.version>
         <openapi-generator-maven-plugin.version>4.1.2</openapi-generator-maven-plugin.version>
-        <carbon.workflow-engine.version>1.0.0</carbon.workflow-engine.version>
+        <carbon.workflow-engine.version>1.0.5-SNAPSHOT</carbon.workflow-engine.version>
     </properties>
 
     <modules>

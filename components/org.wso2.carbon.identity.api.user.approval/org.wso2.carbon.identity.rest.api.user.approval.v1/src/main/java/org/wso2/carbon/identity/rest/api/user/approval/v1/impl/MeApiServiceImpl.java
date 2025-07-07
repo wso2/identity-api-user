@@ -21,18 +21,21 @@ package org.wso2.carbon.identity.rest.api.user.approval.v1.impl;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.core.factories.ApprovalEventServiceFactory;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.model.StateDTO;
-import org.wso2.carbon.identity.workflow.engine.ApprovalEventService;
+import org.wso2.carbon.identity.workflow.engine.ApprovalTaskService;
+import org.wso2.carbon.identity.workflow.engine.exception.WorkflowEngineException;
 
 import java.util.List;
 
 import javax.ws.rs.core.Response;
+
+import static org.wso2.carbon.identity.api.user.approval.common.Util.handleError;
 
 /**
  * Class for approval management.
  */
 public class MeApiServiceImpl implements MeApiService {
 
-    private final ApprovalEventService approvalEventService;
+    private final ApprovalTaskService approvalEventService;
 
     public MeApiServiceImpl() {
 
@@ -42,21 +45,33 @@ public class MeApiServiceImpl implements MeApiService {
     @Override
     public Response getApprovalTaskInfo(String taskId) {
 
-        return Response.ok().entity(approvalEventService.getTaskData(taskId)).build();
+        try {
+            return Response.ok().entity(approvalEventService.getApprovalTaskByTaskId(taskId)).build();
+        } catch (WorkflowEngineException e) {
+            throw handleError(e);
+        }
     }
 
     @Override
     public Response listApprovalTasksForLoggedInUser(Integer limit, Integer offset, List<String> status) {
 
-        return Response.ok().entity(approvalEventService.listTasks(limit, offset, status)).build();
+        try {
+            return Response.ok().entity(approvalEventService.listApprovalTasks(limit, offset, status)).build();
+        } catch (WorkflowEngineException e) {
+            throw handleError(e);
+        }
     }
 
     @Override
     public Response updateStateOfTask(String taskId, StateDTO nextState) {
 
         org.wso2.carbon.identity.workflow.engine.dto.StateDTO nextStateDTO = convertState(nextState);
-        approvalEventService.updateStatus(taskId, nextStateDTO);
-        return Response.ok().build();
+        try {
+            approvalEventService.updateApprovalTaskStatus(taskId, nextStateDTO);
+            return Response.ok().build();
+        } catch (WorkflowEngineException e) {
+            throw handleError(e);
+        }
     }
 
     private org.wso2.carbon.identity.workflow.engine.dto.StateDTO convertState(StateDTO nextState) {

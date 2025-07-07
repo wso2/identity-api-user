@@ -121,8 +121,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.identity.workflow.engine</groupId>
-            <artifactId>workflow.engine</artifactId>
+            <groupId>org.wso2.carbon.identity.workflow</groupId>
+            <artifactId>org.wso2.carbon.identity.workflow.engine</artifactId>
         </dependency>
         <dependency>
             <groupId>io.swagger</groupId>
