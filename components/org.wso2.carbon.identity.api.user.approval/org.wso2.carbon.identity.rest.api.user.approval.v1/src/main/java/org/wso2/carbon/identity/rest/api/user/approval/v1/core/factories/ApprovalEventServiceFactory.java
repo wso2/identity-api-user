@@ -18,20 +18,21 @@
 
 package org.wso2.carbon.identity.rest.api.user.approval.v1.core.factories;
 
-import org.wso2.carbon.identity.workflow.engine.ApprovalEventService;
+import org.wso2.carbon.identity.workflow.engine.ApprovalTaskService;
+import org.wso2.carbon.identity.workflow.engine.ApprovalTaskServiceImpl;
 
 /**
  * Implementation of Approval Management REST API.
  */
 public class ApprovalEventServiceFactory {
 
-    private static final ApprovalEventService SERVICE;
+    private static final ApprovalTaskService SERVICE;
 
     static {
-        SERVICE = new ApprovalEventService();
+        SERVICE = new ApprovalTaskServiceImpl();
     }
 
-    public static ApprovalEventService getApprovalEventService() {
+    public static ApprovalTaskService getApprovalEventService() {
 
         return SERVICE;
     }
