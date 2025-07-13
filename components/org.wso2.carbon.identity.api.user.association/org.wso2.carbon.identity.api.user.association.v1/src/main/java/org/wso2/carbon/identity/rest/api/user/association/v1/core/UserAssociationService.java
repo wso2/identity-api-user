@@ -285,10 +285,10 @@ public class UserAssociationService {
 
         if (REMOVE_FEDERATED_ASSOCIATION.equals(bulkAssociationPathObject.getOperation())) {
             deleteFederatedUserAccountAssociation(
-                    bulkAssociationPathObject.getUserId(),
+                    getUserNameFromUserId(bulkAssociationPathObject.getUserId()),
                     bulkAssociationPathObject.getAssociationId());
         } else if (REMOVE_ALL_FEDERATED_ASSOCIATIONS.equals(bulkAssociationPathObject.getOperation())) {
-            deleteFederatedUserAccountAssociation(bulkAssociationPathObject.getUserId());
+            deleteFederatedUserAccountAssociation(getUserNameFromUserId(bulkAssociationPathObject.getUserId()));
         } else {
             throw handleFederatedAssociationManagerException(
                     new FederatedAssociationManagerClientException(String.valueOf(INVALID_BULK_OPERATION.getCode()),
@@ -480,6 +480,13 @@ public class UserAssociationService {
         User user = new UniqueIdToUser().apply(UserAssociationServiceHolder.getRealmService(), userId,
                 IdentityTenantUtil.resolveTenantDomain());
         return getUser(user.toFullQualifiedUsername());
+    }
+
+    private String getUserNameFromUserId(String userId) {
+
+        User user = new UniqueIdToUser().apply(UserAssociationServiceHolder.getRealmService(), userId,
+                IdentityTenantUtil.resolveTenantDomain());
+        return user.toFullQualifiedUsername();
     }
 
     private User getUser(String userId) {
