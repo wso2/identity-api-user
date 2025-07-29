@@ -16,8 +16,8 @@ info:
 servers:
   - url: 'https://localhost:9443/t/{tenant-domain}/api/users/v1/me/organizations'
     variables:
-      organization-domain:
-        default: 10084a8d-113f-4211-a0d5-efe36b082211
+      tenant-domain:
+        default: carbon.super
 security:
   - OAuth2: []
   - BasicAuth: []
@@ -65,6 +65,7 @@ paths:
         Get the root organization of the authenticated user
       description: |
         This API provides the capability to retrieve the root organization of the authenticated user.
+
         <b>Scope(Permission) required:</b> `internal_login`
       responses:
         '200':
