@@ -21,11 +21,9 @@ servers:
 security:
   - OAuth2: []
   - BasicAuth: []
-
 tags:
   - name: me
     description: Operations for the authenticated user
-
 paths:
   /:
     get:
@@ -111,7 +109,6 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/ServerError'
-
 components:
   parameters:
     filterQueryParam:
@@ -171,6 +168,7 @@ components:
       required:
         - id
         - name
+        - orgHandle
       properties:
         id:
           type: string
@@ -178,6 +176,9 @@ components:
         name:
           type: string
           example: 'ABC Builders'
+        orgHandle:
+          type: string
+          example: 'abcbuilders'
 
     OrganizationsResponse:
       type: object
@@ -216,6 +217,7 @@ components:
       required:
         - id
         - name
+        - orgHandle
         - status
         - ref
       properties:
@@ -225,6 +227,9 @@ components:
         name:
           type: string
           example: 'ABC Builders'
+        orgHandle:
+          type: string
+          example: 'abcbuilders'
         status:
           type: string
           enum: [ ACTIVE, DISABLED ]
@@ -238,6 +243,7 @@ components:
       required:
         - id
         - name
+        - orgHandle
       properties:
         id:
           type: string
@@ -245,6 +251,9 @@ components:
         name:
           type: string
           example: 'ABC Builders'
+        orgHandle:
+          type: string
+          example: 'abcbuilders'
 
     RootDescendantsOrganizationResponse:
       type: array
