@@ -35,8 +35,9 @@ public class UserFederatedAssociationDataDTO {
     private String federatedUserId = null;
 
     /**
+    * Name of the IdP
     **/
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "Name of the IdP")
     @JsonProperty("idp")
     public String getIdp() {
         return idp;
@@ -46,8 +47,9 @@ public class UserFederatedAssociationDataDTO {
     }
 
     /**
+    * User identifier in the federated IdP
     **/
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "User identifier in the federated IdP")
     @JsonProperty("federatedUserId")
     public String getFederatedUserId() {
         return federatedUserId;

@@ -18,11 +18,10 @@
 
 package org.wso2.carbon.identity.rest.api.user.association.v1.model;
 
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.BulkFederatedAssociationOperationDTO;
 import org.wso2.carbon.identity.user.profile.mgt.association.federation.exception.FederatedAssociationManagerClientException;
 
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.FEDERATED_USER_ASSOCIATIONS_COMPONENT;
-import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.HTTP_DELETE;
-import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.HTTP_POST;
 import static org.wso2.carbon.identity.user.profile.mgt.association.federation.constant.FederatedAssociationConstants.ErrorMessages.INVALID_BULK_OPERATION_PATH;
 
 /**
@@ -65,7 +64,8 @@ public class BulkAssociationPathObject {
      * @param bulkOperationPath   The path of the bulk operation.
      * @return A BulkAssociationPathObject representing the parsed operation.
      */
-    public static BulkAssociationPathObject parseBulkAssociationPathObject(String bulkOperationMethod,
+    public static BulkAssociationPathObject parseBulkAssociationPathObject(
+            BulkFederatedAssociationOperationDTO.MethodEnum bulkOperationMethod,
                                                                            String bulkOperationPath)
             throws FederatedAssociationManagerClientException {
 
@@ -73,14 +73,15 @@ public class BulkAssociationPathObject {
         String sanitizedPath = bulkOperationPath.replaceAll("^/+", "").replaceAll("/+$", "");
         String[] pathParts = sanitizedPath.split("/");
 
-        if (HTTP_POST.equals(bulkOperationMethod) && pathParts.length == USER_FEDERATED_ASSOCIATIONS_PARTS &&
+        if (BulkFederatedAssociationOperationDTO.MethodEnum.POST == bulkOperationMethod &&
+                pathParts.length == USER_FEDERATED_ASSOCIATIONS_PARTS &&
                 FEDERATED_USER_ASSOCIATIONS_COMPONENT.equals(pathParts[1])) {
 
             bulkAssociationPathObject.setOperation(BulkAssociationPathObject.Operations.ADD_FEDERATED_ASSOCIATION);
             bulkAssociationPathObject.setAssociationType(AssociationTypes.FEDERATED);
             bulkAssociationPathObject.setUserId(pathParts[0]);
             return bulkAssociationPathObject;
-        } else if (HTTP_DELETE.equals(bulkOperationMethod)) {
+        } else if (BulkFederatedAssociationOperationDTO.MethodEnum.DELETE == bulkOperationMethod) {
             if (pathParts.length == USER_FEDERATED_ASSOCIATION_PARTS &&
                     FEDERATED_USER_ASSOCIATIONS_COMPONENT.equals(pathParts[1])) {
                 bulkAssociationPathObject.setOperation(

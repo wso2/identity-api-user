@@ -29,9 +29,12 @@ import javax.validation.constraints.Pattern;
 @ApiModel(description = "")
 public class BulkFederatedAssociationOperationDTO {
 
+    public enum MethodEnum {
+         POST,  DELETE, 
+    };
     @Valid 
     @NotNull(message = "Property method cannot be null.") 
-    private String method = null;
+    private MethodEnum method = null;
 
     @Valid 
     @NotNull(message = "Property bulkId cannot be null.") 
@@ -45,13 +48,14 @@ public class BulkFederatedAssociationOperationDTO {
     private UserFederatedAssociationDataDTO data = null;
 
     /**
+    * HTTP method to be used for the operation. Supported methods are POST and, DELETE. These values\nIf the method is not specified, the operation will be treated as a bad request.\n
     **/
-    @ApiModelProperty(required = true, value = "")
+    @ApiModelProperty(required = true, value = "HTTP method to be used for the operation. Supported methods are POST and, DELETE. These values\nIf the method is not specified, the operation will be treated as a bad request.\n")
     @JsonProperty("method")
-    public String getMethod() {
+    public MethodEnum getMethod() {
         return method;
     }
-    public void setMethod(String method) {
+    public void setMethod(MethodEnum method) {
         this.method = method;
     }
 
@@ -67,8 +71,9 @@ public class BulkFederatedAssociationOperationDTO {
     }
 
     /**
+    * The path to the resource to be operated on. The path should be relative to the base path of the API.\nFull path for a federated association operation would be\n`/t/{tenant-domain}/api/users/v1/{user-id}/federated-associations/{association-id}`.\n
     **/
-    @ApiModelProperty(required = true, value = "")
+    @ApiModelProperty(required = true, value = "The path to the resource to be operated on. The path should be relative to the base path of the API.\nFull path for a federated association operation would be\n`/t/{tenant-domain}/api/users/v1/{user-id}/federated-associations/{association-id}`.\n")
     @JsonProperty("path")
     public String getPath() {
         return path;

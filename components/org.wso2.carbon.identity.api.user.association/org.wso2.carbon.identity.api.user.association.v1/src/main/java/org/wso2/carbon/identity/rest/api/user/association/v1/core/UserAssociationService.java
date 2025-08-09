@@ -62,8 +62,6 @@ import static org.wso2.carbon.identity.base.IdentityConstants.FEDERATED_ASSOCIAT
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ASSOCIATION_ERROR_PREFIX;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ERROR_MSG_DELIMITER;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ErrorMessages.ERROR_CODE_PW_MANDATORY;
-import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.HTTP_DELETE;
-import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.HTTP_POST;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.model.BulkAssociationPathObject.Operations.REMOVE_ALL_FEDERATED_ASSOCIATIONS;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.model.BulkAssociationPathObject.Operations.REMOVE_FEDERATED_ASSOCIATION;
 import static org.wso2.carbon.identity.user.profile.mgt.association.federation.constant.FederatedAssociationConstants.ErrorMessages.INVALID_BULK_OPERATION;
@@ -219,10 +217,10 @@ public class UserAssociationService {
             bulkAssociationOperationResponse.setBulkId(bulkOperation.getBulkId());
 
             try {
-                if (HTTP_POST.equals(bulkOperation.getMethod())) {
+                if (BulkFederatedAssociationOperationDTO.MethodEnum.POST == (bulkOperation.getMethod())) {
                     handleBulkFedAssociationPostOperation(bulkOperation);
                     bulkAssociationOperationResponseStatus.setStatusCode(Response.Status.CREATED.getStatusCode());
-                } else if (HTTP_DELETE.equals(bulkOperation.getMethod())) {
+                } else if (BulkFederatedAssociationOperationDTO.MethodEnum.DELETE == bulkOperation.getMethod()) {
                     handleBulkFedAssociationDeleteOperation(bulkOperation);
                     bulkAssociationOperationResponseStatus.setStatusCode(Response.Status.NO_CONTENT.getStatusCode());
                 } else {

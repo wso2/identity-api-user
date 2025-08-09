@@ -56,14 +56,12 @@ public class FederatedAssociationsApi  {
     @Path("/bulk")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @io.swagger.annotations.ApiOperation(value = "Create users' associations in bulk",
-            notes = "This API is used to create users' association in bulk\n",
+    @io.swagger.annotations.ApiOperation(value = "Create and Delete users associations in bulk",
+            notes = "This API is used to create and delete users association in bulk. <br>\nMaximum number of supported operations in a single request is 1000 by default.\nIt can be configured using a server level configuration.\n    <b>Scope required:</b>\n        * internal_user_fed_association_bulk\n",
             response = BulkFederatedAssociationResponseDTO.class)
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "Success"),
-        
-        @io.swagger.annotations.ApiResponse(code = 207, message = "Multi-Status"),
-        
+
         @io.swagger.annotations.ApiResponse(code = 400, message = "Bad Request"),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized"),

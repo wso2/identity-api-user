@@ -38,8 +38,9 @@ public class BulkFederatedAssociationRequestDTO {
     private List<BulkFederatedAssociationOperationDTO> operations = new ArrayList<BulkFederatedAssociationOperationDTO>();
 
     /**
+    * This represents whether the API should stop processing the operations if any of them fail. The subsequent\noperations after the the fail count is reached will not be processed.\nIf set to 0 or not set, the API will continue processing the operations even if some of them fail.\n
     **/
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "This represents whether the API should stop processing the operations if any of them fail. The subsequent\noperations after the the fail count is reached will not be processed.\nIf set to 0 or not set, the API will continue processing the operations even if some of them fail.\n")
     @JsonProperty("failOnErrors")
     public Integer getFailOnErrors() {
         return failOnErrors;

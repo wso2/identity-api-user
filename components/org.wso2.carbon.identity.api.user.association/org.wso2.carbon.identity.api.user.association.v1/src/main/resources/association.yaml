@@ -501,12 +501,11 @@ paths:
         - admin
   /federated-associations/bulk:
     post:
-      summary: Create users associations in bulk
+      summary: Create and Delete users associations in bulk
       description: |
-        This API is used to create users association in bulk. <br>
-        Maximum number of supported operations in a single request is 1000.
-            <b>Permission required:</b>
-                * None
+        This API is used to create and delete users association in bulk. <br>
+        Maximum number of supported operations in a single request is 1000 by default.
+        It can be configured using a server level configuration.
             <b>Scope required:</b>
                 * internal_user_fed_association_bulk
       parameters:
@@ -518,10 +517,6 @@ paths:
       responses:
         200:
           description: Success
-          schema:
-            $ref: '#/definitions/BulkFederatedAssociationResponse'
-        207:
-          description: Multi-Status
           schema:
             $ref: '#/definitions/BulkFederatedAssociationResponse'
         400:
@@ -675,7 +670,8 @@ definitions:
         type: integer
         example: 1
         description: |
-          This represents whether the API should stop processing the operations if any of them fail.
+          This represents whether the API should stop processing the operations if any of them fail. The subsequent
+          operations after the the fail count is reached will not be processed.
           If set to 0 or not set, the API will continue processing the operations even if some of them fail.
       operations:
         type: array
@@ -691,9 +687,12 @@ definitions:
     properties:
       method:
         type: string
-        example: "POST"
+        enum:
+          - POST
+          - DELETE
+        example: POST
         description: |
-          HTTP method to be used for the operation. Supported methods are POST and, DELETE.
+          HTTP method to be used for the operation. Supported methods are POST and, DELETE. These values
           If the method is not specified, the operation will be treated as a bad request.
       bulkId:
         type: string
