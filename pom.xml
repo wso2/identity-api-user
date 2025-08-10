@@ -496,7 +496,7 @@
         <org.apache.felix.annotations.version>1.2.4</org.apache.felix.annotations.version>
         <carbon.kernel.version>4.10.25</carbon.kernel.version>
         <identity.governance.version>1.11.60</identity.governance.version>
-        <carbon.identity.framework.version>7.8.146</carbon.identity.framework.version>
+        <carbon.identity.framework.version>7.8.392</carbon.identity.framework.version>
         <carbon.identity.framework.version.range>[5.14.67, 8.0.0]</carbon.identity.framework.version.range>
         <carbon.identity.account.association.version>5.5.10</carbon.identity.account.association.version>
         <maven.findbugsplugin.version>3.0.5</maven.findbugsplugin.version>
