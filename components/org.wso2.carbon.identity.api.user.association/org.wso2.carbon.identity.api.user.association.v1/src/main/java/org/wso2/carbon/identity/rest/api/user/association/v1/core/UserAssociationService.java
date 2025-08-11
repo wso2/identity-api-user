@@ -27,11 +27,18 @@ import org.wso2.carbon.identity.api.user.common.function.UniqueIdToUser;
 import org.wso2.carbon.identity.api.user.common.function.UserToUniqueId;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
+import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.AssociationUserRequestDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.BulkAssociationOperationResponseDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.BulkAssociationOperationResponseStatusDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.BulkFederatedAssociationOperationDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.BulkFederatedAssociationRequestDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.dto.BulkFederatedAssociationResponseDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.FederatedAssociationDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.FederatedAssociationRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.IdpDTO;
 import org.wso2.carbon.identity.rest.api.user.association.v1.dto.UserDTO;
+import org.wso2.carbon.identity.rest.api.user.association.v1.model.BulkAssociationPathObject;
 import org.wso2.carbon.identity.rest.api.user.association.v1.util.UserAssociationServiceHolder;
 import org.wso2.carbon.identity.user.account.association.UserAccountConnector;
 import org.wso2.carbon.identity.user.account.association.dto.UserAccountAssociationDTO;
@@ -51,9 +58,14 @@ import java.util.List;
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.common.Constants.ERROR_CODE_DELIMITER;
+import static org.wso2.carbon.identity.base.IdentityConstants.FEDERATED_ASSOCIATION_MAX_BULK_OPERATIONS;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ASSOCIATION_ERROR_PREFIX;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ERROR_MSG_DELIMITER;
 import static org.wso2.carbon.identity.rest.api.user.association.v1.AssociationEndpointConstants.ErrorMessages.ERROR_CODE_PW_MANDATORY;
+import static org.wso2.carbon.identity.rest.api.user.association.v1.model.BulkAssociationPathObject.Operations.REMOVE_ALL_FEDERATED_ASSOCIATIONS;
+import static org.wso2.carbon.identity.rest.api.user.association.v1.model.BulkAssociationPathObject.Operations.REMOVE_FEDERATED_ASSOCIATION;
+import static org.wso2.carbon.identity.user.profile.mgt.association.federation.constant.FederatedAssociationConstants.ErrorMessages.INVALID_BULK_OPERATION;
+import static org.wso2.carbon.identity.user.profile.mgt.association.federation.constant.FederatedAssociationConstants.ErrorMessages.MAXIMUM_BULK_OPERATION_LIMIT_EXCEEDED;
 
 /**
  * This service is used to execute the association related APIs through the UserAccountConnector OSGI service.
@@ -65,6 +77,7 @@ public class UserAssociationService {
     private final UserAccountConnector userAccountConnector;
     private final FederatedAssociationManager federatedAssociationManager;
     private final RealmService realmService;
+    private static int maxAllowedFederatedBulkOperations;
 
     public UserAssociationService(UserAccountConnector userAccountConnector, FederatedAssociationManager
             federatedAssociationManager, RealmService realmService) {
@@ -160,6 +173,129 @@ public class UserAssociationService {
         }
     }
 
+    /**
+     * Handles bulk federated associations. This method processes a bulk request containing multiple
+     * federated association operations (POST or DELETE).
+     *
+     * @param bulkAssociationRequest Bulk association request containing multiple operations.
+     * @return BulkFederatedAssociationResponseDTO containing the results of the operations.
+     */
+    public BulkFederatedAssociationResponseDTO handleBulkFederatedAssociations(BulkFederatedAssociationRequestDTO
+                                                                                       bulkAssociationRequest) {
+
+        List<BulkFederatedAssociationOperationDTO> bulkOperations = bulkAssociationRequest.getOperations();
+        if (bulkOperations.size() > getMaxAllowedFederatedBulkOperations()) {
+            throw new APIError(Response.Status.BAD_REQUEST, new ErrorResponse.Builder()
+                    .withCode(String.valueOf(MAXIMUM_BULK_OPERATION_LIMIT_EXCEEDED.getCode()))
+                    .withMessage(MAXIMUM_BULK_OPERATION_LIMIT_EXCEEDED.getDescription())
+                    .withDescription("The maximum number of bulk operations allowed is "
+                            + getMaxAllowedFederatedBulkOperations() + ".").build());
+        }
+
+        BulkFederatedAssociationResponseDTO bulkAssociationResponse = new BulkFederatedAssociationResponseDTO();
+        List<BulkAssociationOperationResponseDTO> bulkAssociationOperationResponses = new ArrayList<>();
+        bulkAssociationResponse.setOperations(bulkAssociationOperationResponses);
+
+        int failOnErrorsCount = 0;
+        boolean failOnErrors = false;
+        int errorCount = 0;
+        if (bulkAssociationRequest.getFailOnErrors() != null && bulkAssociationRequest.getFailOnErrors() > 0) {
+            failOnErrorsCount = bulkAssociationRequest.getFailOnErrors();
+            failOnErrors = true;
+        }
+
+        for (BulkFederatedAssociationOperationDTO bulkOperation : bulkOperations) {
+            if (failOnErrors && failOnErrorsCount > 0 && errorCount >= failOnErrorsCount) {
+                break;
+            }
+
+            BulkAssociationOperationResponseDTO bulkAssociationOperationResponse =
+                    new BulkAssociationOperationResponseDTO();
+            BulkAssociationOperationResponseStatusDTO bulkAssociationOperationResponseStatus =
+                    new BulkAssociationOperationResponseStatusDTO();
+            bulkAssociationOperationResponse.setStatus(bulkAssociationOperationResponseStatus);
+            bulkAssociationOperationResponse.setBulkId(bulkOperation.getBulkId());
+
+            try {
+                if (BulkFederatedAssociationOperationDTO.MethodEnum.POST == (bulkOperation.getMethod())) {
+                    handleBulkFedAssociationPostOperation(bulkOperation);
+                    bulkAssociationOperationResponseStatus.setStatusCode(Response.Status.CREATED.getStatusCode());
+                } else if (BulkFederatedAssociationOperationDTO.MethodEnum.DELETE == bulkOperation.getMethod()) {
+                    handleBulkFedAssociationDeleteOperation(bulkOperation);
+                    bulkAssociationOperationResponseStatus.setStatusCode(Response.Status.NO_CONTENT.getStatusCode());
+                } else {
+                    bulkAssociationOperationResponseStatus.setStatusCode(Response.Status.BAD_REQUEST.getStatusCode());
+                    bulkAssociationOperationResponseStatus.setErrorCode(
+                            String.valueOf(INVALID_BULK_OPERATION.getCode()));
+                    bulkAssociationOperationResponseStatus.setErrorMessage(
+                            String.valueOf(INVALID_BULK_OPERATION.getDescription()));
+                    bulkAssociationOperationResponseStatus.setErrorDescription(
+                            "The supported methods for bulk operations are POST and DELETE.");
+                    errorCount++;
+                    bulkAssociationOperationResponses.add(bulkAssociationOperationResponse);
+                    continue;
+                }
+            } catch (APIError e) {
+                bulkAssociationOperationResponseStatus.setStatusCode(e.getStatus().getStatusCode());
+                bulkAssociationOperationResponseStatus.setErrorCode(e.getCode());
+                bulkAssociationOperationResponseStatus.setErrorMessage(e.getMessage());
+                bulkAssociationOperationResponseStatus.setErrorDescription(e.getResponseEntity().getDescription());
+                errorCount++;
+            }
+            bulkAssociationOperationResponses.add(bulkAssociationOperationResponse);
+        }
+        return bulkAssociationResponse;
+    }
+
+    private void handleBulkFedAssociationPostOperation(
+            BulkFederatedAssociationOperationDTO bulkFederatedAssociationOperationDTO) {
+
+        BulkAssociationPathObject bulkAssociationPathObject;
+        try {
+            bulkAssociationPathObject =
+                    BulkAssociationPathObject.parseBulkAssociationPathObject(
+                            bulkFederatedAssociationOperationDTO.getMethod(),
+                            bulkFederatedAssociationOperationDTO.getPath());
+        } catch (FederatedAssociationManagerClientException e) {
+            throw handleFederatedAssociationManagerException(e,
+                    "Error while parsing bulk association path: " + bulkFederatedAssociationOperationDTO.getPath());
+        }
+
+        addFederatedUserAccountAssociation(
+                bulkAssociationPathObject.getUserId(),
+                bulkFederatedAssociationOperationDTO.getData().getIdp(),
+                bulkFederatedAssociationOperationDTO.getData().getFederatedUserId());
+    }
+
+    private void handleBulkFedAssociationDeleteOperation(
+            BulkFederatedAssociationOperationDTO bulkFederatedAssociationOperationDTO) {
+
+        BulkAssociationPathObject bulkAssociationPathObject;
+        try {
+            bulkAssociationPathObject =
+                    BulkAssociationPathObject.parseBulkAssociationPathObject(
+                            bulkFederatedAssociationOperationDTO.getMethod(),
+                            bulkFederatedAssociationOperationDTO.getPath());
+        } catch (FederatedAssociationManagerClientException e) {
+            throw handleFederatedAssociationManagerException(e,
+                    "Error while parsing bulk association path: " + bulkFederatedAssociationOperationDTO.getPath());
+        }
+
+        if (REMOVE_FEDERATED_ASSOCIATION.equals(bulkAssociationPathObject.getOperation())) {
+            deleteFederatedUserAccountAssociation(
+                    getUserNameFromUserId(bulkAssociationPathObject.getUserId()),
+                    bulkAssociationPathObject.getAssociationId());
+        } else if (REMOVE_ALL_FEDERATED_ASSOCIATIONS.equals(bulkAssociationPathObject.getOperation())) {
+            deleteFederatedUserAccountAssociation(getUserNameFromUserId(bulkAssociationPathObject.getUserId()));
+        } else {
+            throw handleFederatedAssociationManagerException(
+                    new FederatedAssociationManagerClientException(String.valueOf(INVALID_BULK_OPERATION.getCode()),
+                            INVALID_BULK_OPERATION.getDescription()),
+                    "Invalid bulk operation path: " + bulkFederatedAssociationOperationDTO.getPath());
+        }
+
+    }
+
     public void addFederatedUserAccountAssociation(String userId,
                                                    FederatedAssociationRequestDTO federatedAssociationDTO) {
 
@@ -167,6 +303,24 @@ public class UserAssociationService {
             UserAssociationServiceHolder.getFederatedAssociationManager()
                     .createFederatedAssociation(getUserFromUserId(userId), federatedAssociationDTO.getIdp(),
                             federatedAssociationDTO.getFederatedUserId());
+        } catch (FederatedAssociationManagerException e) {
+            throw handleFederatedAssociationManagerException(e, "Error while adding federated user association: "
+                    + userId);
+        }
+    }
+
+    /**
+     * Adds a federated user account association for a local user.
+     *
+     * @param userId          The unique identifier of the user.
+     * @param idp             The identity provider associated with the federated user.
+     * @param federatedUserId The unique identifier of the federated user.
+     */
+    public void addFederatedUserAccountAssociation(String userId, String idp, String federatedUserId) {
+
+        try {
+            UserAssociationServiceHolder.getFederatedAssociationManager()
+                    .createFederatedAssociation(getUserFromUserId(userId), idp, federatedUserId);
         } catch (FederatedAssociationManagerException e) {
             throw handleFederatedAssociationManagerException(e, "Error while adding federated user association: "
                     + userId);
@@ -326,6 +480,13 @@ public class UserAssociationService {
         return getUser(user.toFullQualifiedUsername());
     }
 
+    private String getUserNameFromUserId(String userId) {
+
+        User user = new UniqueIdToUser().apply(UserAssociationServiceHolder.getRealmService(), userId,
+                IdentityTenantUtil.resolveTenantDomain());
+        return user.toFullQualifiedUsername();
+    }
+
     private User getUser(String userId) {
 
         User user = new User();
@@ -333,5 +494,25 @@ public class UserAssociationService {
         user.setUserStoreDomain(UserCoreUtil.extractDomainFromName(userId));
         user.setUserName(MultitenantUtils.getTenantAwareUsername(UserCoreUtil.removeDomainFromName(userId)));
         return user;
+    }
+
+    private int getMaxAllowedFederatedBulkOperations() {
+
+        if (maxAllowedFederatedBulkOperations > 0) {
+            return maxAllowedFederatedBulkOperations;
+        }
+        String maxOperations = IdentityUtil.getProperty(FEDERATED_ASSOCIATION_MAX_BULK_OPERATIONS);
+        if (StringUtils.isNotBlank(maxOperations)) {
+            try {
+                maxAllowedFederatedBulkOperations = Integer.parseInt(maxOperations);
+            } catch (NumberFormatException e) {
+                log.warn("Invalid value for " + FEDERATED_ASSOCIATION_MAX_BULK_OPERATIONS + ": " + maxOperations
+                        + ". Using default value: 1000.");
+                maxAllowedFederatedBulkOperations = 1000;
+            }
+        } else {
+            maxAllowedFederatedBulkOperations = 1000;
+        }
+        return maxAllowedFederatedBulkOperations;
     }
 }
