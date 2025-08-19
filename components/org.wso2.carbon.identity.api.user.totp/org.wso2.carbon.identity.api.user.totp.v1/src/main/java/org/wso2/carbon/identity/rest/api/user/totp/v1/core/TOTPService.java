@@ -267,7 +267,7 @@ public class TOTPService {
                 log.debug("Validating TOTP verification code for the user: " + username);
             }
             totpResponseDTO.setIsValid(totpAuthenticator.
-                    authorizeAndStoreSecret(verificationCode, username));
+                    authorizeAndStoreSecret(verificationCode, username, getUser()));
         } catch (AuthenticationFailedException e) {
             throw handleException(e, USER_ERROR_UNAUTHORIZED_USER);
         }
