@@ -69,6 +69,7 @@ public enum StatusEnum {
 }
 
     private StatusEnum status;
+    private String version;
     private String ref;
 
     /**
@@ -153,6 +154,26 @@ public enum StatusEnum {
 
     /**
     **/
+    public Organization version(String version) {
+
+        this.version = version;
+        return this;
+    }
+    
+    @ApiModelProperty(example = "v1.0.0", required = true, value = "")
+    @JsonProperty("version")
+    @Valid
+    @NotNull(message = "Property version cannot be null.")
+
+    public String getVersion() {
+        return version;
+    }
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    /**
+    **/
     public Organization ref(String ref) {
 
         this.ref = ref;
@@ -187,12 +208,13 @@ public enum StatusEnum {
             Objects.equals(this.name, organization.name) &&
             Objects.equals(this.orgHandle, organization.orgHandle) &&
             Objects.equals(this.status, organization.status) &&
+            Objects.equals(this.version, organization.version) &&
             Objects.equals(this.ref, organization.ref);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, orgHandle, status, ref);
+        return Objects.hash(id, name, orgHandle, status, version, ref);
     }
 
     @Override
@@ -205,6 +227,7 @@ public enum StatusEnum {
         sb.append("    name: ").append(toIndentedString(name)).append("\n");
         sb.append("    orgHandle: ").append(toIndentedString(orgHandle)).append("\n");
         sb.append("    status: ").append(toIndentedString(status)).append("\n");
+        sb.append("    version: ").append(toIndentedString(version)).append("\n");
         sb.append("    ref: ").append(toIndentedString(ref)).append("\n");
         sb.append("}");
         return sb.toString();

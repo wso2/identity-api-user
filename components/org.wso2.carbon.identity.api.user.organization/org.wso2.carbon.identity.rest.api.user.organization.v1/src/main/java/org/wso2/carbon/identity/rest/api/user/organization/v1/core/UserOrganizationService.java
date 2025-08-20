@@ -271,6 +271,7 @@ public class UserOrganizationService {
                 organizationDTO.setName(organization.getName());
                 organizationDTO.setOrgHandle(organization.getOrganizationHandle());
                 organizationDTO.setStatus(Organization.StatusEnum.valueOf(organization.getStatus()));
+                organizationDTO.setVersion(organization.getVersion());
                 organizationDTO.setRef(buildOrganizationURL(organization.getId()).toString());
                 organizationDTOs.add(organizationDTO);
             }
