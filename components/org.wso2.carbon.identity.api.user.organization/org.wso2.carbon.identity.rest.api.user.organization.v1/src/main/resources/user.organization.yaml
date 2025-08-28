@@ -219,6 +219,7 @@ components:
         - name
         - orgHandle
         - status
+        - version
         - ref
       properties:
         id:
@@ -234,6 +235,9 @@ components:
           type: string
           enum: [ ACTIVE, DISABLED ]
           example: ACTIVE
+        version:
+          type: string
+          example: 'v1.0.0'
         ref:
           type: string
           example: 'o/10084a8d-113f-4211-a0d5-efe36b082211/api/server/v1/organizations/b4526d91-a8bf-43d2-8b14-c548cf73065b'
