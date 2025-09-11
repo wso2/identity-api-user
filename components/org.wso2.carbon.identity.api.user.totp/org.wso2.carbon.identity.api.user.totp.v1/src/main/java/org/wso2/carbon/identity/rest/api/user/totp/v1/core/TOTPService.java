@@ -97,12 +97,15 @@ public class TOTPService {
                     String verifySecretKey =
                             userClaimValues.get(TOTPAuthenticatorConstants.VERIFY_SECRET_KEY_CLAIM_URL);
                     if (StringUtils.isEmpty(verifySecretKey)) {
-                        TOTPAuthenticatorKey key = TOTPKeyGenerator.generateKey(user.getTenantDomain());
+                        String tenantDomain = user.getTenantDomain();
+                        TOTPAuthenticatorKey key = TOTPKeyGenerator.generateKey(tenantDomain);
                         secretKey = key.getKey();
 
-                        encoding = TOTPUtil.getEncodingMethod(user.getTenantDomain());
+                        encoding = TOTPUtil.getEncodingMethod(tenantDomain);
 
-                        claims.put(TOTPAuthenticatorConstants.VERIFY_SECRET_KEY_CLAIM_URL, TOTPUtil.encrypt(secretKey));
+                        claims.put(TOTPAuthenticatorConstants.VERIFY_SECRET_KEY_CLAIM_URL,
+                                TOTPUtil.getProcessedClaimValue(TOTPAuthenticatorConstants.VERIFY_SECRET_KEY_CLAIM_URL,
+                                        secretKey, tenantDomain));
                         claims.put(TOTPAuthenticatorConstants.ENCODING_CLAIM_URL, encoding);
                         TOTPKeyGenerator.addTOTPClaimsAndRetrievingQRCodeURL(claims, user.toFullQualifiedUsername());
                     } else {
