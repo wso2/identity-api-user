@@ -18,10 +18,14 @@
 
 package org.wso2.carbon.identity.rest.api.user.approval.v1.impl;
 
+import org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant;
+import org.wso2.carbon.identity.api.user.common.error.APIError;
+import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.core.factories.ApprovalEventServiceFactory;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.model.StateDTO;
 import org.wso2.carbon.identity.workflow.engine.ApprovalTaskService;
+import org.wso2.carbon.identity.workflow.engine.dto.ApprovalTaskDTO;
 import org.wso2.carbon.identity.workflow.engine.exception.WorkflowEngineException;
 
 import java.util.List;
@@ -46,7 +50,14 @@ public class MeApiServiceImpl implements MeApiService {
     public Response getApprovalTaskInfo(String taskId) {
 
         try {
-            return Response.ok().entity(approvalEventService.getApprovalTaskByTaskId(taskId)).build();
+            ApprovalTaskDTO task = approvalEventService.getApprovalTaskByTaskId(taskId);
+            if (task == null) {
+                throw new APIError(Response.Status.NOT_FOUND, new ErrorResponse.Builder().withCode(
+                                ApprovalConstant.ErrorMessage.USER_ERROR_NON_EXISTING_TASK_ID.getCode())
+                        .withMessage(ApprovalConstant.ErrorMessage.USER_ERROR_NON_EXISTING_TASK_ID.getMessage())
+                        .build());
+            }
+            return Response.ok().entity(task).build();
         } catch (WorkflowEngineException e) {
             throw handleError(e);
         }
