@@ -416,9 +416,17 @@ public class RecoveryUtil {
                 .buildApiCall(APICalls.RESET_PASSWORD_API.getType(), Constants.RelationStates.NEXT_REL,
                         buildURIForBody(tenantDomain, APICalls.RESET_PASSWORD_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
-        RetryErrorResponse retryErrorResponse = buildRetryErrorResponse(
-                Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, code, description, resetCode, correlationId,
-                apiCallsArrayList);
+
+        RetryErrorResponse retryErrorResponse;
+        if (isNormalizedRetryErrorResponseEnabled()) {
+            retryErrorResponse = buildRetryErrorResponse(
+                    Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, description, code, resetCode, correlationId,
+                    apiCallsArrayList);
+        } else {
+            retryErrorResponse = buildRetryErrorResponse(
+                    Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, code, description, resetCode,
+                    correlationId, apiCallsArrayList);
+        }
         LOG.debug(description);
         return new PreconditionFailedException(retryErrorResponse);
     }
@@ -443,5 +451,15 @@ public class RecoveryUtil {
             }
         }
         return exceptionErrorCode;
+    }
+
+    /**
+     * Check whether the correct retry error response is enabled.
+     *
+     * @return true if the correct retry error response is enabled, false otherwise.
+     */
+    private static boolean isNormalizedRetryErrorResponseEnabled() {
+
+        return Boolean.parseBoolean(IdentityUtil.getProperty(Constants.ENABLE_NORMALIZED_RETRY_ERROR_RESPONSE));
     }
 }
