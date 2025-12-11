@@ -460,7 +460,8 @@ public class RecoveryUtil {
      */
     private static boolean isNormalizedRetryErrorResponseEnabled() {
 
-        boolean isEnabled = Boolean.parseBoolean(IdentityUtil.getProperty(Constants.ENABLE_NORMALIZED_RETRY_ERROR_RESPONSE));
+        boolean isEnabled = Boolean.parseBoolean(IdentityUtil.getProperty(
+                Constants.ENABLE_NORMALIZED_RETRY_ERROR_RESPONSE));
         if (LOG.isDebugEnabled()) {
             LOG.debug("Normalized retry error response enabled: " + isEnabled);
         }
