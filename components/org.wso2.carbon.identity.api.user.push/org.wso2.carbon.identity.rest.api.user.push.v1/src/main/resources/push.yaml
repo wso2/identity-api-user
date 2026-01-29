@@ -242,6 +242,8 @@ components:
           type: string
           description: Signature string comprising of the pushId and the challenge
           example: 'rT/VxgPYMioT6wHajYg0mJpBv46HvFBm/elZ/VL4ClUIFfX7i3Ou5ER5sEiFtehaurLXPNsA8hF4SQAueVBRymEAmchhwYlT160g3wv6kDQvWLkTqnLWGfn++wg5xRManOoN9zG9GhxCgRr9y+lk9rtvydfX0lTcdEZBkynSJnM='
+        provider:
+          $ref: '#/components/schemas/ProviderDTO'
     RegistrationResponseDTO:
       type: object
       description: The registration response sent after successful device registration.
@@ -270,6 +272,19 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/DeviceDTO'
+    ProviderDTO:
+      type: object
+      description: Provider information with metadata
+      properties:
+        name:
+          type: string
+          description: Provider name
+          example: AmazonSNS
+        metadata:
+          type: object
+          description: Provider metadata as key-value pairs
+          additionalProperties:
+            type: string
     RemoveRequestDTO:
       type: object
       description: Remove device request body sent from the device
