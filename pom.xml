@@ -253,6 +253,12 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>org.wso2.carbon.identity.user.api</groupId>
+                <artifactId>org.wso2.carbon.identity.api.user.password.common</artifactId>
+                <version>${project.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
                 <groupId>commons-lang.wso2</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>${commons-lang.wso2.version}</version>
@@ -537,6 +543,7 @@
         <module>components/org.wso2.carbon.identity.api.user.onboard</module>
         <module>components/org.wso2.carbon.identity.api.user.push</module>
         <module>components/org.wso2.carbon.identity.api.user.approval</module>
+        <module>components/org.wso2.carbon.identity.api.user.password</module>
     </modules>
 
 </project>
