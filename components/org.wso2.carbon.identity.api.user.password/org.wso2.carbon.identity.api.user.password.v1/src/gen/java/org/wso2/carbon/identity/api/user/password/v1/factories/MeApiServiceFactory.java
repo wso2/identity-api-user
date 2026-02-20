@@ -23,10 +23,10 @@ import org.wso2.carbon.identity.api.user.password.v1.impl.MeApiServiceImpl;
 
 public class MeApiServiceFactory {
 
-   private final static MeApiService service = new MeApiServiceImpl();
+   private final static MeApiService SERVICE = new MeApiServiceImpl();
 
-   public static MeApiService getMeApi()
-   {
-      return service;
+   public static MeApiService getMeApi() {
+
+      return SERVICE;
    }
 }

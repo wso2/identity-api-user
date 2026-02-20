@@ -19,28 +19,32 @@
 package org.wso2.carbon.identity.api.user.password.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.*;
 
 
+import io.swagger.annotations.*;
 import java.util.Objects;
 import javax.validation.Valid;
+import javax.xml.bind.annotation.*;
 
-public class PasswordUpdateRequest  {
+public class PasswordChangeRequest  {
   
     private String currentPassword;
     private String newPassword;
 
     /**
-    * Current password of the user
+    * Current password of the user.
     **/
-    public PasswordUpdateRequest currentPassword(String currentPassword) {
+    public PasswordChangeRequest currentPassword(String currentPassword) {
 
         this.currentPassword = currentPassword;
         return this;
     }
     
-    @ApiModelProperty(example = "CurrentPassword123", required = true, value = "Current password of the user")
+    @ApiModelProperty(example = "CurrentPassword123", required = true, value = "Current password of the user.")
     @JsonProperty("currentPassword")
     @Valid
     @NotNull(message = "Property currentPassword cannot be null.")
@@ -53,15 +57,15 @@ public class PasswordUpdateRequest  {
     }
 
     /**
-    * New password for the user
+    * New password to set for the user.
     **/
-    public PasswordUpdateRequest newPassword(String newPassword) {
+    public PasswordChangeRequest newPassword(String newPassword) {
 
         this.newPassword = newPassword;
         return this;
     }
     
-    @ApiModelProperty(example = "NewPassword123", required = true, value = "New password for the user")
+    @ApiModelProperty(example = "NewPassword456", required = true, value = "New password to set for the user.")
     @JsonProperty("newPassword")
     @Valid
     @NotNull(message = "Property newPassword cannot be null.")
@@ -84,9 +88,9 @@ public class PasswordUpdateRequest  {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        PasswordUpdateRequest passwordUpdateRequest = (PasswordUpdateRequest) o;
-        return Objects.equals(this.currentPassword, passwordUpdateRequest.currentPassword) &&
-            Objects.equals(this.newPassword, passwordUpdateRequest.newPassword);
+        PasswordChangeRequest passwordChangeRequest = (PasswordChangeRequest) o;
+        return Objects.equals(this.currentPassword, passwordChangeRequest.currentPassword) &&
+            Objects.equals(this.newPassword, passwordChangeRequest.newPassword);
     }
 
     @Override
@@ -98,7 +102,7 @@ public class PasswordUpdateRequest  {
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("class PasswordUpdateRequest {\n");
+        sb.append("class PasswordChangeRequest {\n");
         
         sb.append("    currentPassword: ").append(toIndentedString(currentPassword)).append("\n");
         sb.append("    newPassword: ").append(toIndentedString(newPassword)).append("\n");

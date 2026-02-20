@@ -19,6 +19,7 @@
 package org.wso2.carbon.identity.api.user.password.common;
 
 import org.wso2.carbon.context.PrivilegedCarbonContext;
+import org.wso2.carbon.identity.event.services.IdentityEventService;
 import org.wso2.carbon.user.core.service.RealmService;
 
 /**
@@ -35,6 +36,12 @@ public class PasswordServiceHolder {
                 .getThreadLocalCarbonContext().getOSGiService(RealmService.class, null);
     }
 
+    private static class IdentityEventServiceHolder {
+
+        static final IdentityEventService SERVICE = (IdentityEventService) PrivilegedCarbonContext
+                .getThreadLocalCarbonContext().getOSGiService(IdentityEventService.class, null);
+    }
+
     /**
      * Method to get the RealmService OSGi service.
      *
@@ -42,7 +49,25 @@ public class PasswordServiceHolder {
      */
     public static RealmService getRealmService() {
 
-        return RealmServiceHolder.SERVICE;
+        RealmService service = RealmServiceHolder.SERVICE;
+        if (service == null) {
+            throw new IllegalStateException("RealmService is not available from OSGi context.");
+        }
+        return service;
+    }
+
+    /**
+     * Method to get the IdentityEventService OSGi service.
+     *
+     * @return IdentityEventService.
+     */
+    public static IdentityEventService getIdentityEventService() {
+
+        IdentityEventService service = IdentityEventServiceHolder.SERVICE;
+        if (service == null) {
+            throw new IllegalStateException("IdentityEventService is not available from OSGi context.");
+        }
+        return service;
     }
 }
 

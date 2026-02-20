@@ -20,23 +20,44 @@ package org.wso2.carbon.identity.api.user.password.v1.factories;
 
 import org.wso2.carbon.identity.api.user.password.common.PasswordServiceHolder;
 import org.wso2.carbon.identity.api.user.password.v1.core.PasswordService;
+import org.wso2.carbon.user.core.service.RealmService;
 
 /**
  * Factory class for PasswordService.
  */
 public class PasswordServiceFactory {
 
-    private static final PasswordService SERVICE = new PasswordService(PasswordServiceHolder.getRealmService());
+    private PasswordServiceFactory() {
+
+    }
+
+    private static class PasswordServiceInstanceHolder {
+
+        private static final PasswordService SERVICE = createServiceInstance();
+    }
+
+    private static PasswordService createServiceInstance() {
+
+        RealmService realmService = getRealmService();
+        return new PasswordService(realmService);
+    }
 
     /**
      * Get PasswordService instance.
      *
-     * @return PasswordService instance
+     * @return PasswordService.
      */
     public static PasswordService getPasswordService() {
 
-        return SERVICE;
+        return PasswordServiceInstanceHolder.SERVICE;
+    }
+
+    private static RealmService getRealmService() {
+
+        RealmService service = PasswordServiceHolder.getRealmService();
+        if (service == null) {
+            throw new IllegalStateException("RealmService is not available from OSGi context.");
+        }
+        return service;
     }
 }
-
-

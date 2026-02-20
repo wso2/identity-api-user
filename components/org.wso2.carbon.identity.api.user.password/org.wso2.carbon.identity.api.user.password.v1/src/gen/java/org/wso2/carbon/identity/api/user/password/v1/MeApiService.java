@@ -18,12 +18,18 @@
 
 package org.wso2.carbon.identity.api.user.password.v1;
 
-import org.wso2.carbon.identity.api.user.password.v1.model.PasswordUpdateRequest;
-
+import org.wso2.carbon.identity.api.user.password.v1.*;
+import org.wso2.carbon.identity.api.user.password.v1.model.*;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import java.io.InputStream;
+import java.util.List;
+import org.wso2.carbon.identity.api.user.password.v1.model.Error;
+import org.wso2.carbon.identity.api.user.password.v1.model.PasswordChangeRequest;
 import javax.ws.rs.core.Response;
 
 
 public interface MeApiService {
 
-      public Response updatePassword(PasswordUpdateRequest passwordUpdateRequest);
+      public Response changePassword(PasswordChangeRequest passwordChangeRequest);
 }

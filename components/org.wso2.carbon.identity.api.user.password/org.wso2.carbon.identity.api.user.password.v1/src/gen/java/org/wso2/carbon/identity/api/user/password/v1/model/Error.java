@@ -19,14 +19,18 @@
 package org.wso2.carbon.identity.api.user.password.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.*;
 
 
+import io.swagger.annotations.*;
 import java.util.Objects;
 import javax.validation.Valid;
+import javax.xml.bind.annotation.*;
 
-public class ErrorDTO  {
+public class Error  {
   
     private String code;
     private String message;
@@ -35,13 +39,13 @@ public class ErrorDTO  {
 
     /**
     **/
-    public ErrorDTO code(String code) {
+    public Error code(String code) {
 
         this.code = code;
         return this;
     }
     
-    @ApiModelProperty(example = "60001", required = true, value = "")
+    @ApiModelProperty(example = "PWD-10001", required = true, value = "")
     @JsonProperty("code")
     @Valid
     @NotNull(message = "Property code cannot be null.")
@@ -55,7 +59,7 @@ public class ErrorDTO  {
 
     /**
     **/
-    public ErrorDTO message(String message) {
+    public Error message(String message) {
 
         this.message = message;
         return this;
@@ -75,13 +79,13 @@ public class ErrorDTO  {
 
     /**
     **/
-    public ErrorDTO description(String description) {
+    public Error description(String description) {
 
         this.description = description;
         return this;
     }
     
-    @ApiModelProperty(example = "The current password you entered is incorrect.", value = "")
+    @ApiModelProperty(example = "The current password provided is incorrect.", value = "")
     @JsonProperty("description")
     @Valid
     public String getDescription() {
@@ -93,7 +97,7 @@ public class ErrorDTO  {
 
     /**
     **/
-    public ErrorDTO traceId(String traceId) {
+    public Error traceId(String traceId) {
 
         this.traceId = traceId;
         return this;
@@ -120,11 +124,11 @@ public class ErrorDTO  {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ErrorDTO errorDTO = (ErrorDTO) o;
-        return Objects.equals(this.code, errorDTO.code) &&
-            Objects.equals(this.message, errorDTO.message) &&
-            Objects.equals(this.description, errorDTO.description) &&
-            Objects.equals(this.traceId, errorDTO.traceId);
+        Error error = (Error) o;
+        return Objects.equals(this.code, error.code) &&
+            Objects.equals(this.message, error.message) &&
+            Objects.equals(this.description, error.description) &&
+            Objects.equals(this.traceId, error.traceId);
     }
 
     @Override
@@ -136,7 +140,7 @@ public class ErrorDTO  {
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("class ErrorDTO {\n");
+        sb.append("class Error {\n");
         
         sb.append("    code: ").append(toIndentedString(code)).append("\n");
         sb.append("    message: ").append(toIndentedString(message)).append("\n");

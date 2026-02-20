@@ -45,11 +45,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.wso2.carbon.identity.user.api</groupId>
-            <artifactId>org.wso2.carbon.identity.api.user.common</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.user.core</artifactId>
             <scope>provided</scope>
@@ -57,6 +52,11 @@
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.utils</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity.framework</groupId>
+            <artifactId>org.wso2.carbon.identity.event</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>

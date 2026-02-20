@@ -21,26 +21,26 @@ package org.wso2.carbon.identity.api.user.password.v1.impl;
 import org.wso2.carbon.identity.api.user.password.v1.MeApiService;
 import org.wso2.carbon.identity.api.user.password.v1.core.PasswordService;
 import org.wso2.carbon.identity.api.user.password.v1.factories.PasswordServiceFactory;
-import org.wso2.carbon.identity.api.user.password.v1.model.PasswordUpdateRequest;
-import org.wso2.carbon.identity.api.user.password.v1.model.PasswordUpdateResponse;
+import org.wso2.carbon.identity.api.user.password.v1.model.PasswordChangeRequest;
 
 import javax.ws.rs.core.Response;
 
 /**
- * Implementation of the Me API Service for password management.
+ * Implementation of the Me API Service for password change.
  */
 public class MeApiServiceImpl implements MeApiService {
 
     private final PasswordService passwordService;
 
     public MeApiServiceImpl() {
+
         this.passwordService = PasswordServiceFactory.getPasswordService();
     }
 
     @Override
-    public Response updatePassword(PasswordUpdateRequest passwordUpdateRequest) {
+    public Response changePassword(PasswordChangeRequest passwordChangeRequest) {
 
-        PasswordUpdateResponse response = passwordService.updatePassword(passwordUpdateRequest);
-        return Response.ok().entity(response).build();
+        passwordService.changePassword(passwordChangeRequest);
+        return Response.noContent().build();
     }
 }
