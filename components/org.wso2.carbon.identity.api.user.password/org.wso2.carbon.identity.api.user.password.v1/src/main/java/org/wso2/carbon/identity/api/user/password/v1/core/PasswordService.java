@@ -22,13 +22,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.identity.api.user.common.ContextLoader;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.api.user.password.common.Constants;
 import org.wso2.carbon.identity.api.user.password.common.PasswordServiceHolder;
 import org.wso2.carbon.identity.api.user.password.v1.model.PasswordChangeRequest;
-import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.central.log.mgt.utils.LoggerUtils;
 import org.wso2.carbon.identity.core.context.IdentityContext;
 import org.wso2.carbon.identity.core.context.model.Flow;
@@ -42,7 +41,6 @@ import org.wso2.carbon.identity.user.action.api.constant.UserActionError;
 import org.wso2.carbon.identity.user.action.api.exception.UserActionExecutionClientException;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
-import org.wso2.carbon.user.core.UserCoreConstants;
 import org.wso2.carbon.user.core.UserStoreClientException;
 import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 import org.wso2.carbon.user.core.constants.UserCoreErrorConstants;
@@ -62,8 +60,9 @@ public class PasswordService {
     private static final Log LOG = LogFactory.getLog(PasswordService.class);
 
     private static final String ERROR_CODE_PASSWORD_HISTORY_VIOLATION = "22001";
-    private static final String ERROR_CODE_INVALID_CREDENTIAL = "30003";
-    private static final String ERROR_CODE_INVALID_CREDENTIAL_DURING_UPDATE = "36001";
+    private static final String ERROR_CODE_INVALID_PASSWORD = "30003";
+    private static final String ERROR_CODE_OLD_CREDENTIAL_DOES_NOT_MATCH = "30006";
+    private static final String ERROR_CODE_INVALID_CREDENTIAL_DURING_UPDATE = "35001";
     private static final String ERROR_CODE_READ_ONLY_USERSTORE = "30002";
 
     private final RealmService realmService;
@@ -88,9 +87,13 @@ public class PasswordService {
 
         validatePasswordChangeRequest(passwordChangeRequest);
 
-        User user = ContextLoader.getUserFromContext();
-        String tenantDomain = ContextLoader.getTenantDomainFromContext();
-        int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
+        int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
+
+        String userID = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserId();
+        if (StringUtils.isEmpty(userID)) {
+            throw handleError(Response.Status.INTERNAL_SERVER_ERROR,
+                    Constants.ErrorMessage.ERROR_CODE_ERROR_UPDATING_PASSWORD);
+        }
 
         try {
             UserRealm userRealm = realmService.getTenantUserRealm(tenantId);
@@ -101,26 +104,6 @@ public class PasswordService {
 
             AbstractUserStoreManager userStoreManager =
                     (AbstractUserStoreManager) userRealm.getUserStoreManager();
-            String username = user.getUserName();
-            String userStoreDomain = user.getUserStoreDomain();
-
-            if (StringUtils.isNotEmpty(userStoreDomain)) {
-                username = userStoreDomain + UserCoreConstants.DOMAIN_SEPARATOR + username;
-            }
-
-            // Validate the current password by authenticating the user.
-            boolean isAuthenticated = userStoreManager.authenticate(username,
-                    passwordChangeRequest.getCurrentPassword());
-            if (!isAuthenticated) {
-                throw handleError(Response.Status.BAD_REQUEST,
-                        Constants.ErrorMessage.ERROR_CODE_INVALID_CURRENT_PASSWORD);
-            }
-
-            String userID = userStoreManager.getUserIDFromUserName(username);
-            if (StringUtils.isEmpty(userID)) {
-                throw handleError(Response.Status.INTERNAL_SERVER_ERROR,
-                        Constants.ErrorMessage.ERROR_CODE_ERROR_UPDATING_PASSWORD);
-            }
 
             // Enter password update flow for context transfer to downstream handlers.
             IdentityContext.getThreadLocalIdentityContext().enterFlow(
@@ -130,9 +113,11 @@ public class PasswordService {
                             .initiatingPersona(Flow.InitiatingPersona.USER)
                             .build());
             try {
-                userStoreManager.updateCredentialByAdminWithID(userID,
-                        passwordChangeRequest.getNewPassword());
-                publishCredentialUpdateEvent(username, tenantDomain, tenantId,
+                userStoreManager.updateCredentialWithID(userID,
+                        passwordChangeRequest.getNewPassword(),
+                        passwordChangeRequest.getCurrentPassword());
+                String username = userStoreManager.getUserNameFromUserID(userID);
+                publishCredentialUpdateEvent(userID, username, tenantId,
                         passwordChangeRequest.getNewPassword());
             } finally {
                 IdentityContext.getThreadLocalIdentityContext().exitFlow();
@@ -148,22 +133,23 @@ public class PasswordService {
             if (rootCause instanceof UserStoreClientException) {
                 throw handleUserStoreClientException((UserStoreClientException) rootCause);
             }
+            handleExceptionOnInvalidCurrentPassword(e);
             handleExceptionOnPasswordPolicy(e);
-            throw handleUserStoreException(e, user.getUserName());
+            throw handleUserStoreException(e, userID);
         }
     }
 
     /**
      * Publish credential update event after a successful password change.
      *
-     * @param username     Username of the user.
-     * @param tenantDomain Tenant domain.
-     * @param tenantId     Tenant ID.
-     * @param credential   New credential.
+     * @param userID     User ID of the user.
+     * @param username   Username of the user.
+     * @param tenantId   Tenant ID.
+     * @param credential New credential.
      */
-    private void publishCredentialUpdateEvent(String username, String tenantDomain, int tenantId,
-                                              String credential) {
+    private void publishCredentialUpdateEvent(String userID, String username, int tenantId, String credential) {
 
+        String tenantDomain = IdentityTenantUtil.getTenantDomain(tenantId);
         HashMap<String, Object> properties = new HashMap<>();
         properties.put(IdentityEventConstants.EventProperty.USER_NAME,
                 UserCoreUtil.removeDomainFromName(username));
@@ -185,7 +171,7 @@ public class PasswordService {
                 LoggerUtils.triggerDiagnosticLogEvent(new DiagnosticLog.DiagnosticLogBuilder(
                         Constants.LogConstants.USER_PASSWORD_API,
                         Constants.LogConstants.CHANGE_PASSWORD)
-                        .inputParam("username", maskIfRequired(username))
+                        .inputParam("userId", userID)
                         .resultMessage("Failed to publish POST_UPDATE_CREDENTIAL_BY_ME_API event after " +
                                 "successful password change. Post-update handlers may not have executed.")
                         .logDetailLevel(DiagnosticLog.LogDetailLevel.APPLICATION)
@@ -214,9 +200,22 @@ public class PasswordService {
     }
 
     /**
-     * Handle exceptions caused due to password policy violations (invalid credentials,
-     * policy violations, or password history violations).
-     * 
+     * Handle exceptions caused by an invalid current password during credential update.
+     *
+     * @param e UserStoreException to check for invalid current password.
+     * @throws APIError if the exception is caused by an invalid current password.
+     */
+    private void handleExceptionOnInvalidCurrentPassword(UserStoreException e) {
+
+        if (e.getMessage() != null && e.getMessage().contains(ERROR_CODE_OLD_CREDENTIAL_DOES_NOT_MATCH)) {
+            throw handleError(Response.Status.BAD_REQUEST, Constants.ErrorMessage.ERROR_CODE_INVALID_CURRENT_PASSWORD);
+        }
+    }
+
+    /**
+     * Handle exceptions caused due to password policy violations, password validation failures,
+     * or password history violations.
+     *
      * @param e UserStoreException to check for password policy violations.
      * @throws APIError if the exception is caused by a password policy violation.
      */
@@ -229,10 +228,10 @@ public class PasswordService {
             String errorMessage = current.getMessage();
 
             if (current instanceof UserStoreException && errorMessage != null &&
-                    (errorMessage.contains(ERROR_CODE_INVALID_CREDENTIAL) ||
+                    (errorMessage.contains(ERROR_CODE_INVALID_PASSWORD) ||
                             errorMessage.contains(ERROR_CODE_INVALID_CREDENTIAL_DURING_UPDATE))) {
                 throw handleClientException(
-                        Constants.ErrorMessage.ERROR_CODE_INVALID_CURRENT_PASSWORD, errorMessage);
+                        Constants.ErrorMessage.ERROR_CODE_PASSWORD_POLICY_VIOLATION, errorMessage);
             }
 
             if (current instanceof PolicyViolationException) {
