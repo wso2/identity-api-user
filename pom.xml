@@ -178,6 +178,18 @@
                 <version>${carbon.identity.framework.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
+                <artifactId>org.wso2.carbon.identity.mgt</artifactId>
+                <version>${carbon.identity.framework.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
+                <artifactId>org.wso2.carbon.identity.central.log.mgt</artifactId>
+                <version>${carbon.identity.framework.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.wso2.carbon.identity.inbound.auth.oauth2</groupId>
                 <artifactId>org.wso2.carbon.identity.oauth</artifactId>
                 <version>${identity.oauth.version}</version>
@@ -249,6 +261,12 @@
             <dependency>
                 <groupId>org.wso2.carbon.identity.user.api</groupId>
                 <artifactId>org.wso2.carbon.identity.api.user.functionality.common</artifactId>
+                <version>${project.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.user.api</groupId>
+                <artifactId>org.wso2.carbon.identity.api.user.password.common</artifactId>
                 <version>${project.version}</version>
                 <scope>provided</scope>
             </dependency>
@@ -361,6 +379,12 @@
                 <groupId>org.wso2.carbon.identity.governance</groupId>
                 <artifactId>org.wso2.carbon.identity.user.onboard.core.service</artifactId>
                 <version>${identity.governance.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
+                <artifactId>org.wso2.carbon.identity.user.action</artifactId>
+                <version>${carbon.identity.framework.version}</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -510,7 +534,7 @@
         <org.apache.felix.annotations.version>1.2.4</org.apache.felix.annotations.version>
         <carbon.kernel.version>4.10.25</carbon.kernel.version>
         <identity.governance.version>1.11.60</identity.governance.version>
-        <carbon.identity.framework.version>7.8.392</carbon.identity.framework.version>
+        <carbon.identity.framework.version>7.10.17</carbon.identity.framework.version>
         <carbon.identity.framework.version.range>[5.14.67, 8.0.0]</carbon.identity.framework.version.range>
         <carbon.identity.account.association.version>5.5.10</carbon.identity.account.association.version>
         <maven.spotbugsplugin.version>4.9.8.2</maven.spotbugsplugin.version>
@@ -551,6 +575,7 @@
         <module>components/org.wso2.carbon.identity.api.user.onboard</module>
         <module>components/org.wso2.carbon.identity.api.user.push</module>
         <module>components/org.wso2.carbon.identity.api.user.approval</module>
+        <module>components/org.wso2.carbon.identity.api.user.password</module>
     </modules>
 
 </project>
