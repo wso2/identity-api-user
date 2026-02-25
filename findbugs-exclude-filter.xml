@@ -47,4 +47,19 @@
         <Class name="org.wso2.carbon.identity.rest.api.user.recovery.v1.impl.core.exceptions.InternalServerErrorException" />
         <Bug pattern="UUF_UNUSED_FIELD"/>
     </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
+        <Bug pattern="MS_EXPOSE_REP"/>
+    </Match>
+    <Match>
+        <Bug pattern="CT_CONSTRUCTOR_THROW"/>
+    </Match>
+    <Match>
+        <Bug pattern="THROWS_METHOD_THROWS_RUNTIMEEXCEPTION"/>
+    </Match>
 </FindBugsFilter>

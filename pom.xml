@@ -384,7 +384,7 @@
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
-                    <version>2.4.0</version>
+                    <version>5.1.9</version>
                     <extensions>true</extensions>
                     <configuration>
                         <obrRepository>NONE</obrRepository>
@@ -411,14 +411,14 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>findbugs-maven-plugin</artifactId>
-                    <version>${maven.findbugsplugin.version}</version>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${maven.spotbugsplugin.version}</version>
                     <configuration>
                         <effort>Max</effort>
                         <threshold>Low</threshold>
                         <xmlOutput>true</xmlOutput>
-                        <findbugsXmlOutputDirectory>${project.build.directory}/findbugs</findbugsXmlOutputDirectory>
+                        <spotbugsXmlOutputDirectory>${project.build.directory}/spotbugs</spotbugsXmlOutputDirectory>
                         <!--Exclude sources-->
                         <excludeFilterFile>${mavan.findbugsplugin.exclude.file}</excludeFilterFile>
                         <plugins>
@@ -468,8 +468,8 @@
                 <inherited>true</inherited>
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>21</source>
+                    <target>21</target>
                     <parameters>true</parameters>
                 </configuration>
             </plugin>
@@ -477,12 +477,26 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>buildnumber-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>analyze-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
 
     <properties>
         <!--Maven Plugin Version-->
-        <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
+        <maven.compiler.plugin.version>3.14.1</maven.compiler.plugin.version>
         <maven.bundle.plugin.version>2.4.0</maven.bundle.plugin.version>
         <jackson-jaxrs-json-provider.version>2.18.0</jackson-jaxrs-json-provider.version>
         <jackson-databind.version>2.16.1</jackson-databind.version>
@@ -499,7 +513,7 @@
         <carbon.identity.framework.version>7.8.392</carbon.identity.framework.version>
         <carbon.identity.framework.version.range>[5.14.67, 8.0.0]</carbon.identity.framework.version.range>
         <carbon.identity.account.association.version>5.5.10</carbon.identity.account.association.version>
-        <maven.findbugsplugin.version>3.0.5</maven.findbugsplugin.version>
+        <maven.spotbugsplugin.version>4.9.8.2</maven.spotbugsplugin.version>
         <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
         <identity.oauth.version>7.0.169</identity.oauth.version>
         <identity.org.mgt.core.version>1.1.52</identity.org.mgt.core.version>
