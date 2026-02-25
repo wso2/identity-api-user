@@ -263,11 +263,12 @@ public class PasswordService {
          unwrapped accordingly. Since there is a possibility of altering the error stack and not constructing the
          failure response correctly, integration tests are added to detect any regressions.
          */
+        Throwable rootCause = e.getCause() != null && e.getCause().getCause() != null
+                ? e.getCause().getCause().getCause() : null;
         if (UserActionError.PRE_UPDATE_PASSWORD_ACTION_EXECUTION_FAILED.equals(e.getErrorCode()) &&
-                e.getCause() != null && e.getCause().getCause() != null &&
-                e.getCause().getCause().getCause() instanceof UserActionExecutionClientException) {
+                rootCause instanceof UserActionExecutionClientException) {
             UserActionExecutionClientException actionException =
-                    (UserActionExecutionClientException) e.getCause().getCause().getCause();
+                    (UserActionExecutionClientException) rootCause;
             throw handleClientException(
                     Constants.ErrorMessage.ERROR_CODE_PASSWORD_UPDATE_ACTION_FAILURE,
                     actionException.getDescription());
