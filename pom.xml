@@ -263,6 +263,12 @@
                 <version>${lombok.version}</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-annotations</artifactId>
+                <version>${spotbugs.annotations.version}</version>
+                <scope>provided</scope>
+            </dependency>
 
             <!-- Kernel Dependencies-->
             <dependency>
@@ -411,21 +417,21 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>findbugs-maven-plugin</artifactId>
-                    <version>${maven.findbugsplugin.version}</version>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs.maven.plugin.version}</version>
                     <configuration>
                         <effort>Max</effort>
                         <threshold>Low</threshold>
                         <xmlOutput>true</xmlOutput>
-                        <findbugsXmlOutputDirectory>${project.build.directory}/findbugs</findbugsXmlOutputDirectory>
+                        <spotbugsXmlOutputDirectory>${project.build.directory}/spotbugs</spotbugsXmlOutputDirectory>
                         <!--Exclude sources-->
-                        <excludeFilterFile>${mavan.findbugsplugin.exclude.file}</excludeFilterFile>
+                        <excludeFilterFile>${mavan.spotbugsplugin.exclude.file}</excludeFilterFile>
                         <plugins>
                             <plugin>
                                 <groupId>com.h3xstream.findsecbugs</groupId>
                                 <artifactId>findsecbugs-plugin</artifactId>
-                                <version>${findsecbugs-plugin.version}</version>
+                                <version>${spotbugs.findsecbugs.version}</version>
                             </plugin>
                         </plugins>
                     </configuration>
@@ -436,6 +442,21 @@
                             <goals>
                                 <goal>check</goal>
                             </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- Disable old FindBugs plugin completely - use SpotBugs instead -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>findbugs-maven-plugin</artifactId>
+                    <version>${maven.findbugsplugin.version}</version>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>analyze-compile</id>
+                            <phase>none</phase>
                         </execution>
                     </executions>
                 </plugin>
@@ -468,8 +489,8 @@
                 <inherited>true</inherited>
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>21</source>
+                    <target>21</target>
                     <parameters>true</parameters>
                 </configuration>
             </plugin>
@@ -500,7 +521,9 @@
         <carbon.identity.framework.version.range>[5.14.67, 8.0.0]</carbon.identity.framework.version.range>
         <carbon.identity.account.association.version>5.5.10</carbon.identity.account.association.version>
         <maven.findbugsplugin.version>3.0.5</maven.findbugsplugin.version>
-        <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
+        <spotbugs.maven.plugin.version>4.9.8.2</spotbugs.maven.plugin.version>
+        <spotbugs.annotations.version>4.9.8</spotbugs.annotations.version>
+        <spotbugs.findsecbugs.version>1.13.0</spotbugs.findsecbugs.version>
         <identity.oauth.version>7.0.169</identity.oauth.version>
         <identity.org.mgt.core.version>1.1.52</identity.org.mgt.core.version>
         <identity.notification.push.version>1.0.2</identity.notification.push.version>
@@ -513,7 +536,7 @@
         <identity.verification.version>1.0.16</identity.verification.version>
         <maven.checkstyleplugin.excludes>**/gen/**/*</maven.checkstyleplugin.excludes>
         <commons-lang.wso2.version>2.6.0.wso2v1</commons-lang.wso2.version>
-        <mavan.findbugsplugin.exclude.file>findbugs-exclude-filter.xml</mavan.findbugsplugin.exclude.file>
+        <mavan.spotbugsplugin.exclude.file>spotbugs-exclude-filter.xml</mavan.spotbugsplugin.exclude.file>
         <config.mapper.version>1.0.13</config.mapper.version>
         <identity.organization.management.version>1.4.122</identity.organization.management.version>
         <openapi-generator-maven-plugin.version>4.1.2</openapi-generator-maven-plugin.version>
