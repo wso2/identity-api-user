@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.wso2.carbon.identity.user.api</groupId>
         <artifactId>identity-api-user</artifactId>
-        <version>1.5.1-SNAPSHOT</version>
+        <version>1.5.1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
