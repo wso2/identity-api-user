@@ -23,7 +23,7 @@
         <groupId>org.wso2.carbon.identity.user.api</groupId>
         <artifactId>org.wso2.carbon.identity.api.user.mfa</artifactId>
         <relativePath>../pom.xml</relativePath>
-        <version>1.5.0</version>
+        <version>1.5.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.identity.rest.api.user.mfa.v1</artifactId>
