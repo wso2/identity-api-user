@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.wso2.carbon.identity.rest.api.user.push.v1.model.ProviderDTO;
 import javax.validation.constraints.*;
 
 /**
@@ -41,6 +42,7 @@ public class RegistrationRequestDTO  {
     private String deviceToken;
     private String publicKey;
     private String signature;
+    private ProviderDTO provider;
 
     /**
     * Unique UUID for the device
@@ -156,6 +158,24 @@ public class RegistrationRequestDTO  {
         this.signature = signature;
     }
 
+    /**
+    **/
+    public RegistrationRequestDTO provider(ProviderDTO provider) {
+
+        this.provider = provider;
+        return this;
+    }
+    
+    @ApiModelProperty(value = "")
+    @JsonProperty("provider")
+    @Valid
+    public ProviderDTO getProvider() {
+        return provider;
+    }
+    public void setProvider(ProviderDTO provider) {
+        this.provider = provider;
+    }
+
 
 
     @Override
@@ -173,12 +193,13 @@ public class RegistrationRequestDTO  {
             Objects.equals(this.name, registrationRequestDTO.name) &&
             Objects.equals(this.deviceToken, registrationRequestDTO.deviceToken) &&
             Objects.equals(this.publicKey, registrationRequestDTO.publicKey) &&
-            Objects.equals(this.signature, registrationRequestDTO.signature);
+            Objects.equals(this.signature, registrationRequestDTO.signature) &&
+            Objects.equals(this.provider, registrationRequestDTO.provider);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(deviceId, model, name, deviceToken, publicKey, signature);
+        return Objects.hash(deviceId, model, name, deviceToken, publicKey, signature, provider);
     }
 
     @Override
@@ -193,6 +214,7 @@ public class RegistrationRequestDTO  {
         sb.append("    deviceToken: ").append(toIndentedString(deviceToken)).append("\n");
         sb.append("    publicKey: ").append(toIndentedString(publicKey)).append("\n");
         sb.append("    signature: ").append(toIndentedString(signature)).append("\n");
+        sb.append("    provider: ").append(toIndentedString(provider)).append("\n");
         sb.append("}");
         return sb.toString();
     }

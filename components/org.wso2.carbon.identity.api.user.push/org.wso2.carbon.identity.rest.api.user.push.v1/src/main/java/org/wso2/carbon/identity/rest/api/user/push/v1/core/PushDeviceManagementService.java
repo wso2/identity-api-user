@@ -32,8 +32,10 @@ import org.wso2.carbon.identity.notification.push.device.handler.exception.PushD
 import org.wso2.carbon.identity.notification.push.device.handler.model.Device;
 import org.wso2.carbon.identity.notification.push.device.handler.model.RegistrationDiscoveryData;
 import org.wso2.carbon.identity.notification.push.device.handler.model.RegistrationRequest;
+import org.wso2.carbon.identity.notification.push.device.handler.model.RegistrationRequestProviderData;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.DeviceDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.DiscoveryDataDTO;
+import org.wso2.carbon.identity.rest.api.user.push.v1.model.ProviderDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.RegistrationRequestDTO;
 
 import java.util.ArrayList;
@@ -215,7 +217,20 @@ public class PushDeviceManagementService {
         request.setDeviceToken(dto.getDeviceToken());
         request.setPublicKey(dto.getPublicKey());
         request.setSignature(dto.getSignature());
+        request.setProvider(buildRegistrationRequestProviderData(dto.getProvider()));
         return request;
+    }
+
+    /**
+     * Build Registration request provider data.
+     * @param providerDTO Provider DTO.
+     * @return RegistrationRequestProviderData.
+     */
+    private RegistrationRequestProviderData buildRegistrationRequestProviderData(ProviderDTO providerDTO) {
+        if (providerDTO != null) {
+            return new RegistrationRequestProviderData(providerDTO.getName(), providerDTO.getMetadata());
+        }
+        return null;
     }
 
     /**
