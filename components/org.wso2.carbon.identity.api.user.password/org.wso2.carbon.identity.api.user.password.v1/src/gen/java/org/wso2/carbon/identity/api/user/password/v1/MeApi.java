@@ -52,7 +52,7 @@ public class MeApi  {
     @Path("/change-password")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @ApiOperation(value = "Change user password", notes = "This API is used to change the password of the authenticated user.  <b>Permission required:</b>     * none <b>Scope required:</b>     * internal_login ", response = Void.class, authorizations = {
+    @ApiOperation(value = "Change user password", notes = "This API is used to change the password of the authenticated user.  <b>Permission required:</b>     * none <b>Scope required:</b>     * internal_user_password_update ", response = Void.class, authorizations = {
         @Authorization(value = "OAuth2", scopes = {
             
         })
