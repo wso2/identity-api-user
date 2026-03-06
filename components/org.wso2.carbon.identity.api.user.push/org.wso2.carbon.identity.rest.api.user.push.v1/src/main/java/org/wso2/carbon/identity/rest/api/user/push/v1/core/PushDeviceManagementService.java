@@ -228,6 +228,9 @@ public class PushDeviceManagementService {
      */
     private RegistrationRequestProviderData buildRegistrationRequestProviderData(ProviderDTO providerDTO) {
         if (providerDTO != null) {
+            if (log.isDebugEnabled()) {
+                log.debug("Building registration request provider data for provider: " + providerDTO.getName());
+            }
             return new RegistrationRequestProviderData(providerDTO.getName(), providerDTO.getMetadata());
         }
         return null;
