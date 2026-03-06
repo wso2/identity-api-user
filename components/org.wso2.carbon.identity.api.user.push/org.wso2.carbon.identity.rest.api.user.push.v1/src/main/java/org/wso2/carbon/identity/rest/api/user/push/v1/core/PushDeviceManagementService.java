@@ -227,9 +227,10 @@ public class PushDeviceManagementService {
      * @return RegistrationRequestProviderData.
      */
     private RegistrationRequestProviderData buildRegistrationRequestProviderData(ProviderDTO providerDTO) {
+
         if (providerDTO != null) {
-            if (log.isDebugEnabled()) {
-                log.debug("Building registration request provider data for provider: " + providerDTO.getName());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Building registration request provider data for provider: " + providerDTO.getName());
             }
             return new RegistrationRequestProviderData(providerDTO.getName(), providerDTO.getMetadata());
         }
