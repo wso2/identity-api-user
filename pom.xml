@@ -576,6 +576,7 @@
         <module>components/org.wso2.carbon.identity.api.user.push</module>
         <module>components/org.wso2.carbon.identity.api.user.approval</module>
         <module>components/org.wso2.carbon.identity.api.user.password</module>
+        <module>components/org.wso2.carbon.identity.api.user.credential</module>
     </modules>
 
 </project>
