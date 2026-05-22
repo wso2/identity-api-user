@@ -18,6 +18,8 @@
 
 package org.wso2.carbon.identity.api.user.credential.common.dto;
 
+import org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.CredentialTypes;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -28,7 +30,7 @@ import java.util.List;
  */
 public class CredentialGroupDTO {
 
-    private final String type;
+    private final CredentialTypes type;
     private final boolean isConfigured;
     private final boolean isMultiValued;
     private final List<CredentialDTO> credentials;
@@ -43,7 +45,7 @@ public class CredentialGroupDTO {
                 : Collections.emptyList();
     }
 
-    public String getType() {
+    public CredentialTypes getType() {
 
         return type;
     }
@@ -68,12 +70,12 @@ public class CredentialGroupDTO {
      */
     public static class Builder {
 
-        private String type;
+        private CredentialTypes type;
         private boolean isConfigured;
         private boolean isMultiValued;
         private List<CredentialDTO> credentials;
 
-        public Builder type(String type) {
+        public Builder type(CredentialTypes type) {
 
             this.type = type;
             return this;

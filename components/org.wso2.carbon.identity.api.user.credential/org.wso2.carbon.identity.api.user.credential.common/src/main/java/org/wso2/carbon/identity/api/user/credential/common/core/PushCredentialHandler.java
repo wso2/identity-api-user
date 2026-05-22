@@ -23,7 +23,6 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.user.common.ContextLoader;
 import org.wso2.carbon.identity.api.user.credential.common.CredentialHandler;
 import org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants;
-import org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.CredentialTypes;
 import org.wso2.carbon.identity.api.user.credential.common.CredentialManagementServiceDataHolder;
 import org.wso2.carbon.identity.api.user.credential.common.dto.CredentialDTO;
 import org.wso2.carbon.identity.api.user.credential.common.dto.CredentialGroupDTO;
@@ -38,7 +37,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.ErrorMessages;
+import static org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.CredentialTypes.PUSH_AUTH;
 
 /**
  * Credential handler implementation for Push Authentication.
@@ -46,6 +45,7 @@ import static org.wso2.carbon.identity.api.user.credential.common.CredentialMana
 public class PushCredentialHandler implements CredentialHandler {
 
     private static final Log LOG = LogFactory.getLog(PushCredentialHandler.class);
+    public static final String ERROR_CODE_PUSH_AUTH_DEVICE_NOT_FOUND = "PDH-15010";
 
     private final DeviceHandlerService deviceHandler;
 
@@ -71,18 +71,18 @@ public class PushCredentialHandler implements CredentialHandler {
                 LOG.debug("Successfully retrieved push authentication credential for entity ID: " + entityId);
             }
             return new CredentialGroupDTO.Builder()
-                    .type(CredentialTypes.PUSH_AUTH.getApiValue())
+                    .type(PUSH_AUTH)
                     .isConfigured(!credentialDTOs.isEmpty())
                     .isMultiValued(true)
                     .credentials(credentialDTOs)
                     .build();
         } catch (PushDeviceHandlerException e) {
-            if (ErrorMessages.ERROR_CODE_PUSH_AUTH_DEVICE_NOT_FOUND.equals(e.getErrorCode())) {
+            if (ERROR_CODE_PUSH_AUTH_DEVICE_NOT_FOUND.equals(e.getErrorCode())) {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("No push authentication devices found for entity ID: " + entityId);
                 }
                 return new CredentialGroupDTO.Builder()
-                        .type(CredentialTypes.PUSH_AUTH.getApiValue())
+                        .type(PUSH_AUTH)
                         .isConfigured(false)
                         .isMultiValued(true)
                         .build();

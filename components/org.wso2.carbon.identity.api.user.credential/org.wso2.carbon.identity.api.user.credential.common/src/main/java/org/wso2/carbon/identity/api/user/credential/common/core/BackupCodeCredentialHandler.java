@@ -22,7 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.user.credential.common.CredentialHandler;
 import org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants;
-import org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.CredentialTypes;
 import org.wso2.carbon.identity.api.user.credential.common.dto.CreatedCredentialDTO;
 import org.wso2.carbon.identity.api.user.credential.common.dto.CredentialGroupDTO;
 import org.wso2.carbon.identity.api.user.credential.common.exception.CredentialMgtException;
@@ -34,6 +33,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 
+import static org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.CredentialTypes.BACKUP_CODE;
+
 /**
  * Handler for managing backup code credentials.
  */
@@ -41,7 +42,7 @@ public class BackupCodeCredentialHandler implements CredentialHandler {
 
     private static final Log LOG = LogFactory.getLog(BackupCodeCredentialHandler.class);
     private static final String BACKUP_CODE_CREDENTIAL_ID = Base64.getEncoder().encodeToString(
-            CredentialTypes.BACKUP_CODE.getApiValue().getBytes(StandardCharsets.UTF_8));
+            "backup-code".getBytes(StandardCharsets.UTF_8));
 
     @Override
     public CredentialGroupDTO getCredentials(String entityId) throws CredentialMgtException {
@@ -56,7 +57,7 @@ public class BackupCodeCredentialHandler implements CredentialHandler {
                 LOG.debug("Successfully retrieved backup code credential for entity ID: " + entityId);
             }
             return new CredentialGroupDTO.Builder()
-                    .type(CredentialTypes.BACKUP_CODE.getApiValue())
+                    .type(BACKUP_CODE)
                     .isConfigured(remainingCount > 0)
                     .isMultiValued(false)
                     .build();

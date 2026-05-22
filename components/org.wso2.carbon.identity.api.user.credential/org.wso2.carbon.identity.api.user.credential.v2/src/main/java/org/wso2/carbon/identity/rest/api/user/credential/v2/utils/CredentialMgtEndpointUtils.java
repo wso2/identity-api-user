@@ -44,10 +44,10 @@ public class CredentialMgtEndpointUtils {
     }
 
     /**
-     * Maps a CredentialMgtException to an APIError with the appropriate HTTP status.
+     * Handles a CredentialMgtException and constructs an appropriate APIError response.
      *
-     * @param e CredentialMgtException.
-     * @return APIError.
+     * @param e CredentialMgtException to handle.
+     * @return APIError representing the error response.
      */
     public static APIError handleCredentialMgtException(CredentialMgtException e) {
 
@@ -67,11 +67,6 @@ public class CredentialMgtEndpointUtils {
         }
 
         String errorCode = e.getErrorCode();
-        if (StringUtils.isBlank(errorCode)) {
-            errorCode = CredentialMgtEndpointConstants.ErrorMessages.ERROR_CODE_GET_CREDENTIALS.getCode();
-        } else if (!errorCode.contains(CredentialMgtEndpointConstants.ERROR_CODE_DELIMITER)) {
-            errorCode = CredentialMgtEndpointConstants.CREDENTIAL_MGT_PREFIX + errorCode;
-        }
 
         String description = StringUtils.isNotBlank(e.getDescription()) ? e.getDescription() : e.getMessage();
         return handleException(status, errorCode, e.getMessage(), description);
@@ -110,37 +105,61 @@ public class CredentialMgtEndpointUtils {
     }
 
     /**
-     * Validates that the given credential type string is a known type.
+     * Validates that the given credential type string is a known type and returns the resolved value.
      *
      * @param value Credential type string.
+     * @return Resolved credential type.
      * @throws CredentialMgtClientException If the type is unrecognised.
      */
-    public static void validateCredentialType(String value) throws CredentialMgtClientException {
+    public static CredentialTypes validateType(String value) throws CredentialMgtClientException {
 
-        if (CredentialTypes.fromString(value) == null) {
-            throw new CredentialMgtClientException(CredentialManagementConstants
-                    .ErrorMessages.ERROR_CODE_INVALID_CREDENTIAL_TYPE);
-        }
+        return resolveType(value);
     }
 
     /**
      * Validates that the given credential type supports admin-initiated creation.
      *
      * @param value Credential type string.
-     * @throws CredentialMgtClientException If the type is invalid or does not support creation.
+     * @return Resolved credential type.
+     * @throws CredentialMgtClientException If the type is unrecognized or does not support creation.
      */
-    public static void validateCreatableCredentialType(String value) throws CredentialMgtClientException {
+    public static CredentialTypes validateCreatable(String value) throws CredentialMgtClientException {
+
+        CredentialTypes type = resolveType(value);
+        if (!CredentialMgtEndpointConstants.CREATABLE_TYPES.contains(type)) {
+            throw CredentialManagementUtils.handleClientException(
+                    CredentialManagementConstants.ErrorMessages.ERROR_CODE_CREDENTIAL_CREATION_NOT_SUPPORTED,
+                    null, value);
+        }
+        return type;
+    }
+
+    /**
+     * Validates that the given credential type supports bulk deletion by type.
+     *
+     * @param value Credential type string.
+     * @return Resolved credential type.
+     * @throws CredentialMgtClientException If the type is unrecognised or does not support deletion by type.
+     */
+    public static CredentialTypes validateDeletableByType(String value) throws CredentialMgtClientException {
+
+        CredentialTypes type = resolveType(value);
+        if (!CredentialMgtEndpointConstants.DELETABLE_BY_TYPE_TYPES.contains(type)) {
+            throw CredentialManagementUtils.handleClientException(
+                    CredentialManagementConstants.ErrorMessages.ERROR_CODE_CREDENTIAL_DELETION_BY_TYPE_NOT_SUPPORTED,
+                    null, value);
+        }
+        return type;
+    }
+
+    private static CredentialTypes resolveType(String value) throws CredentialMgtClientException {
 
         CredentialTypes type = CredentialTypes.fromString(value);
         if (type == null) {
             throw new CredentialMgtClientException(CredentialManagementConstants
                     .ErrorMessages.ERROR_CODE_INVALID_CREDENTIAL_TYPE);
         }
-        if (!type.isCreatable()) {
-            throw CredentialManagementUtils.handleClientException(
-                    CredentialManagementConstants.ErrorMessages.ERROR_CODE_CREDENTIAL_CREATION_NOT_SUPPORTED,
-                    null, value);
-        }
+        return type;
     }
 
     /**

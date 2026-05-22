@@ -22,7 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.user.credential.common.CredentialHandler;
 import org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants;
-import org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.CredentialTypes;
 import org.wso2.carbon.identity.api.user.credential.common.CredentialManagementServiceDataHolder;
 import org.wso2.carbon.identity.api.user.credential.common.dto.CredentialDTO;
 import org.wso2.carbon.identity.api.user.credential.common.dto.CredentialGroupDTO;
@@ -32,11 +31,12 @@ import org.wso2.carbon.identity.application.authenticator.fido2.core.WebAuthnSer
 import org.wso2.carbon.identity.application.authenticator.fido2.dto.FIDO2CredentialRegistration;
 import org.wso2.carbon.identity.application.authenticator.fido2.exception.FIDO2AuthenticatorClientException;
 import org.wso2.carbon.identity.application.authenticator.fido2.exception.FIDO2AuthenticatorServerException;
-import org.wso2.carbon.identity.base.IdentityRuntimeException;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.CredentialTypes.PASSKEY;
 
 /**
  * Handler for managing passkey (FIDO2/WebAuthn) credentials.
@@ -73,7 +73,7 @@ public class PasskeyCredentialHandler implements CredentialHandler {
                         + entityId);
             }
             return new CredentialGroupDTO.Builder()
-                    .type(CredentialTypes.PASSKEY.getApiValue())
+                    .type(PASSKEY)
                     .isConfigured(!credentialDTOs.isEmpty())
                     .isMultiValued(true)
                     .credentials(credentialDTOs)
@@ -81,9 +81,6 @@ public class PasskeyCredentialHandler implements CredentialHandler {
         } catch (FIDO2AuthenticatorServerException e) {
             throw CredentialManagementUtils.handleServerException(
                     CredentialManagementConstants.ErrorMessages.ERROR_CODE_GET_PASSKEYS, e, entityId);
-        } catch (IdentityRuntimeException e) {
-            throw CredentialManagementUtils.handleClientException(
-                    CredentialManagementConstants.ErrorMessages.ERROR_CODE_ENTITY_NOT_FOUND, e, entityId);
         }
     }
 
@@ -95,7 +92,8 @@ public class PasskeyCredentialHandler implements CredentialHandler {
             LOG.debug("Deleting passkey credential for entity ID: " + entityId);
         }
         try {
-            webAuthnService.deregisterFIDO2Credential(credentialId);
+            String username = CredentialManagementUtils.resolveUsernameFromUserId(entityId);
+            webAuthnService.deregisterFIDO2Credential(credentialId, username);
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Successfully deleted passkey credential for entity ID: " + entityId);
             }
@@ -105,9 +103,6 @@ public class PasskeyCredentialHandler implements CredentialHandler {
         } catch (FIDO2AuthenticatorServerException e) {
             throw CredentialManagementUtils.handleServerException(
                     CredentialManagementConstants.ErrorMessages.ERROR_CODE_DELETE_PASSKEYS, e, entityId);
-        } catch (IdentityRuntimeException e) {
-            throw CredentialManagementUtils.handleClientException(
-                    CredentialManagementConstants.ErrorMessages.ERROR_CODE_ENTITY_NOT_FOUND, e, entityId);
         }
     }
 

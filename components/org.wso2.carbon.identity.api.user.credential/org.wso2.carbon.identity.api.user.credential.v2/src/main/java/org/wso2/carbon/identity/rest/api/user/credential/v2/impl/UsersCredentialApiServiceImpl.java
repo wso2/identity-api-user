@@ -32,6 +32,7 @@ import org.wso2.carbon.identity.rest.api.user.credential.v2.dto.CredentialEntryD
 import org.wso2.carbon.identity.rest.api.user.credential.v2.dto.CredentialsByTypeDTO;
 import org.wso2.carbon.identity.rest.api.user.credential.v2.utils.CredentialMgtEndpointUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -56,8 +57,7 @@ public class UsersCredentialApiServiceImpl implements UsersApiService {
     public Response createUserCredentialByType(String userId, String type) {
 
         try {
-            CredentialMgtEndpointUtils.validateCreatableCredentialType(type);
-            CredentialTypes credentialType = CredentialTypes.fromString(type);
+            CredentialTypes credentialType = CredentialMgtEndpointUtils.validateCreatable(type);
             CreatedCredentialDTO dto = handlerMap.get(credentialType).createCredential(userId);
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Successfully created credential type: " + type + " for user ID: " + userId);
@@ -76,8 +76,7 @@ public class UsersCredentialApiServiceImpl implements UsersApiService {
     public Response deleteUserCredentialsByType(String userId, String type) {
 
         try {
-            CredentialMgtEndpointUtils.validateCredentialType(type);
-            CredentialTypes credentialType = CredentialTypes.fromString(type);
+            CredentialTypes credentialType = CredentialMgtEndpointUtils.validateDeletableByType(type);
             handlerMap.get(credentialType).deleteCredentials(userId);
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Successfully deleted all credentials of type: " + type + " for user ID: " + userId);
@@ -93,8 +92,7 @@ public class UsersCredentialApiServiceImpl implements UsersApiService {
 
         try {
             CredentialMgtEndpointUtils.validateCredentialId(credentialId);
-            CredentialMgtEndpointUtils.validateCredentialType(type);
-            CredentialTypes credentialType = CredentialTypes.fromString(type);
+            CredentialTypes credentialType = CredentialMgtEndpointUtils.validateType(type);
             handlerMap.get(credentialType).deleteCredentialById(userId, credentialId);
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Successfully deleted credential type: " + type + " with ID: " + credentialId
@@ -127,6 +125,7 @@ public class UsersCredentialApiServiceImpl implements UsersApiService {
                         response.backupCode(true);
                         break;
                     default:
+                        LOG.warn("No response mapping for credential type: " + entry.getKey() + ". Skipping.");
                         break;
                 }
             } catch (CredentialMgtException e) {
@@ -141,6 +140,9 @@ public class UsersCredentialApiServiceImpl implements UsersApiService {
 
     private List<CredentialEntryDTO> toEntryDTOs(List<CredentialDTO> credentials) {
 
+        if (credentials == null) {
+            return Collections.emptyList();
+        }
         return credentials.stream()
                 .map(dto -> new CredentialEntryDTO()
                         .credentialId(dto.getCredentialId())

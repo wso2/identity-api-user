@@ -18,25 +18,23 @@
 
 package org.wso2.carbon.identity.rest.api.user.credential.v2.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Response model for GET /{user-id}/credentials.
- * Only configured credential types appear in the serialized response.
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CredentialsByTypeDTO {
 
-    private List<CredentialEntryDTO> passkey;
+    private List<CredentialEntryDTO> passkey = new ArrayList<>();
 
     @JsonProperty("push-auth")
-    private List<CredentialEntryDTO> pushAuth;
+    private List<CredentialEntryDTO> pushAuth = new ArrayList<>();
 
     @JsonProperty("backup-code")
-    private Boolean backupCode;
+    private boolean backupCode = false;
 
     public List<CredentialEntryDTO> getPasskey() {
 
@@ -60,12 +58,12 @@ public class CredentialsByTypeDTO {
         return this;
     }
 
-    public Boolean getBackupCode() {
+    public boolean isBackupCode() {
 
         return backupCode;
     }
 
-    public CredentialsByTypeDTO backupCode(Boolean backupCode) {
+    public CredentialsByTypeDTO backupCode(boolean backupCode) {
 
         this.backupCode = backupCode;
         return this;

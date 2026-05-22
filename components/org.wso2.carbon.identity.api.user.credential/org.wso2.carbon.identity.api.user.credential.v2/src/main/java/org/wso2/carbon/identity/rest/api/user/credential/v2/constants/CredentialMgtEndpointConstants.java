@@ -18,8 +18,14 @@
 
 package org.wso2.carbon.identity.rest.api.user.credential.v2.constants;
 
+import org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.CredentialTypes;
+
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
+
 /**
- * Constants for User Credential Management Endpoint v2.
+ * Constants for the User Credential Management Endpoint v2.
  */
 public class CredentialMgtEndpointConstants {
 
@@ -27,42 +33,15 @@ public class CredentialMgtEndpointConstants {
 
     }
 
-    public static final String CREDENTIAL_MGT_PREFIX = "CM-";
-    public static final String ERROR_CODE_DELIMITER = "-";
+    /**
+     * Credential types that support admin-initiated creation in v2.
+     */
+    public static final Set<CredentialTypes> CREATABLE_TYPES =
+            Collections.unmodifiableSet(EnumSet.of(CredentialTypes.BACKUP_CODE));
 
     /**
-     * Error messages related to credential management endpoint.
+     * Credential types that support bulk deletion by type in v2.
      */
-    public enum ErrorMessages {
-
-        ERROR_CODE_GET_CREDENTIALS("10001",
-                "Error occurred while retrieving credentials.",
-                "Server encountered an error while retrieving credentials.");
-
-        private final String code;
-        private final String message;
-        private final String description;
-
-        ErrorMessages(String code, String message, String description) {
-
-            this.code = code;
-            this.message = message;
-            this.description = description;
-        }
-
-        public String getCode() {
-
-            return CREDENTIAL_MGT_PREFIX + code;
-        }
-
-        public String getMessage() {
-
-            return message;
-        }
-
-        public String getDescription() {
-
-            return description;
-        }
-    }
+    public static final Set<CredentialTypes> DELETABLE_BY_TYPE_TYPES =
+            Collections.unmodifiableSet(EnumSet.of(CredentialTypes.BACKUP_CODE));
 }
