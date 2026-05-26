@@ -18,9 +18,7 @@
 
 package org.wso2.carbon.identity.api.user.credential.common;
 
-import java.text.Collator;
 import java.util.Arrays;
-import java.util.Locale;
 
 /**
  * Credential Management related constants.
@@ -36,15 +34,26 @@ public class CredentialManagementConstants {
      */
     public enum CredentialTypes {
 
-        PASSKEY,
-        PUSH_AUTH,
-        BACKUP_CODE;
+        PASSKEY("passkey"),
+        PUSH_AUTH("push-auth"),
+        BACKUP_CODE("backup-code");
+
+        private final String apiValue;
+
+        CredentialTypes(String apiValue) {
+
+            this.apiValue = apiValue;
+        }
+
+        public String apiValue() {
+
+            return apiValue;
+        }
 
         /**
-         * Resolve the credential type for a given identifier. Accepts both API values (e.g. "push-auth") and
-         * enum names (e.g. "PUSH_AUTH").
+         * Resolve the credential type from its API value (e.g. "push-auth").
          *
-         * @param value Credential type provided by the caller.
+         * @param value API value provided by the caller.
          * @return Matching credential type if available.
          */
         public static CredentialTypes fromString(String value) {
@@ -60,15 +69,8 @@ public class CredentialManagementConstants {
                 return null;
             }
 
-            Collator collator = Collator.getInstance(Locale.ROOT);
-            collator.setStrength(Collator.PRIMARY);
-
             return Arrays.stream(values())
-                    .filter(type -> {
-                        String typeName = type.name().toLowerCase(Locale.ROOT).replace("_", "-");
-                        return collator.compare(type.name(), candidate) == 0
-                                || collator.compare(typeName, candidate) == 0;
-                    })
+                    .filter(type -> type.apiValue().equalsIgnoreCase(candidate))
                     .findFirst()
                     .orElse(null);
         }

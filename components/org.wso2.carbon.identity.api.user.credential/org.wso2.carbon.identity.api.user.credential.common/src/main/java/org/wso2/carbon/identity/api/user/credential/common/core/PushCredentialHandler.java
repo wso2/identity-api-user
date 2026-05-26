@@ -45,7 +45,7 @@ import static org.wso2.carbon.identity.api.user.credential.common.CredentialMana
 public class PushCredentialHandler implements CredentialHandler {
 
     private static final Log LOG = LogFactory.getLog(PushCredentialHandler.class);
-    public static final String ERROR_CODE_PUSH_AUTH_DEVICE_NOT_FOUND = "PDH-15010";
+    private static final String ERROR_CODE_PUSH_AUTH_DEVICE_NOT_FOUND = "PDH-15010";
 
     private final DeviceHandlerService deviceHandler;
 
