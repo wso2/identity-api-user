@@ -21,19 +21,21 @@ package org.wso2.carbon.identity.api.user.credential.common.core;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.user.credential.common.CredentialHandler;
-import org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants;
 import org.wso2.carbon.identity.api.user.credential.common.dto.CreatedCredentialDTO;
 import org.wso2.carbon.identity.api.user.credential.common.dto.CredentialGroupDTO;
 import org.wso2.carbon.identity.api.user.credential.common.exception.CredentialMgtException;
 import org.wso2.carbon.identity.api.user.credential.common.utils.CredentialManagementUtils;
 import org.wso2.carbon.identity.application.authenticator.backupcode.BackupCodeAPIHandler;
+import org.wso2.carbon.identity.application.authenticator.backupcode.exception.BackupCodeClientException;
 import org.wso2.carbon.identity.application.authenticator.backupcode.exception.BackupCodeException;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
 
 import static org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.CredentialTypes.BACKUP_CODE;
+import static org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.ErrorMessages.ERROR_CODE_BACKUP_CODE_MGT_FAILURE;
+import static org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.ErrorMessages.ERROR_CODE_GET_BACKUP_CODES_FAILURE;
+import static org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.ErrorMessages.ERROR_CODE_GET_CREDENTIALS_CLIENT_FAILURE;
+import static org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.ErrorMessages.ERROR_CODE_UPDATE_BACKUP_CODES_FAILURE;
 
 /**
  * Handler for managing backup code credentials.
@@ -41,69 +43,66 @@ import static org.wso2.carbon.identity.api.user.credential.common.CredentialMana
 public class BackupCodeCredentialHandler implements CredentialHandler {
 
     private static final Log LOG = LogFactory.getLog(BackupCodeCredentialHandler.class);
-    private static final String BACKUP_CODE_CREDENTIAL_ID = Base64.getEncoder().encodeToString(
-            "backup-code".getBytes(StandardCharsets.UTF_8));
 
     @Override
-    public CredentialGroupDTO getCredentials(String entityId) throws CredentialMgtException {
+    public CredentialGroupDTO getCredentials(String userId) throws CredentialMgtException {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Retrieving backup code credentials for entity ID: " + entityId);
+            LOG.debug("Retrieving backup code credentials for user id: " + userId);
         }
         try {
-            String username = CredentialManagementUtils.resolveUsernameFromUserId(entityId);
-            int remainingCount = BackupCodeAPIHandler.getRemainingBackupCodesCount(username);
+            int remainingCount = BackupCodeAPIHandler.getRemainingBackupCodesCountByUserId(userId);
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Successfully retrieved backup code credential for entity ID: " + entityId);
+                LOG.debug("Successfully retrieved backup code count for user id: " + userId);
             }
             return new CredentialGroupDTO.Builder()
                     .type(BACKUP_CODE)
                     .isConfigured(remainingCount > 0)
-                    .isMultiValued(false)
                     .build();
+        } catch (BackupCodeClientException e) {
+            throw CredentialManagementUtils.handleClientException(ERROR_CODE_GET_CREDENTIALS_CLIENT_FAILURE, e,
+                    BACKUP_CODE.apiValue(), userId);
         } catch (BackupCodeException e) {
-            throw CredentialManagementUtils.handleServerException(
-                    CredentialManagementConstants.ErrorMessages.ERROR_CODE_GET_BACKUP_CODES, e, entityId);
+            throw CredentialManagementUtils.handleServerException(ERROR_CODE_GET_BACKUP_CODES_FAILURE, e, userId);
         }
     }
 
     @Override
-    public void deleteCredentials(String entityId) throws CredentialMgtException {
+    public void deleteCredentials(String userId) throws CredentialMgtException {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Deleting backup code credentials for entity ID: " + entityId);
+            LOG.debug("Deleting backup code credentials for user ID: " + userId);
         }
         try {
-            String username = CredentialManagementUtils.resolveUsernameFromUserId(entityId);
-            BackupCodeAPIHandler.deleteBackupCodes(username);
+            BackupCodeAPIHandler.deleteBackupCodesByUserId(userId);
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Successfully deleted backup code credentials for entity ID: " + entityId);
+                LOG.debug("Successfully deleted backup code credentials for user ID: " + userId);
             }
+        } catch (BackupCodeClientException e) {
+            throw CredentialManagementUtils.handleClientException(ERROR_CODE_BACKUP_CODE_MGT_FAILURE, e, userId);
         } catch (BackupCodeException e) {
-            throw CredentialManagementUtils.handleServerException(
-                    CredentialManagementConstants.ErrorMessages.ERROR_CODE_DELETE_BACKUP_CODES, e, entityId);
+            throw CredentialManagementUtils.handleServerException(ERROR_CODE_UPDATE_BACKUP_CODES_FAILURE, e, userId);
         }
     }
 
     @Override
-    public CreatedCredentialDTO createCredential(String entityId) throws CredentialMgtException {
+    public CreatedCredentialDTO createCredential(String userId) throws CredentialMgtException {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Generating backup code credentials for entity ID: " + entityId);
+            LOG.debug("Generating backup code credentials for user ID: " + userId);
         }
         try {
-            String username = CredentialManagementUtils.resolveUsernameFromUserId(entityId);
-            List<String> codes = BackupCodeAPIHandler.generateBackupCodes(username);
+            List<String> codes = BackupCodeAPIHandler.generateBackupCodesByUserId(userId);
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Successfully generated backup code credentials for entity ID: " + entityId);
+                LOG.debug("Successfully generated backup code credentials for user ID: " + userId);
             }
             return new CreatedCredentialDTO.Builder()
-                    .credentialId(BACKUP_CODE_CREDENTIAL_ID)
                     .credentials(codes)
                     .build();
+        } catch (BackupCodeClientException e) {
+            throw CredentialManagementUtils.handleClientException(ERROR_CODE_BACKUP_CODE_MGT_FAILURE, e, userId);
         } catch (BackupCodeException e) {
-            throw CredentialManagementUtils.handleServerException(
-                    CredentialManagementConstants.ErrorMessages.ERROR_CODE_CREATE_BACKUP_CODES, e, entityId);
+            throw CredentialManagementUtils.handleServerException(ERROR_CODE_UPDATE_BACKUP_CODES_FAILURE, e, userId);
         }
     }
 }

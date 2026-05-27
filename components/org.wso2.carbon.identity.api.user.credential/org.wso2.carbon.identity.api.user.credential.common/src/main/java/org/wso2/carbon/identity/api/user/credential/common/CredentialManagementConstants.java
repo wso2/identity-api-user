@@ -19,6 +19,7 @@
 package org.wso2.carbon.identity.api.user.credential.common;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * Credential Management related constants.
@@ -63,14 +64,14 @@ public class CredentialManagementConstants {
                 return null;
             }
 
-            String candidate = value.trim();
+            String candidate = value.trim().toLowerCase(Locale.ROOT);
             if (candidate.isEmpty()) {
 
                 return null;
             }
 
             return Arrays.stream(values())
-                    .filter(type -> type.apiValue().equalsIgnoreCase(candidate))
+                    .filter(type -> type.apiValue().equals(candidate))
                     .findFirst()
                     .orElse(null);
         }
@@ -82,53 +83,62 @@ public class CredentialManagementConstants {
     public enum ErrorMessages {
 
         // Server errors.
-        ERROR_CODE_GET_PASSKEYS("65001",
+        ERROR_CODE_GET_PASSKEYS_FAILURE("65001",
                 "Error retrieving registered passkeys.",
-                "Unexpected server error while fetching registered passkeys for entity ID: %s."),
-        ERROR_CODE_DELETE_PASSKEYS("65002",
+                "Unexpected server error while fetching registered passkeys for user: %s."),
+        ERROR_CODE_DELETE_PASSKEYS_FAILURE("65002",
                 "Error deleting registered passkey.",
-                "Unexpected server error while deleting registered passkey: %s for entity ID: %s."),
-        ERROR_CODE_GET_PUSH_AUTH_DEVICE("65003",
+                "Unexpected server error while deleting registered passkey: %s for user: %s."),
+        ERROR_CODE_GET_PUSH_AUTH_DEVICE_FAILURE("65003",
                 "Error retrieving registered push auth devices.",
-                "Unexpected server error while fetching registered push auth device for entity ID: %s."),
-        ERROR_CODE_DELETE_PUSH_AUTH_DEVICE("65004",
+                "Unexpected server error while fetching registered push auth device for user: %s."),
+        ERROR_CODE_DELETE_PUSH_AUTH_DEVICE_FAILURE("65004",
                 "Error deleting registered push auth devices.",
-                "Unexpected server error while deleting registered push auth device: %s for entity ID: %s."),
-        ERROR_CODE_GET_BACKUP_CODES("65005",
+                "Unexpected server error while deleting registered push auth device: %s for user: %s."),
+        ERROR_CODE_GET_BACKUP_CODES_FAILURE("65005",
                 "Error retrieving backup codes.",
-                "Unexpected server error while fetching backup codes for entity ID: %s."),
-        ERROR_CODE_DELETE_BACKUP_CODES("65006",
-                "Error deleting backup codes.",
-                "Unexpected server error while deleting backup codes for entity ID: %s."),
-        ERROR_CODE_CREATE_BACKUP_CODES("65007",
-                "Error generating backup codes.",
-                "Unexpected server error while generating backup codes for entity ID: %s."),
+                "Unexpected server error while fetching backup codes for user: %s."),
+        ERROR_CODE_UPDATE_BACKUP_CODES_FAILURE("65006",
+                "Error updating backup codes.",
+                "Unexpected server error while updating backup codes for user: %s."),
+        ERROR_CODE_HANDLER_NOT_REGISTERED("65007",
+                "No handler registered for credential type.",
+                "No handler is registered on the server for credential type: %s."),
 
         // Client errors.
-        ERROR_CODE_DELETE_PASSKEY_CREDENTIAL("60001",
-                "Error deleting credential.",
-                "The request to delete the passkey credential: %s  was invalid."),
-        ERROR_CODE_DELETE_PUSH_AUTH_CREDENTIAL("60002",
-                "Error deleting credential.",
-                "The request to delete the push auth credential: %s  was invalid."),
-        ERROR_CODE_GET_USERNAME_FROM_USERID("60003",
-                "Error retrieving username from user ID.",
-                "The request to retrieve the username from the user ID: %s was invalid."),
-        ERROR_CODE_ENTITY_NOT_FOUND("60004",
-                "Entity not found",
-                "Entity with ID %s not found in the tenant domain."),
-        ERROR_CODE_INVALID_CREDENTIAL_TYPE("60005",
+       ERROR_CODE_USER_NOT_FOUND("60001",
+                "User not found",
+                "User with id %s not found in the tenant domain."),
+        ERROR_CODE_INVALID_CREDENTIAL_TYPE("60002",
                 "Invalid credential type.",
                 "The provided credential type is not supported."),
-        ERROR_CODE_INVALID_CREDENTIAL_ID("60006",
+        ERROR_CODE_INVALID_CREDENTIAL_ID("60003",
                 "Invalid credential ID.",
                 "The provided credential ID is invalid."),
-        ERROR_CODE_CREDENTIAL_CREATION_NOT_SUPPORTED("60007",
+        ERROR_CODE_UNSUPPORTED_OPERATION("60004",
+                "Unsupported operation.",
+                "The requested operation to %s is not supported."),
+        ERROR_CODE_CREDENTIAL_CREATION_NOT_SUPPORTED("60005",
                 "Credential creation not supported.",
                 "Credential creation is not supported for credential type: %s."),
-        ERROR_CODE_CREDENTIAL_DELETION_BY_TYPE_NOT_SUPPORTED("60008",
+        ERROR_CODE_CREDENTIAL_DELETION_BY_TYPE_NOT_SUPPORTED("60006",
                 "Credential deletion by type not supported.",
                 "Credential deletion by type is not supported for credential type: %s."),
+        ERROR_CODE_CREDENTIAL_DELETION_BY_ID_NOT_SUPPORTED("60007",
+                "Credential deletion by id not supported.",
+                "Credential deletion by id is not supported for credential type: %s."),
+        ERROR_CODE_BACKUP_CODE_MGT_FAILURE("60008",
+                "Error managing backup codes.",
+                "The request to manage backup codes for user %s is invalid."),
+        ERROR_CODE_DELETE_PASSKEYS_CLIENT_FAILURE("60009",
+                "Error deleting registered passkey.",
+                "The request to delete the passkey credential: %s for user %s is invalid."),
+        ERROR_CODE_DELETE_PUSH_AUTH_DEVICE_CLIENT_FAILURE("60010",
+                "Error deleting registered push auth devices.",
+                "The request to delete the push auth credential: %s for user %s is invalid."),
+        ERROR_CODE_GET_CREDENTIALS_CLIENT_FAILURE("60011",
+                "Error retrieving credentials.",
+                "The request to retrieve credentials by type: %s for user %s is invalid.")
         ;
 
         private static final String ERROR_PREFIX = "UCM";

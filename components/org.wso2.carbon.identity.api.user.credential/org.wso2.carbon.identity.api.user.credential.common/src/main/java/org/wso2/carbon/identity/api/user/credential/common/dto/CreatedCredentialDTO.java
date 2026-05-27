@@ -22,23 +22,15 @@ import java.util.List;
 
 /**
  * Represents the result of a credential creation operation.
- * credentialId is the backend-assigned identifier for the created credential.
  * credentials contains the generated credential values (e.g. backup codes).
  */
 public class CreatedCredentialDTO {
 
-    private final String credentialId;
     private final List<String> credentials;
 
     private CreatedCredentialDTO(Builder builder) {
 
-        this.credentialId = builder.credentialId;
         this.credentials = builder.credentials;
-    }
-
-    public String getCredentialId() {
-
-        return credentialId;
     }
 
     public List<String> getCredentials() {
@@ -51,14 +43,7 @@ public class CreatedCredentialDTO {
      */
     public static class Builder {
 
-        private String credentialId;
         private List<String> credentials;
-
-        public Builder credentialId(String credentialId) {
-
-            this.credentialId = credentialId;
-            return this;
-        }
 
         public Builder credentials(List<String> credentials) {
 

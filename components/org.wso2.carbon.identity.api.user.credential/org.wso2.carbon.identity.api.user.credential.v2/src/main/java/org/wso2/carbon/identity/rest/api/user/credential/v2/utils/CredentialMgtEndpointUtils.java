@@ -18,17 +18,26 @@
 
 package org.wso2.carbon.identity.rest.api.user.credential.v2.utils;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorDTO;
-import org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants;
+import org.wso2.carbon.identity.api.user.credential.common.CredentialHandler;
 import org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.CredentialTypes;
+import org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.ErrorMessages;
+import org.wso2.carbon.identity.api.user.credential.common.dto.CredentialDTO;
+import org.wso2.carbon.identity.api.user.credential.common.dto.CredentialGroupDTO;
 import org.wso2.carbon.identity.api.user.credential.common.exception.CredentialMgtClientException;
 import org.wso2.carbon.identity.api.user.credential.common.exception.CredentialMgtException;
-import org.wso2.carbon.identity.api.user.credential.common.utils.CredentialManagementUtils;
-import org.wso2.carbon.identity.rest.api.user.credential.v2.constants.CredentialMgtEndpointConstants;
+import org.wso2.carbon.identity.rest.api.user.credential.v2.dto.CredentialEntryDTO;
+import org.wso2.carbon.identity.rest.api.user.credential.v2.dto.CredentialsByTypeDTO;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.core.Response;
 
@@ -57,7 +66,7 @@ public class CredentialMgtEndpointUtils {
                 LOG.debug(e.getMessage(), e);
             }
             if (StringUtils.equals(e.getErrorCode(),
-                    CredentialManagementConstants.ErrorMessages.ERROR_CODE_ENTITY_NOT_FOUND.getCode())) {
+                    ErrorMessages.ERROR_CODE_USER_NOT_FOUND.getCode())) {
                 status = Response.Status.NOT_FOUND;
             } else {
                 status = Response.Status.BAD_REQUEST;
@@ -67,23 +76,26 @@ public class CredentialMgtEndpointUtils {
         }
 
         String errorCode = e.getErrorCode();
-
         String description = StringUtils.isNotBlank(e.getDescription()) ? e.getDescription() : e.getMessage();
-        return handleException(status, errorCode, e.getMessage(), description);
+        return new APIError(status, getError(errorCode, e.getMessage(), description));
     }
 
     /**
-     * Constructs an APIError from the given HTTP status and error details.
+     * Handles unsupported operations and constructs an appropriate APIError response.
      *
-     * @param status      HTTP response status.
-     * @param errorCode   Machine-readable error code.
-     * @param message     Human-readable error message.
-     * @param description Detailed error description.
-     * @return APIError.
+     * @param error Error message enum representing the unsupported operation.
+     * @param data  Optional data to be included in the error description.
+     * @return APIError representing the error response for unsupported operations.
      */
-    public static APIError handleException(Response.Status status, String errorCode,
-                                           String message, String description) {
+    public static APIError handleUnsupportedOperations(ErrorMessages error, Object... data) {
 
+        Response.Status status = Response.Status.BAD_REQUEST;
+        String errorCode = error.getCode();
+        String message = error.getMessage();
+        String description = error.getDescription();
+        if (ArrayUtils.isNotEmpty(data)) {
+            description = String.format(description, data);
+        }
         return new APIError(status, getError(errorCode, message, description));
     }
 
@@ -105,64 +117,6 @@ public class CredentialMgtEndpointUtils {
     }
 
     /**
-     * Validates that the given credential type string is a known type and returns the resolved value.
-     *
-     * @param value Credential type string.
-     * @return Resolved credential type.
-     * @throws CredentialMgtClientException If the type is unrecognised.
-     */
-    public static CredentialTypes validateType(String value) throws CredentialMgtClientException {
-
-        return resolveType(value);
-    }
-
-    /**
-     * Validates that the given credential type supports admin-initiated creation.
-     *
-     * @param value Credential type string.
-     * @return Resolved credential type.
-     * @throws CredentialMgtClientException If the type is unrecognized or does not support creation.
-     */
-    public static CredentialTypes validateCreatable(String value) throws CredentialMgtClientException {
-
-        CredentialTypes type = resolveType(value);
-        if (!CredentialMgtEndpointConstants.CREATABLE_TYPES.contains(type)) {
-            throw CredentialManagementUtils.handleClientException(
-                    CredentialManagementConstants.ErrorMessages.ERROR_CODE_CREDENTIAL_CREATION_NOT_SUPPORTED,
-                    null, value);
-        }
-        return type;
-    }
-
-    /**
-     * Validates that the given credential type supports bulk deletion by type.
-     *
-     * @param value Credential type string.
-     * @return Resolved credential type.
-     * @throws CredentialMgtClientException If the type is unrecognised or does not support deletion by type.
-     */
-    public static CredentialTypes validateDeletableByType(String value) throws CredentialMgtClientException {
-
-        CredentialTypes type = resolveType(value);
-        if (!CredentialMgtEndpointConstants.DELETABLE_BY_TYPE_TYPES.contains(type)) {
-            throw CredentialManagementUtils.handleClientException(
-                    CredentialManagementConstants.ErrorMessages.ERROR_CODE_CREDENTIAL_DELETION_BY_TYPE_NOT_SUPPORTED,
-                    null, value);
-        }
-        return type;
-    }
-
-    private static CredentialTypes resolveType(String value) throws CredentialMgtClientException {
-
-        CredentialTypes type = CredentialTypes.fromString(value);
-        if (type == null) {
-            throw new CredentialMgtClientException(CredentialManagementConstants
-                    .ErrorMessages.ERROR_CODE_INVALID_CREDENTIAL_TYPE);
-        }
-        return type;
-    }
-
-    /**
      * Validates that a credential ID is not blank.
      *
      * @param credentialId Credential ID.
@@ -171,8 +125,58 @@ public class CredentialMgtEndpointUtils {
     public static void validateCredentialId(String credentialId) throws CredentialMgtClientException {
 
         if (StringUtils.isBlank(credentialId)) {
-            throw new CredentialMgtClientException(CredentialManagementConstants
-                    .ErrorMessages.ERROR_CODE_INVALID_CREDENTIAL_ID);
+            throw new CredentialMgtClientException(ErrorMessages.ERROR_CODE_INVALID_CREDENTIAL_ID);
         }
+    }
+
+    /**
+     * Builds a CredentialsByTypeDTO by iterating over all registered credential handlers and populating
+     * the response fields for each configured credential type.
+     *
+     * @param handlerMap Map of credential types to their handlers.
+     * @param userId     User ID for whom credentials are retrieved.
+     * @return Populated CredentialsByTypeDTO.
+     */
+    public static CredentialsByTypeDTO buildCredentialsByTypeDTO(
+            Map<CredentialTypes, CredentialHandler> handlerMap, String userId) {
+
+        CredentialsByTypeDTO response = new CredentialsByTypeDTO();
+        for (Map.Entry<CredentialTypes, CredentialHandler> entry : handlerMap.entrySet()) {
+            try {
+                CredentialGroupDTO group = entry.getValue().getCredentials(userId);
+                if (!group.isConfigured()) {
+                    continue;
+                }
+                switch (entry.getKey()) {
+                    case PASSKEY:
+                        response.passkey(toEntryDTOs(group.getCredentials()));
+                        break;
+                    case PUSH_AUTH:
+                        response.pushAuth(toEntryDTOs(group.getCredentials()));
+                        break;
+                    case BACKUP_CODE:
+                        response.backupCode(true);
+                        break;
+                    default:
+                        LOG.warn("No response mapping for credential type: " + entry.getKey() + ". Skipping.");
+                        break;
+                }
+            } catch (CredentialMgtException e) {
+                throw handleCredentialMgtException(e);
+            }
+        }
+        return response;
+    }
+
+    private static List<CredentialEntryDTO> toEntryDTOs(List<CredentialDTO> credentials) {
+
+        if (credentials == null) {
+            return Collections.emptyList();
+        }
+        return credentials.stream()
+                .map(dto -> new CredentialEntryDTO()
+                        .credentialId(dto.getCredentialId())
+                        .displayName(dto.getDisplayName()))
+                .collect(Collectors.toList());
     }
 }

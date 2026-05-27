@@ -18,10 +18,22 @@
 
 package org.wso2.carbon.identity.api.user.credential.common.exception;
 
+import org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.ErrorMessages;
+
 /**
  * Server exception for User Credential Management operations.
  */
 public class CredentialMgtServerException extends CredentialMgtException {
+
+    /**
+     * Constructor with error parameter.
+     *
+     * @param error Error message.
+     */
+    public CredentialMgtServerException(ErrorMessages error) {
+
+        super(error.getMessage(), error.getCode(), error.getDescription());
+    }
 
     /**
      * Constructor with errorCode, message, description and cause parameters.

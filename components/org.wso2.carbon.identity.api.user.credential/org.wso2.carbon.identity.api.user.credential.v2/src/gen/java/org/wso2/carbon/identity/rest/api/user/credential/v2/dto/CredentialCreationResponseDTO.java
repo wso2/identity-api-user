@@ -31,28 +31,8 @@ import javax.validation.Valid;
  */
 public class CredentialCreationResponseDTO {
 
-    private String credentialId;
     private String type;
     private List<String> credentials = new ArrayList<>();
-
-    @ApiModelProperty(example = "YmFja3VwLWNvZGU=", value = "The identifier for the created credential.")
-    @JsonProperty("credentialId")
-    @Valid
-    public String getCredentialId() {
-
-        return credentialId;
-    }
-
-    public void setCredentialId(String credentialId) {
-
-        this.credentialId = credentialId;
-    }
-
-    public CredentialCreationResponseDTO credentialId(String credentialId) {
-
-        this.credentialId = credentialId;
-        return this;
-    }
 
     @ApiModelProperty(example = "backup-code", value = "The type of the created credential.")
     @JsonProperty("type")
@@ -98,21 +78,19 @@ public class CredentialCreationResponseDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CredentialCreationResponseDTO that = (CredentialCreationResponseDTO) o;
-        return Objects.equals(credentialId, that.credentialId)
-                && Objects.equals(type, that.type)
+        return Objects.equals(type, that.type)
                 && Objects.equals(credentials, that.credentials);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(credentialId, type, credentials);
+        return Objects.hash(type, credentials);
     }
 
     @Override
     public String toString() {
 
-        return "CredentialCreationResponseDTO{credentialId=" + credentialId + ", type=" + type
-                + ", credentials=[redacted]}";
+        return "CredentialCreationResponseDTO{type=" + type + ", credentials=[redacted]}";
     }
 }

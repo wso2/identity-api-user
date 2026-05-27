@@ -33,7 +33,7 @@ public class ErrorDTO {
     private String message;
     private String description;
 
-    @ApiModelProperty(example = "CM-60004",
+    @ApiModelProperty(example = "UCM-60004",
             value = "A unique, machine-readable error code following the WSO2 standard.")
     @JsonProperty("code")
     @Valid

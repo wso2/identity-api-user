@@ -32,14 +32,12 @@ public class CredentialGroupDTO {
 
     private final CredentialTypes type;
     private final boolean isConfigured;
-    private final boolean isMultiValued;
     private final List<CredentialDTO> credentials;
 
     private CredentialGroupDTO(Builder builder) {
 
         this.type = builder.type;
         this.isConfigured = builder.isConfigured;
-        this.isMultiValued = builder.isMultiValued;
         this.credentials = builder.credentials != null
                 ? Collections.unmodifiableList(builder.credentials)
                 : Collections.emptyList();
@@ -55,11 +53,6 @@ public class CredentialGroupDTO {
         return isConfigured;
     }
 
-    public boolean isMultiValued() {
-
-        return isMultiValued;
-    }
-
     public List<CredentialDTO> getCredentials() {
 
         return credentials;
@@ -72,7 +65,6 @@ public class CredentialGroupDTO {
 
         private CredentialTypes type;
         private boolean isConfigured;
-        private boolean isMultiValued;
         private List<CredentialDTO> credentials;
 
         public Builder type(CredentialTypes type) {
@@ -84,12 +76,6 @@ public class CredentialGroupDTO {
         public Builder isConfigured(boolean isConfigured) {
 
             this.isConfigured = isConfigured;
-            return this;
-        }
-
-        public Builder isMultiValued(boolean isMultiValued) {
-
-            this.isMultiValued = isMultiValued;
             return this;
         }
 

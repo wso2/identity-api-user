@@ -22,7 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.user.common.ContextLoader;
 import org.wso2.carbon.identity.api.user.credential.common.CredentialHandler;
-import org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants;
 import org.wso2.carbon.identity.api.user.credential.common.CredentialManagementServiceDataHolder;
 import org.wso2.carbon.identity.api.user.credential.common.dto.CredentialDTO;
 import org.wso2.carbon.identity.api.user.credential.common.dto.CredentialGroupDTO;
@@ -38,6 +37,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.CredentialTypes.PUSH_AUTH;
+import static org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.ErrorMessages.ERROR_CODE_DELETE_PUSH_AUTH_DEVICE_CLIENT_FAILURE;
+import static org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.ErrorMessages.ERROR_CODE_DELETE_PUSH_AUTH_DEVICE_FAILURE;
+import static org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.ErrorMessages.ERROR_CODE_GET_CREDENTIALS_CLIENT_FAILURE;
+import static org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.ErrorMessages.ERROR_CODE_GET_PUSH_AUTH_DEVICE_FAILURE;
 
 /**
  * Credential handler implementation for Push Authentication.
@@ -51,65 +54,66 @@ public class PushCredentialHandler implements CredentialHandler {
 
     public PushCredentialHandler() {
 
-        this.deviceHandler = CredentialManagementServiceDataHolder.getPushDeviceHandler();
+        this.deviceHandler = CredentialManagementServiceDataHolder.getDeviceHandlerService();
     }
 
     @Override
-    public CredentialGroupDTO getCredentials(String entityId) throws CredentialMgtException {
+    public CredentialGroupDTO getCredentials(String userId) throws CredentialMgtException {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Retrieving push authentication credential for entity ID: " + entityId);
+            LOG.debug("Retrieving push authentication credential for user ID: " + userId);
         }
         try {
             String tenantDomain = ContextLoader.getTenantDomainFromContext();
+            // NOTE: This need to be updated when bringing the multiple device support.
             List<Device> pushCredentials = Collections.singletonList(deviceHandler
-                    .getDeviceByUserId(entityId, tenantDomain));
+                    .getDeviceByUserId(userId, tenantDomain));
             List<CredentialDTO> credentialDTOs = pushCredentials.stream()
                     .map(this::mapPushToCredentialDTO).collect(Collectors.toList());
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Successfully retrieved push authentication credential for entity ID: " + entityId);
+                LOG.debug("Successfully retrieved push authentication credential for user ID: " + userId);
             }
             return new CredentialGroupDTO.Builder()
                     .type(PUSH_AUTH)
                     .isConfigured(!credentialDTOs.isEmpty())
-                    .isMultiValued(true)
                     .credentials(credentialDTOs)
                     .build();
-        } catch (PushDeviceHandlerException e) {
+        } catch (PushDeviceHandlerClientException e) {
             if (ERROR_CODE_PUSH_AUTH_DEVICE_NOT_FOUND.equals(e.getErrorCode())) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("No push authentication devices found for entity ID: " + entityId);
+                    LOG.debug("No push authentication devices found for user ID: " + userId);
                 }
                 return new CredentialGroupDTO.Builder()
                         .type(PUSH_AUTH)
                         .isConfigured(false)
-                        .isMultiValued(true)
                         .build();
             }
+            throw CredentialManagementUtils.handleClientException(
+                    ERROR_CODE_GET_CREDENTIALS_CLIENT_FAILURE, e, PUSH_AUTH.apiValue(), userId);
+        } catch (PushDeviceHandlerException e) {
             throw CredentialManagementUtils.handleServerException(
-                    CredentialManagementConstants.ErrorMessages.ERROR_CODE_GET_PUSH_AUTH_DEVICE, e, entityId);
+                    ERROR_CODE_GET_PUSH_AUTH_DEVICE_FAILURE, e, userId);
         }
     }
 
     @Override
-    public void deleteCredentialById(String entityId, String credentialId) throws CredentialMgtException {
+    public void deleteCredentialById(String userId, String credentialId) throws CredentialMgtException {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Deleting push authentication credential for entity ID: " + entityId);
+            LOG.debug("Deleting push authentication credential for user ID: " + userId);
         }
         try {
             deviceHandler.unregisterDevice(credentialId);
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Successfully deleted push authentication credential for entity ID: " + entityId);
+                LOG.debug("Successfully deleted push authentication credential for user ID: " + userId);
             }
         } catch (PushDeviceHandlerClientException e) {
             throw CredentialManagementUtils.handleClientException(
-                    CredentialManagementConstants.ErrorMessages.ERROR_CODE_DELETE_PUSH_AUTH_CREDENTIAL, e,
-                    credentialId);
+                    ERROR_CODE_DELETE_PUSH_AUTH_DEVICE_CLIENT_FAILURE, e, credentialId, userId);
         } catch (PushDeviceHandlerException e) {
             throw CredentialManagementUtils.handleServerException(
-                    CredentialManagementConstants.ErrorMessages.ERROR_CODE_DELETE_PUSH_AUTH_DEVICE, e, entityId);
+                    ERROR_CODE_DELETE_PUSH_AUTH_DEVICE_FAILURE, e, credentialId, userId);
         }
     }
 

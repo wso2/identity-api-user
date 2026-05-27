@@ -55,6 +55,40 @@
     </build>
 
     <dependencies>
+        <!--Dependency to generate the code from the openapi generation.-->
+        <!--            <plugin>-->
+        <!--                <groupId>org.openapitools</groupId>-->
+        <!--                <artifactId>openapi-generator-maven-plugin</artifactId>-->
+        <!--                <version>4.1.2</version>-->
+        <!--                <executions>-->
+        <!--                    <execution>-->
+        <!--                    <goals>-->
+        <!--                        <goal>generate</goal>-->
+        <!--                    </goals>-->
+        <!--                    <configuration>-->
+        <!--                        <inputSpec>${project.basedir}/src/main/resources/credential-management.yaml</inputSpec>-->
+        <!--                        <generatorName>org.wso2.carbon.codegen.CxfWso2Generator</generatorName>-->
+        <!--                        <configOptions>-->
+        <!--                            <sourceFolder>src/gen/java</sourceFolder>-->
+        <!--                            <apiPackage>org.wso2.carbon.identity.rest.api.user.credential.v2</apiPackage>-->
+        <!--                            <modelPackage>org.wso2.carbon.identity.rest.api.user.credential.v2.model</modelPackage>-->
+        <!--                            <packageName>org.wso2.carbon.identity.rest.api.user.credential.v1</packageName>-->
+        <!--                            <dateLibrary>java8</dateLibrary>-->
+        <!--                            <hideGenerationTimestamp>true</hideGenerationTimestamp>-->
+        <!--                        </configOptions>-->
+        <!--                        <output>.</output>-->
+        <!--                        <skipOverwrite>true</skipOverwrite>-->
+        <!--                    </configuration>-->
+        <!--                    </execution>-->
+        <!--                </executions>-->
+        <!--                <dependencies>-->
+        <!--                    <dependency>-->
+        <!--                        <groupId>org.openapitools</groupId>-->
+        <!--                        <artifactId>cxf-wso2-openapi-generator</artifactId>-->
+        <!--                        <version>1.0.0</version>-->
+        <!--                    </dependency>-->
+        <!--                </dependencies>-->
+        <!--            </plugin>-->
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
@@ -118,14 +152,13 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>commons-lang.wso2</groupId>
-            <artifactId>commons-lang</artifactId>
+            <groupId>org.wso2.carbon.identity.framework</groupId>
+            <artifactId>org.wso2.carbon.identity.core</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.2</version>
-            <scope>provided</scope>
+            <groupId>commons-lang.wso2</groupId>
+            <artifactId>commons-lang</artifactId>
         </dependency>
     </dependencies>
 

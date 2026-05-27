@@ -37,7 +37,7 @@ public class CredentialManagementServiceDataHolder {
         private static final WebAuthnService SERVICE = new WebAuthnService();
     }
 
-    private static class PushDeviceHandlerHolder {
+    private static class DeviceHandlerServiceHolder {
 
         private static final DeviceHandlerService SERVICE = (DeviceHandlerService) PrivilegedCarbonContext
                 .getThreadLocalCarbonContext().getOSGiService(DeviceHandlerService.class, null);
@@ -64,9 +64,9 @@ public class CredentialManagementServiceDataHolder {
      *
      * @return DeviceHandlerService
      */
-    public static DeviceHandlerService getPushDeviceHandler() {
+    public static DeviceHandlerService getDeviceHandlerService() {
 
-        return PushDeviceHandlerHolder.SERVICE;
+        return DeviceHandlerServiceHolder.SERVICE;
     }
 
     /**

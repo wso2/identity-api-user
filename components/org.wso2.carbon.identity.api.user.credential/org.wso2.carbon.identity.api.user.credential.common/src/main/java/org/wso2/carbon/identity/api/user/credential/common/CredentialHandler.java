@@ -29,37 +29,37 @@ import org.wso2.carbon.identity.api.user.credential.common.exception.CredentialM
 public interface CredentialHandler {
 
     /**
-     * Retrieves credentials for a given entity grouped as a single typed result.
+     * Retrieves credentials for a given user grouped as a single typed result.
      */
-    CredentialGroupDTO getCredentials(String entityId) throws CredentialMgtException;
+    CredentialGroupDTO getCredentials(String userId) throws CredentialMgtException;
 
     /**
-     * Deletes a specific credential by ID for an entity.
+     * Deletes a specific credential by ID for a user.
      * Handlers that do not support per-credential deletion should leave this as the default.
      */
-    default void deleteCredentialById(String entityId, String credentialId) throws CredentialMgtException {
+    default void deleteCredentialById(String userId, String credentialId) throws CredentialMgtException {
 
         throw new CredentialMgtClientException(
-                CredentialManagementConstants.ErrorMessages.ERROR_CODE_INVALID_CREDENTIAL_TYPE);
+                CredentialManagementConstants.ErrorMessages.ERROR_CODE_UNSUPPORTED_OPERATION);
     }
 
     /**
-     * Deletes all credentials for an entity.
+     * Deletes all credentials for a user.
      * Handlers that do not support bulk deletion should leave this as the default.
      */
-    default void deleteCredentials(String entityId) throws CredentialMgtException {
+    default void deleteCredentials(String userId) throws CredentialMgtException {
 
         throw new CredentialMgtClientException(
-                CredentialManagementConstants.ErrorMessages.ERROR_CODE_INVALID_CREDENTIAL_TYPE);
+                CredentialManagementConstants.ErrorMessages.ERROR_CODE_UNSUPPORTED_OPERATION);
     }
 
     /**
-     * Creates credentials for an entity.
+     * Creates credentials for a user.
      * Handlers that do not support creation should leave this as the default.
      */
-    default CreatedCredentialDTO createCredential(String entityId) throws CredentialMgtException {
+    default CreatedCredentialDTO createCredential(String userId) throws CredentialMgtException {
 
         throw new CredentialMgtClientException(
-                CredentialManagementConstants.ErrorMessages.ERROR_CODE_CREDENTIAL_CREATION_NOT_SUPPORTED);
+                CredentialManagementConstants.ErrorMessages.ERROR_CODE_UNSUPPORTED_OPERATION);
     }
 }
