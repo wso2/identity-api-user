@@ -424,7 +424,7 @@ public class RecoveryUtil {
                     apiCallsArrayList);
         } else {
             retryErrorResponse = buildRetryErrorResponse(
-                    Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, code, description, resetCode,
+                    Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, description, code, resetCode,
                     correlationId, apiCallsArrayList);
         }
         LOG.debug(description);

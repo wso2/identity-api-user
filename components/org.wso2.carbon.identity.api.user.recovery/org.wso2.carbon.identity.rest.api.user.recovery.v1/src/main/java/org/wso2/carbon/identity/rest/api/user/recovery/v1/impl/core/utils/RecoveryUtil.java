@@ -374,7 +374,7 @@ public class RecoveryUtil {
                         buildURIForBody(tenantDomain, Constants.APICall.RESET_PASSWORD_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
         RetryErrorResponse retryErrorResponse = buildRetryErrorResponse(
-                Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, code, description, resetCode, correlationId,
+                Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, description, code, resetCode, correlationId,
                 apiCallsArrayList);
         if (StringUtils.isNotBlank(className)) {
             description = String.format("%s : %s - %s", LOG_MESSAGE_PREFIX, className, description);
