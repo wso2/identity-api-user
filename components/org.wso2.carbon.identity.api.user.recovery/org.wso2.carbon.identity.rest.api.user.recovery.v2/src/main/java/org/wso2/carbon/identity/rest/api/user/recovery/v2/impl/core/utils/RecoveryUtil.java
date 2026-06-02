@@ -417,16 +417,9 @@ public class RecoveryUtil {
                         buildURIForBody(tenantDomain, APICalls.RESET_PASSWORD_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
 
-        RetryErrorResponse retryErrorResponse;
-        if (isNormalizedRetryErrorResponseEnabled()) {
-            retryErrorResponse = buildRetryErrorResponse(
-                    Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, description, code, resetCode, correlationId,
-                    apiCallsArrayList);
-        } else {
-            retryErrorResponse = buildRetryErrorResponse(
-                    Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, description, code, resetCode,
-                    correlationId, apiCallsArrayList);
-        }
+        RetryErrorResponse retryErrorResponse = buildRetryErrorResponse(
+                Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, description, code, resetCode, correlationId,
+                apiCallsArrayList);
         LOG.debug(description);
         return new PreconditionFailedException(retryErrorResponse);
     }
