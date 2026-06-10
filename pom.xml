@@ -354,18 +354,6 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.identity.framework</groupId>
-                <artifactId>org.wso2.carbon.identity.core</artifactId>
-                <version>${carbon.identity.framework.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon.identity.framework</groupId>
-                <artifactId>org.wso2.carbon.identity.application.mgt</artifactId>
-                <version>${carbon.identity.framework.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.wso2.config.mapper</groupId>
                 <artifactId>config-mapper</artifactId>
                 <version>${config.mapper.version}</version>
@@ -384,6 +372,12 @@
                 <groupId>org.wso2.carbon.identity.framework</groupId>
                 <artifactId>org.wso2.carbon.identity.user.action</artifactId>
                 <version>${carbon.identity.framework.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.local.auth.fido</groupId>
+                <artifactId>org.wso2.carbon.identity.application.authenticator.fido2</artifactId>
+                <version>${fido2.version}</version>
                 <scope>provided</scope>
             </dependency>
         </dependencies>
@@ -544,9 +538,9 @@
         <identity.notification.push.version>1.1.1</identity.notification.push.version>
         <identity.notification.push.version.range>[1.0.0, 2.0.0)</identity.notification.push.version.range>
         <testng.version>6.9.10</testng.version>
-        <fido2.version>5.4.7</fido2.version>
+        <fido2.version>6.0.3</fido2.version>
         <identity.totp.version>3.3.40</identity.totp.version>
-        <identity.backup.code.version>0.0.4</identity.backup.code.version>
+        <identity.backup.code.version>0.1.2</identity.backup.code.version>
         <lombok.version>1.18.20</lombok.version>
         <identity.verification.version>1.0.16</identity.verification.version>
         <maven.checkstyleplugin.excludes>**/gen/**/*</maven.checkstyleplugin.excludes>
@@ -576,6 +570,7 @@
         <module>components/org.wso2.carbon.identity.api.user.push</module>
         <module>components/org.wso2.carbon.identity.api.user.approval</module>
         <module>components/org.wso2.carbon.identity.api.user.password</module>
+        <module>components/org.wso2.carbon.identity.api.user.credential</module>
     </modules>
 
 </project>
