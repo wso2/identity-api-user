@@ -24,6 +24,7 @@ import org.wso2.carbon.identity.api.user.credential.common.core.BackupCodeCreden
 import org.wso2.carbon.identity.api.user.credential.common.core.PasskeyCredentialHandler;
 import org.wso2.carbon.identity.api.user.credential.common.core.PushCredentialHandler;
 import org.wso2.carbon.identity.rest.api.user.credential.v2.UsersApiService;
+import org.wso2.carbon.identity.rest.api.user.credential.v2.core.CredentialManagementService;
 import org.wso2.carbon.identity.rest.api.user.credential.v2.impl.UsersCredentialApiServiceImpl;
 
 import java.util.EnumMap;
@@ -41,7 +42,7 @@ public class UsersApiServiceFactory {
         handlerMap.put(CredentialTypes.PASSKEY, new PasskeyCredentialHandler());
         handlerMap.put(CredentialTypes.PUSH_AUTH, new PushCredentialHandler());
         handlerMap.put(CredentialTypes.BACKUP_CODE, new BackupCodeCredentialHandler());
-        SERVICE = new UsersCredentialApiServiceImpl(handlerMap);
+        SERVICE = new UsersCredentialApiServiceImpl(new CredentialManagementService(handlerMap));
     }
 
     private UsersApiServiceFactory() {

@@ -19,6 +19,8 @@
 package org.wso2.carbon.identity.api.user.credential.common.utils;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.user.common.function.UniqueIdToUser;
 import org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.ErrorMessages;
 import org.wso2.carbon.identity.api.user.credential.common.CredentialManagementServiceDataHolder;
@@ -26,12 +28,17 @@ import org.wso2.carbon.identity.api.user.credential.common.exception.CredentialM
 import org.wso2.carbon.identity.api.user.credential.common.exception.CredentialMgtServerException;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
+import org.wso2.carbon.user.api.UserStoreException;
+import org.wso2.carbon.user.api.UserStoreManager;
+import org.wso2.carbon.user.core.UniqueIDUserStoreManager;
 import org.wso2.carbon.user.core.service.RealmService;
 
 /**
  * Utility class of User Credential Management.
  */
 public class CredentialManagementUtils {
+
+    private static final Log LOG = LogFactory.getLog(CredentialManagementUtils.class);
 
     private CredentialManagementUtils() {
 
@@ -86,5 +93,33 @@ public class CredentialManagementUtils {
         RealmService realmService = CredentialManagementServiceDataHolder.getRealmService();
         User user = new UniqueIdToUser().apply(realmService, userId, IdentityTenantUtil.resolveTenantDomain());
         return user.getUserName() + "@" + user.getTenantDomain();
+    }
+
+    /**
+     * Validates whether a user exists for the given user ID (UUID).
+     *
+     * @param userId User ID (UUID) to validate.
+     * @return true if the user exists, false otherwise.
+     * @throws CredentialMgtServerException if an error occurs while validating the user ID.
+     */
+    public static boolean validateUserId(String userId) throws CredentialMgtServerException {
+
+        String tenantDomain = IdentityTenantUtil.resolveTenantDomain();
+        RealmService realmService = CredentialManagementServiceDataHolder.getRealmService();
+
+        try {
+            UserStoreManager userStoreManager = realmService.getTenantUserRealm(
+                    IdentityTenantUtil.getTenantId(tenantDomain)).getUserStoreManager();
+            if (!(userStoreManager instanceof UniqueIDUserStoreManager)) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("User store manager does not support unique user IDs. " +
+                            "Cannot validate user ID: " + userId);
+                }
+                return false;
+            }
+            return ((UniqueIDUserStoreManager) userStoreManager).isExistingUserWithID(userId);
+        } catch (UserStoreException e) {
+            throw handleServerException(ErrorMessages.ERROR_CODE_VALIDATE_USER_ID_FAILURE, e, userId);
+        }
     }
 }

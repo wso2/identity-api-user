@@ -41,6 +41,7 @@ import static org.wso2.carbon.identity.api.user.credential.common.CredentialMana
 import static org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.ErrorMessages.ERROR_CODE_DELETE_PUSH_AUTH_DEVICE_FAILURE;
 import static org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.ErrorMessages.ERROR_CODE_GET_CREDENTIALS_CLIENT_FAILURE;
 import static org.wso2.carbon.identity.api.user.credential.common.CredentialManagementConstants.ErrorMessages.ERROR_CODE_GET_PUSH_AUTH_DEVICE_FAILURE;
+import static org.wso2.carbon.identity.notification.push.device.handler.constant.PushDeviceHandlerConstants.ErrorMessages.ERROR_CODE_DEVICE_NOT_FOUND_FOR_USER_ID;
 
 /**
  * Credential handler implementation for Push Authentication.
@@ -48,7 +49,6 @@ import static org.wso2.carbon.identity.api.user.credential.common.CredentialMana
 public class PushCredentialHandler implements CredentialHandler {
 
     private static final Log LOG = LogFactory.getLog(PushCredentialHandler.class);
-    private static final String ERROR_CODE_PUSH_AUTH_DEVICE_NOT_FOUND = "PDH-15010";
 
     private final DeviceHandlerService deviceHandler;
 
@@ -80,7 +80,7 @@ public class PushCredentialHandler implements CredentialHandler {
                     .credentials(credentialDTOs)
                     .build();
         } catch (PushDeviceHandlerClientException e) {
-            if (ERROR_CODE_PUSH_AUTH_DEVICE_NOT_FOUND.equals(e.getErrorCode())) {
+            if (ERROR_CODE_DEVICE_NOT_FOUND_FOR_USER_ID.getCode().equals(e.getErrorCode())) {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("No push authentication devices found for user ID: " + userId);
                 }
