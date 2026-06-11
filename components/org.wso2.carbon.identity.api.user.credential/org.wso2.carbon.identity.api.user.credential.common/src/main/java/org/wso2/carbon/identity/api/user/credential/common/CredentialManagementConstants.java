@@ -104,6 +104,9 @@ public class CredentialManagementConstants {
         ERROR_CODE_HANDLER_NOT_REGISTERED("65007",
                 "No handler registered for credential type.",
                 "No handler is registered on the server for credential type: %s."),
+        ERROR_CODE_VALIDATE_USER_ID_FAILURE("65008",
+                "Error validating user.",
+                "Unexpected server error while validating user: %s."),
 
         // Client errors.
        ERROR_CODE_USER_NOT_FOUND("60001",
