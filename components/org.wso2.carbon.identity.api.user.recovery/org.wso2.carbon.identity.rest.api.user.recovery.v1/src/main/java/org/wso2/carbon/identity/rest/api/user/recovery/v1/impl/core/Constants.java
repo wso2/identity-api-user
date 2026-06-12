@@ -36,6 +36,9 @@ public class Constants {
     public static final String STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT =
             "The server encountered an internal error. Please contact administrator.";
 
+    public static final String ENABLE_NORMALIZED_RETRY_ERROR_RESPONSE =
+            "Recovery.ErrorMessage.EnableNormalizedRetryErrorResponse";
+
     // Recovery type.
     public static final String RECOVERY_WITH_NOTIFICATIONS = "recoverWithNotifications";
     public static final String RECOVER_WITH_CHALLENGE_QUESTIONS = "recoverWithChallengeQuestions";

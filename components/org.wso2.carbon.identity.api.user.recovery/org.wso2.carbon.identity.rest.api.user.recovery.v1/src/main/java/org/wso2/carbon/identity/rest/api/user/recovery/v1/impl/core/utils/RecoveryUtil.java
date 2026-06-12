@@ -373,9 +373,16 @@ public class RecoveryUtil {
                 .buildApiCall(Constants.APICall.RESET_PASSWORD_API.getType(), Constants.RelationStates.NEXT_REL,
                         buildURIForBody(tenantDomain, Constants.APICall.RESET_PASSWORD_API.getApiUrl(),
                                 Constants.ACCOUNT_RECOVERY_ENDPOINT_BASEPATH), null));
-        RetryErrorResponse retryErrorResponse = buildRetryErrorResponse(
-                Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, code, description, resetCode, correlationId,
-                apiCallsArrayList);
+        RetryErrorResponse retryErrorResponse;
+        if (isNormalizedRetryErrorResponseEnabled()) {
+            retryErrorResponse = buildRetryErrorResponse(
+                    Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, description, code, resetCode, correlationId,
+                    apiCallsArrayList);
+        } else {
+            retryErrorResponse = buildRetryErrorResponse(
+                    Constants.STATUS_PRECONDITION_FAILED_MESSAGE_DEFAULT, code, description, resetCode, correlationId,
+                    apiCallsArrayList);
+        }
         if (StringUtils.isNotBlank(className)) {
             description = String.format("%s : %s - %s", LOG_MESSAGE_PREFIX, className, description);
         }
@@ -573,5 +580,20 @@ public class RecoveryUtil {
         clientErrorMap.put(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_PASSWORD_POLICY_VIOLATION.getCode(),
                 RETRY_ERROR_CATEGORY);
         return clientErrorMap;
+    }
+
+    /**
+     * Check whether the normalized retry error response is enabled.
+     *
+     * @return true if the normalized retry error response is enabled, false otherwise.
+     */
+    private static boolean isNormalizedRetryErrorResponseEnabled() {
+
+        boolean isEnabled = Boolean.parseBoolean(IdentityUtil.getProperty(
+                Constants.ENABLE_NORMALIZED_RETRY_ERROR_RESPONSE));
+        if (log.isDebugEnabled()) {
+            log.debug("Normalized retry error response enabled: " + isEnabled);
+        }
+        return isEnabled;
     }
 }
