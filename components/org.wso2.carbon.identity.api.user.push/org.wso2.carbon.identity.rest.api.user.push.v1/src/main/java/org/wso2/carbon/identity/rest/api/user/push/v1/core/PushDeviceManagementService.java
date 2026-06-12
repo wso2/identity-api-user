@@ -150,6 +150,21 @@ public class PushDeviceManagementService {
     }
 
     /**
+     * Update device from mobile.
+     *
+     * @param deviceId Device ID.
+     * @param token    Token.
+     */
+    public void updateDeviceFromMobile(String deviceId, String token) {
+
+        try {
+            deviceHandlerService.editDeviceMobile(deviceId, token);
+        } catch (PushDeviceHandlerException e) {
+            throw handlePushDeviceHandlerException(e);
+        }
+    }
+
+    /**
      * Register a device.
      *
      * @param registrationRequestDTO Registration request DTO.
