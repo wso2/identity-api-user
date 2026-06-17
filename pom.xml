@@ -380,6 +380,12 @@
                 <version>${fido2.version}</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.consent.mgt</groupId>
+                <artifactId>org.wso2.carbon.consent.mgt.core</artifactId>
+                <version>${carbon.consent.mgt.version}</version>
+                <scope>provided</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -550,6 +556,7 @@
         <identity.organization.management.version>1.4.122</identity.organization.management.version>
         <openapi-generator-maven-plugin.version>4.1.2</openapi-generator-maven-plugin.version>
         <carbon.workflow-engine.version>1.1.6</carbon.workflow-engine.version>
+        <carbon.consent.mgt.version>2.9.9</carbon.consent.mgt.version>
     </properties>
 
     <modules>
@@ -571,6 +578,7 @@
         <module>components/org.wso2.carbon.identity.api.user.approval</module>
         <module>components/org.wso2.carbon.identity.api.user.password</module>
         <module>components/org.wso2.carbon.identity.api.user.credential</module>
+        <module>components/org.wso2.carbon.identity.api.user.consent</module>
     </modules>
 
 </project>
