@@ -83,16 +83,15 @@ public class CredentialManagementUtils {
     }
 
     /**
-     * Resolve the fully-qualified username for a given user UUID.
+     * Resolves the username from the given user ID (UUID).
      *
-     * @param userId User ID (UUID).
-     * @return Fully-qualified username.
+     * @param userId User ID (UUID) to resolve the username for.
+     * @return Resolved User object containing the username and other details.
      */
-    public static String resolveUsernameFromUserId(String userId) {
+    public static User resolveUsernameFromUserId(String userId) {
 
         RealmService realmService = CredentialManagementServiceDataHolder.getRealmService();
-        User user = new UniqueIdToUser().apply(realmService, userId, IdentityTenantUtil.resolveTenantDomain());
-        return user.getUserName() + "@" + user.getTenantDomain();
+        return new UniqueIdToUser().apply(realmService, userId, IdentityTenantUtil.resolveTenantDomain());
     }
 
     /**

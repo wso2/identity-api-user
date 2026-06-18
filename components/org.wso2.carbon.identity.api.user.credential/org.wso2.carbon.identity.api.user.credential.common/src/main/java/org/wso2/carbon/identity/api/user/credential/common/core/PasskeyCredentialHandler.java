@@ -61,7 +61,7 @@ public class PasskeyCredentialHandler implements CredentialHandler {
             LOG.debug("Retrieving passkey credentials for user ID: " + userId);
         }
         try {
-            String username = CredentialManagementUtils.resolveUsernameFromUserId(userId);
+            String username = CredentialManagementUtils.resolveUsernameFromUserId(userId).toFullQualifiedUsername();
             Collection<FIDO2CredentialRegistration> passkeyCredentials = webAuthnService
                     .getFIDO2DeviceMetaData(username);
 
@@ -92,7 +92,7 @@ public class PasskeyCredentialHandler implements CredentialHandler {
             LOG.debug("Deleting passkey credential for user ID: " + userId);
         }
         try {
-            String username = CredentialManagementUtils.resolveUsernameFromUserId(userId);
+            String username = CredentialManagementUtils.resolveUsernameFromUserId(userId).toFullQualifiedUsername();
             webAuthnService.deregisterFIDO2Credential(credentialId, username);
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Successfully deleted passkey credential for user ID: " + userId);
