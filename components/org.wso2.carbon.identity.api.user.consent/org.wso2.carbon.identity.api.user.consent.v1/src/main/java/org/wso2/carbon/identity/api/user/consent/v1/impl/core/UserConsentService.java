@@ -232,19 +232,12 @@ public class UserConsentService {
                     AuthorizationRequest.StateEnum.APPROVED.value();
 
             Receipt receipt = consentManager.getReceiptWithExtendedSchema(consentId);
-            validateOwnership(receipt, consentId, subjectId);
+            List<ConsentAuthorization> authorizations = consentManager.getConsentAuthorizations(consentId);
+            validateAuthorizer(receipt, consentId, subjectId, authorizations);
             consentManager.authorizeConsent(consentId, subjectId, authStatus);
 
-            List<ConsentAuthorization> authorizations = consentManager.getConsentAuthorizations(consentId);
-            ConsentAuthorization userAuth = null;
-            if (authorizations != null) {
-                for (ConsentAuthorization auth : authorizations) {
-                    if (subjectId.equals(auth.getUserId())) {
-                        userAuth = auth;
-                        break;
-                    }
-                }
-            }
+            ConsentAuthorization userAuth = findUserAuthorization(
+                    consentManager.getConsentAuthorizations(consentId), subjectId);
 
             AuthorizationResponse response = new AuthorizationResponse();
             response.setUserId(subjectId);
@@ -307,18 +300,55 @@ public class UserConsentService {
     private void validateOwnership(Receipt receipt, String consentId, String subjectId) {
 
         if (receipt == null) {
-            throw new APIError(Response.Status.NOT_FOUND, new ErrorResponse.Builder()
-                    .withCode(ErrorMessages.ERROR_CODE_RECEIPT_ID_INVALID.getCode())
-                    .withMessage("Consent not found.")
-                    .withDescription("No consent found for ID: " + consentId)
-                    .build());
+            throw consentNotFoundError(consentId);
         }
         if (!subjectId.equals(receipt.getPiiPrincipalId())) {
-            throw new APIError(Response.Status.FORBIDDEN, new ErrorResponse.Builder()
-                    .withCode(ErrorMessages.ERROR_CODE_USER_NOT_AUTHORIZED.getCode())
-                    .withMessage(ErrorMessages.ERROR_CODE_USER_NOT_AUTHORIZED.getMessage())
-                    .build());
+            throw userNotAuthorizedError();
         }
+    }
+
+    private void validateAuthorizer(Receipt receipt, String consentId, String subjectId,
+                                    List<ConsentAuthorization> authorizations) {
+
+        if (receipt == null) {
+            throw consentNotFoundError(consentId);
+        }
+        if (subjectId.equals(receipt.getPiiPrincipalId())) {
+            return;
+        }
+        if (findUserAuthorization(authorizations, subjectId) != null) {
+            return;
+        }
+        throw userNotAuthorizedError();
+    }
+
+    private ConsentAuthorization findUserAuthorization(List<ConsentAuthorization> authorizations, String subjectId) {
+
+        if (authorizations != null) {
+            for (ConsentAuthorization auth : authorizations) {
+                if (subjectId.equals(auth.getUserId())) {
+                    return auth;
+                }
+            }
+        }
+        return null;
+    }
+
+    private APIError consentNotFoundError(String consentId) {
+
+        return new APIError(Response.Status.NOT_FOUND, new ErrorResponse.Builder()
+                .withCode(ErrorMessages.ERROR_CODE_RECEIPT_ID_INVALID.getCode())
+                .withMessage("Consent not found.")
+                .withDescription("No consent found for ID: " + consentId)
+                .build());
+    }
+
+    private APIError userNotAuthorizedError() {
+
+        return new APIError(Response.Status.FORBIDDEN, new ErrorResponse.Builder()
+                .withCode(ErrorMessages.ERROR_CODE_USER_NOT_AUTHORIZED.getCode())
+                .withMessage(ErrorMessages.ERROR_CODE_USER_NOT_AUTHORIZED.getMessage())
+                .build());
     }
 
     private ConsentResponse toConsentResponse(Receipt receipt) {

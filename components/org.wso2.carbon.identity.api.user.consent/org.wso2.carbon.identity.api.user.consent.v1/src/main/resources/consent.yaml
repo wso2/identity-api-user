@@ -390,8 +390,7 @@ definitions:
         description: Initial state of the consent.
         enum:
           - ACTIVE
-          - REVOKED
-          - EXPIRED
+          - REJECTED
         example: 'ACTIVE'
 
   ConsentResponse:
