@@ -64,7 +64,6 @@ import java.util.Set;
 
 import javax.ws.rs.core.Response;
 
-import static org.wso2.carbon.consent.mgt.core.constant.ConsentConstants.ACTIVE_STATE;
 import static org.wso2.carbon.consent.mgt.core.constant.ConsentConstants.ErrorMessages.ERROR_CODE_INVALID_FILTER_EXPRESSION;
 import static org.wso2.carbon.consent.mgt.core.constant.ConsentConstants.ErrorMessages.ERROR_CODE_INVALID_QUERY_PARAM;
 import static org.wso2.carbon.consent.mgt.core.constant.ConsentConstants.FilterConstants;
@@ -130,13 +129,10 @@ public class UserConsentService {
 
             AddReceiptResponse addReceiptResponse = consentManager.addConsent(receiptInput);
 
-            ConsentInput.StateEnum requestedState = consentInput.getState() != null
-                    ? consentInput.getState() : ConsentInput.StateEnum.ACTIVE;
             ConsentCreateResponse response = new ConsentCreateResponse();
             response.setId(addReceiptResponse.getConsentReceiptId());
             response.setSubjectId(subjectId);
             response.setServiceId(consentInput.getServiceId());
-            response.setState(ConsentCreateResponse.StateEnum.fromValue(requestedState.value()));
             return response;
         } catch (ConsentManagementException e) {
             throw handleException(e);
@@ -222,7 +218,7 @@ public class UserConsentService {
         }
     }
 
-    public AuthorizationResponse authorizeConsent(String consentId, AuthorizationRequest authorizationRequest) {
+    public void authorizeConsent(String consentId, AuthorizationRequest authorizationRequest) {
 
         String subjectId = ContextLoader.getUsernameFromContext();
 
@@ -235,20 +231,6 @@ public class UserConsentService {
             List<ConsentAuthorization> authorizations = consentManager.getConsentAuthorizations(consentId);
             validateAuthorizer(receipt, consentId, subjectId, authorizations);
             consentManager.authorizeConsent(consentId, subjectId, authStatus);
-
-            ConsentAuthorization userAuth = findUserAuthorization(
-                    consentManager.getConsentAuthorizations(consentId), subjectId);
-
-            AuthorizationResponse response = new AuthorizationResponse();
-            response.setUserId(subjectId);
-            if (userAuth != null) {
-                response.setState(AuthorizationResponse.StateEnum.fromValue(userAuth.getStatus().name()));
-                response.setUpdatedTime(userAuth.getUpdatedTime());
-            } else {
-                response.setState(AuthorizationResponse.StateEnum.fromValue(authStatus));
-                response.setUpdatedTime(System.currentTimeMillis());
-            }
-            return response;
         } catch (ConsentManagementException e) {
             throw handleException(e);
         }
@@ -357,8 +339,7 @@ public class UserConsentService {
         dto.setId(receipt.getConsentReceiptId());
         dto.setSubjectId(receipt.getPiiPrincipalId());
         dto.setLanguage(receipt.getLanguage());
-        String state = StringUtils.isNotBlank(receipt.getState()) ? receipt.getState() : ACTIVE_STATE;
-        dto.setState(ConsentResponse.StateEnum.fromValue(state));
+        dto.setState(ConsentResponse.StateEnum.fromValue(receipt.getState()));
         dto.setTimestamp(receipt.getConsentTimestamp());
         dto.setExpiryTime(receipt.getExpiryTime() != null ? receipt.getExpiryTime().getTime() : null);
         dto.setProperties(receipt.getProperties());
@@ -469,8 +450,7 @@ public class UserConsentService {
         ConsentSummary summary = new ConsentSummary();
         summary.setId(receipt.getConsentReceiptId());
         summary.setTimestamp(receipt.getConsentTimestamp());
-        String state = StringUtils.isNotBlank(receipt.getState()) ? receipt.getState() : ACTIVE_STATE;
-        summary.setState(ConsentSummary.StateEnum.fromValue(state));
+        summary.setState(ConsentSummary.StateEnum.fromValue(receipt.getState()));
         if (receipt.getServices() != null && !receipt.getServices().isEmpty()) {
             summary.setServiceId(receipt.getServices().get(0).getService());
         }

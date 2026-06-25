@@ -22,7 +22,6 @@ import org.wso2.carbon.identity.api.user.consent.v1.MeApiService;
 import org.wso2.carbon.identity.api.user.consent.v1.impl.core.UserConsentService;
 import org.wso2.carbon.identity.api.user.consent.v1.impl.factories.UserConsentServiceFactory;
 import org.wso2.carbon.identity.api.user.consent.v1.model.AuthorizationRequest;
-import org.wso2.carbon.identity.api.user.consent.v1.model.AuthorizationResponse;
 import org.wso2.carbon.identity.api.user.consent.v1.model.ConsentCreateResponse;
 import org.wso2.carbon.identity.api.user.consent.v1.model.ConsentInput;
 import org.wso2.carbon.identity.api.user.consent.v1.model.ConsentResponse;
@@ -55,8 +54,8 @@ public class MeApiServiceImpl implements MeApiService {
     @Override
     public Response authorizeConsentOfLoggedInUser(String consentId, AuthorizationRequest authorization) {
 
-        AuthorizationResponse response = userConsentService.authorizeConsent(consentId, authorization);
-        return Response.ok(response).build();
+        userConsentService.authorizeConsent(consentId, authorization);
+        return Response.ok().build();
     }
 
     @Override

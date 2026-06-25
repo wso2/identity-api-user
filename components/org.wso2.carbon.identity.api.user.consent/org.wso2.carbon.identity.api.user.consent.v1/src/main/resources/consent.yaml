@@ -188,8 +188,6 @@ paths:
       responses:
         200:
           description: Authorization recorded successfully.
-          schema:
-            $ref: '#/definitions/AuthorizationResponse'
         400:
           $ref: '#/responses/InvalidInput'
         401:
@@ -385,13 +383,6 @@ definitions:
         type: string
         description: Identifier of the service the consent was given for.
         example: 'sampleApp'
-      state:
-        type: string
-        description: Initial state of the consent.
-        enum:
-          - ACTIVE
-          - REJECTED
-        example: 'ACTIVE'
 
   ConsentResponse:
     type: object

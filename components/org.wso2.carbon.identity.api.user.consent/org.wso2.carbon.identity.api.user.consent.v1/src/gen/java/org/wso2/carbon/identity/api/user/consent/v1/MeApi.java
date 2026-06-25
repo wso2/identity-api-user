@@ -75,14 +75,14 @@ public class MeApi  {
     @Path("/consents/{consent-id}/authorize")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @ApiOperation(value = "Authorize a consent", notes = "Authorizes a PENDING consent. The authenticated user must be in the consent's authorization list, returns 403 otherwise. When all required users have approved, the consent transitions to ACTIVE state. If any user rejects, the consent transitions to REJECTED state. <br> <b>Permission required:</b> <br> * None <br> <b>Scope required:</b> <br> * internal_login ", response = AuthorizationResponse.class, authorizations = {
+    @ApiOperation(value = "Authorize a consent", notes = "Authorizes a PENDING consent. The authenticated user must be in the consent's authorization list, returns 403 otherwise. When all required users have approved, the consent transitions to ACTIVE state. If any user rejects, the consent transitions to REJECTED state. <br> <b>Permission required:</b> <br> * None <br> <b>Scope required:</b> <br> * internal_login ", response = Void.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
         })
     }, tags={ "me", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Authorization recorded successfully.", response = AuthorizationResponse.class),
+        @ApiResponse(code = 200, message = "Authorization recorded successfully.", response = Void.class),
         @ApiResponse(code = 400, message = "Invalid input request", response = Error.class),
         @ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
         @ApiResponse(code = 403, message = "Resource Forbidden", response = Error.class),

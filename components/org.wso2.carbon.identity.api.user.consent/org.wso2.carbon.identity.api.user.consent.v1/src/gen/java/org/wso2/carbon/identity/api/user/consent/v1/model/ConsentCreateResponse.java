@@ -36,40 +36,6 @@ public class ConsentCreateResponse  {
     private String subjectId;
     private String serviceId;
 
-@XmlType(name="StateEnum")
-@XmlEnum(String.class)
-public enum StateEnum {
-
-    @XmlEnumValue("ACTIVE") ACTIVE(String.valueOf("ACTIVE")), @XmlEnumValue("REJECTED") REJECTED(String.valueOf("REJECTED"));
-
-
-    private String value;
-
-    StateEnum(String v) {
-        value = v;
-    }
-
-    public String value() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return String.valueOf(value);
-    }
-
-    public static StateEnum fromValue(String value) {
-        for (StateEnum b : StateEnum.values()) {
-            if (b.value.equals(value)) {
-                return b;
-            }
-        }
-        throw new IllegalArgumentException("Unexpected value '" + value + "'");
-    }
-}
-
-    private StateEnum state;
-
     /**
     * Unique identifier of the created consent.
     **/
@@ -127,27 +93,6 @@ public enum StateEnum {
         this.serviceId = serviceId;
     }
 
-    /**
-    * Initial state of the consent.
-    **/
-    public ConsentCreateResponse state(StateEnum state) {
-
-        this.state = state;
-        return this;
-    }
-    
-    @ApiModelProperty(example = "ACTIVE", value = "Initial state of the consent.")
-    @JsonProperty("state")
-    @Valid
-    public StateEnum getState() {
-        return state;
-    }
-    public void setState(StateEnum state) {
-        this.state = state;
-    }
-
-
-
     @Override
     public boolean equals(java.lang.Object o) {
 
@@ -160,13 +105,12 @@ public enum StateEnum {
         ConsentCreateResponse consentCreateResponse = (ConsentCreateResponse) o;
         return Objects.equals(this.id, consentCreateResponse.id) &&
             Objects.equals(this.subjectId, consentCreateResponse.subjectId) &&
-            Objects.equals(this.serviceId, consentCreateResponse.serviceId) &&
-            Objects.equals(this.state, consentCreateResponse.state);
+            Objects.equals(this.serviceId, consentCreateResponse.serviceId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, subjectId, serviceId, state);
+        return Objects.hash(id, subjectId, serviceId);
     }
 
     @Override
@@ -178,7 +122,6 @@ public enum StateEnum {
         sb.append("    id: ").append(toIndentedString(id)).append("\n");
         sb.append("    subjectId: ").append(toIndentedString(subjectId)).append("\n");
         sb.append("    serviceId: ").append(toIndentedString(serviceId)).append("\n");
-        sb.append("    state: ").append(toIndentedString(state)).append("\n");
         sb.append("}");
         return sb.toString();
     }
