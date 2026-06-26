@@ -62,4 +62,11 @@
     <Match>
         <Bug pattern="THROWS_METHOD_THROWS_RUNTIMEEXCEPTION"/>
     </Match>
+    <Match>
+        <Class name="org.wso2.carbon.identity.api.user.consent.v1.impl.core.UserConsentService" />
+        <Method name="listConsents" />
+        <Or>
+            <Bug pattern="IMPROPER_UNICODE" />
+        </Or>
+    </Match>
 </FindBugsFilter>
