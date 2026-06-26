@@ -53,6 +53,7 @@ import org.wso2.carbon.identity.api.user.consent.v1.model.ConsentValidationRespo
 import org.wso2.carbon.identity.api.user.consent.v1.model.ConsentedElement;
 import org.wso2.carbon.identity.api.user.consent.v1.model.ElementRef;
 import org.wso2.carbon.identity.core.model.ExpressionNode;
+import org.wso2.carbon.identity.core.util.IdentityUtil;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -149,6 +150,14 @@ public class UserConsentService {
             int resolvedLimit = limit != null ? limit : 10;
             if (resolvedLimit <= 0) {
                 throw handleClientException(ERROR_CODE_INVALID_QUERY_PARAM, String.valueOf(resolvedLimit));
+            }
+            int maximumItemPerPage = IdentityUtil.getMaximumItemPerPage();
+            if (resolvedLimit > maximumItemPerPage) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Given limit exceeds the maximum limit. Therefore the configured maximum limit: "
+                            + maximumItemPerPage + " is set as the limit.");
+                }
+                resolvedLimit = maximumItemPerPage;
             }
 
             if (StringUtils.isNotBlank(before) && StringUtils.isNotBlank(after)) {
