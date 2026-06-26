@@ -165,7 +165,8 @@ paths:
         - me
       summary: Authorize a consent
       description: >
-        Authorizes a PENDING consent. The authenticated user must be in the consent's authorization list, returns 403 otherwise.
+        Authorizes a PENDING consent. The authenticated user must either be the subject  of the consent,
+        or be listed in the consent's authorization list; returns 403 otherwise.
         When all required users have approved, the consent transitions to ACTIVE state.
         If any user rejects, the consent transitions to REJECTED state. <br>
         <b>Permission required:</b> <br>

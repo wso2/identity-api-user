@@ -67,7 +67,6 @@
         <Method name="listConsents" />
         <Or>
             <Bug pattern="IMPROPER_UNICODE" />
-            <Bug pattern="DM_CONVERT_CASE" />
         </Or>
     </Match>
 </FindBugsFilter>

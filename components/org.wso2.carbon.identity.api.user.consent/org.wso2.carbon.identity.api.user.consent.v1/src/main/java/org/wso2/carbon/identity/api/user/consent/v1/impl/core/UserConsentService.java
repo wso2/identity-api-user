@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -176,7 +177,7 @@ public class UserConsentService {
                     throw handleClientException(ERROR_CODE_INVALID_FILTER_EXPRESSION,
                             "Only 'properties.<key>' attributes are supported in consent filter. Got: " + attr);
                 }
-                String op = node.getOperation() != null ? node.getOperation().toLowerCase() : "";
+                String op = node.getOperation() != null ? node.getOperation().toLowerCase(Locale.ROOT) : "";
                 if (!("eq".equals(op) || "sw".equals(op) || "co".equals(op) || "ew".equals(op))) {
                     throw handleClientException(ERROR_CODE_INVALID_FILTER_EXPRESSION,
                             "Only 'eq', 'sw', 'co', and 'ew' operations are supported for consent property filter.");
