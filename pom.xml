@@ -556,7 +556,7 @@
         <identity.organization.management.version>1.4.122</identity.organization.management.version>
         <openapi-generator-maven-plugin.version>4.1.2</openapi-generator-maven-plugin.version>
         <carbon.workflow-engine.version>1.1.6</carbon.workflow-engine.version>
-        <carbon.consent.mgt.version>2.9.9</carbon.consent.mgt.version>
+        <carbon.consent.mgt.version>2.9.10</carbon.consent.mgt.version>
     </properties>
 
     <modules>
