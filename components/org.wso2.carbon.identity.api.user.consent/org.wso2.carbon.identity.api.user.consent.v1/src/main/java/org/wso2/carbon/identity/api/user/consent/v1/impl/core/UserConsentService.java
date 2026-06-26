@@ -163,13 +163,14 @@ public class UserConsentService {
                         FilterConstants.FILTER_ATTR_BEFORE.equals(attr)) {
                     continue;
                 }
-                if (attr == null || !attr.startsWith("properties.") || attr.length() == "properties.".length()) {
+                if (attr == null || !attr.startsWith("properties.") || attr.length() <= "properties.".length()) {
                     throw handleClientException(ERROR_CODE_INVALID_FILTER_EXPRESSION,
                             "Only 'properties.<key>' attributes are supported in consent filter. Got: " + attr);
                 }
-                if (!"eq".equals(node.getOperation())) {
+                String op = node.getOperation() != null ? node.getOperation().toLowerCase() : "";
+                if (!("eq".equals(op) || "sw".equals(op) || "co".equals(op) || "ew".equals(op))) {
                     throw handleClientException(ERROR_CODE_INVALID_FILTER_EXPRESSION,
-                            "Only 'eq' operation is supported for consent property filter.");
+                            "Only 'eq', 'sw', 'co', and 'ew' operations are supported for consent property filter.");
                 }
             }
 
@@ -395,7 +396,11 @@ public class UserConsentService {
         String versionUuid = consentPurpose.getPurposeVersionId();
         try {
             Purpose purpose = consentManager.getPurposeByUuid(consentPurpose.getUuid());
-            if (purpose != null) {
+            if (purpose == null) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Could not resolve purpose UUID for purposeId: " + consentPurpose.getUuid());
+                }
+            } else {
                 if (StringUtils.isNotBlank(purpose.getUuid())) {
                     dto.setId(purpose.getUuid());
                 }
@@ -430,8 +435,14 @@ public class UserConsentService {
                 element.setName(piiCategoryValidity.getName());
                 try {
                     PIICategory piiCategory = consentManager.getPIICategoryByUuid(piiCategoryValidity.getUuid());
-                    if (piiCategory != null) {
-                        element.setId(piiCategory.getUuid());
+                    if (piiCategory == null) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Could not resolve element UUID for elementId: " + piiCategoryValidity.getUuid());
+                        }
+                    } else {
+                        if (StringUtils.isNotBlank(piiCategory.getUuid())) {
+                            element.setId(piiCategory.getUuid());
+                        }
                     }
                 } catch (ConsentManagementException e) {
                     if (LOG.isDebugEnabled()) {

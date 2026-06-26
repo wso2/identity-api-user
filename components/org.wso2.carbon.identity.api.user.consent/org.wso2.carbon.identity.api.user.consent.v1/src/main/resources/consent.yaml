@@ -358,7 +358,9 @@ definitions:
         type: string
         description: Current state of the consent.
         enum:
+          - PENDING
           - ACTIVE
+          - REJECTED
           - REVOKED
           - EXPIRED
         example: 'ACTIVE'
@@ -496,7 +498,9 @@ definitions:
         type: string
         description: Current state of the consent.
         enum:
+          - PENDING
           - ACTIVE
+          - REJECTED
           - REVOKED
           - EXPIRED
         example: 'ACTIVE'
