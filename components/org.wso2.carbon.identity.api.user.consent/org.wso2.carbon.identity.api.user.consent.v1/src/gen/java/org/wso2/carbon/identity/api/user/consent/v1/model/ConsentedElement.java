@@ -31,9 +31,10 @@ import javax.validation.Valid;
 import javax.xml.bind.annotation.*;
 
 public class ConsentedElement  {
-  
+
     private String id;
     private String name;
+    private String displayName;
 
     /**
     * UUID of the consent element.
@@ -62,7 +63,7 @@ public class ConsentedElement  {
         this.name = name;
         return this;
     }
-    
+
     @ApiModelProperty(example = "Email Address", value = "Name of the consent element.")
     @JsonProperty("name")
     @Valid
@@ -71,6 +72,25 @@ public class ConsentedElement  {
     }
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+    * Display name of the consent element.
+    **/
+    public ConsentedElement displayName(String displayName) {
+
+        this.displayName = displayName;
+        return this;
+    }
+
+    @ApiModelProperty(example = "Email Address", value = "Display name of the consent element.")
+    @JsonProperty("displayName")
+    @Valid
+    public String getDisplayName() {
+        return displayName;
+    }
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
 
@@ -86,12 +106,13 @@ public class ConsentedElement  {
         }
         ConsentedElement consentedElement = (ConsentedElement) o;
         return Objects.equals(this.id, consentedElement.id) &&
-            Objects.equals(this.name, consentedElement.name);
+            Objects.equals(this.name, consentedElement.name) &&
+            Objects.equals(this.displayName, consentedElement.displayName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id, name, displayName);
     }
 
     @Override
@@ -99,9 +120,10 @@ public class ConsentedElement  {
 
         StringBuilder sb = new StringBuilder();
         sb.append("class ConsentedElement {\n");
-        
+
         sb.append("    id: ").append(toIndentedString(id)).append("\n");
         sb.append("    name: ").append(toIndentedString(name)).append("\n");
+        sb.append("    displayName: ").append(toIndentedString(displayName)).append("\n");
         sb.append("}");
         return sb.toString();
     }

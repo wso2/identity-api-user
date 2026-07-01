@@ -453,6 +453,9 @@ public class UserConsentService {
                         if (StringUtils.isNotBlank(piiCategory.getUuid())) {
                             element.setId(piiCategory.getUuid());
                         }
+                        if (StringUtils.isNotBlank(piiCategory.getDisplayName())) {
+                            element.setDisplayName(piiCategory.getDisplayName());
+                        }
                     }
                 } catch (ConsentManagementException e) {
                     if (LOG.isDebugEnabled()) {
