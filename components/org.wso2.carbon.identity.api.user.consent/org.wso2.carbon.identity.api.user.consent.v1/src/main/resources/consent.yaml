@@ -491,6 +491,10 @@ definitions:
         type: string
         description: Name of the consent element.
         example: 'Email Address'
+      displayName:
+        type: string
+        description: Display name of the consent element.
+        example: 'Email Address'
 
   ConsentValidationResponse:
     type: object
