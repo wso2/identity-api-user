@@ -208,8 +208,7 @@ public class UserConsentService {
         String subjectId = ContextLoader.getUsernameFromContext();
 
         try {
-            Receipt receipt = consentManager.getReceiptWithExtendedSchema(consentId);
-            validateOwnership(receipt, consentId, subjectId);
+            Receipt receipt = consentManager.getReceiptWithExtendedSchema(consentId, subjectId);
             return toConsentResponse(receipt);
         } catch (ConsentManagementException e) {
             throw handleException(e);
@@ -221,8 +220,7 @@ public class UserConsentService {
         String subjectId = ContextLoader.getUsernameFromContext();
 
         try {
-            Receipt receipt = consentManager.getReceiptWithExtendedSchema(consentId);
-            validateOwnership(receipt, consentId, subjectId);
+            consentManager.getReceiptWithExtendedSchema(consentId, subjectId);
             consentManager.authorizeConsent(consentId, subjectId, REVOKE_STATE);
         } catch (ConsentManagementException e) {
             throw handleException(e);
@@ -238,9 +236,7 @@ public class UserConsentService {
             String authStatus = requestState != null ? requestState.value() :
                     AuthorizationRequest.StateEnum.APPROVED.value();
 
-            Receipt receipt = consentManager.getReceiptWithExtendedSchema(consentId);
-            List<ConsentAuthorization> authorizations = consentManager.getConsentAuthorizations(consentId);
-            validateAuthorizer(receipt, consentId, subjectId, authorizations);
+            consentManager.getConsentAuthorizations(consentId, subjectId);
             consentManager.authorizeConsent(consentId, subjectId, authStatus);
         } catch (ConsentManagementException e) {
             throw handleException(e);
@@ -252,8 +248,7 @@ public class UserConsentService {
         String subjectId = ContextLoader.getUsernameFromContext();
 
         try {
-            Receipt receipt = consentManager.getReceiptWithExtendedSchema(consentId);
-            validateOwnership(receipt, consentId, subjectId);
+            Receipt receipt = consentManager.getReceiptWithExtendedSchema(consentId, subjectId);
 
             String status = consentManager.validateConsentStatus(consentId);
             ConsentValidationResponse response = new ConsentValidationResponse();
@@ -288,60 +283,6 @@ public class UserConsentService {
             purposeBindings.add(new PurposePIICategoryBinding(purposeInput.getId(), piiCategories));
         }
         return purposeBindings;
-    }
-
-    private void validateOwnership(Receipt receipt, String consentId, String subjectId) {
-
-        if (receipt == null) {
-            throw consentNotFoundError(consentId);
-        }
-        if (!subjectId.equals(receipt.getPiiPrincipalId())) {
-            throw userNotAuthorizedError();
-        }
-    }
-
-    private void validateAuthorizer(Receipt receipt, String consentId, String subjectId,
-                                    List<ConsentAuthorization> authorizations) {
-
-        if (receipt == null) {
-            throw consentNotFoundError(consentId);
-        }
-        if (subjectId.equals(receipt.getPiiPrincipalId())) {
-            return;
-        }
-        if (findUserAuthorization(authorizations, subjectId) != null) {
-            return;
-        }
-        throw userNotAuthorizedError();
-    }
-
-    private ConsentAuthorization findUserAuthorization(List<ConsentAuthorization> authorizations, String subjectId) {
-
-        if (authorizations != null) {
-            for (ConsentAuthorization auth : authorizations) {
-                if (subjectId.equals(auth.getUserId())) {
-                    return auth;
-                }
-            }
-        }
-        return null;
-    }
-
-    private APIError consentNotFoundError(String consentId) {
-
-        return new APIError(Response.Status.NOT_FOUND, new ErrorResponse.Builder()
-                .withCode(ErrorMessages.ERROR_CODE_RECEIPT_ID_INVALID.getCode())
-                .withMessage("Consent not found.")
-                .withDescription("No consent found for ID: " + consentId)
-                .build());
-    }
-
-    private APIError userNotAuthorizedError() {
-
-        return new APIError(Response.Status.FORBIDDEN, new ErrorResponse.Builder()
-                .withCode(ErrorMessages.ERROR_CODE_USER_NOT_AUTHORIZED.getCode())
-                .withMessage(ErrorMessages.ERROR_CODE_USER_NOT_AUTHORIZED.getMessage())
-                .build());
     }
 
     private ConsentResponse toConsentResponse(Receipt receipt) {
