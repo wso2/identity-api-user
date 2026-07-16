@@ -101,7 +101,9 @@ public class PushDeviceManagementService {
      * Get device by user ID.
      *
      * @return Device.
+     * @deprecated Use {@link #getDevicesByUserId()} instead to get all devices for a user.
      */
+    @Deprecated
     public List<DeviceDTO> getDeviceByUserId() {
 
         List<DeviceDTO> deviceDTOList = new ArrayList<>();
@@ -111,6 +113,29 @@ public class PushDeviceManagementService {
             String userId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserId();
             Device device = deviceHandlerService.getDeviceByUserId(userId, tenantDomain);
             deviceDTOList.add(buildDeviceDTO(device));
+        } catch (PushDeviceHandlerException e) {
+            // If no device registered for the userId, the below-mentioned error is thrown.
+            if (!ERROR_CODE_DEVICE_NOT_FOUND_FOR_USER_ID.getCode().equals(e.getErrorCode())) {
+                throw handlePushDeviceHandlerException(e);
+            }
+        }
+        return deviceDTOList;
+    }
+
+    /**
+     * Get all devices registered for the current user.
+     *
+     * @return List of device DTOs for the current user; empty list if none are registered.
+     */
+    public List<DeviceDTO> getDevicesByUserId() {
+
+        List<DeviceDTO> deviceDTOList = new ArrayList<>();
+        try {
+            User user = ContextLoader.getUserFromContext();
+            String tenantDomain = user.getTenantDomain();
+            String userId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserId();
+            List<Device> devices = deviceHandlerService.getDevicesByUserId(userId, tenantDomain);
+            deviceDTOList = buildListDeviceDTO(devices);
         } catch (PushDeviceHandlerException e) {
             // If no device registered for the userId, the below-mentioned error is thrown.
             if (!ERROR_CODE_DEVICE_NOT_FOUND_FOR_USER_ID.getCode().equals(e.getErrorCode())) {
@@ -200,6 +225,21 @@ public class PushDeviceManagementService {
         deviceDTO.setModel(device.getDeviceModel());
         deviceDTO.setProvider(device.getProvider());
         return deviceDTO;
+    }
+
+    /**
+     * Build a list of device DTOs from the given devices.
+     *
+     * @param deviceList List of devices.
+     * @return List of device DTOs.
+     */
+    private List<DeviceDTO> buildListDeviceDTO(List<Device> deviceList) {
+
+        List<DeviceDTO> deviceDTOList = new ArrayList<>();
+        for (Device device : deviceList) {
+            deviceDTOList.add(buildDeviceDTO(device));
+        }
+        return deviceDTOList;
     }
 
     /**

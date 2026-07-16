@@ -62,7 +62,7 @@ public class DevicesApiServiceImpl implements DevicesApiService {
     @Override
     public Response getDevices() {
 
-        List<DeviceDTO> deviceDTOList = pushDeviceManagementService.getDeviceByUserId();
+        List<DeviceDTO> deviceDTOList = pushDeviceManagementService.getDevicesByUserId();
         return Response.ok().entity(deviceDTOList).build();
     }
 
