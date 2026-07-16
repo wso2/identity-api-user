@@ -129,20 +129,15 @@ public class PushDeviceManagementService {
      */
     public List<DeviceDTO> getDevicesByUserId() {
 
-        List<DeviceDTO> deviceDTOList = new ArrayList<>();
         try {
             User user = ContextLoader.getUserFromContext();
             String tenantDomain = user.getTenantDomain();
             String userId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUserId();
             List<Device> devices = deviceHandlerService.getDevicesByUserId(userId, tenantDomain);
-            deviceDTOList = buildListDeviceDTO(devices);
+            return buildListDeviceDTO(devices);
         } catch (PushDeviceHandlerException e) {
-            // If no device registered for the userId, the below-mentioned error is thrown.
-            if (!ERROR_CODE_DEVICE_NOT_FOUND_FOR_USER_ID.getCode().equals(e.getErrorCode())) {
-                throw handlePushDeviceHandlerException(e);
-            }
+            throw handlePushDeviceHandlerException(e);
         }
-        return deviceDTOList;
     }
 
     /**
