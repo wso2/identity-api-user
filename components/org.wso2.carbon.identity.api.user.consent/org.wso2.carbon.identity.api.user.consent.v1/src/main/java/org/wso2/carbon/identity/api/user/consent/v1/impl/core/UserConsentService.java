@@ -28,6 +28,7 @@ import org.wso2.carbon.consent.mgt.core.exception.ConsentManagementException;
 import org.wso2.carbon.consent.mgt.core.model.AddReceiptResponse;
 import org.wso2.carbon.consent.mgt.core.model.ConsentAuthorization;
 import org.wso2.carbon.consent.mgt.core.model.ConsentPurpose;
+import org.wso2.carbon.consent.mgt.core.model.ConsentRelation;
 import org.wso2.carbon.consent.mgt.core.model.PIICategory;
 import org.wso2.carbon.consent.mgt.core.model.PIICategoryValidity;
 import org.wso2.carbon.consent.mgt.core.model.Purpose;
@@ -141,13 +142,14 @@ public class UserConsentService {
         }
     }
 
-    public List<ConsentSummary> listConsents(String serviceId, String state, String purposeId,
+    public List<ConsentSummary> listConsents(String relation, String serviceId, String state, String purposeId,
                                              String purposeVersionId, String filter,
                                              Integer limit, String after, String before) {
 
-        String subjectId = ContextLoader.getUsernameFromContext();
+        String userId = ContextLoader.getUsernameFromContext();
 
         try {
+            ConsentRelation consentRelation = resolveRelation(relation);
             int resolvedLimit = limit != null ? limit : 10;
             if (resolvedLimit <= 0) {
                 throw handleClientException(ERROR_CODE_INVALID_QUERY_PARAM, String.valueOf(resolvedLimit));
@@ -185,7 +187,8 @@ public class UserConsentService {
             }
 
             List<Receipt> receipts = consentManager.listReceipts(
-                    subjectId, serviceId, state, purposeId, purposeVersionId, expressionNodes, resolvedLimit + 1);
+                    userId, consentRelation, serviceId, state, purposeId, purposeVersionId, expressionNodes,
+                    resolvedLimit + 1);
 
             if (receipts != null && receipts.size() > resolvedLimit) {
                 receipts = new ArrayList<>(receipts.subList(0, resolvedLimit));
@@ -257,6 +260,18 @@ public class UserConsentService {
             return response;
         } catch (ConsentManagementException e) {
             throw handleException(e);
+        }
+    }
+
+    private ConsentRelation resolveRelation(String relation) throws ConsentManagementClientException {
+
+        if (StringUtils.isBlank(relation)) {
+            return ConsentRelation.SUBJECT;
+        }
+        try {
+            return ConsentRelation.valueOf(relation.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            throw handleClientException(ERROR_CODE_INVALID_QUERY_PARAM, "relation: " + relation);
         }
     }
 
