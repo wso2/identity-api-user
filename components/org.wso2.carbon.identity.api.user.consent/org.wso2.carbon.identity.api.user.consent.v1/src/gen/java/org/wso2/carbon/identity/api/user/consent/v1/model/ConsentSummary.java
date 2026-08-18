@@ -22,6 +22,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.wso2.carbon.identity.api.user.consent.v1.model.AuthorizationResponse;
+import org.wso2.carbon.identity.api.user.consent.v1.model.ConsentPurposeSummary;
 import javax.validation.constraints.*;
 
 
@@ -33,6 +39,7 @@ import javax.xml.bind.annotation.*;
 public class ConsentSummary  {
   
     private String id;
+    private String subjectId;
     private String serviceId;
 
 @XmlType(name="StateEnum")
@@ -69,6 +76,12 @@ public enum StateEnum {
 
     private StateEnum state;
     private Long timestamp;
+    private List<ConsentPurposeSummary> purposes = null;
+
+    private List<AuthorizationResponse> authorizations = null;
+
+    private Map<String, String> properties = null;
+
 
     /**
     * Unique identifier of the consent.
@@ -87,6 +100,25 @@ public enum StateEnum {
     }
     public void setId(String id) {
         this.id = id;
+    }
+
+    /**
+    * Identifier of the user who gave consent.
+    **/
+    public ConsentSummary subjectId(String subjectId) {
+
+        this.subjectId = subjectId;
+        return this;
+    }
+    
+    @ApiModelProperty(example = "john", value = "Identifier of the user who gave consent.")
+    @JsonProperty("subjectId")
+    @Valid
+    public String getSubjectId() {
+        return subjectId;
+    }
+    public void setSubjectId(String subjectId) {
+        this.subjectId = subjectId;
     }
 
     /**
@@ -146,7 +178,89 @@ public enum StateEnum {
         this.timestamp = timestamp;
     }
 
+    /**
+    * List of purposes included in the consent. Returned only when requested via &#x60;attributes&#x60;.
+    **/
+    public ConsentSummary purposes(List<ConsentPurposeSummary> purposes) {
 
+        this.purposes = purposes;
+        return this;
+    }
+    
+    @ApiModelProperty(value = "List of purposes included in the consent. Returned only when requested via `attributes`.")
+    @JsonProperty("purposes")
+    @Valid
+    public List<ConsentPurposeSummary> getPurposes() {
+        return purposes;
+    }
+    public void setPurposes(List<ConsentPurposeSummary> purposes) {
+        this.purposes = purposes;
+    }
+
+    public ConsentSummary addPurposesItem(ConsentPurposeSummary purposesItem) {
+        if (this.purposes == null) {
+            this.purposes = new ArrayList<>();
+        }
+        this.purposes.add(purposesItem);
+        return this;
+    }
+
+        /**
+    * Authorization records associated with this consent. Returned only when requested via &#x60;attributes&#x60;.
+    **/
+    public ConsentSummary authorizations(List<AuthorizationResponse> authorizations) {
+
+        this.authorizations = authorizations;
+        return this;
+    }
+    
+    @ApiModelProperty(value = "Authorization records associated with this consent. Returned only when requested via `attributes`.")
+    @JsonProperty("authorizations")
+    @Valid
+    public List<AuthorizationResponse> getAuthorizations() {
+        return authorizations;
+    }
+    public void setAuthorizations(List<AuthorizationResponse> authorizations) {
+        this.authorizations = authorizations;
+    }
+
+    public ConsentSummary addAuthorizationsItem(AuthorizationResponse authorizationsItem) {
+        if (this.authorizations == null) {
+            this.authorizations = new ArrayList<>();
+        }
+        this.authorizations.add(authorizationsItem);
+        return this;
+    }
+
+        /**
+    * Properties associated with this consent. Returned only when requested via &#x60;attributes&#x60;.
+    **/
+    public ConsentSummary properties(Map<String, String> properties) {
+
+        this.properties = properties;
+        return this;
+    }
+    
+    @ApiModelProperty(value = "Properties associated with this consent. Returned only when requested via `attributes`.")
+    @JsonProperty("properties")
+    @Valid
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+    public void setProperties(Map<String, String> properties) {
+        this.properties = properties;
+    }
+
+
+    public ConsentSummary putPropertiesItem(String key, String propertiesItem) {
+        if (this.properties == null) {
+            this.properties = new HashMap<>();
+        }
+        this.properties.put(key, propertiesItem);
+        return this;
+    }
+
+    
 
     @Override
     public boolean equals(java.lang.Object o) {
@@ -159,14 +273,18 @@ public enum StateEnum {
         }
         ConsentSummary consentSummary = (ConsentSummary) o;
         return Objects.equals(this.id, consentSummary.id) &&
+            Objects.equals(this.subjectId, consentSummary.subjectId) &&
             Objects.equals(this.serviceId, consentSummary.serviceId) &&
             Objects.equals(this.state, consentSummary.state) &&
-            Objects.equals(this.timestamp, consentSummary.timestamp);
+            Objects.equals(this.timestamp, consentSummary.timestamp) &&
+            Objects.equals(this.purposes, consentSummary.purposes) &&
+            Objects.equals(this.authorizations, consentSummary.authorizations) &&
+            Objects.equals(this.properties, consentSummary.properties);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, serviceId, state, timestamp);
+        return Objects.hash(id, subjectId, serviceId, state, timestamp, purposes, authorizations, properties);
     }
 
     @Override
@@ -176,9 +294,13 @@ public enum StateEnum {
         sb.append("class ConsentSummary {\n");
         
         sb.append("    id: ").append(toIndentedString(id)).append("\n");
+        sb.append("    subjectId: ").append(toIndentedString(subjectId)).append("\n");
         sb.append("    serviceId: ").append(toIndentedString(serviceId)).append("\n");
         sb.append("    state: ").append(toIndentedString(state)).append("\n");
         sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
+        sb.append("    purposes: ").append(toIndentedString(purposes)).append("\n");
+        sb.append("    authorizations: ").append(toIndentedString(authorizations)).append("\n");
+        sb.append("    properties: ").append(toIndentedString(properties)).append("\n");
         sb.append("}");
         return sb.toString();
     }

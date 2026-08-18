@@ -43,7 +43,7 @@ public interface MeApiService {
 
       public Response getConsentOfLoggedInUser(String consentId);
 
-      public Response listConsentsOfLoggedInUser(String serviceId, String state, String purposeId, String purposeVersionId, String filter, Integer limit, String after, String before);
+      public Response listConsentsOfLoggedInUser(String relation, String serviceId, String state, String purposeId, String purposeVersionId, String filter, String attributes, Integer limit, String after, String before);
 
       public Response revokeConsentOfLoggedInUser(String consentId);
 
