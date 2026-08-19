@@ -175,11 +175,19 @@ public class UserConsentService {
                         FilterConstants.FILTER_ATTR_BEFORE.equals(attr)) {
                     continue;
                 }
+                String op = node.getOperation() != null ? node.getOperation().toLowerCase(Locale.ROOT) : "";
+                if (FilterConstants.FILTER_ATTR_TIMESTAMP.equals(attr)) {
+                    if (!("ge".equals(op) || "le".equals(op))) {
+                        throw handleClientException(ERROR_CODE_INVALID_FILTER_EXPRESSION,
+                                "Only 'ge' and 'le' operations are supported for consent timestamp filter.");
+                    }
+                    continue;
+                }
                 if (attr == null || !attr.startsWith("properties.") || attr.length() <= "properties.".length()) {
                     throw handleClientException(ERROR_CODE_INVALID_FILTER_EXPRESSION,
-                            "Only 'properties.<key>' attributes are supported in consent filter. Got: " + attr);
+                            "Only 'properties.<key>' and 'timestamp' attributes are supported in consent filter. "
+                                    + "Got: " + attr);
                 }
-                String op = node.getOperation() != null ? node.getOperation().toLowerCase(Locale.ROOT) : "";
                 if (!("eq".equals(op) || "sw".equals(op) || "co".equals(op) || "ew".equals(op))) {
                     throw handleClientException(ERROR_CODE_INVALID_FILTER_EXPRESSION,
                             "Only 'eq', 'sw', 'co', and 'ew' operations are supported for consent property filter.");
