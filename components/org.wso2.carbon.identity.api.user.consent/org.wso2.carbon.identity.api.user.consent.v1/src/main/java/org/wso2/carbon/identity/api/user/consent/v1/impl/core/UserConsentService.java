@@ -153,6 +153,20 @@ public class UserConsentService {
         }
     }
 
+    /**
+     * @deprecated Use
+     * {@link #listConsents(String, String, String, String, String, String, String, Integer, String, String)}
+     * instead.
+     */
+    @Deprecated
+    public List<ConsentSummary> listConsents(String serviceId, String state, String purposeId,
+                                             String purposeVersionId, String filter,
+                                             Integer limit, String after, String before) {
+
+        return listConsents(ConsentRelation.SUBJECT.name(), serviceId, state, purposeId, purposeVersionId, filter,
+                null, limit, after, before);
+    }
+
     public List<ConsentSummary> listConsents(String relation, String serviceId, String state, String purposeId,
                                              String purposeVersionId, String filter, String attributes,
                                              Integer limit, String after, String before) {
