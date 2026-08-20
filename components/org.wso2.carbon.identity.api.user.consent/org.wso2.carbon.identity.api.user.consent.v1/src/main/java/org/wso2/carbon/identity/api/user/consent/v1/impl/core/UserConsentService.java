@@ -216,10 +216,10 @@ public class UserConsentService {
 
     public ConsentResponse getConsent(String consentId) {
 
-        String subjectId = ContextLoader.getUsernameFromContext();
+        String userId = ContextLoader.getUsernameFromContext();
 
         try {
-            Receipt receipt = consentManager.getReceiptWithExtendedSchema(consentId, subjectId);
+            Receipt receipt = consentManager.getReceiptForInvolvedUserWithExtendedSchema(consentId, userId);
             return toConsentResponse(receipt);
         } catch (ConsentManagementException e) {
             throw handleException(e);
@@ -228,11 +228,11 @@ public class UserConsentService {
 
     public void revokeConsent(String consentId) {
 
-        String subjectId = ContextLoader.getUsernameFromContext();
+        String userId = ContextLoader.getUsernameFromContext();
 
         try {
-            consentManager.getReceiptWithExtendedSchema(consentId, subjectId);
-            consentManager.authorizeConsent(consentId, subjectId, REVOKE_STATE);
+            consentManager.getReceiptForInvolvedUserWithExtendedSchema(consentId, userId);
+            consentManager.authorizeConsent(consentId, userId, REVOKE_STATE);
         } catch (ConsentManagementException e) {
             throw handleException(e);
         }
@@ -256,10 +256,10 @@ public class UserConsentService {
 
     public ConsentValidationResponse validateConsent(String consentId) {
 
-        String subjectId = ContextLoader.getUsernameFromContext();
+        String userId = ContextLoader.getUsernameFromContext();
 
         try {
-            Receipt receipt = consentManager.getReceiptWithExtendedSchema(consentId, subjectId);
+            Receipt receipt = consentManager.getReceiptForInvolvedUserWithExtendedSchema(consentId, userId);
 
             String status = consentManager.validateConsentStatus(consentId);
             ConsentValidationResponse response = new ConsentValidationResponse();
