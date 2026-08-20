@@ -48,6 +48,7 @@ import org.wso2.carbon.identity.api.user.consent.v1.model.ConsentCreateResponse;
 import org.wso2.carbon.identity.api.user.consent.v1.model.ConsentInput;
 import org.wso2.carbon.identity.api.user.consent.v1.model.ConsentPurposeInput;
 import org.wso2.carbon.identity.api.user.consent.v1.model.ConsentPurposeResponse;
+import org.wso2.carbon.identity.api.user.consent.v1.model.ConsentPurposeSummary;
 import org.wso2.carbon.identity.api.user.consent.v1.model.ConsentResponse;
 import org.wso2.carbon.identity.api.user.consent.v1.model.ConsentSummary;
 import org.wso2.carbon.identity.api.user.consent.v1.model.ConsentValidationResponse;
@@ -59,7 +60,10 @@ import org.wso2.carbon.identity.core.util.IdentityUtil;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -81,6 +85,13 @@ import static org.wso2.carbon.consent.mgt.core.util.ConsentUtils.handleClientExc
 public class UserConsentService {
 
     private static final Log LOG = LogFactory.getLog(UserConsentService.class);
+
+    private static final String ATTRIBUTE_PURPOSES = "purposes";
+    private static final String ATTRIBUTE_AUTHORIZATIONS = "authorizations";
+    private static final String ATTRIBUTE_PROPERTIES = "properties";
+
+    private static final Set<String> SUPPORTED_CONSENT_ATTRIBUTES = new HashSet<>(Arrays.asList(
+            ATTRIBUTE_PURPOSES, ATTRIBUTE_AUTHORIZATIONS, ATTRIBUTE_PROPERTIES));
 
     private static final Set<String> NOT_FOUND_ERROR_CODES = new HashSet<>(Arrays.asList(
             ErrorMessages.ERROR_CODE_RECEIPT_ID_INVALID.getCode(),
@@ -143,13 +154,14 @@ public class UserConsentService {
     }
 
     public List<ConsentSummary> listConsents(String relation, String serviceId, String state, String purposeId,
-                                             String purposeVersionId, String filter,
+                                             String purposeVersionId, String filter, String attributes,
                                              Integer limit, String after, String before) {
 
         String userId = ContextLoader.getUsernameFromContext();
 
         try {
             ConsentRelation consentRelation = resolveRelation(relation);
+            Set<String> requestedAttributes = resolveAttributes(attributes);
             int resolvedLimit = limit != null ? limit : 10;
             if (resolvedLimit <= 0) {
                 throw handleClientException(ERROR_CODE_INVALID_QUERY_PARAM, String.valueOf(resolvedLimit));
@@ -208,6 +220,7 @@ public class UserConsentService {
                     summaries.add(toConsentSummary(receipt));
                 }
             }
+            populateRequestedAttributes(summaries, requestedAttributes);
             return summaries;
         } catch (ConsentManagementException e) {
             throw handleException(e);
@@ -269,6 +282,25 @@ public class UserConsentService {
         } catch (ConsentManagementException e) {
             throw handleException(e);
         }
+    }
+
+    private Set<String> resolveAttributes(String attributes) throws ConsentManagementClientException {
+
+        if (StringUtils.isBlank(attributes)) {
+            return Collections.emptySet();
+        }
+        Set<String> resolved = new LinkedHashSet<>();
+        for (String attribute : attributes.split(",")) {
+            String resolvedAttribute = attribute.trim().toLowerCase(Locale.ROOT);
+            if (StringUtils.isBlank(resolvedAttribute)) {
+                continue;
+            }
+            if (!SUPPORTED_CONSENT_ATTRIBUTES.contains(resolvedAttribute)) {
+                throw handleClientException(ERROR_CODE_INVALID_QUERY_PARAM, "attributes: " + attribute.trim());
+            }
+            resolved.add(resolvedAttribute);
+        }
+        return resolved;
     }
 
     private ConsentRelation resolveRelation(String relation) throws ConsentManagementClientException {
@@ -334,25 +366,8 @@ public class UserConsentService {
 
         List<AuthorizationResponse> authResponses = new ArrayList<>();
         try {
-            List<ConsentAuthorization> auths = consentManager.getConsentAuthorizations(receipt.getConsentReceiptId());
-            if (auths != null) {
-                for (ConsentAuthorization auth : auths) {
-                    if (PENDING_STATE.equals(auth.getStatus().name())) {
-                        continue;
-                    }
-                    try {
-                        AuthorizationResponse authResponse = new AuthorizationResponse();
-                        authResponse.setUserId(auth.getUserId());
-                        authResponse.setState(AuthorizationResponse.StateEnum.fromValue(auth.getStatus().name()));
-                        authResponse.setUpdatedTime(auth.getUpdatedTime());
-                        authResponses.add(authResponse);
-                    } catch (IllegalArgumentException e) {
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug("Skipping unrecognized authorization state: " + auth.getStatus(), e);
-                        }
-                    }
-                }
-            }
+            authResponses = toAuthorizationResponses(
+                    consentManager.getConsentAuthorizations(receipt.getConsentReceiptId()));
         } catch (ConsentManagementException e) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Could not retrieve authorizations for consent: " + receipt.getConsentReceiptId(), e);
@@ -360,6 +375,30 @@ public class UserConsentService {
         }
         dto.setAuthorizations(authResponses);
         return dto;
+    }
+
+    private List<AuthorizationResponse> toAuthorizationResponses(List<ConsentAuthorization> auths) {
+
+        List<AuthorizationResponse> authResponses = new ArrayList<>();
+        if (auths != null) {
+            for (ConsentAuthorization auth : auths) {
+                if (PENDING_STATE.equals(auth.getStatus().name())) {
+                    continue;
+                }
+                try {
+                    AuthorizationResponse authResponse = new AuthorizationResponse();
+                    authResponse.setUserId(auth.getUserId());
+                    authResponse.setState(AuthorizationResponse.StateEnum.fromValue(auth.getStatus().name()));
+                    authResponse.setUpdatedTime(auth.getUpdatedTime());
+                    authResponses.add(authResponse);
+                } catch (IllegalArgumentException e) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Skipping unrecognized authorization state: " + auth.getStatus(), e);
+                    }
+                }
+            }
+        }
+        return authResponses;
     }
 
     private ConsentPurposeResponse toConsentPurposeResponse(ConsentPurpose consentPurpose) {
@@ -443,6 +482,53 @@ public class UserConsentService {
             summary.setServiceId(receipt.getServices().get(0).getService());
         }
         return summary;
+    }
+
+    private void populateRequestedAttributes(List<ConsentSummary> summaries, Set<String> attributes)
+            throws ConsentManagementException {
+
+        if (attributes.isEmpty() || summaries.isEmpty()) {
+            return;
+        }
+        List<String> receiptIds = new ArrayList<>();
+        for (ConsentSummary summary : summaries) {
+            receiptIds.add(summary.getId());
+        }
+        Map<String, List<ConsentPurpose>> purposes = attributes.contains(ATTRIBUTE_PURPOSES)
+                ? consentManager.listConsentPurposes(receiptIds) : Collections.emptyMap();
+        Map<String, List<ConsentAuthorization>> authorizations = attributes.contains(ATTRIBUTE_AUTHORIZATIONS)
+                ? consentManager.listConsentAuthorizations(receiptIds) : Collections.emptyMap();
+        Map<String, Map<String, String>> properties = attributes.contains(ATTRIBUTE_PROPERTIES)
+                ? consentManager.listReceiptProperties(receiptIds) : Collections.emptyMap();
+
+        for (ConsentSummary summary : summaries) {
+            if (attributes.contains(ATTRIBUTE_PURPOSES)) {
+                summary.setPurposes(toConsentPurposeSummaries(
+                        purposes.getOrDefault(summary.getId(), Collections.emptyList())));
+            }
+            if (attributes.contains(ATTRIBUTE_AUTHORIZATIONS)) {
+                summary.setAuthorizations(toAuthorizationResponses(
+                        authorizations.getOrDefault(summary.getId(), Collections.emptyList())));
+            }
+            if (attributes.contains(ATTRIBUTE_PROPERTIES)) {
+                summary.setProperties(properties.getOrDefault(summary.getId(), new HashMap<>()));
+            }
+        }
+    }
+
+    private List<ConsentPurposeSummary> toConsentPurposeSummaries(List<ConsentPurpose> consentPurposes) {
+
+        List<ConsentPurposeSummary> purposeSummaries = new ArrayList<>();
+        for (ConsentPurpose consentPurpose : consentPurposes) {
+            ConsentPurposeSummary purposeSummary = new ConsentPurposeSummary();
+            purposeSummary.setName(consentPurpose.getPurpose());
+            purposeSummary.setId(consentPurpose.getUuid());
+            purposeSummary.setType(consentPurpose.getGroupType());
+            purposeSummary.setVersionId(consentPurpose.getPurposeVersionId());
+            purposeSummary.setVersion(consentPurpose.getVersion());
+            purposeSummaries.add(purposeSummary);
+        }
+        return purposeSummaries;
     }
 
     private APIError handleException(ConsentManagementException e) {

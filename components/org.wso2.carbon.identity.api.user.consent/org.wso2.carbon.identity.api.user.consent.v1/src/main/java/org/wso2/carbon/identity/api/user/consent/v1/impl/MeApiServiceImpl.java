@@ -71,7 +71,7 @@ public class MeApiServiceImpl implements MeApiService {
                                                Integer limit, String after, String before) {
 
         List<ConsentSummary> summaries = userConsentService.listConsents(
-                relation, serviceId, state, purposeId, purposeVersionId, filter, limit, after, before);
+                relation, serviceId, state, purposeId, purposeVersionId, filter, attributes, limit, after, before);
         return Response.ok(summaries).build();
     }
 
