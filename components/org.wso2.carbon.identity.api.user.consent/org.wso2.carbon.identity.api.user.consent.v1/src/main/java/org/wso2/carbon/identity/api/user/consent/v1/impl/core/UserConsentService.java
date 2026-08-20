@@ -490,6 +490,7 @@ public class UserConsentService {
 
         ConsentSummary summary = new ConsentSummary();
         summary.setId(receipt.getConsentReceiptId());
+        summary.setSubjectId(receipt.getPiiPrincipalId());
         summary.setTimestamp(receipt.getConsentTimestamp());
         summary.setState(ConsentSummary.StateEnum.fromValue(receipt.getState()));
         if (receipt.getServices() != null && !receipt.getServices().isEmpty()) {
