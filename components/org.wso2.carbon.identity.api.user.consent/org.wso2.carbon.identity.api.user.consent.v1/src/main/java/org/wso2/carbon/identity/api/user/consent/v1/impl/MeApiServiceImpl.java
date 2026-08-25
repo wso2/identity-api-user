@@ -66,12 +66,12 @@ public class MeApiServiceImpl implements MeApiService {
     }
 
     @Override
-    public Response listConsentsOfLoggedInUser(String serviceId, String state, String purposeId,
-                                               String purposeVersionId, String filter,
+    public Response listConsentsOfLoggedInUser(String relation, String serviceId, String state, String purposeId,
+                                               String purposeVersionId, String filter, String attributes,
                                                Integer limit, String after, String before) {
 
         List<ConsentSummary> summaries = userConsentService.listConsents(
-                serviceId, state, purposeId, purposeVersionId, filter, limit, after, before);
+                relation, serviceId, state, purposeId, purposeVersionId, filter, attributes, limit, after, before);
         return Response.ok(summaries).build();
     }
 
