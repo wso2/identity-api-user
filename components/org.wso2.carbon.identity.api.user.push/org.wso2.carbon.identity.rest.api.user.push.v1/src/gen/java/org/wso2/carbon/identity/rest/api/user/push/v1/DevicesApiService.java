@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2025-2026, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -28,6 +28,7 @@ import org.wso2.carbon.identity.rest.api.user.push.v1.model.DeviceDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.Error;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.RegistrationRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.RemoveRequestDTO;
+import org.wso2.carbon.identity.rest.api.user.push.v1.model.UpdateRequestDTO;
 import javax.ws.rs.core.Response;
 
 
@@ -42,4 +43,6 @@ public interface DevicesApiService {
       public Response registerDevice(RegistrationRequestDTO registrationRequestDTO);
 
       public Response removeDeviceFromMobile(String deviceId, RemoveRequestDTO removeRequestDTO);
+
+      public Response updateDeviceFromMobile(String deviceId, UpdateRequestDTO updateRequestDTO);
 }

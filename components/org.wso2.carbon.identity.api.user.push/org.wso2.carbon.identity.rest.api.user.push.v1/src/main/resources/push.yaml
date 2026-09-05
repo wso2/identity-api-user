@@ -147,6 +147,39 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/ServerError'
+  /devices/{deviceId}/update:
+    post:
+      tags:
+        - device
+      description: |
+        This API is used to update a registered device through the mobile device.
+      summary: Update a registered device from the mobile device.
+      operationId: updateDeviceFromMobile
+      parameters:
+        - name: deviceId
+          in: path
+          description: ID of the device to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update request sent from the mobile device.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRequestDTO'
+      responses:
+        '204':
+          description: The device was updated successfully.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
   /devices/{deviceId}/remove:
     post:
       tags:
@@ -285,6 +318,16 @@ components:
           description: Provider metadata as key-value pairs
           additionalProperties:
             type: string
+    UpdateRequestDTO:
+      type: object
+      description: Update device request body sent from the mobile device
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          description: JWT containing the device information to be updated signed with the unique private key
+          example: 'signedJWTToken'
     RemoveRequestDTO:
       type: object
       description: Remove device request body sent from the device
