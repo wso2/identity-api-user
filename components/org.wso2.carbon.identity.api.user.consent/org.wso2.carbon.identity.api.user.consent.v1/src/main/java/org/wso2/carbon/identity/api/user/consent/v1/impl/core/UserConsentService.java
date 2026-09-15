@@ -74,7 +74,6 @@ import javax.ws.rs.core.Response;
 import static org.wso2.carbon.consent.mgt.core.constant.ConsentConstants.ErrorMessages.ERROR_CODE_INVALID_FILTER_EXPRESSION;
 import static org.wso2.carbon.consent.mgt.core.constant.ConsentConstants.ErrorMessages.ERROR_CODE_INVALID_QUERY_PARAM;
 import static org.wso2.carbon.consent.mgt.core.constant.ConsentConstants.FilterConstants;
-import static org.wso2.carbon.consent.mgt.core.constant.ConsentConstants.PENDING_STATE;
 import static org.wso2.carbon.consent.mgt.core.constant.ConsentConstants.REVOKE_STATE;
 import static org.wso2.carbon.consent.mgt.core.util.ConsentUtils.handleClientException;
 
@@ -396,9 +395,6 @@ public class UserConsentService {
         List<AuthorizationResponse> authResponses = new ArrayList<>();
         if (auths != null) {
             for (ConsentAuthorization auth : auths) {
-                if (PENDING_STATE.equals(auth.getStatus().name())) {
-                    continue;
-                }
                 try {
                     AuthorizationResponse authResponse = new AuthorizationResponse();
                     authResponse.setUserId(auth.getUserId());
