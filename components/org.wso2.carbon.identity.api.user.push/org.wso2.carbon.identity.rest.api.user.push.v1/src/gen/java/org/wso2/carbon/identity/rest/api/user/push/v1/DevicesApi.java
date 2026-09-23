@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2025-2026, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -28,6 +28,7 @@ import org.wso2.carbon.identity.rest.api.user.push.v1.model.DeviceDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.Error;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.RegistrationRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.RemoveRequestDTO;
+import org.wso2.carbon.identity.rest.api.user.push.v1.model.UpdateRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.DevicesApiService;
 
 import javax.validation.Valid;
@@ -142,6 +143,24 @@ public class DevicesApi  {
     public Response removeDeviceFromMobile(@ApiParam(value = "ID of the device to be removed",required=true) @PathParam("deviceId") String deviceId, @ApiParam(value = "Remove request sent from the device." ,required=true) @Valid RemoveRequestDTO removeRequestDTO) {
 
         return delegate.removeDeviceFromMobile(deviceId,  removeRequestDTO );
+    }
+
+    @Valid
+    @POST
+    @Path("/{deviceId}/update")
+    @Consumes({ "application/json" })
+    @Produces({ "application/json" })
+    @ApiOperation(value = "Update a registered device from the mobile device.", notes = "This API is used to update a registered device through the mobile device. ", response = Void.class, tags={ "device" })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 204, message = "The device was updated successfully.", response = Void.class),
+        @ApiResponse(code = 400, message = "Invalid input in the request.", response = Error.class),
+        @ApiResponse(code = 401, message = "Authentication information is missing or invalid.", response = Void.class),
+        @ApiResponse(code = 403, message = "Access forbidden.", response = Void.class),
+        @ApiResponse(code = 500, message = "Internal server error.", response = Error.class)
+    })
+    public Response updateDeviceFromMobile(@ApiParam(value = "ID of the device to be updated",required=true) @PathParam("deviceId") String deviceId, @ApiParam(value = "Update request sent from the mobile device." ,required=true) @Valid UpdateRequestDTO updateRequestDTO) {
+
+        return delegate.updateDeviceFromMobile(deviceId,  updateRequestDTO );
     }
 
 }

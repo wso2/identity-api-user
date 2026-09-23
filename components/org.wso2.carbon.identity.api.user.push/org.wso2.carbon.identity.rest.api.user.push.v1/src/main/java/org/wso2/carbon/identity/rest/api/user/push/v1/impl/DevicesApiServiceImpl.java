@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2025-2026, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -24,6 +24,7 @@ import org.wso2.carbon.identity.rest.api.user.push.v1.factories.PushDeviceManage
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.DeviceDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.RegistrationRequestDTO;
 import org.wso2.carbon.identity.rest.api.user.push.v1.model.RemoveRequestDTO;
+import org.wso2.carbon.identity.rest.api.user.push.v1.model.UpdateRequestDTO;
 
 import java.util.List;
 
@@ -71,6 +72,14 @@ public class DevicesApiServiceImpl implements DevicesApiService {
 
         pushDeviceManagementService.registerDevice(registrationRequestDTO);
         return Response.status(Response.Status.CREATED).build();
+    }
+
+    @Override
+    public Response updateDeviceFromMobile(String deviceId, UpdateRequestDTO updateRequestDTO) {
+
+        String token = updateRequestDTO.getToken();
+        pushDeviceManagementService.updateDeviceFromMobile(deviceId, token);
+        return Response.noContent().build();
     }
 
     @Override
