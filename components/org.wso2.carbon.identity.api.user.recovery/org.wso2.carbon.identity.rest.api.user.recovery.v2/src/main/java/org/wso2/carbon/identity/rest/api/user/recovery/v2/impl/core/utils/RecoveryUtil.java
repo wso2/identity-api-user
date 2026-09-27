@@ -269,6 +269,14 @@ public class RecoveryUtil {
                 status = Response.Status.BAD_REQUEST;
                 errorMessage = identityRecoveryClientException.getMessage();
                 errorDescription = identityRecoveryClientException.getDescription();
+            } else if (prependOperationScenarioToErrorCode(
+                    IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_FEDERATED_USER.getCode(), scenario)
+                    .equals(errorCode)) {
+                // The user has no local credential to recover. This is an expected refusal, not a server fault.
+                // Compared in prefixed form, as the recovery manager may already have prepended the scenario.
+                // The message is logged, so use a fixed one; the description contains the username.
+                status = Response.Status.FORBIDDEN;
+                errorMessage = Constants.STATUS_FORBIDDEN_NO_LOCAL_CREDENTIAL_MESSAGE;
             }
             return buildClientError(errorCode, errorMessage, errorDescription, status);
         }
