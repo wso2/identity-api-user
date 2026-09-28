@@ -39,6 +39,8 @@ public class Constants {
     public static final String STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT =
             "The server encountered an internal error. Please contact administrator.";
     public static final String STATUS_BAD_REQUEST_DEFAULT = "Bad Request";
+    public static final String STATUS_FORBIDDEN_NO_LOCAL_CREDENTIAL_MESSAGE =
+            "User doesn't have a password for local account.";
 
     public static final String ENABLE_NORMALIZED_RETRY_ERROR_RESPONSE =
             "Recovery.ErrorMessage.EnableNormalizedRetryErrorResponse";
