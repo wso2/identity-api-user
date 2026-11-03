@@ -47,7 +47,8 @@ paths:
       summary: List the devices registered to the authenticated user.
       operationId: listMyDevices
       description: "This API provides the capability to list a paginated set of the devices registered to the
-        authenticated user. Returns devices of any status (ACTIVE or INACTIVE).\n\n"
+        authenticated user. Returns devices of any status (ACTIVE or INACTIVE). In an organization, a shared user
+        gets the devices it inherits from its resident organization.\n\n"
       parameters:
         - name: limit
           in: query
@@ -90,7 +91,7 @@ paths:
       summary: Get a device registered to the authenticated user.
       operationId: getMyDevice
       description: "This API provides the capability to retrieve a device registered to the authenticated user by its
-        ID.\n\n"
+        ID. In an organization, a shared user also gets the devices it inherits from its resident organization.\n\n"
       parameters:
         - $ref: '#/components/parameters/deviceIdPathParam'
       responses:
@@ -114,7 +115,8 @@ paths:
       summary: Update a device registered to the authenticated user.
       operationId: updateMyDevice
       description: "This API provides the capability to rename, activate or deactivate a device registered to the
-        authenticated user. At least one of 'deviceName' or 'status' must be provided.\n\n"
+        authenticated user. At least one of 'deviceName' or 'status' must be provided. An inherited device is read
+        only and is managed in the resident organization of the user.\n\n"
       parameters:
         - $ref: '#/components/parameters/deviceIdPathParam'
       requestBody:
@@ -145,7 +147,8 @@ paths:
         - me
       summary: Delete a device registered to the authenticated user.
       operationId: deleteMyDevice
-      description: "This API provides the capability to delete a device registered to the authenticated user.\n\n"
+      description: "This API provides the capability to delete a device registered to the authenticated user. An
+        inherited device is read only and is managed in the resident organization of the user.\n\n"
       parameters:
         - $ref: '#/components/parameters/deviceIdPathParam'
       responses:
