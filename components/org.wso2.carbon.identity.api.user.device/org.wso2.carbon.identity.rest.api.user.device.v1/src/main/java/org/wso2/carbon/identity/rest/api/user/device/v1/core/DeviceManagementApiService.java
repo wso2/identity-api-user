@@ -82,8 +82,8 @@ public class DeviceManagementApiService {
         String userId = getAuthenticatedUserId();
         String tenantDomain = ContextLoader.getTenantDomainFromContext();
         try {
-            int totalResults = deviceManagementService.getDeviceCountByUserId(userId, tenantDomain);
-            List<Device> devices = deviceManagementService.getDevicesByUserId(
+            int totalResults = deviceManagementService.getDeviceCountOfResidentUser(userId, tenantDomain);
+            List<Device> devices = deviceManagementService.getDevicesOfResidentUser(
                     userId, tenantDomain, resolvedOffset, resolvedLimit);
 
             List<DeviceResponse> items = devices.stream()
@@ -113,7 +113,10 @@ public class DeviceManagementApiService {
         String userId = getAuthenticatedUserId();
         String tenantDomain = ContextLoader.getTenantDomainFromContext();
         try {
-            Device device = getOwnedDevice(deviceId, userId, tenantDomain);
+            Device device = deviceManagementService.getDeviceOfResidentUser(deviceId, userId, tenantDomain);
+            if (device == null) {
+                throw buildDeviceNotFoundError(deviceId);
+            }
             return DeviceResponseBuilder.buildDeviceResponse(device);
         } catch (DeviceMgtException e) {
             throw handleException(e, Constants.ErrorMessage.ERROR_CODE_ERROR_RETRIEVING_DEVICE);
@@ -222,14 +225,19 @@ public class DeviceManagementApiService {
 
         Device device = deviceManagementService.getDeviceById(deviceId, tenantDomain);
         if (device == null || !userId.equals(device.getUserId())) {
-            throw new APIError(Response.Status.NOT_FOUND, new ErrorResponse.Builder()
-                    .withCode(Constants.ErrorMessage.ERROR_CODE_DEVICE_NOT_FOUND.code())
-                    .withMessage(Constants.ErrorMessage.ERROR_CODE_DEVICE_NOT_FOUND.message())
-                    .withDescription(String.format(
-                            Constants.ErrorMessage.ERROR_CODE_DEVICE_NOT_FOUND.description(), deviceId))
-                    .build(LOG, "No device found for the authenticated user with the device id: " + deviceId));
+            throw buildDeviceNotFoundError(deviceId);
         }
         return device;
+    }
+
+    private APIError buildDeviceNotFoundError(String deviceId) {
+
+        return new APIError(Response.Status.NOT_FOUND, new ErrorResponse.Builder()
+                .withCode(Constants.ErrorMessage.ERROR_CODE_DEVICE_NOT_FOUND.code())
+                .withMessage(Constants.ErrorMessage.ERROR_CODE_DEVICE_NOT_FOUND.message())
+                .withDescription(String.format(
+                        Constants.ErrorMessage.ERROR_CODE_DEVICE_NOT_FOUND.description(), deviceId))
+                .build(LOG, "No device found for the authenticated user with the device id: " + deviceId));
     }
 
     /**
@@ -243,6 +251,11 @@ public class DeviceManagementApiService {
         if (StringUtils.isBlank(userId)) {
             userId = ContextLoader.getUserIdFromContext();
         }
+        return requireUserId(userId);
+    }
+
+    private String requireUserId(String userId) {
+
         if (StringUtils.isBlank(userId)) {
             Constants.ErrorMessage error = Constants.ErrorMessage.ERROR_CODE_ERROR_RESOLVING_USER;
             throw new APIError(Response.Status.INTERNAL_SERVER_ERROR, new ErrorResponse.Builder()
